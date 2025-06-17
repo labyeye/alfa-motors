@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import {
   LayoutDashboard,
-  ShoppingCart,
   TrendingUp,
   Wrench,
   Users,
@@ -16,6 +15,7 @@ import {
   Trash2,
   X,
   Bike,
+  CarFront,
   Car,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -804,6 +804,15 @@ const SellLetterHistory = () => {
       submenu: [
         { name: "RC Entry", path: "/rc/create" },
         { name: "RC List", path: "/rc/list" },
+      ],
+    },
+    {
+      name: "Car Management",
+      icon: CarFront,
+      submenu: [
+        { name: "Add Car Data", path: "/car/create" },
+        { name: "List Car Data", path: "/car/list" },
+        { name: "Edit Car Data", path: "/car/edit" },
       ],
     },
     

@@ -671,7 +671,7 @@
         let currentSort = "default"; // Declare this ONCE at the top level
 
         function loadCars() {
-          fetch("https://Car-builders.onrender.com/api/Cars")
+          fetch("http://localhost:2500/api/Cars")
             .then((response) => {
               if (!response.ok) {
                 throw new Error("Network response was not ok");
@@ -729,106 +729,174 @@
             });
           });
         }
+        function initImageSliders() {
+    document.querySelectorAll('.car-slider').forEach(slider => {
+      const images = slider.querySelector('.slider-images');
+      const dots = slider.querySelectorAll('.dot');
+      const prevBtn = slider.querySelector('.slider-prev');
+      const nextBtn = slider.querySelector('.slider-next');
+      let currentIndex = 0;
 
-        function displayCars(Cars) {
-          const CarGrid = document.querySelector(".Car-grid");
-          CarGrid.innerHTML = "";
+      function showSlide(index) {
+        images.style.transform = `translateX(-${index * 100}%)`;
+        dots.forEach(dot => dot.classList.remove('active'));
+        dots[index].classList.add('active');
+        currentIndex = index;
+      }
 
-          if (Cars.length === 0) {
+      // Initialize first slide
+      showSlide(0);
+
+      // Dot click event
+      dots.forEach(dot => {
+        dot.addEventListener('click', () => {
+          showSlide(parseInt(dot.dataset.index));
+        });
+      });
+
+      // Previous button
+      prevBtn.addEventListener('click', () => {
+        const newIndex = (currentIndex - 1 + dots.length) % dots.length;
+        showSlide(newIndex);
+      });
+
+      // Next button
+      nextBtn.addEventListener('click', () => {
+        const newIndex = (currentIndex + 1) % dots.length;
+        showSlide(newIndex);
+      });
+    });
+  }
+
+        function displayCars(cars) {
+          const carGrid = document.querySelector(".car-grid");
+          carGrid.innerHTML = "";
+
+          if (cars.length === 0) {
             showNoCarsMessage();
             return;
           }
 
-          Cars.forEach((Car) => {
-            const CarCard = createCarCard(Car);
-            CarGrid.appendChild(CarCard);
+          cars.forEach((car) => {
+            const carCard = createCarCard(car);
+            carGrid.appendChild(carCard);
           });
 
-          // Add click event listeners to Car cards for popup
+          // Initialize sliders after cards are added
+          initImageSliders();
+
+          // Add click event listeners to car cards for popup
           addCarCardClickListeners();
         }
 
         // Create individual Car card
-        function createCarCard(Car) {
-          const CarCard = document.createElement("div");
-          CarCard.className = "Car-card";
+        function createCarCard(car) {
+    const carCard = document.createElement("div");
+    carCard.className = "car-card";
 
-          // Set data attributes for filtering
-          CarCard.dataset.brand = Car.brand || "";
-          CarCard.dataset.price = Car.price || 0;
-          CarCard.dataset.year = Car.modelYear || new Date().getFullYear();
-          CarCard.dataset.km = Car.kmDriven || 0;
-          CarCard.dataset.owner = Car.ownership || "1";
-          CarCard.dataset.fuel = Car.fuelType || "Petrol";
+    // Set data attributes for filtering
+    carCard.dataset.brand = car.brand || "";
+    carCard.dataset.price = car.price || 0;
+    carCard.dataset.year = car.modelYear || new Date().getFullYear();
+    carCard.dataset.km = car.kmDriven || 0;
+    carCard.dataset.owner = car.ownership || "1";
+    carCard.dataset.fuel = car.fuelType || "Petrol";
 
-          // Store Car data for popup
-          CarCard.dataset.CarData = JSON.stringify(Car);
+    // Store car data for popup
+    carCard.dataset.carData = JSON.stringify(car);
 
-          const statusClass =
-            Car.status === "Available"
-              ? "status-available"
-              : Car.status === "Sold Out"
-              ? "status-sold"
-              : Car.status === "Coming Soon"
-              ? "status-coming-soon"
-              : "status-available";
+    const statusClass =
+      car.status === "Available"
+        ? "status-available"
+        : car.status === "Sold Out"
+        ? "status-sold"
+        : car.status === "Coming Soon"
+        ? "status-coming-soon"
+        : "status-available";
 
-          CarCard.innerHTML = `
+    // Create image slider if multiple images exist
+    let imageHTML = '';
+    if (car.images && car.images.length > 0) {
+      if (car.images.length > 1) {
+        // Multiple images - create slider
+        imageHTML = `
+          <div class="car-slider">
+            <div class="slider-images">
+              ${car.images.map(img => `
+                <img src="${img || 'https://via.placeholder.com/300x200?text=No+Image'}" 
+                     alt="${car.brand} ${car.model}"
+                     onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+              `).join('')}
+            </div>
+            <div class="slider-dots">
+              ${car.images.map((_, index) => `
+                <span class="dot" data-index="${index}"></span>
+              `).join('')}
+            </div>
+            <button class="slider-prev">&lt;</button>
+            <button class="slider-next">&gt;</button>
+          </div>
+        `;
+      } else {
+        // Single image
+        imageHTML = `
+          <img src="${car.images[0] || 'https://via.placeholder.com/300x200?text=No+Image'}" 
+               alt="${car.brand} ${car.model}"
+               onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+        `;
+      }
+    } else {
+      // No images
+      imageHTML = `
+        <img src="https://via.placeholder.com/300x200?text=No+Image" 
+             alt="${car.brand} ${car.model}">
+      `;
+    }
+
+    carCard.innerHTML = `
       <div class="image-container">
-        <img src="${
-          Car.imageUrl || "https://via.placeholder.com/300x200?text=No+Image"
-        }" 
-             alt="${Car.brand} ${Car.model}" 
-             onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
-        <div class="status-badge ${statusClass}">${
-            Car.status || "Available"
-          }</div>
+        ${imageHTML}
+        <div class="status-badge ${statusClass}">${car.status || "Available"}</div>
       </div>
       <div class="card-content">
-        <h3>${Car.brand} ${Car.model}</h3>
-        <span class="model">${Car.modelYear} Model</span>
+        <h3>${car.brand} ${car.model}</h3>
+        <span class="model">${car.modelYear} Model</span>
         <div class="details">
           <div class="detail-item">
             <i class="fas fa-tachometer-alt"></i>
-            <span>${(Car.kmDriven || 0).toLocaleString()} km</span>
+            <span>${(car.kmDriven || 0).toLocaleString()} km</span>
           </div>
           <div class="detail-item">
             <i class="fas fa-user"></i>
-            <span>${formatOwnership(Car.ownership || "1")}</span>
+            <span>${formatOwnership(car.ownership || "1")}</span>
           </div>
           <div class="detail-item">
             <i class="fas fa-gas-pump"></i>
-            <span>${Car.fuelType || "Petrol"}</span>
+            <span>${car.fuelType || "Petrol"}</span>
           </div>
           <div class="detail-item">
             <i class="fas fa-calendar-alt"></i>
-            <span>${formatAge(Car.daysOld || 0)}</span>
+            <span>${formatAge(car.daysOld || 0)}</span>
           </div>
         </div>
         <div class="price-container">
-          <div class="price">₹${(Car.price || 0).toLocaleString()}</div>
-          <div class="emi">Down: ₹${(
-            Car.downPayment || 0
-          ).toLocaleString()} | EMI: ₹${Math.round(
-            ((Car.price || 0) - (Car.downPayment || 0)) / 36
+          <div class="price">₹${(car.price || 0).toLocaleString()}</div>
+          <div class="emi">Down: ₹${(car.downPayment || 0).toLocaleString()} | EMI: ₹${Math.round(
+            ((car.price || 0) - (car.downPayment || 0)) / 36
           ).toLocaleString()}/month</div>
           <div class="button-group">
-            <button class="contact-btn" ${
-              Car.status !== "Available" ? "disabled" : ""
-            }>
+            <button class="contact-btn" ${car.status !== "Available" ? "disabled" : ""}>
               Contact Seller
             </button>
-            <button class="view-details-btn" ${
-              Car.status !== "Available" ? "disabled" : ""
-            }>
+            <button class="view-details-btn" ${car.status !== "Available" ? "disabled" : ""}>
               View Details
             </button>
           </div>
         </div>
       </div>
     `;
-          return CarCard;
-        }
+    return carCard;
+  }
 
         // Helper function to format ownership
         function formatOwnership(owner) {
@@ -861,41 +929,99 @@
         }
 
         // Show Car details popup
-        function showCarPopup(Car) {
-          const popup = document.querySelector(".Car-popup-overlay");
+        function showCarPopup(car) {
+  const popup = document.querySelector(".car-popup-overlay");
+  const imagesContainer = document.getElementById("popup-car-images");
+  const dotsContainer = document.querySelector(".popup-slider-dots");
+  
+  // Clear previous images and dots
+  imagesContainer.innerHTML = '';
+  dotsContainer.innerHTML = '';
+  
+  // Add images to slider
+  if (car.images && car.images.length > 0) {
+    car.images.forEach((img, index) => {
+      const imgElement = document.createElement('img');
+      imgElement.src = img || 'https://via.placeholder.com/600x400?text=No+Image';
+      imgElement.alt = `${car.brand} ${car.model}`;
+      imgElement.onerror = function() {
+        this.src = 'https://via.placeholder.com/600x400?text=No+Image';
+      };
+      imagesContainer.appendChild(imgElement);
+      
+      // Add dot for this image
+      const dot = document.createElement('span');
+      dot.className = 'popup-dot';
+      dot.dataset.index = index;
+      dotsContainer.appendChild(dot);
+    });
+  } else {
+    // Add default image if no images
+    const imgElement = document.createElement('img');
+    imgElement.src = 'https://via.placeholder.com/600x400?text=No+Image';
+    imgElement.alt = `${car.brand} ${car.model}`;
+    imagesContainer.appendChild(imgElement);
+  }
+  
+  // Initialize popup slider
+  initPopupSlider();
 
-          // Populate popup with Car data
-          document.getElementById("popup-Car-image").src =
-            Car.imageUrl || "https://via.placeholder.com/400x300?text=No+Image";
-          document.getElementById(
-            "popup-Car-title"
-          ).textContent = `${Car.brand} ${Car.model}`;
-          document.getElementById(
-            "popup-Car-model"
-          ).textContent = `${Car.modelYear} Model`;
-          document.getElementById("popup-Car-km").textContent = `${(
-            Car.kmDriven || 0
-          ).toLocaleString()} km`;
-          document.getElementById("popup-Car-owner").textContent =
-            formatOwnership(Car.ownership || "1");
-          document.getElementById("popup-Car-fuel").textContent =
-            Car.fuelType || "Petrol";
-          document.getElementById("popup-Car-age").textContent = formatAge(
-            Car.daysOld || 0
-          );
-          document.getElementById("popup-Car-price").textContent = `₹${(
-            Car.price || 0
-          ).toLocaleString()}`;
-          document.getElementById("popup-Car-emi").textContent = `Down: ₹${(
-            Car.downPayment || 0
-          ).toLocaleString()} | EMI: ₹${Math.round(
-            ((Car.price || 0) - (Car.downPayment || 0)) / 36
-          ).toLocaleString()}/month`;
+  // Populate other car details
+  document.getElementById("popup-car-title").textContent = `${car.brand} ${car.model}`;
+  document.getElementById("popup-car-model").textContent = `${car.modelYear} Model`;
+  document.getElementById("popup-car-km").textContent = `${(car.kmDriven || 0).toLocaleString()} km`;
+  document.getElementById("popup-car-owner").textContent = formatOwnership(car.ownership || "1");
+  document.getElementById("popup-car-fuel").textContent = car.fuelType || "Petrol";
+  document.getElementById("popup-car-age").textContent = formatAge(car.daysOld || 0);
+  document.getElementById("popup-car-price").textContent = `₹${(car.price || 0).toLocaleString()}`;
+  document.getElementById("popup-car-emi").textContent = `Down: ₹${(car.downPayment || 0).toLocaleString()} | EMI: ₹${Math.round(
+    ((car.price || 0) - (car.downPayment || 0)) / 36
+  ).toLocaleString()}/month`;
 
-          // Show popup
-          popup.classList.add("active");
-          document.body.style.overflow = "hidden";
-        }
+  // Show popup
+  popup.classList.add("active");
+  document.body.style.overflow = "hidden";
+}
+
+function initPopupSlider() {
+  const slider = document.querySelector('.popup-slider');
+  if (!slider) return;
+  
+  const images = slider.querySelector('.popup-slider-images');
+  const dots = slider.querySelectorAll('.popup-dot');
+  const prevBtn = slider.querySelector('.popup-slider-prev');
+  const nextBtn = slider.querySelector('.popup-slider-next');
+  let currentIndex = 0;
+
+  function showSlide(index) {
+    images.style.transform = `translateX(-${index * 100}%)`;
+    dots.forEach(dot => dot.classList.remove('active'));
+    if (dots[index]) dots[index].classList.add('active');
+    currentIndex = index;
+  }
+
+  // Initialize first slide
+  showSlide(0);
+
+  // Dot click event
+  dots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      showSlide(parseInt(dot.dataset.index));
+    });
+  });
+
+  // Previous button
+  prevBtn.addEventListener('click', () => {
+    const newIndex = (currentIndex - 1 + dots.length) % dots.length;
+    showSlide(newIndex);
+  });
+
+  // Next button
+  nextBtn.addEventListener('click', () => {
+    const newIndex = (currentIndex + 1) % dots.length;
+    showSlide(newIndex);
+  });
+}
 
         // Close popup functionality
         function initPopupClose() {

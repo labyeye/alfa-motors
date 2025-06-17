@@ -3,7 +3,6 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import {
   LayoutDashboard,
-  ShoppingCart,
   TrendingUp,
   Wrench,
   Users,
@@ -14,6 +13,7 @@ import {
   Search,
   Bike,
   Car,
+  CarFront,
   ArrowUpRight,
   ArrowDownLeft,
 } from "lucide-react";
@@ -193,6 +193,15 @@ const BikeHistory = () => {
       submenu: [
         { name: "RC Entry", path: "/rc/create" },
         { name: "RC List", path: "/rc/list" },
+      ],
+    },
+    {
+      name: "Car Management",
+      icon: CarFront,
+      submenu: [
+        { name: "Add Car Data", path: "/car/create" },
+        { name: "List Car Data", path: "/car/list" },
+        { name: "Edit Car Data", path: "/car/edit" },
       ],
     },
     

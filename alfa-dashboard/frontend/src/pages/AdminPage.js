@@ -13,6 +13,8 @@ import {
   RefreshCw,
     Car,
     Bike,
+    PenTool,
+    CarFront,
 
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -37,19 +39,30 @@ const AdminPage = () => {
   const [activeMenu, setActiveMenu] = useState("Dashboard");
   const [expandedMenus, setExpandedMenus] = useState({});
   const [dashboardData, setDashboardData] = useState({
-    totalBuyLetters: 0,
-    totalSellLetters: 0,
-    totalBuyValue: 0,
-    totalSellValue: 0,
-    profit: 0,
-    ownerName: user?.name || "",
-    recentTransactions: {
-      buy: [],
-      sell: [],
-      service: []
-    },
-    monthlyData: []
-  });
+  totalBuyLetters: 0,
+  totalSellLetters: 0,
+  totalBuyValue: 0,
+  totalSellValue: 0,
+  profit: 0,
+  ownerName: user?.name || "",
+  recentTransactions: {
+    buy: [],
+    sell: [],
+    service: []
+  },
+  monthlyData: [],
+  carStats: {
+    totalCars: 0,
+    soldCars: 0,
+    availableCars: 0,
+    totalRCs: 0,
+    rcTransferred: 0,
+    rcFeeDone: 0,
+    rcFeeReturned: 0,
+    rcAvailableToTransfer: 0,
+    rcFeeToBeTaken: 0
+  }
+});
   const [loading, setLoading] = useState(true);
   const [isOwnerView, setIsOwnerView] = useState(false);
   const [error, setError] = useState(null);
@@ -62,33 +75,54 @@ const AdminPage = () => {
   }, [activeMenu, isOwnerView]);
 
   const fetchDashboardData = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const endpoint = isOwnerView
-        ? `http://localhost:2500/api/dashboard/owner`
-        : `http://localhost:2500/api/dashboard`;
+  try {
+    setLoading(true);
+    setError(null);
+    const endpoint = isOwnerView
+      ? `http://localhost:2500/api/dashboard/owner`
+      : `http://localhost:2500/api/dashboard`;
 
-      const response = await fetch(endpoint, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-        },
-      });
+    const response = await fetch(endpoint, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+      },
+    });
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch dashboard data");
-      }
-
-      const data = await response.json();
-      setDashboardData(data.data);
-    } catch (error) {
-      console.error("Error fetching dashboard data:", error);
-      setError("Failed to load dashboard data. Please try again later.");
-    } finally {
-      setLoading(false);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(
+        errorData.error || 
+        `HTTP error! status: ${response.status} - ${response.statusText}`
+      );
     }
-  };
+
+    const data = await response.json();
+    
+    // Ensure carStats exists with all required fields
+    const completeData = {
+      ...data.data,
+      carStats: {
+        totalCars: data.data.carStats?.totalCars || 0,
+        soldCars: data.data.carStats?.soldCars || 0,
+        availableCars: data.data.carStats?.availableCars || 0,
+        totalRCs: data.data.carStats?.totalRCs || 0,
+        rcTransferred: data.data.carStats?.rcTransferred || 0,
+        rcFeeDone: data.data.carStats?.rcFeeDone || 0,
+        rcFeeReturned: data.data.carStats?.rcFeeReturned || 0,
+        rcAvailableToTransfer: data.data.carStats?.rcAvailableToTransfer || 0,
+        rcFeeToBeTaken: data.data.carStats?.rcFeeToBeTaken || 0
+      }
+    };
+    
+    setDashboardData(completeData);
+  } catch (error) {
+    console.error("Error fetching dashboard data:", error);
+    setError(error.message || "Failed to load dashboard data. Please try again later.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const formatCurrency = (amount) => {
     if (isNaN(amount)) return "₹0";
@@ -100,11 +134,6 @@ const AdminPage = () => {
     }).format(amount);
   };
 
-  const formatDate = (dateString) => {
-    if (!dateString) return "-";
-    const options = { day: 'numeric', month: 'short', year: 'numeric' };
-    return new Date(dateString).toLocaleDateString('en-IN', options);
-  };
 
   const toggleOwnerView = () => {
     setIsOwnerView(!isOwnerView);
@@ -226,6 +255,16 @@ const AdminPage = () => {
     },
     
     {
+      name: "Car Management",
+      icon: CarFront,
+      submenu: [
+        { name: "Add Car Data", path: "/car/create" },
+        { name: "List Car Data", path: "/car/list" },
+        { name: "Edit Car Data", path: "/car/edit" },
+      ],
+    },
+    
+    {
       name: "Sell",
       icon: TrendingUp,
       submenu: [
@@ -257,138 +296,170 @@ const AdminPage = () => {
   ];
 
   const DashboardCards = () => (
-    <div style={styles.cardsGrid}>
-      {loading ? (
-        Array(4)
-          .fill()
-          .map((_, index) => (
-            <div
-              key={index}
-              style={{
-                ...styles.card,
-                borderLeft: `4px solid ${
-                  ["#3b82f6", "#10b981", "#8b5cf6", "#f59e0b"][index]
-                }`,
-                opacity: 0.7,
-              }}
-            >
-              <div style={styles.cardContent}>
-                <div>
-                  <p style={styles.cardLabel}>Loading...</p>
-                  <p style={styles.cardValue}>-</p>
-                </div>
-                <div
-                  style={{
-                    ...styles.cardIcon,
-                    backgroundColor: [
-                      "#dbeafe",
-                      "#d1fae5",
-                      "#ede9fe",
-                      "#fef3c7",
-                    ][index],
-                  }}
-                >
-                  {
-                    [
-                      <FileText size={32} color="#2563eb" />,
-                      <TrendingUp size={32} color="#059669" />,
-                      <ShoppingCart size={32} color="#7c3aed" />,
-                      <Target size={32} color="#d97706" />,
-                    ][index]
-                  }
-                </div>
-              </div>
-            </div>
-          ))
-      ) : error ? (
-        <div style={{ ...styles.card, gridColumn: '1 / -1', textAlign: 'center', padding: '20px' }}>
-          <p style={{ color: '#ef4444' }}>{error}</p>
-          <button 
-            onClick={fetchDashboardData}
+  <div style={styles.cardsGrid}>
+    {loading ? (
+      Array(8)
+        .fill()
+        .map((_, index) => (
+          <div
+            key={index}
             style={{
-              backgroundColor: '#3b82f6',
-              color: 'white',
-              border: 'none',
-              padding: '8px 16px',
-              borderRadius: '4px',
-              marginTop: '10px',
-              cursor: 'pointer'
+              ...styles.card,
+              borderLeft: `4px solid ${
+                ["#3b82f6", "#10b981", "#8b5cf6", "#f59e0b", "#ef4444", "#f97316", "#8b5cf6", "#14b8a6"][index]
+              }`,
+              opacity: 0.7,
             }}
           >
-            Retry
-          </button>
+            <div style={styles.cardContent}>
+              <div>
+                <p style={styles.cardLabel}>Loading...</p>
+                <p style={styles.cardValue}>-</p>
+              </div>
+              <div
+                style={{
+                  ...styles.cardIcon,
+                  backgroundColor: [
+                    "#dbeafe", "#d1fae5", "#ede9fe", "#fef3c7", "#fee2e2", "#ffedd5", "#ede9fe", "#ccfbf1"
+                  ][index],
+                }}
+              >
+                {
+                  [
+                    <FileText size={32} color="#2563eb" />,
+                    <TrendingUp size={32} color="#059669" />,
+                    <ShoppingCart size={32} color="#7c3aed" />,
+                    <Target size={32} color="#d97706" />,
+                    <Car size={32} color="#dc2626" />,
+                    <CarFront size={32} color="#ea580c" />,
+                    <PenTool size={32} color="#7c3aed" />,
+                    <Bike size={32} color="#0d9488" />,
+                  ][index]
+                }
+              </div>
+            </div>
+          </div>
+        ))
+    ) : error ? (
+      <div style={{ ...styles.card, gridColumn: '1 / -1', textAlign: 'center', padding: '20px' }}>
+        <p style={{ color: '#ef4444' }}>{error}</p>
+        <button 
+          onClick={fetchDashboardData}
+          style={{
+            backgroundColor: '#3b82f6',
+            color: 'white',
+            border: 'none',
+            padding: '8px 16px',
+            borderRadius: '4px',
+            marginTop: '10px',
+            cursor: 'pointer'
+          }}
+        >
+          Retry
+        </button>
+      </div>
+    ) : (
+      <>
+        {/* Existing cards */}
+        <div style={{ ...styles.card, borderLeft: "4px solid #3b82f6" }}>
+          <div style={styles.cardContent}>
+            <div>
+              <p style={styles.cardLabel}>Total Cars</p>
+              <p style={styles.cardValue}>{dashboardData.carStats.totalCars}</p>
+            </div>
+            <div style={{ ...styles.cardIcon, backgroundColor: "#dbeafe" }}>
+              <Car size={32} color="#2563eb" />
+            </div>
+          </div>
         </div>
-      ) : (
-        <>
-          <div style={{ ...styles.card, borderLeft: "4px solid #3b82f6" }}>
-            <div style={styles.cardContent}>
-              <div>
-                <p style={styles.cardLabel}>
-                  {isOwnerView ? "My Purchases" : "Total Buy Letters"}
-                </p>
-                <p style={styles.cardValue}>{dashboardData.totalBuyLetters}</p>
-              </div>
-              <div style={{ ...styles.cardIcon, backgroundColor: "#dbeafe" }}>
-                <FileText size={32} color="#2563eb" />
-              </div>
-            </div>
-          </div>
 
-          <div style={{ ...styles.card, borderLeft: "4px solid #10b981" }}>
-            <div style={styles.cardContent}>
-              <div>
-                <p style={styles.cardLabel}>
-                  {isOwnerView ? "My Sales" : "Total Sell Letters"}
-                </p>
-                <p style={styles.cardValue}>{dashboardData.totalSellLetters}</p>
-              </div>
-              <div style={{ ...styles.cardIcon, backgroundColor: "#d1fae5" }}>
-                <TrendingUp size={32} color="#059669" />
-              </div>
+        <div style={{ ...styles.card, borderLeft: "4px solid #10b981" }}>
+          <div style={styles.cardContent}>
+            <div>
+              <p style={styles.cardLabel}>Sold Cars</p>
+              <p style={styles.cardValue}>{dashboardData.carStats.soldCars}</p>
+            </div>
+            <div style={{ ...styles.cardIcon, backgroundColor: "#d1fae5" }}>
+              <CarFront size={32} color="#059669" />
             </div>
           </div>
+        </div>
 
-          <div style={{ ...styles.card, borderLeft: "4px solid #8b5cf6" }}>
-            <div style={styles.cardContent}>
-              <div>
-                <p style={styles.cardLabel}>
-                  {isOwnerView ? "My Purchase Value" : "Total Purchase Value"}
-                </p>
-                <p style={{ ...styles.cardValue, fontSize: "1.5rem" }}>
-                  {formatCurrency(dashboardData.totalBuyValue)}
-                </p>
-              </div>
-              <div style={{ ...styles.cardIcon, backgroundColor: "#ede9fe" }}>
-                <ShoppingCart size={32} color="#7c3aed" />
-              </div>
+        <div style={{ ...styles.card, borderLeft: "4px solid #8b5cf6" }}>
+          <div style={styles.cardContent}>
+            <div>
+              <p style={styles.cardLabel}>Available Cars</p>
+              <p style={styles.cardValue}>{dashboardData.carStats.availableCars}</p>
+            </div>
+            <div style={{ ...styles.cardIcon, backgroundColor: "#ede9fe" }}>
+              <Car size={32} color="#7c3aed" />
             </div>
           </div>
+        </div>
 
-          <div style={{ ...styles.card, borderLeft: "4px solid #f59e0b" }}>
-            <div style={styles.cardContent}>
-              <div>
-                <p style={styles.cardLabel}>
-                  {isOwnerView ? "My Net Profit" : "Total Profit"}
-                </p>
-                <p
-                  style={{
-                    ...styles.cardValue,
-                    fontSize: "1.5rem",
-                    color: dashboardData.profit >= 0 ? "#059669" : "#dc2626",
-                  }}
-                >
-                  {formatCurrency(dashboardData.profit)}
-                </p>
-              </div>
-              <div style={{ ...styles.cardIcon, backgroundColor: "#fef3c7" }}>
-                <Target size={32} color="#d97706" />
-              </div>
+        <div style={{ ...styles.card, borderLeft: "4px solid #f59e0b" }}>
+          <div style={styles.cardContent}>
+            <div>
+              <p style={styles.cardLabel}>Total RCs</p>
+              <p style={styles.cardValue}>{dashboardData.carStats.totalRCs}</p>
+            </div>
+            <div style={{ ...styles.cardIcon, backgroundColor: "#fef3c7" }}>
+              <FileText size={32} color="#d97706" />
             </div>
           </div>
-        </>
-      )}
-    </div>
-  );
+        </div>
+
+        <div style={{ ...styles.card, borderLeft: "4px solid #ef4444" }}>
+          <div style={styles.cardContent}>
+            <div>
+              <p style={styles.cardLabel}>RCs Transferred</p>
+              <p style={styles.cardValue}>{dashboardData.carStats.rcTransferred}</p>
+            </div>
+            <div style={{ ...styles.cardIcon, backgroundColor: "#fee2e2" }}>
+              <PenTool size={32} color="#dc2626" />
+            </div>
+          </div>
+        </div>
+
+        <div style={{ ...styles.card, borderLeft: "4px solid #f97316" }}>
+          <div style={styles.cardContent}>
+            <div>
+              <p style={styles.cardLabel}>RC Fee Done</p>
+              <p style={styles.cardValue}>{dashboardData.carStats.rcFeeDone}</p>
+            </div>
+            <div style={{ ...styles.cardIcon, backgroundColor: "#ffedd5" }}>
+              <FileText size={32} color="#ea580c" />
+            </div>
+          </div>
+        </div>
+
+        <div style={{ ...styles.card, borderLeft: "4px solid #8b5cf6" }}>
+          <div style={styles.cardContent}>
+            <div>
+              <p style={styles.cardLabel}>RCs Available to Transfer</p>
+              <p style={styles.cardValue}>{dashboardData.carStats.rcAvailableToTransfer}</p>
+            </div>
+            <div style={{ ...styles.cardIcon, backgroundColor: "#ede9fe" }}>
+              <PenTool size={32} color="#7c3aed" />
+            </div>
+          </div>
+        </div>
+
+        <div style={{ ...styles.card, borderLeft: "4px solid #14b8a6" }}>
+          <div style={styles.cardContent}>
+            <div>
+              <p style={styles.cardLabel}>RC Fee to be Taken</p>
+              <p style={styles.cardValue}>{dashboardData.carStats.rcFeeToBeTaken}</p>
+            </div>
+            <div style={{ ...styles.cardIcon, backgroundColor: "#ccfbf1" }}>
+              <FileText size={32} color="#0d9488" />
+            </div>
+          </div>
+        </div>
+      </>
+    )}
+  </div>
+);
 
   const RevenueCard = () => (
     <div style={styles.revenueCard}>
@@ -891,11 +962,11 @@ const styles = {
   },
   
   cardsGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-    gap: "24px",
-    marginBottom: "32px",
-  },
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+  gap: "24px",
+  marginBottom: "32px",
+},
   card: {
     backgroundColor: "#ffffff",
     borderRadius: "12px",

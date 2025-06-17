@@ -14,6 +14,7 @@ import {
   LogOut,
   Trash2,
   UserPlus,
+  CarFront,
   Car,
 } from "lucide-react";
 import AuthContext from "../context/AuthContext";
@@ -88,6 +89,15 @@ const StaffList = () => {
       submenu: [
         { name: "RC Entry", path: "/rc/create" },
         { name: "RC List", path: "/rc/list" },
+      ],
+    },
+    {
+      name: "Car Management",
+      icon: CarFront,
+      submenu: [
+        { name: "Add Car Data", path: "/car/create" },
+        { name: "List Car Data", path: "/car/list" },
+        { name: "Edit Car Data", path: "/car/edit" },
       ],
     },
     

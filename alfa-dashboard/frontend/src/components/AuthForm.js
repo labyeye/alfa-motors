@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
-import { Eye, EyeOff, Mail, Lock, ArrowRight, Bike } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, ArrowRight } from "lucide-react";
 import logo from '../images/company.png';
 const AuthForm = ({ isLogin }) => {
   const navigate = useNavigate();

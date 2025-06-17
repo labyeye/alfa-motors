@@ -11,7 +11,6 @@ import {
   IndianRupee,
   CheckCircle,
   LayoutDashboard,
-  ShoppingCart,
   TrendingUp,
   Wrench,
   Users,
@@ -20,6 +19,7 @@ import {
   ChevronDown,
   ChevronRight,
   Bike,
+  CarFront,
   Car,
   FileText,
 } from "lucide-react";
@@ -121,6 +121,15 @@ const SellLetterForm = () => {
       submenu: [
         { name: "RC Entry", path: "/rc/create" },
         { name: "RC List", path: "/rc/list" },
+      ],
+    },
+    {
+      name: "Car Management",
+      icon: CarFront,
+      submenu: [
+        { name: "Add Car Data", path: "/car/create" },
+        { name: "List Car Data", path: "/car/list" },
+        { name: "Edit Car Data", path: "/car/edit" },
       ],
     },
     

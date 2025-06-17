@@ -13,6 +13,9 @@ import StaffList from "./components/StaffList";
 import ServiceHistory from "./components/ServiceHistory";
 import RcListPage from "./components/RCListPage";
 import RcFormPage from "./components/RcEntryPage";
+import AddcarForm from "./components/AddCarForm";
+import ListCar from "./components/ListCar";
+import EditCar from "./components/EditCar";
 
 function App() {
   return (
@@ -51,6 +54,30 @@ function App() {
             element={
               <PrivateRoute roles={["admin", "staff"]}>
                 <RcFormPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/car/create"
+            element={
+              <PrivateRoute roles={["admin", "staff"]}>
+                <AddcarForm />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/car/list"
+            element={
+              <PrivateRoute roles={["admin", "staff"]}>
+                <ListCar />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/car/edit/:id"
+            element={
+              <PrivateRoute roles={["admin", "staff"]}>
+                <EditCar />
               </PrivateRoute>
             }
           />

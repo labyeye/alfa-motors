@@ -20,6 +20,7 @@ import {
   Plus,
   Trash,
   Car,
+  CarFront,
   Bike,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -461,6 +462,15 @@ const ServiceBillForm = () => {
       submenu: [
         { name: "RC Entry", path: "/rc/create" },
         { name: "RC List", path: "/rc/list" },
+      ],
+    },
+    {
+      name: "Car Management",
+      icon: CarFront,
+      submenu: [
+        { name: "Add Car Data", path: "/car/create" },
+        { name: "List Car Data", path: "/car/list" },
+        { name: "Edit Car Data", path: "/car/edit" },
       ],
     },
     
