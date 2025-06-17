@@ -721,9 +721,9 @@
         }
 
         function showErrorMessage(message = "Failed to load cars") {
-          const carGrid = document.querySelector(".car-grid");
+          const carGrid = document.querySelector(".Car-grid");
           if (!carGrid) {
-            console.error("Could not find .car-grid element");
+            console.error("Could not find .Car-grid element");
             return;
           }
 
@@ -816,7 +816,7 @@
         }
 
         function displayCars(cars) {
-          const carGrid = document.querySelector(".car-grid");
+          const carGrid = document.querySelector(".Car-grid");
           carGrid.innerHTML = "";
 
           if (cars.length === 0) {
@@ -1135,7 +1135,7 @@
 
         // Show no Cars message
         function showNoCarsMessage() {
-          const CarGrid = document.querySelector(".car-grid");
+          const CarGrid = document.querySelector(".Car-grid");
           CarGrid.innerHTML = `
       <div class="no-Cars-message" style="grid-column: 1 / -1; text-align: center; padding: 60px 20px;">
         <i class="fas fa-motorcycle" style="font-size: 4rem; color: #ccc; margin-bottom: 20px;"></i>
@@ -1147,7 +1147,7 @@
 
         // Show error message
         function showErrorMessage() {
-          const CarGrid = document.querySelector(".car-grid");
+          const CarGrid = document.querySelector(".Car-grid");
           CarGrid.innerHTML = `
       <div class="error-message" style="grid-column: 1 / -1; text-align: center; padding: 60px 20px;">
         <i class="fas fa-exclamation-triangle" style="font-size: 4rem; color: #ff6b00; margin-bottom: 20px;"></i>
