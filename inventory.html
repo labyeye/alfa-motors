@@ -678,9 +678,33 @@
               }
               return response.json();
             })
-            .then((data) => {
-              const carsData = data.data || data;
-              allCars = Array.isArray(carsData) ? carsData : [];
+            .then((responseData) => {
+              // Check if response has success:true and data array
+              if (!responseData.success || !Array.isArray(responseData.data)) {
+                throw new Error("Invalid data format from API");
+              }
+
+              // Transform API data to match your expected format
+              allCars = responseData.data.map((car) => ({
+                ...car,
+                // Convert "1st Owner" to "1", etc.
+                ownership: car.ownership.includes("1st")
+                  ? "1"
+                  : car.ownership.includes("2nd")
+                  ? "2"
+                  : "3",
+                // Ensure all required fields exist
+                brand: car.brand || "Unknown",
+                model: car.model || "",
+                modelYear: car.modelYear || new Date().getFullYear(),
+                kmDriven: car.kmDriven || 0,
+                fuelType: car.fuelType || "Petrol",
+                price: car.price || 0,
+                downPayment: car.downPayment || 0,
+                daysOld: car.daysOld || 0,
+                status: car.status || "Available",
+                images: car.images || [],
+              }));
 
               if (allCars.length === 0) {
                 showNoCarsMessage();
@@ -691,9 +715,8 @@
             .catch((error) => {
               console.error("Error fetching Cars:", error);
               showErrorMessage(error.message);
-              // Initialize empty array if fetch fails
               allCars = [];
-              applyAllFilters(); // Show empty state
+              applyAllFilters();
             });
         }
 
@@ -944,9 +967,10 @@
 
         // Helper function to format ownership
         function formatOwnership(owner) {
-          if (owner === "1") return "1st Owner";
-          if (owner === "2") return "2nd Owner";
-          if (owner === "3") return "3+ Owner";
+          if (owner === "1" || owner.includes("1st")) return "1st Owner";
+          if (owner === "2" || owner.includes("2nd")) return "2nd Owner";
+          if (owner === "3" || owner.includes("3+") || owner.includes("3rd"))
+            return "3+ Owner";
           return owner;
         }
 
