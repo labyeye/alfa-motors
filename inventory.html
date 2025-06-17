@@ -679,6 +679,8 @@
               return response.json();
             })
             .then((data) => {
+              const carsData = data.data || data;
+
               // Ensure we're working with an array
               allCars = Array.isArray(data) ? data : [];
 
@@ -931,7 +933,7 @@
         }
 
         function addCarCardClickListeners() {
-          document.querySelectorAll(".Car-card").forEach((card) => {
+          document.querySelectorAll(".car-card").forEach((card) => {
             const viewDetailsBtn = card.querySelector(".view-details-btn");
             const contactBtn = card.querySelector(".contact-btn");
 
@@ -1065,7 +1067,7 @@
 
         // Close popup functionality
         function initPopupClose() {
-          const popup = document.querySelector(".Car-popup-overlay");
+          const popup = document.querySelector(".car-popup-overlay");
           const closeBtn = document.querySelector(".close-popup");
 
           closeBtn.addEventListener("click", closePopup);
@@ -1084,14 +1086,14 @@
         }
 
         function closePopup() {
-          const popup = document.querySelector(".Car-popup-overlay");
+          const popup = document.querySelector(".car-popup-overlay");
           popup.classList.remove("active");
           document.body.style.overflow = "";
         }
 
         // Show no Cars message
         function showNoCarsMessage() {
-          const CarGrid = document.querySelector(".Car-grid");
+          const CarGrid = document.querySelector(".car-grid");
           CarGrid.innerHTML = `
       <div class="no-Cars-message" style="grid-column: 1 / -1; text-align: center; padding: 60px 20px;">
         <i class="fas fa-motorcycle" style="font-size: 4rem; color: #ccc; margin-bottom: 20px;"></i>
@@ -1103,7 +1105,7 @@
 
         // Show error message
         function showErrorMessage() {
-          const CarGrid = document.querySelector(".Car-grid");
+          const CarGrid = document.querySelector(".car-grid");
           CarGrid.innerHTML = `
       <div class="error-message" style="grid-column: 1 / -1; text-align: center; padding: 60px 20px;">
         <i class="fas fa-exclamation-triangle" style="font-size: 4rem; color: #ff6b00; margin-bottom: 20px;"></i>
