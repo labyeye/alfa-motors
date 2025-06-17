@@ -1,0 +1,2013 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <title>Inventory | Alfa Motors World</title>
+    <link rel="stylesheet" href="globals.css" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="inventory.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+
+  <body>
+    <div class="hero-section inventory-hero">
+      <nav class="navbar">
+        <a href="index.html" class="logo-link">
+          <div class="logo">
+            <img
+              src="./assets/logo2.svg"
+              class="logo-img"
+              alt="Alfa Motors World Logo"
+              itemprop="logo"
+            />
+          </div>
+        </a>
+        <ul class="nav-links">
+          <li><a href="index.html" data-translate="Home">Home</a></li>
+          <li>
+            <a href="inventory.html" class="active" data-translate="Buy Car"
+              >Buy Car</a
+            >
+          </li>
+          <li>
+            <a href="sell.html" data-translate="Sell Your Car">Sell Your Car</a>
+          </li>
+          <li><a href="about.html" data-translate="About Us">About Us</a></li>
+          <li><a href="#" data-translate="Updates">Updates</a></li>
+          <li><a href="contact.html" data-translate="Contact">Contact</a></li>
+        </ul>
+        <div class="login-btn">
+          <a href="/getquote.html">
+            <button data-translate="Get the Quote">Get the Quote</button>
+          </a>
+        </div>
+      </nav>
+      <section class="inventory-section full-inventory">
+        <div class="inventory-content">
+          <!-- Left sidebar filters -->
+          <div class="sidebar-filters">
+            <div class="filters-container">
+              <h3 data-translate="Filters">Filters</h3>
+              <div class="filter-group">
+                <button
+                  class="filter-btn"
+                  data-filter="all"
+                  data-translate="All Cars"
+                >
+                  All Cars
+                </button>
+              </div>
+
+              <div class="filter-group">
+                <button
+                  class="filter-btn"
+                  data-filter="price"
+                  data-translate="Price"
+                >
+                  Price <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="filter-dropdown" id="price-dropdown">
+                  <div class="price-range">
+                    <div class="range-inputs">
+                      <input
+                        type="number"
+                        id="min-price"
+                        placeholder="Min"
+                        min="0"
+                      />
+                      <span>to</span>
+                      <input
+                        type="number"
+                        id="max-price"
+                        placeholder="Max"
+                        min="0"
+                      />
+                    </div>
+                    <div class="price-presets">
+                      <button
+                        class="price-preset"
+                        data-min="0"
+                        data-max="50000"
+                      >
+                        Under 50K
+                      </button>
+                      <button
+                        class="price-preset"
+                        data-min="50000"
+                        data-max="100000"
+                      >
+                        50K-1L
+                      </button>
+                      <button
+                        class="price-preset"
+                        data-min="100000"
+                        data-max="200000"
+                      >
+                        1L-2L
+                      </button>
+                      <button
+                        class="price-preset"
+                        data-min="200000"
+                        data-max="500000"
+                      >
+                        2L-5L
+                      </button>
+                      <button class="price-preset" data-min="500000">
+                        5L+
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="filter-group">
+                <button
+                  class="filter-btn"
+                  data-filter="brand"
+                  data-translate="Brand"
+                >
+                  Brand <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="filter-dropdown" id="brand-dropdown">
+                  <div class="filter-options brand-options">
+                    <button class="filter-option" data-brand="Audi">
+                      Audi
+                    </button>
+                    <button class="filter-option" data-brand="Bentley">
+                      Bentley
+                    </button>
+                    <button class="filter-option" data-brand="BMW">BMW</button>
+                    <button class="filter-option" data-brand="Chevrolet">
+                      Chevrolet
+                    </button>
+                    <button class="filter-option" data-brand="Chrysler">
+                      Chrysler
+                    </button>
+                    <button class="filter-option" data-brand="Ferrari">
+                      Ferrari
+                    </button>
+                    <button class="filter-option" data-brand="FIAT">
+                      FIAT
+                    </button>
+                    <button class="filter-option" data-brand="Ford">
+                      Ford
+                    </button>
+                    <button class="filter-option" data-brand="Honda">
+                      Honda
+                    </button>
+                    <button class="filter-option" data-brand="Hyundai">
+                      Hyundai
+                    </button>
+                    <button class="filter-option" data-brand="Isuzu">
+                      Isuzu
+                    </button>
+                    <button class="filter-option" data-brand="Jaguar">
+                      Jaguar
+                    </button>
+                    <button class="filter-option" data-brand="Jeep">
+                      Jeep
+                    </button>
+                    <button class="filter-option" data-brand="Kia">Kia</button>
+                    <button class="filter-option" data-brand="Lamborghini">
+                      Lamborghini
+                    </button>
+                    <button class="filter-option" data-brand="Land Rover">
+                      Land Rover
+                    </button>
+                    <button class="filter-option" data-brand="Lexus">
+                      Lexus
+                    </button>
+                    <button class="filter-option" data-brand="Lotus">
+                      Lotus
+                    </button>
+                    <button class="filter-option" data-brand="Maybach">
+                      Maybach
+                    </button>
+                    <button class="filter-option" data-brand="Mazda">
+                      Mazda
+                    </button>
+                    <button class="filter-option" data-brand="McLaren">
+                      McLaren
+                    </button>
+                    <button class="filter-option" data-brand="Mercedes-Benz">
+                      Mercedes-Benz
+                    </button>
+                    <button class="filter-option" data-brand="MINI">
+                      MINI
+                    </button>
+                    <button class="filter-option" data-brand="Mitsubishi">
+                      Mitsubishi
+                    </button>
+                    <button class="filter-option" data-brand="Nissan">
+                      Nissan
+                    </button>
+                    <button class="filter-option" data-brand="Porsche">
+                      Porsche
+                    </button>
+                    <button class="filter-option" data-brand="Rolls-Royce">
+                      Rolls-Royce
+                    </button>
+                    <button class="filter-option" data-brand="SRT">SRT</button>
+                    <button class="filter-option" data-brand="Suzuki">
+                      Suzuki
+                    </button>
+                    <button class="filter-option" data-brand="Toyota">
+                      Toyota
+                    </button>
+                    <button class="filter-option" data-brand="Volkswagen">
+                      Volkswagen
+                    </button>
+                    <button class="filter-option" data-brand="Volvo">
+                      Volvo
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="filter-group">
+                <button
+                  class="filter-btn"
+                  data-filter="year"
+                  data-translate="Year"
+                >
+                  Year <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="filter-dropdown" id="year-dropdown">
+                  <div class="year-slider">
+                    <div class="slider-container">
+                      <input
+                        type="range"
+                        id="year-min"
+                        min="2015"
+                        max="2024"
+                        value="2015"
+                        step="1"
+                      />
+                      <input
+                        type="range"
+                        id="year-max"
+                        min="2015"
+                        max="2024"
+                        value="2024"
+                        step="1"
+                      />
+                    </div>
+                    <div class="year-values">
+                      <span id="year-min-value">2015</span>
+                      <span>to</span>
+                      <span id="year-max-value">2024</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="filter-group">
+                <button
+                  class="filter-btn"
+                  data-filter="km"
+                  data-translate="KM Driven"
+                >
+                  KM Driven <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="filter-dropdown" id="km-dropdown">
+                  <div class="km-slider">
+                    <div class="slider-container">
+                      <input
+                        type="range"
+                        id="km-min"
+                        min="0"
+                        max="50000"
+                        value="0"
+                        step="500"
+                      />
+                      <input
+                        type="range"
+                        id="km-max"
+                        min="0"
+                        max="50000"
+                        value="50000"
+                        step="500"
+                      />
+                    </div>
+                    <div class="km-values">
+                      <span id="km-min-value">0</span>
+                      <span>to</span>
+                      <span id="km-max-value">50,000</span>
+                      <span>km</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="filter-group">
+                <button
+                  class="filter-btn"
+                  data-filter="owner"
+                  data-translate="Ownership"
+                >
+                  Ownership <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="filter-dropdown" id="owner-dropdown">
+                  <div class="filter-options ownership-options">
+                    <button class="filter-option" data-owner="1">
+                      1st Owner
+                    </button>
+                    <button class="filter-option" data-owner="2">
+                      2nd Owner
+                    </button>
+                    <button class="filter-option" data-owner="3">
+                      3+ Owner
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="filter-group">
+                <button
+                  class="filter-btn"
+                  data-filter="fuel"
+                  data-translate="Fuel Type"
+                >
+                  Fuel Type <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="filter-dropdown" id="fuel-dropdown">
+                  <div class="filter-options fuel-options">
+                    <button class="filter-option" data-fuel="Petrol">
+                      Petrol
+                    </button>
+                    <button class="filter-option" data-fuel="Electric">
+                      Electric
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="Car-grid-container">
+            <div class="section-header">
+              <div class="search-container">
+                <div class="search-box">
+                  <input
+                    type="text"
+                    id="inventory-search"
+                    placeholder="Search Cars by brand or model..."
+                  />
+                  <button id="search-btn"><i class="fas fa-search"></i></button>
+                </div>
+
+                <div class="sort-dropdown">
+                  <button class="sort-btn">
+                    <span id="sort-text" data-translate="Sort: Default"
+                      >Sort: Default</span
+                    >
+                    <i class="fas fa-chevron-down"></i>
+                  </button>
+                  <div class="sort-options">
+                    <button class="sort-option" data-sort="default">
+                      <span data-translate="Default">Default</span>
+                    </button>
+                    <button class="sort-option" data-sort="price-low">
+                      <span data-translate="Price: Low to High"
+                        >Price: Low to High</span
+                      >
+                    </button>
+                    <button class="sort-option" data-sort="price-high">
+                      <span data-translate="Price: High to Low"
+                        >Price: High to Low</span
+                      >
+                    </button>
+                    <button class="sort-option" data-sort="year-new">
+                      <span data-translate="Year: Newest First"
+                        >Year: Newest First</span
+                      >
+                    </button>
+                    <button class="sort-option" data-sort="year-old">
+                      <span data-translate="Year: Oldest First"
+                        >Year: Oldest First</span
+                      >
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <h2 id="filtered-count">0 Cars Available</h2>
+            </div>
+            <div class="brand-logos-container">
+              <div class="brand-logos">
+                <div class="brand-logo" data-brand="Royal Enfield">
+                  <img src="./assets/images/relogo.png" alt="Royal Enfield" />
+                </div>
+                <div class="brand-logo" data-brand="Bajaj">
+                  <img
+                    src="https://static.vecteezy.com/system/resources/previews/019/766/250/non_2x/bajaj-logo-bajaj-icon-transparent-free-png.png"
+                    alt="Bajaj"
+                  />
+                </div>
+                <div class="brand-logo" data-brand="Hero">
+                  <img
+                    src="https://brandeps.com/logo-download/H/Hero-MotoCorp-logo-01.png"
+                    alt="Hero"
+                  />
+                </div>
+                <div class="brand-logo" data-brand="Yamaha">
+                  <img
+                    src="https://brandlogos.net/wp-content/uploads/2014/10/yamaha_3d-logo_brandlogos.net_iwtkb.png"
+                    alt="Yamaha"
+                  />
+                </div>
+                <div class="brand-logo" data-brand="KTM">
+                  <img
+                    src="https://download.logo.wine/logo/KTM/KTM-Logo.wine.png"
+                    alt="KTM"
+                  />
+                </div>
+                <div class="brand-logo" data-brand="TVS">
+                  <img
+                    src="https://download.logo.wine/logo/TVS_Motor_Company/TVS_Motor_Company-Logo.wine.png"
+                    alt="TVS"
+                  />
+                </div>
+                <div class="brand-logo" data-brand="Honda">
+                  <img
+                    src="https://upload.wikimedia.org/wikipedia/commons/7/7b/Honda_Logo.svg"
+                    alt="Honda"
+                  />
+                </div>
+                <div class="brand-logo" data-brand="Suzuki">
+                  <img
+                    src="https://images.seeklogo.com/logo-png/13/2/suzuki-logo-png_seeklogo-134277.png"
+                    alt="Suzuki"
+                  />
+                </div>
+                <div class="brand-logo" data-brand="Jawa">
+                  <img
+                    src="https://1000logos.net/wp-content/uploads/2021/04/Jawa-logo.png"
+                    alt="Jawa"
+                  />
+                </div>
+                <div class="brand-logo" data-brand="BMW Motorrad">
+                  <img
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/1200px-BMW.svg.png"
+                    alt="BMW"
+                  />
+                </div>
+                <div class="brand-logo" data-brand="Harley-Davidson">
+                  <img
+                    src="https://images.seeklogo.com/logo-png/21/2/harley-davidson-logo-png_seeklogo-216797.png"
+                    alt="Harley"
+                  />
+                </div>
+
+                <div class="brand-logo" data-brand="Kawasaki">
+                  <img
+                    src="https://animationvisarts.com/wp-content/uploads/2023/11/image-16-1030x521.png"
+                    alt="Kawasaki"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="Car-grid"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-section">
+          <div class="logo">
+            <img
+              src="./assets/logo2.svg"
+              style="width: 50px"
+              alt="Alfa Motors World Logo"
+            />
+          </div>
+          <p>Bringing the future of Car riding to you today.</p>
+          <div class="social-icons">
+            <a href="https://www.facebook.com/share/1Ao18FYX8e/"
+              ><i class="fa-brands fa-facebook-f" style="color: #0400ff"></i
+            ></a>
+            <a
+              href="https://www.instagram.com/Carbuilders41?igsh=ZDk5M3NxdmI1Ymhp"
+              aria-label="Visit our Instagram profile"
+              ><img
+                src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png"
+                style="width: 20px"
+            /></a>
+            <a
+              href="https://wa.me/918210283582"
+              aria-label="Chat with us on WhatsApp"
+              ><i class="fa-brands fa-whatsapp" style="color: #00a841"></i
+            ></a>
+            <a
+              href="https://youtube.com/@Carbuilders-vo2nm?feature=shared"
+              aria-label="Watch on Youtube"
+              ><i class="fa-brands fa-youtube" style="color: #fa0000"></i
+            ></a>
+          </div>
+        </div>
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="inventory.html">Buy Car</a></li>
+            <li><a href="sell.html">Sell Your Car</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="#" data-translate="Updates">Updates</a></li>
+            <li><a href="contact.html" data-translate="Contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Contact Us</h3>
+          <p>
+            <i class="fas fa-map-marker-alt"></i> No 97, 2, Bannerghatta Rd,
+            opposite to D-Mart, Bohra Layout, Gottigere, Bengaluru, Karnataka
+            560083
+          </p>
+          <span itemprop="telephone"
+            >+91 8210283582 / 7564987167 / 9825944897</span
+          >
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2023 Alfa Motors World. All rights reserved.</p>
+        <a href="www.pixelatenest.com" style="color: #a9a9a9"
+          >Designed By Pixelate Nest</a
+        >
+      </div>
+    </footer>
+    <script>
+      // Check for stored language preference when page loads
+      document.addEventListener("DOMContentLoaded", function () {
+        const translations = {
+          en: {
+            "Alfa Motors World | Premium Pre-Owned Motorcycles in India":
+              "Alfa Motors World | Premium Pre-Owned Motorcycles in India",
+            Home: "Home",
+            Updates: "Updates",
+            "Buy Car": "Buy Car",
+            "Sell Your Car": "Sell Your Car",
+            "About Us": "About Us",
+            Contact: "Contact",
+            "Get the Quote": "Get the Quote",
+            Filters: "Filters",
+            "All Cars": "All Cars",
+            Price: "Price",
+            Brand: "Brand",
+            Year: "Year",
+            "KM Driven": "KM Driven",
+            Ownership: "Ownership",
+            "Fuel Type": "Fuel Type",
+            "Sort: Default": "Sort: Default",
+            Default: "Default",
+            "Price: Low to High": "Price: Low to High",
+            "Price: High to Low": "Price: High to Low",
+            "Year: Newest First": "Year: Newest First",
+            "Year: Oldest First": "Year: Oldest First",
+            "Under 50K": "Under 50K",
+            "50K-1L": "50K-1L",
+            "1L-2L": "1L-2L",
+            "2L-5L": "2L-5L",
+            "5L+": "5L+",
+            "1st Owner": "1st Owner",
+            "2nd Owner": "2nd Owner",
+            "3+ Owner": "3+ Owner",
+            Petrol: "Petrol",
+            Electric: "Electric",
+            "Showing results for:": "Showing results for:",
+            "Clear search": "Clear search",
+            "Cars Available": "Cars Available",
+            "Fuel Type": "Fuel Type",
+            "Sort: Default": "Sort: Default",
+            "Price: Low to High": "Price: Low to High",
+            "Price: High to Low": "Price: High to Low",
+            "Year: Newest First": "Year: Newest First",
+            "Year: Oldest First": "Year: Oldest First",
+            "Under 50K": "Under 50K",
+            "50K-1L": "50K-1L",
+          },
+          hi: {
+            "Alfa Motors World | Premium Pre-Owned Motorcycles in India":
+              "बाइक बिल्डर्स | भारत में प्रीमियम सेकेंड हैंड बाइक्स",
+            Home: "होम",
+            Updates: "अपडेट्स",
+            "Buy Car": "बाइक खरीदें",
+            "Sell Your Car": "बाइक बेचें",
+            "About Us": "हमारे बारे में",
+            Contact: "संपर्क करें",
+            "Get the Quote": "कीमत पता करें",
+            Filters: "फिल्टर",
+            "All Cars": "सभी बाइक",
+            Price: "कीमत",
+            Brand: "ब्रांड",
+            Year: "वर्ष",
+            "KM Driven": "किलोमीटर",
+            Ownership: "मालिकाना हक",
+            "Fuel Type": "ईंधन प्रकार",
+            "Sort: Default": "क्रम: डिफ़ॉल्ट",
+            Default: "डिफ़ॉल्ट",
+            "Price: Low to High": "कीमत: कम से ज्यादा",
+            "Price: High to Low": "कीमत: ज्यादा से कम",
+            "Year: Newest First": "वर्ष: नए से पुराने",
+            "Year: Oldest First": "वर्ष: पुराने से नए",
+            "Under 50K": "50K से कम",
+            "50K-1L": "50K-1L",
+            "1L-2L": "1L-2L",
+            "2L-5L": "2L-5L",
+            "5L+": "5L+",
+            "1st Owner": "पहला मालिक",
+            "2nd Owner": "दूसरा मालिक",
+            "3+ Owner": "तीसरा या अधिक मालिक",
+            Petrol: "पेट्रोल",
+            Electric: "इलेक्ट्रिक",
+            "Showing results for:": "खोज परिणाम:",
+            "Clear search": "खोज साफ करें",
+            "Cars Available": "बाइक उपलब्ध",
+            "Fuel Type": "ईंधन प्रकार",
+            "Sort: Default": "क्रम: डिफ़ॉल्ट",
+            "Price: Low to High": "कीमत: कम से ज्यादा",
+            "Price: High to Low": "कीमत: ज्यादा से कम",
+            "Year: Newest First": "वर्ष: नए से पुराने",
+            "Year: Oldest First": "वर्ष: पुराने से नए",
+            "Under 50K": "50K से कम",
+            "50K-1L": "50K-1L",
+          },
+        };
+
+        const preferredLanguage =
+          localStorage.getItem("preferredLanguage") || "en";
+
+        if (preferredLanguage !== "en") {
+          document.body.classList.add("hindi-font");
+          const elements = document.querySelectorAll("[data-translate]");
+          elements.forEach((element) => {
+            const key = element.getAttribute("data-translate");
+            if (
+              translations[preferredLanguage] &&
+              translations[preferredLanguage][key]
+            ) {
+              element.textContent = translations[preferredLanguage][key];
+            }
+          });
+        }
+      });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        let allCars = [];
+        let currentFilters = {
+          brand: null,
+          minPrice: 0,
+          maxPrice: Infinity,
+          minYear: 2015,
+          maxYear: 2024,
+          minKm: 0,
+          maxKm: 50000,
+          owner: null,
+          fuel: null,
+        };
+        let currentSort = "default"; // Declare this ONCE at the top level
+
+        function loadCars() {
+          fetch("https://Car-builders.onrender.com/api/Cars")
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              return response.json();
+            })
+            .then((Cars) => {
+              allCars = Cars;
+              if (Cars.length === 0) {
+                showNoCarsMessage();
+              } else {
+                applyAllFilters();
+              }
+            })
+            .catch((error) => {
+              console.error("Error fetching Cars:", error);
+              showErrorMessage();
+            });
+        }
+
+        // Initialize sort dropdown function - moved to top level
+        function initSortDropdown() {
+          const sortBtn = document.querySelector(".sort-btn");
+          const sortOptions = document.querySelector(".sort-options");
+
+          if (!sortBtn || !sortOptions) return; // Safety check
+
+          sortBtn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            sortOptions.style.display =
+              sortOptions.style.display === "block" ? "none" : "block";
+          });
+
+          document.addEventListener("click", function (e) {
+            if (!e.target.closest(".sort-dropdown")) {
+              sortOptions.style.display = "none";
+            }
+          });
+
+          document.querySelectorAll(".sort-option").forEach((option) => {
+            option.addEventListener("click", function () {
+              const sortType = this.dataset.sort;
+              currentSort = sortType; // This now references the top-level variable
+
+              // Update the sort button text
+              document.getElementById(
+                "sort-text"
+              ).textContent = `Sort: ${this.textContent}`;
+
+              // Close the dropdown
+              sortOptions.style.display = "none";
+
+              // Apply filters with new sorting
+              applyAllFilters();
+            });
+          });
+        }
+
+        function displayCars(Cars) {
+          const CarGrid = document.querySelector(".Car-grid");
+          CarGrid.innerHTML = "";
+
+          if (Cars.length === 0) {
+            showNoCarsMessage();
+            return;
+          }
+
+          Cars.forEach((Car) => {
+            const CarCard = createCarCard(Car);
+            CarGrid.appendChild(CarCard);
+          });
+
+          // Add click event listeners to Car cards for popup
+          addCarCardClickListeners();
+        }
+
+        // Create individual Car card
+        function createCarCard(Car) {
+          const CarCard = document.createElement("div");
+          CarCard.className = "Car-card";
+
+          // Set data attributes for filtering
+          CarCard.dataset.brand = Car.brand || "";
+          CarCard.dataset.price = Car.price || 0;
+          CarCard.dataset.year = Car.modelYear || new Date().getFullYear();
+          CarCard.dataset.km = Car.kmDriven || 0;
+          CarCard.dataset.owner = Car.ownership || "1";
+          CarCard.dataset.fuel = Car.fuelType || "Petrol";
+
+          // Store Car data for popup
+          CarCard.dataset.CarData = JSON.stringify(Car);
+
+          const statusClass =
+            Car.status === "Available"
+              ? "status-available"
+              : Car.status === "Sold Out"
+              ? "status-sold"
+              : Car.status === "Coming Soon"
+              ? "status-coming-soon"
+              : "status-available";
+
+          CarCard.innerHTML = `
+      <div class="image-container">
+        <img src="${
+          Car.imageUrl || "https://via.placeholder.com/300x200?text=No+Image"
+        }" 
+             alt="${Car.brand} ${Car.model}" 
+             onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+        <div class="status-badge ${statusClass}">${
+            Car.status || "Available"
+          }</div>
+      </div>
+      <div class="card-content">
+        <h3>${Car.brand} ${Car.model}</h3>
+        <span class="model">${Car.modelYear} Model</span>
+        <div class="details">
+          <div class="detail-item">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>${(Car.kmDriven || 0).toLocaleString()} km</span>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-user"></i>
+            <span>${formatOwnership(Car.ownership || "1")}</span>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-gas-pump"></i>
+            <span>${Car.fuelType || "Petrol"}</span>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-calendar-alt"></i>
+            <span>${formatAge(Car.daysOld || 0)}</span>
+          </div>
+        </div>
+        <div class="price-container">
+          <div class="price">₹${(Car.price || 0).toLocaleString()}</div>
+          <div class="emi">Down: ₹${(
+            Car.downPayment || 0
+          ).toLocaleString()} | EMI: ₹${Math.round(
+            ((Car.price || 0) - (Car.downPayment || 0)) / 36
+          ).toLocaleString()}/month</div>
+          <div class="button-group">
+            <button class="contact-btn" ${
+              Car.status !== "Available" ? "disabled" : ""
+            }>
+              Contact Seller
+            </button>
+            <button class="view-details-btn" ${
+              Car.status !== "Available" ? "disabled" : ""
+            }>
+              View Details
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+          return CarCard;
+        }
+
+        // Helper function to format ownership
+        function formatOwnership(owner) {
+          if (owner === "1") return "1st Owner";
+          if (owner === "2") return "2nd Owner";
+          if (owner === "3") return "3+ Owner";
+          return owner;
+        }
+
+        function addCarCardClickListeners() {
+          document.querySelectorAll(".Car-card").forEach((card) => {
+            const viewDetailsBtn = card.querySelector(".view-details-btn");
+            const contactBtn = card.querySelector(".contact-btn");
+
+            if (viewDetailsBtn && !viewDetailsBtn.disabled) {
+              viewDetailsBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const CarData = JSON.parse(card.dataset.CarData);
+                showCarPopup(CarData);
+              });
+            }
+
+            if (contactBtn && !contactBtn.disabled) {
+              contactBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                window.location.href = "contact.html";
+              });
+            }
+          });
+        }
+
+        // Show Car details popup
+        function showCarPopup(Car) {
+          const popup = document.querySelector(".Car-popup-overlay");
+
+          // Populate popup with Car data
+          document.getElementById("popup-Car-image").src =
+            Car.imageUrl || "https://via.placeholder.com/400x300?text=No+Image";
+          document.getElementById(
+            "popup-Car-title"
+          ).textContent = `${Car.brand} ${Car.model}`;
+          document.getElementById(
+            "popup-Car-model"
+          ).textContent = `${Car.modelYear} Model`;
+          document.getElementById("popup-Car-km").textContent = `${(
+            Car.kmDriven || 0
+          ).toLocaleString()} km`;
+          document.getElementById("popup-Car-owner").textContent =
+            formatOwnership(Car.ownership || "1");
+          document.getElementById("popup-Car-fuel").textContent =
+            Car.fuelType || "Petrol";
+          document.getElementById("popup-Car-age").textContent = formatAge(
+            Car.daysOld || 0
+          );
+          document.getElementById("popup-Car-price").textContent = `₹${(
+            Car.price || 0
+          ).toLocaleString()}`;
+          document.getElementById("popup-Car-emi").textContent = `Down: ₹${(
+            Car.downPayment || 0
+          ).toLocaleString()} | EMI: ₹${Math.round(
+            ((Car.price || 0) - (Car.downPayment || 0)) / 36
+          ).toLocaleString()}/month`;
+
+          // Show popup
+          popup.classList.add("active");
+          document.body.style.overflow = "hidden";
+        }
+
+        // Close popup functionality
+        function initPopupClose() {
+          const popup = document.querySelector(".Car-popup-overlay");
+          const closeBtn = document.querySelector(".close-popup");
+
+          closeBtn.addEventListener("click", closePopup);
+
+          popup.addEventListener("click", (e) => {
+            if (e.target === popup) {
+              closePopup();
+            }
+          });
+
+          document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+              closePopup();
+            }
+          });
+        }
+
+        function closePopup() {
+          const popup = document.querySelector(".Car-popup-overlay");
+          popup.classList.remove("active");
+          document.body.style.overflow = "";
+        }
+
+        // Show no Cars message
+        function showNoCarsMessage() {
+          const CarGrid = document.querySelector(".Car-grid");
+          CarGrid.innerHTML = `
+      <div class="no-Cars-message" style="grid-column: 1 / -1; text-align: center; padding: 60px 20px;">
+        <i class="fas fa-motorcycle" style="font-size: 4rem; color: #ccc; margin-bottom: 20px;"></i>
+        <h3 style="color: #666; margin-bottom: 10px;">No Cars Available</h3>
+        <p style="color: #999;">New Cars coming soon! Check back later.</p>
+      </div>
+    `;
+        }
+
+        // Show error message
+        function showErrorMessage() {
+          const CarGrid = document.querySelector(".Car-grid");
+          CarGrid.innerHTML = `
+      <div class="error-message" style="grid-column: 1 / -1; text-align: center; padding: 60px 20px;">
+        <i class="fas fa-exclamation-triangle" style="font-size: 4rem; color: #ff6b00; margin-bottom: 20px;"></i>
+        <h3 style="color: #666; margin-bottom: 10px;">Failed to Load Cars</h3>
+        <p style="color: #999; margin-bottom: 20px;">Please check your connection and try again.</p>
+        <button onclick="location.reload()" style="background: #ff6b00; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+          Retry
+        </button>
+      </div>
+    `;
+        }
+
+        // Update Car count
+        function updateCarCount(count) {
+          document.getElementById("filtered-count").textContent = `${count} ${
+            count === 1 ? "Car" : "Cars"
+          } Available`;
+        }
+
+        // Filter functionality
+        function initFilters() {
+          const filterButtons = document.querySelectorAll(".filter-btn");
+          const filterDropdowns = document.querySelectorAll(".filter-dropdown");
+
+          // Toggle filter dropdowns
+          filterButtons.forEach((button) => {
+            button.addEventListener("click", function (e) {
+              e.stopPropagation();
+              const filterType = this.dataset.filter;
+              const dropdown = document.getElementById(
+                `${filterType}-dropdown`
+              );
+
+              // Close all dropdowns first
+              filterDropdowns.forEach((d) => {
+                d.style.display = "none";
+              });
+              filterButtons.forEach((btn) => {
+                btn.classList.remove("active");
+              });
+
+              // If "All Cars" was clicked
+              if (filterType === "all") {
+                resetFilters();
+                displayCars(allCars);
+                updateCarCount(allCars.length);
+                return;
+              }
+
+              // Toggle the clicked dropdown
+              if (dropdown.style.display === "block") {
+                dropdown.style.display = "none";
+                this.classList.remove("active");
+              } else {
+                dropdown.style.display = "block";
+                this.classList.add("active");
+              }
+            });
+          });
+
+          // Close dropdowns when clicking outside
+          document.addEventListener("click", function (e) {
+            if (
+              !e.target.closest(".filter-btn") &&
+              !e.target.closest(".filter-dropdown")
+            ) {
+              filterDropdowns.forEach((dropdown) => {
+                dropdown.style.display = "none";
+              });
+              filterButtons.forEach((btn) => {
+                btn.classList.remove("active");
+              });
+            }
+          });
+
+          // Initialize specific filters
+          initPriceFilter();
+          initBrandFilter();
+          initYearFilter();
+          initKmFilter();
+          initOwnerFilter();
+          initFuelFilter();
+          initBrandLogos();
+        }
+
+        function initBrandLogos() {
+          document.querySelectorAll(".brand-logo").forEach((logo) => {
+            logo.addEventListener("click", function () {
+              const brand = this.dataset.brand;
+              currentFilters.brand = brand;
+
+              // Clear any existing search term from URL
+              if (window.location.search.includes("search=")) {
+                window.history.pushState({}, "", "inventory.html");
+              }
+
+              applyAllFilters();
+
+              // Update UI
+              document.querySelectorAll(".brand-logo").forEach((l) => {
+                l.classList.remove("active");
+              });
+              this.classList.add("active");
+
+              // Update brand filter button text
+              const brandBtn = document.querySelector('[data-filter="brand"]');
+              brandBtn.innerHTML = `${brand} <i class="fas fa-chevron-down"></i>`;
+            });
+          });
+        }
+
+        // Price filter
+        function initPriceFilter() {
+          const minPriceInput = document.getElementById("min-price");
+          const maxPriceInput = document.getElementById("max-price");
+
+          if (minPriceInput && maxPriceInput) {
+            minPriceInput.addEventListener("input", applyPriceFilter);
+            maxPriceInput.addEventListener("input", applyPriceFilter);
+
+            document.querySelectorAll(".price-preset").forEach((preset) => {
+              preset.addEventListener("click", function () {
+                minPriceInput.value = this.dataset.min;
+                maxPriceInput.value = this.dataset.max || "";
+                applyPriceFilter();
+              });
+            });
+          }
+        }
+
+        // Initialize search functionality
+        function initSearch() {
+          const searchInput = document.getElementById("inventory-search");
+          const searchBtn = document.getElementById("search-btn");
+
+          // Handle search button click
+          searchBtn.addEventListener("click", () => {
+            const searchTerm = searchInput.value.trim();
+            if (searchTerm) {
+              // Update URL with search parameter
+              window.history.pushState(
+                {},
+                "",
+                `inventory.html?search=${encodeURIComponent(searchTerm)}`
+              );
+              applyAllFilters();
+            }
+          });
+
+          searchInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+              const searchTerm = searchInput.value.trim();
+              if (searchTerm) {
+                window.history.pushState(
+                  {},
+                  "",
+                  `inventory.html?search=${encodeURIComponent(searchTerm)}`
+                );
+                applyAllFilters();
+              }
+            }
+          });
+
+          // Check for search term in URL on page load
+          const urlParams = new URLSearchParams(window.location.search);
+          const searchTerm = urlParams.get("search");
+          if (searchTerm) {
+            searchInput.value = searchTerm;
+            applyAllFilters();
+          }
+        }
+        // Mobile filter functionality
+        function initMobileFilters() {
+          const mobileFilterBtn = document.createElement("button");
+          mobileFilterBtn.className = "mobile-filter-btn";
+          mobileFilterBtn.innerHTML = '<i class="fas fa-filter"></i> Filters';
+
+          // Add the button to the search container
+          const searchContainer = document.querySelector(".search-container");
+          if (searchContainer) {
+            searchContainer.appendChild(mobileFilterBtn);
+          }
+
+          // Mobile filter toggle
+          const mobileFiltersContainer = document.querySelector(
+            ".mobile-filters-container"
+          );
+          const closeFiltersBtn = document.querySelector(".close-filters-btn");
+
+          if (mobileFilterBtn && mobileFiltersContainer && closeFiltersBtn) {
+            mobileFilterBtn.addEventListener("click", function () {
+              mobileFiltersContainer.style.display = "block";
+              document.body.style.overflow = "hidden";
+            });
+
+            closeFiltersBtn.addEventListener("click", function () {
+              mobileFiltersContainer.style.display = "none";
+              document.body.style.overflow = "";
+            });
+
+            mobileFiltersContainer.addEventListener("click", function (e) {
+              if (e.target === mobileFiltersContainer) {
+                mobileFiltersContainer.style.display = "none";
+                document.body.style.overflow = "";
+              }
+            });
+          }
+
+          // Initialize mobile filter controls
+          initMobilePriceFilter();
+          initMobileBrandFilter();
+          initMobileYearFilter();
+          initMobileKmFilter();
+          initMobileOwnerFilter();
+          initMobileFuelFilter();
+        }
+
+        // Mobile price filter
+        function initMobilePriceFilter() {
+          const minPriceInput = document.getElementById("min-price-mobile");
+          const maxPriceInput = document.getElementById("max-price-mobile");
+
+          if (minPriceInput && maxPriceInput) {
+            minPriceInput.addEventListener("input", applyPriceFilterMobile);
+            maxPriceInput.addEventListener("input", applyPriceFilterMobile);
+
+            document
+              .querySelectorAll("#price-dropdown-mobile .price-preset")
+              .forEach((preset) => {
+                preset.addEventListener("click", function () {
+                  minPriceInput.value = this.dataset.min;
+                  maxPriceInput.value = this.dataset.max || "";
+                  applyPriceFilterMobile();
+                });
+              });
+          }
+        }
+
+        function applyPriceFilterMobile() {
+          const minPrice =
+            parseInt(document.getElementById("min-price-mobile").value) || 0;
+          const maxPrice =
+            parseInt(document.getElementById("max-price-mobile").value) ||
+            Infinity;
+
+          currentFilters.minPrice = minPrice;
+          currentFilters.maxPrice = maxPrice;
+
+          applyAllFilters();
+          document.querySelector(".mobile-filters-container").style.display =
+            "none";
+          document.body.style.overflow = "";
+        }
+
+        // Mobile brand filter
+        function initMobileBrandFilter() {
+          document
+            .querySelectorAll("#brand-dropdown-mobile .filter-option")
+            .forEach((option) => {
+              option.addEventListener("click", function () {
+                const brand = this.dataset.brand;
+                currentFilters.brand =
+                  brand === currentFilters.brand ? null : brand;
+                applyAllFilters();
+
+                // Update button text
+                const brandBtn = document.querySelector(
+                  '[data-filter="brand"]'
+                );
+                brandBtn.innerHTML = currentFilters.brand
+                  ? `${brand} <i class="fas fa-chevron-down"></i>`
+                  : `Brand <i class="fas fa-chevron-down"></i>`;
+
+                document.querySelector(
+                  ".mobile-filters-container"
+                ).style.display = "none";
+                document.body.style.overflow = "";
+              });
+            });
+        }
+
+        // Mobile year filter
+        function initMobileYearFilter() {
+          const yearMin = document.getElementById("year-min-mobile");
+          const yearMax = document.getElementById("year-max-mobile");
+          const yearMinValue = document.getElementById("year-min-value-mobile");
+          const yearMaxValue = document.getElementById("year-max-value-mobile");
+
+          if (yearMin && yearMax) {
+            yearMin.addEventListener("input", function () {
+              yearMinValue.textContent = this.value;
+              currentFilters.minYear = parseInt(this.value);
+              applyAllFilters();
+            });
+
+            yearMax.addEventListener("input", function () {
+              yearMaxValue.textContent = this.value;
+              currentFilters.maxYear = parseInt(this.value);
+              applyAllFilters();
+            });
+          }
+        }
+
+        // Mobile km filter
+        function initMobileKmFilter() {
+          const kmMin = document.getElementById("km-min-mobile");
+          const kmMax = document.getElementById("km-max-mobile");
+          const kmMinValue = document.getElementById("km-min-value-mobile");
+          const kmMaxValue = document.getElementById("km-max-value-mobile");
+
+          if (kmMin && kmMax) {
+            kmMin.addEventListener("input", function () {
+              kmMinValue.textContent = parseInt(this.value).toLocaleString();
+              currentFilters.minKm = parseInt(this.value);
+              applyAllFilters();
+            });
+
+            kmMax.addEventListener("input", function () {
+              kmMaxValue.textContent = parseInt(this.value).toLocaleString();
+              currentFilters.maxKm = parseInt(this.value);
+              applyAllFilters();
+            });
+          }
+        }
+
+        // Mobile owner filter
+        function initMobileOwnerFilter() {
+          document
+            .querySelectorAll("#owner-dropdown-mobile .filter-option")
+            .forEach((option) => {
+              option.addEventListener("click", function () {
+                const owner = this.dataset.owner;
+                currentFilters.owner =
+                  owner === currentFilters.owner ? null : owner;
+                applyAllFilters();
+
+                // Update button text if needed
+                const ownerBtn = document.querySelector(
+                  '[data-filter="owner"]'
+                );
+                if (ownerBtn) {
+                  ownerBtn.innerHTML = currentFilters.owner
+                    ? `${formatOwnership(
+                        owner
+                      )} <i class="fas fa-chevron-down"></i>`
+                    : `Ownership <i class="fas fa-chevron-down"></i>`;
+                }
+
+                document.querySelector(
+                  ".mobile-filters-container"
+                ).style.display = "none";
+                document.body.style.overflow = "";
+              });
+            });
+        }
+
+        // Mobile fuel filter
+        function initMobileFuelFilter() {
+          document
+            .querySelectorAll("#fuel-dropdown-mobile .filter-option")
+            .forEach((option) => {
+              option.addEventListener("click", function () {
+                const fuel = this.dataset.fuel;
+                currentFilters.fuel =
+                  fuel === currentFilters.fuel ? null : fuel;
+                applyAllFilters();
+
+                // Update button text if needed
+                const fuelBtn = document.querySelector('[data-filter="fuel"]');
+                if (fuelBtn) {
+                  fuelBtn.innerHTML = currentFilters.fuel
+                    ? `${fuel} <i class="fas fa-chevron-down"></i>`
+                    : `Fuel Type <i class="fas fa-chevron-down"></i>`;
+                }
+
+                document.querySelector(
+                  ".mobile-filters-container"
+                ).style.display = "none";
+                document.body.style.overflow = "";
+              });
+            });
+        }
+
+        function applyPriceFilter() {
+          const minPrice =
+            parseInt(document.getElementById("min-price").value) || 0;
+          const maxPrice =
+            parseInt(document.getElementById("max-price").value) || Infinity;
+
+          currentFilters.minPrice = minPrice;
+          currentFilters.maxPrice = maxPrice;
+
+          applyAllFilters();
+        }
+
+        // Brand filter
+        function initBrandFilter() {
+          document
+            .querySelectorAll(".brand-options .filter-option")
+            .forEach((option) => {
+              option.addEventListener("click", function () {
+                const brand = this.dataset.brand;
+                currentFilters.brand =
+                  brand === currentFilters.brand ? null : brand;
+                applyAllFilters();
+
+                // Update button text
+                const brandBtn = document.querySelector(
+                  '[data-filter="brand"]'
+                );
+                brandBtn.innerHTML = currentFilters.brand
+                  ? `${brand} <i class="fas fa-chevron-down"></i>`
+                  : `Brand <i class="fas fa-chevron-down"></i>`;
+
+                // Update brand logos
+                document.querySelectorAll(".brand-logo").forEach((logo) => {
+                  logo.classList.remove("active");
+                  if (
+                    currentFilters.brand &&
+                    logo.dataset.brand === currentFilters.brand
+                  ) {
+                    logo.classList.add("active");
+                  }
+                });
+              });
+            });
+        }
+
+        // Year filter
+        function initYearFilter() {
+          const yearMin = document.getElementById("year-min");
+          const yearMax = document.getElementById("year-max");
+          const yearMinValue = document.getElementById("year-min-value");
+          const yearMaxValue = document.getElementById("year-max-value");
+
+          if (yearMin && yearMax) {
+            yearMin.addEventListener("input", function () {
+              yearMinValue.textContent = this.value;
+              currentFilters.minYear = parseInt(this.value);
+              applyAllFilters();
+            });
+
+            yearMax.addEventListener("input", function () {
+              yearMaxValue.textContent = this.value;
+              currentFilters.maxYear = parseInt(this.value);
+              applyAllFilters();
+            });
+          }
+        }
+
+        // KM filter
+        function initKmFilter() {
+          const kmMin = document.getElementById("km-min");
+          const kmMax = document.getElementById("km-max");
+          const kmMinValue = document.getElementById("km-min-value");
+          const kmMaxValue = document.getElementById("km-max-value");
+
+          if (kmMin && kmMax) {
+            kmMin.addEventListener("input", function () {
+              kmMinValue.textContent = parseInt(this.value).toLocaleString();
+              currentFilters.minKm = parseInt(this.value);
+              applyAllFilters();
+            });
+
+            kmMax.addEventListener("input", function () {
+              kmMaxValue.textContent = parseInt(this.value).toLocaleString();
+              currentFilters.maxKm = parseInt(this.value);
+              applyAllFilters();
+            });
+          }
+        }
+
+        // Owner filter
+        function initOwnerFilter() {
+          document
+            .querySelectorAll(".ownership-options .filter-option")
+            .forEach((option) => {
+              option.addEventListener("click", function () {
+                const owner = this.dataset.owner;
+                currentFilters.owner =
+                  owner === currentFilters.owner ? null : owner;
+                applyAllFilters();
+
+                // Update button text if needed
+                const ownerBtn = document.querySelector(
+                  '[data-filter="owner"]'
+                );
+                if (ownerBtn) {
+                  ownerBtn.innerHTML = currentFilters.owner
+                    ? `${formatOwnership(
+                        owner
+                      )} <i class="fas fa-chevron-down"></i>`
+                    : `Ownership <i class="fas fa-chevron-down"></i>`;
+                }
+              });
+            });
+        }
+
+        // Fuel filter
+        function initFuelFilter() {
+          document
+            .querySelectorAll(".fuel-options .filter-option")
+            .forEach((option) => {
+              option.addEventListener("click", function () {
+                const fuel = this.dataset.fuel;
+                currentFilters.fuel =
+                  fuel === currentFilters.fuel ? null : fuel;
+                applyAllFilters();
+
+                // Update button text if needed
+                const fuelBtn = document.querySelector('[data-filter="fuel"]');
+                if (fuelBtn) {
+                  fuelBtn.innerHTML = currentFilters.fuel
+                    ? `${fuel} <i class="fas fa-chevron-down"></i>`
+                    : `Fuel Type <i class="fas fa-chevron-down"></i>`;
+                }
+              });
+            });
+        }
+
+        function getSearchParam() {
+          const urlParams = new URLSearchParams(window.location.search);
+          return urlParams.get("search")?.toLowerCase() || "";
+        }
+
+        function applyAllFilters() {
+          const searchTerm = getSearchParam().trim().toLowerCase();
+          const filteredCars = allCars.filter((Car) => {
+            if (searchTerm) {
+              const brand = (Car.brand || "").toLowerCase();
+              const model = (Car.model || "").toLowerCase();
+
+              const searchMatch =
+                model.includes(searchTerm) ||
+                `${brand} ${model}`.includes(searchTerm) ||
+                model
+                  .replace(/\s+/g, "")
+                  .includes(searchTerm.replace(/\s+/g, ""));
+
+              if (!searchMatch) return false;
+            }
+            const price = Car.price || 0;
+            const year = Car.modelYear || new Date().getFullYear();
+            const km = Car.kmDriven || 0;
+            const brand = (Car.brand || "").toLowerCase();
+            const owner = Car.ownership || "";
+            const fuel = Car.fuelType || "";
+
+            const priceMatch =
+              price >= currentFilters.minPrice &&
+              price <= currentFilters.maxPrice;
+            const yearMatch =
+              year >= currentFilters.minYear && year <= currentFilters.maxYear;
+            const kmMatch =
+              km >= currentFilters.minKm && km <= currentFilters.maxKm;
+            const brandMatch =
+              !currentFilters.brand ||
+              brand === currentFilters.brand.toLowerCase();
+            const ownerMatch =
+              !currentFilters.owner || owner.includes(currentFilters.owner);
+            const fuelMatch =
+              !currentFilters.fuel || fuel === currentFilters.fuel;
+
+            return (
+              priceMatch &&
+              yearMatch &&
+              kmMatch &&
+              brandMatch &&
+              ownerMatch &&
+              fuelMatch
+            );
+          });
+
+          const sortedCars = sortCars(filteredCars, currentSort);
+          displayCars(sortedCars);
+          updateCarCount(sortedCars.length);
+
+          if (searchTerm) {
+            showSearchTerm(searchTerm);
+          }
+        }
+
+        function sortCars(Cars, sortType) {
+          switch (sortType) {
+            case "price-low":
+              return [...Cars].sort((a, b) => (a.price || 0) - (b.price || 0));
+            case "price-high":
+              return [...Cars].sort((a, b) => (b.price || 0) - (a.price || 0));
+            case "year-new":
+              return [...Cars].sort(
+                (a, b) => (b.modelYear || 0) - (a.modelYear || 0)
+              );
+            case "year-old":
+              return [...Cars].sort(
+                (a, b) => (a.modelYear || 0) - (b.modelYear || 0)
+              );
+            default:
+              return Cars; // Default sorting (original order)
+          }
+        }
+
+        function showSearchTerm(term) {
+          const existingDisplay = document.querySelector(
+            ".search-term-display"
+          );
+          if (existingDisplay) {
+            existingDisplay.remove();
+          }
+
+          const searchContainer = document.createElement("div");
+          searchContainer.className = "search-term-display";
+
+          const searchText = document.createElement("span");
+          searchText.textContent = `Showing results for: ${term}`;
+          searchText.className = "search-term-text";
+
+          const clearBtn = document.createElement("button");
+          clearBtn.className = "clear-search-btn";
+          clearBtn.innerHTML = "&times;";
+          clearBtn.title = "Clear search";
+          clearBtn.addEventListener("click", () => {
+            window.location.href = "inventory.html";
+          });
+
+          searchContainer.appendChild(searchText);
+          searchContainer.appendChild(clearBtn);
+
+          const sectionHeader = document.querySelector(".section-header");
+          if (sectionHeader) {
+            sectionHeader.insertBefore(
+              searchContainer,
+              sectionHeader.firstChild
+            );
+          }
+        }
+
+        function resetFilters() {
+          currentFilters = {
+            brand: null,
+            minPrice: 0,
+            maxPrice: Infinity,
+            minYear: 2015,
+            maxYear: 2024,
+            minKm: 0,
+            maxKm: 50000,
+            owner: null,
+            fuel: null,
+          };
+
+          // Reset form inputs
+          document.getElementById("min-price").value = "";
+          document.getElementById("max-price").value = "";
+          document.getElementById("year-min").value = "2015";
+          document.getElementById("year-max").value = "2024";
+          document.getElementById("km-min").value = "0";
+          document.getElementById("km-max").value = "50000";
+
+          // Reset display values
+          document.getElementById("year-min-value").textContent = "2015";
+          document.getElementById("year-max-value").textContent = "2024";
+          document.getElementById("km-min-value").textContent = "0";
+          document.getElementById("km-max-value").textContent = "50,000";
+
+          // Reset all filter button texts
+          const brandBtn = document.querySelector('[data-filter="brand"]');
+          brandBtn.innerHTML = `Brand <i class="fas fa-chevron-down"></i>`;
+
+          const ownerBtn = document.querySelector('[data-filter="owner"]');
+          if (ownerBtn) {
+            ownerBtn.innerHTML = `Ownership <i class="fas fa-chevron-down"></i>`;
+          }
+
+          const fuelBtn = document.querySelector('[data-filter="fuel"]');
+          if (fuelBtn) {
+            fuelBtn.innerHTML = `Fuel Type <i class="fas fa-chevron-down"></i>`;
+          }
+
+          // Reset brand logos
+          document.querySelectorAll(".brand-logo").forEach((logo) => {
+            logo.classList.remove("active");
+          });
+        }
+
+        // Format age for display
+        function formatAge(days) {
+          if (days >= 365) {
+            const years = Math.floor(days / 365);
+            return `${years} year${years > 1 ? "s" : ""}`;
+          } else if (days >= 30) {
+            const months = Math.floor(days / 30);
+            return `${months} month${months > 1 ? "s" : ""}`;
+          } else {
+            return `${days} day${days !== 1 ? "s" : ""}`;
+          }
+        }
+
+        // Initialize everything
+        loadCars();
+        initFilters();
+        initPopupClose();
+        initSortDropdown(); // Now this will work properly
+        initSearch(); // Initialize search functionality
+        initMobileFilters(); // Add this line
+      });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const toggleBtn = document.createElement("button");
+        toggleBtn.className = "mobile-menu-toggle";
+        toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
+
+        const navbar = document.querySelector(".navbar");
+        navbar.appendChild(toggleBtn);
+
+        const mobileMenu = document.createElement("div");
+        mobileMenu.className = "mobile-menu";
+        mobileMenu.innerHTML = `
+      <button class="close-btn"><i class="fas fa-times"></i></button>
+      <ul class="nav-links">
+        <li><a href="index.html" class="active" data-translate="Home">Home</a></li>
+        <li><a href="inventory.html" data-translate="Buy Car">Buy Car</a></li>
+        <li><a href="sell.html" data-translate="Sell Your Car">Sell Your Car</a></li>
+        <li><a href="about.html" data-translate="About Us">About Us</a></li>
+                  <li><a href="#" data-translate="Updates">Updates</a></li>
+          <li><a href="contact.html" data-translate="Contact">Contact</a></li>
+      </ul>
+      <div class="login-btn">
+        <button data-translate="Get the Quote">Get the Quote</button>
+      </div>
+    `;
+
+        document.body.appendChild(mobileMenu);
+
+        toggleBtn.addEventListener("click", function () {
+          mobileMenu.classList.add("active");
+        });
+
+        mobileMenu
+          .querySelector(".close-btn")
+          .addEventListener("click", function () {
+            mobileMenu.classList.remove("active");
+          });
+      });
+      // Add this function near the top of your script section
+      function formatAge(days) {
+        if (days >= 365) {
+          const years = Math.floor(days / 365);
+          return `${years} year${years > 1 ? "s" : ""}`;
+        } else if (days >= 30) {
+          const months = Math.floor(days / 30);
+          return `${months} month${months > 1 ? "s" : ""}`;
+        } else {
+          return `${days} day${days !== 1 ? "s" : ""}`;
+        }
+      }
+    </script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-ETL311CBE6"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-ETL311CBE6");
+    </script>
+    <div class="Car-popup-overlay">
+      <div class="Car-popup">
+        <button class="close-popup">&times;</button>
+        <div class="popup-content">
+          <div class="popup-image-container">
+            <img id="popup-Car-image" src="" alt="Car Image" />
+          </div>
+          <div class="popup-details">
+            <h2 id="popup-Car-title"></h2>
+            <span class="model" id="popup-Car-model"></span>
+            <div class="details">
+              <div class="detail-item">
+                <i class="fas fa-tachometer-alt"></i>
+                <span id="popup-Car-km"></span>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-user"></i>
+                <span id="popup-Car-owner"></span>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-gas-pump"></i>
+                <span id="popup-Car-fuel"></span>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-calendar-alt"></i>
+                <span id="popup-Car-age"></span>
+              </div>
+            </div>
+            <div class="price-container">
+              <div class="price" id="popup-Car-price"></div>
+              <div class="emi" id="popup-Car-emi"></div>
+            </div>
+
+            <button class="contact-btn">Contact Seller</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="floating-buttons">
+      <a
+        href="https://wa.me/918210283582"
+        class="floating-btn whatsapp-btn"
+        data-tooltip="Chat on WhatsApp"
+        aria-label="Chat on WhatsApp"
+      >
+        <i class="fa-brands fa-whatsapp fa-bounce"></i>
+      </a>
+      <a
+        href="https://youtube.com/@Carbuilders-vo2nm?feature=shared"
+        class="floating-btn youtube-btn"
+        data-tooltip="Watch on YouTube"
+        aria-label="Watch on YouTube"
+      >
+        <i class="fa-brands fa-youtube fa-beat-fade" style="color: #ff0000"></i>
+      </a>
+      <a
+        href="tel:+918210283582"
+        class="floating-btn call-btn"
+        data-tooltip="Call Us"
+        aria-label="Call Us"
+      >
+        <i class="fa-solid fa-phone-volume fa-shake"></i>
+      </a>
+    </div>
+    <div class="mobile-filters-container">
+      <div class="mobile-filters-inner">
+        <button class="close-filters-btn">&times;</button>
+        <div class="filters-container">
+          <h3 data-translate="Filters">Filters</h3>
+          <div class="filter-group">
+            <button class="filter-btn" data-filter="all">All Cars</button>
+          </div>
+
+          <div class="filter-group">
+            <button class="filter-btn" data-filter="price">
+              Price <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="filter-dropdown" id="price-dropdown-mobile">
+              <div class="price-range">
+                <div class="range-inputs">
+                  <input
+                    type="number"
+                    id="min-price-mobile"
+                    placeholder="Min"
+                    min="0"
+                  />
+                  <span>to</span>
+                  <input
+                    type="number"
+                    id="max-price-mobile"
+                    placeholder="Max"
+                    min="0"
+                  />
+                </div>
+                <div class="price-presets">
+                  <button class="price-preset" data-min="0" data-max="50000">
+                    Under 50K
+                  </button>
+                  <button
+                    class="price-preset"
+                    data-min="50000"
+                    data-max="100000"
+                  >
+                    50K-1L
+                  </button>
+                  <button
+                    class="price-preset"
+                    data-min="100000"
+                    data-max="200000"
+                  >
+                    1L-2L
+                  </button>
+                  <button
+                    class="price-preset"
+                    data-min="200000"
+                    data-max="500000"
+                  >
+                    2L-5L
+                  </button>
+                  <button class="price-preset" data-min="500000">5L+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="filter-group">
+            <button class="filter-btn" data-filter="brand">
+              Brand <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="filter-dropdown" id="brand-dropdown-mobile">
+              <div class="filter-options brand-options">
+                <button class="filter-option" data-brand="Audi">Audi</button>
+                <button class="filter-option" data-brand="Bentley">
+                  Bentley
+                </button>
+                <button class="filter-option" data-brand="BMW">BMW</button>
+                <button class="filter-option" data-brand="Chevrolet">
+                  Chevrolet
+                </button>
+                <button class="filter-option" data-brand="Chrysler">
+                  Chrysler
+                </button>
+                <button class="filter-option" data-brand="Ferrari">
+                  Ferrari
+                </button>
+                <button class="filter-option" data-brand="FIAT">FIAT</button>
+                <button class="filter-option" data-brand="Ford">Ford</button>
+                <button class="filter-option" data-brand="Honda">Honda</button>
+                <button class="filter-option" data-brand="Hyundai">
+                  Hyundai
+                </button>
+                <button class="filter-option" data-brand="Isuzu">Isuzu</button>
+                <button class="filter-option" data-brand="Jaguar">
+                  Jaguar
+                </button>
+                <button class="filter-option" data-brand="Jeep">Jeep</button>
+                <button class="filter-option" data-brand="Kia">Kia</button>
+                <button class="filter-option" data-brand="Lamborghini">
+                  Lamborghini
+                </button>
+                <button class="filter-option" data-brand="Land Rover">
+                  Land Rover
+                </button>
+                <button class="filter-option" data-brand="Lexus">Lexus</button>
+                <button class="filter-option" data-brand="Lotus">Lotus</button>
+                <button class="filter-option" data-brand="Maybach">
+                  Maybach
+                </button>
+                <button class="filter-option" data-brand="Mazda">Mazda</button>
+                <button class="filter-option" data-brand="McLaren">
+                  McLaren
+                </button>
+                <button class="filter-option" data-brand="Mercedes-Benz">
+                  Mercedes-Benz
+                </button>
+                <button class="filter-option" data-brand="MINI">MINI</button>
+                <button class="filter-option" data-brand="Mitsubishi">
+                  Mitsubishi
+                </button>
+                <button class="filter-option" data-brand="Nissan">
+                  Nissan
+                </button>
+                <button class="filter-option" data-brand="Porsche">
+                  Porsche
+                </button>
+                <button class="filter-option" data-brand="Rolls-Royce">
+                  Rolls-Royce
+                </button>
+                <button class="filter-option" data-brand="SRT">SRT</button>
+                <button class="filter-option" data-brand="Suzuki">
+                  Suzuki
+                </button>
+                <button class="filter-option" data-brand="Toyota">
+                  Toyota
+                </button>
+                <button class="filter-option" data-brand="Volkswagen">
+                  Volkswagen
+                </button>
+                <button class="filter-option" data-brand="Volvo">Volvo</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Year filter -->
+          <div class="filter-group">
+            <button class="filter-btn" data-filter="year">
+              Year <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="filter-dropdown" id="year-dropdown-mobile">
+              <div class="year-slider">
+                <div class="slider-container">
+                  <input
+                    type="range"
+                    id="year-min-mobile"
+                    min="2015"
+                    max="2024"
+                    value="2015"
+                    step="1"
+                  />
+                  <input
+                    type="range"
+                    id="year-max-mobile"
+                    min="2015"
+                    max="2024"
+                    value="2024"
+                    step="1"
+                  />
+                </div>
+                <div class="year-values">
+                  <span id="year-min-value-mobile">2015</span>
+                  <span>to</span>
+                  <span id="year-max-value-mobile">2024</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- KM Driven filter -->
+          <div class="filter-group">
+            <button class="filter-btn" data-filter="km">
+              KM Driven <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="filter-dropdown" id="km-dropdown-mobile">
+              <div class="km-slider">
+                <div class="slider-container">
+                  <input
+                    type="range"
+                    id="km-min-mobile"
+                    min="0"
+                    max="50000"
+                    value="0"
+                    step="500"
+                  />
+                  <input
+                    type="range"
+                    id="km-max-mobile"
+                    min="0"
+                    max="50000"
+                    value="50000"
+                    step="500"
+                  />
+                </div>
+                <div class="km-values">
+                  <span id="km-min-value-mobile">0</span>
+                  <span>to</span>
+                  <span id="km-max-value-mobile">50,000</span>
+                  <span>km</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ownership filter -->
+          <div class="filter-group">
+            <button class="filter-btn" data-filter="owner">
+              Ownership <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="filter-dropdown" id="owner-dropdown-mobile">
+              <div class="filter-options ownership-options">
+                <button class="filter-option" data-owner="1">1st Owner</button>
+                <button class="filter-option" data-owner="2">2nd Owner</button>
+                <button class="filter-option" data-owner="3">3+ Owner</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fuel Type filter -->
+          <div class="filter-group">
+            <button class="filter-btn" data-filter="fuel">
+              Fuel Type <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="filter-dropdown" id="fuel-dropdown-mobile">
+              <div class="filter-options fuel-options">
+                <button class="filter-option" data-fuel="Petrol">Petrol</button>
+                <button class="filter-option" data-fuel="Electric">
+                  Electric
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
