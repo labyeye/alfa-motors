@@ -674,15 +674,13 @@
           fetch("https://alfa-motors.onrender.com/api/cars")
             .then((response) => {
               if (!response.ok) {
-                throw new Error("Network response was not ok");
+                throw new Error(`HTTP error! status: ${response.status}`);
               }
               return response.json();
             })
             .then((data) => {
               const carsData = data.data || data;
-
-              // Ensure we're working with an array
-              allCars = Array.isArray(data) ? data : [];
+              allCars = Array.isArray(carsData) ? carsData : [];
 
               if (allCars.length === 0) {
                 showNoCarsMessage();
@@ -692,10 +690,30 @@
             })
             .catch((error) => {
               console.error("Error fetching Cars:", error);
-              showErrorMessage();
-              // Initialize allCars as empty array if fetch fails
+              showErrorMessage(error.message);
+              // Initialize empty array if fetch fails
               allCars = [];
+              applyAllFilters(); // Show empty state
             });
+        }
+
+        function showErrorMessage(message = "Failed to load cars") {
+          const carGrid = document.querySelector(".car-grid");
+          if (!carGrid) {
+            console.error("Could not find .car-grid element");
+            return;
+          }
+
+          carGrid.innerHTML = `
+    <div class="error-message" style="grid-column: 1 / -1; text-align: center; padding: 60px 20px;">
+      <i class="fas fa-exclamation-triangle" style="font-size: 4rem; color: #ff6b00; margin-bottom: 20px;"></i>
+      <h3 style="color: #666; margin-bottom: 10px;">${message}</h3>
+      <p style="color: #999; margin-bottom: 20px;">Please check your connection and try again.</p>
+      <button onclick="location.reload()" style="background: #ff6b00; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+        Retry
+      </button>
+    </div>
+  `;
         }
 
         // Initialize sort dropdown function - moved to top level
