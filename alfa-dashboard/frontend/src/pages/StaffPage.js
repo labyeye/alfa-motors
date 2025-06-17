@@ -44,8 +44,8 @@ const StaffPage = () => {
     try {
       setLoading(true);
       const endpoint = isOwnerView
-        ? `http://localhost:2500/api/dashboard/owner`
-        : `http://localhost:2500/api/dashboard`;
+        ? `https://alfa-motors.onrender.com/api/dashboard/owner`
+        : `https://alfa-motors.onrender.com/api/dashboard`;
 
       const response = await fetch(endpoint, {
         headers: {
