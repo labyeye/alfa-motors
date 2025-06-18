@@ -35,6 +35,11 @@ const carSchema = new mongoose.Schema({
     min: [0, 'Days old cannot be negative'],
     required: [true, 'Days old is required']
   },
+  buyprice: {
+    type: Number,
+    min: [0, 'Price cannot be negative'],
+    required: [true, 'Price is required']
+  },
   price: {
     type: Number,
     min: [0, 'Price cannot be negative'],

@@ -2486,7 +2486,7 @@ input[type="range"]::-webkit-slider-thumb {
     transform: none;
   }
 
-  .Car-grid {
+  .car-grid {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   }
 

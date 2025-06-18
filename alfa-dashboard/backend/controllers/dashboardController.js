@@ -268,7 +268,7 @@ exports.getDashboardStats = async (req, res) => {
             totalCars: { $sum: 1 },
             soldCars: {
               $sum: {
-                $cond: [{ $eq: ["$status", "sold"] }, 1, 0],
+                $cond: [{ $eq: ["$status", "Sold"] }, 1, 0],
               },
             },
             availableCars: {

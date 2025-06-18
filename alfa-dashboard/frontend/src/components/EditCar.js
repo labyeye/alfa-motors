@@ -25,7 +25,6 @@ const EditCar = () => {
   const [expandedMenus, setExpandedMenus] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-
   const [carData, setCarData] = useState({
     brand: "",
     model: "",
@@ -34,10 +33,11 @@ const EditCar = () => {
     ownership: "",
     fuelType: "",
     daysOld: "",
+    buyprice: "",
     price: "",
     downPayment: "",
-    images: ["", "", ""],
-    status: "available",
+    images: Array(10).fill(""), // Initialize with 10 empty strings
+    status: "Available",
   });
 
   const menuItems = [
@@ -105,9 +105,13 @@ const EditCar = () => {
             },
           }
         );
+        const images = [
+          ...(response.data.images || []),
+          ...Array(10).fill(""),
+        ].slice(0, 10);
         setCarData({
           ...response.data,
-          images: response.data.images || ["", "", ""],
+          images: images,
         });
         setIsLoading(false);
       } catch (error) {
@@ -164,6 +168,7 @@ const EditCar = () => {
         modelYear: Number(carData.modelYear),
         kmDriven: Number(carData.kmDriven),
         daysOld: Number(carData.daysOld),
+        buyprice: Number(carData.buyprice),
         price: Number(carData.price),
         downPayment: Number(carData.downPayment),
       };
@@ -390,6 +395,18 @@ const EditCar = () => {
               </h2>
               <div style={styles.formGrid}>
                 <div style={styles.formField}>
+                  <label style={styles.formLabel}>Buy Price (₹)</label>
+                  <input
+                    type="number"
+                    name="buyprice"
+                    value={carData.buyprice}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                    min="0"
+                    required
+                  />
+                </div>
+                <div style={styles.formField}>
                   <label style={styles.formLabel}>Price (₹)</label>
                   <input
                     type="number"
@@ -422,9 +439,9 @@ const EditCar = () => {
                     style={styles.formSelect}
                     required
                   >
-                    <option value="available">Available</option>
-                    <option value="sold">Sold</option>
-                    <option value="reserved">Reserved</option>
+                    <option value="Available">Available</option>
+                    <option value="Sold">Sold</option>
+                    <option value="Reserved">Reserved</option>
                   </select>
                 </div>
               </div>
@@ -432,25 +449,25 @@ const EditCar = () => {
 
             <div style={styles.formSection}>
               <h2 style={styles.sectionTitle}>
-                <Car style={styles.sectionIcon} /> Images
+                <Car style={styles.sectionIcon} /> Images (Max 10)
               </h2>
               <div style={styles.formGrid}>
-                {carData.images.map((image, index) => (
+                {Array.from({ length: 10 }).map((_, index) => (
                   <div key={index} style={styles.formField}>
                     <label style={styles.formLabel}>
                       Image URL {index + 1}
                     </label>
                     <input
                       type="url"
-                      value={image}
+                      value={carData.images[index] || ""}
                       onChange={(e) => handleImageChange(index, e.target.value)}
                       style={styles.formInput}
                       placeholder="https://example.com/image.jpg"
                     />
-                    {image && (
+                    {carData.images[index] && (
                       <div style={styles.imagePreviewContainer}>
                         <img
-                          src={image}
+                          src={carData.images[index]}
                           alt={`Preview ${index + 1}`}
                           style={styles.imagePreview}
                           onError={(e) => {
@@ -505,7 +522,6 @@ const styles = {
     animation: "spin 1s linear infinite",
     marginBottom: "16px",
   },
-  // Sidebar Styles
   sidebar: {
     width: "280px",
     backgroundColor: "#1e293b",

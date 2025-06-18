@@ -461,103 +461,103 @@ const AdminPage = () => {
   </div>
 );
 
-  const RevenueCard = () => (
-    <div style={styles.revenueCard}>
-      <h3 style={styles.revenueTitle}>
-        {isOwnerView ? "My Financial Summary" : "Business Revenue Overview"}
-      </h3>
-      {loading ? (
-        <div style={styles.revenueGrid}>
-          {Array(3)
-            .fill()
-            .map((_, index) => (
-              <div key={index} style={styles.revenueItem}>
-                <p style={styles.revenueLabel}>Loading...</p>
-                <p
-                  style={{
-                    ...styles.revenueValue,
-                    color: ["#dc2626", "#059669", "#2563eb"][index],
-                  }}
-                >
-                  -
-                </p>
-              </div>
-            ))}
-        </div>
-      ) : error ? (
-        <div style={{ textAlign: 'center', padding: '20px' }}>
-          <p style={{ color: '#ef4444' }}>{error}</p>
-        </div>
-      ) : (
-        <div style={styles.revenueGrid}>
-          <div style={styles.revenueItem}>
-            <p style={styles.revenueLabel}>
-              {isOwnerView ? "My Total Purchases" : "Total Business Purchases"}
-            </p>
-            <p style={{ ...styles.revenueValue, color: "#dc2626" }}>
-              {formatCurrency(dashboardData.totalBuyValue)}
-              {isOwnerView && (
-                <span
-                  style={{
-                    fontSize: "0.875rem",
-                    color: "#6b7280",
-                    display: "block",
-                  }}
-                >
-                  ({dashboardData.totalBuyLetters} transactions)
-                </span>
-              )}
-            </p>
-          </div>
-          <div style={styles.revenueItem}>
-            <p style={styles.revenueLabel}>
-              {isOwnerView ? "My Total Sales" : "Total Business Sales"}
-            </p>
-            <p style={{ ...styles.revenueValue, color: "#059669" }}>
-              {formatCurrency(dashboardData.totalSellValue)}
-              {isOwnerView && (
-                <span
-                  style={{
-                    fontSize: "0.875rem",
-                    color: "#6b7280",
-                    display: "block",
-                  }}
-                >
-                  ({dashboardData.totalSellLetters} transactions)
-                </span>
-              )}
-            </p>
-          </div>
-          <div style={styles.revenueItem}>
-            <p style={styles.revenueLabel}>Net Profit/Loss</p>
-            <p
-              style={{
-                ...styles.revenueValue,
-                color: dashboardData.profit >= 0 ? "#2563eb" : "#dc2626",
-              }}
-            >
-              {formatCurrency(dashboardData.profit)}
-              {dashboardData.totalBuyValue > 0 && (
-                <span
-                  style={{
-                    fontSize: "0.875rem",
-                    color: dashboardData.profit >= 0 ? "#059669" : "#dc2626",
-                    display: "block",
-                  }}
-                >
-                  {dashboardData.profit >= 0 ? "Profit" : "Loss"}:{" "}
-                  {Math.abs(
-                    (dashboardData.profit / dashboardData.totalBuyValue) * 100
-                  ).toFixed(2)}
-                  %
-                </span>
-              )}
-            </p>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+  // const RevenueCard = () => (
+  //   <div style={styles.revenueCard}>
+  //     <h3 style={styles.revenueTitle}>
+  //       {isOwnerView ? "My Financial Summary" : "Business Revenue Overview"}
+  //     </h3>
+  //     {loading ? (
+  //       <div style={styles.revenueGrid}>
+  //         {Array(3)
+  //           .fill()
+  //           .map((_, index) => (
+  //             <div key={index} style={styles.revenueItem}>
+  //               <p style={styles.revenueLabel}>Loading...</p>
+  //               <p
+  //                 style={{
+  //                   ...styles.revenueValue,
+  //                   color: ["#dc2626", "#059669", "#2563eb"][index],
+  //                 }}
+  //               >
+  //                 -
+  //               </p>
+  //             </div>
+  //           ))}
+  //       </div>
+  //     ) : error ? (
+  //       <div style={{ textAlign: 'center', padding: '20px' }}>
+  //         <p style={{ color: '#ef4444' }}>{error}</p>
+  //       </div>
+  //     ) : (
+  //       <div style={styles.revenueGrid}>
+  //         <div style={styles.revenueItem}>
+  //           <p style={styles.revenueLabel}>
+  //             {isOwnerView ? "My Total Purchases" : "Total Business Purchases"}
+  //           </p>
+  //           <p style={{ ...styles.revenueValue, color: "#dc2626" }}>
+  //             {formatCurrency(dashboardData.totalBuyValue)}
+  //             {isOwnerView && (
+  //               <span
+  //                 style={{
+  //                   fontSize: "0.875rem",
+  //                   color: "#6b7280",
+  //                   display: "block",
+  //                 }}
+  //               >
+  //                 ({dashboardData.totalBuyLetters} transactions)
+  //               </span>
+  //             )}
+  //           </p>
+  //         </div>
+  //         <div style={styles.revenueItem}>
+  //           <p style={styles.revenueLabel}>
+  //             {isOwnerView ? "My Total Sales" : "Total Business Sales"}
+  //           </p>
+  //           <p style={{ ...styles.revenueValue, color: "#059669" }}>
+  //             {formatCurrency(dashboardData.totalSellValue)}
+  //             {isOwnerView && (
+  //               <span
+  //                 style={{
+  //                   fontSize: "0.875rem",
+  //                   color: "#6b7280",
+  //                   display: "block",
+  //                 }}
+  //               >
+  //                 ({dashboardData.totalSellLetters} transactions)
+  //               </span>
+  //             )}
+  //           </p>
+  //         </div>
+  //         <div style={styles.revenueItem}>
+  //           <p style={styles.revenueLabel}>Net Profit/Loss</p>
+  //           <p
+  //             style={{
+  //               ...styles.revenueValue,
+  //               color: dashboardData.profit >= 0 ? "#2563eb" : "#dc2626",
+  //             }}
+  //           >
+  //             {formatCurrency(dashboardData.profit)}
+  //             {dashboardData.totalBuyValue > 0 && (
+  //               <span
+  //                 style={{
+  //                   fontSize: "0.875rem",
+  //                   color: dashboardData.profit >= 0 ? "#059669" : "#dc2626",
+  //                   display: "block",
+  //                 }}
+  //               >
+  //                 {dashboardData.profit >= 0 ? "Profit" : "Loss"}:{" "}
+  //                 {Math.abs(
+  //                   (dashboardData.profit / dashboardData.totalBuyValue) * 100
+  //                 ).toFixed(2)}
+  //                 %
+  //               </span>
+  //             )}
+  //           </p>
+  //         </div>
+  //       </div>
+  //     )}
+  //   </div>
+  // );
 
   const ChartsSection = () => {
     if (loading) {
@@ -754,27 +754,13 @@ const AdminPage = () => {
           {activeMenu === "Dashboard" && (
             <>
               <DashboardCards />
-              <RevenueCard />
+              {/* <RevenueCard /> */}
               <ChartsSection />
               {!loading && !error && (
                 <div style={styles.quickActionsCard}>
                   <h3 style={styles.quickActionsTitle}>Quick Actions</h3>
                   <div style={styles.quickActionsGrid}>
-                    <button
-                      style={{
-                        ...styles.quickActionButton,
-                        backgroundColor: "#eff6ff",
-                      }}
-                      onClick={() => navigate("/buy/create")}
-                    >
-                      <ShoppingCart
-                        size={24}
-                        color="#2563eb"
-                        style={styles.quickActionIcon}
-                      />
-                      <p style={styles.quickActionTitle}>Create Buy Letter</p>
-                      <p style={styles.quickActionSubtitle}>Add new purchase</p>
-                    </button>
+                    
                     <button
                       style={{
                         ...styles.quickActionButton,

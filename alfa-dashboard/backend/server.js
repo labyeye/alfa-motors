@@ -19,18 +19,15 @@ connectDB();
 
 // CORS configuration
 const corsOptions = {
-  origin: ['https://alfa-motors-o5cm.vercel.app', 'https://alfa-motors.vercel.app'],
+  origin: ['https://alfa-motors.vercel.app/','https://alfa-motors-o5cm.vercel.app/'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 };
 
-
-// Middleware
 app.use(express.json());
 app.use(cors(corsOptions));
 
-// Routes
 app.use('/api/auth', authRoutes);
 app.use("/api/rc", rcRoutes);
 app.use('/api/cars', carRoutes);

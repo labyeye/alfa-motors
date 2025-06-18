@@ -688,7 +688,7 @@
 }
 
 /* Car Grid Container */
-.Car-grid-container {
+.car-grid-container {
   flex-grow: 1;
   padding-right: 20px;
   box-sizing: border-box;
@@ -706,7 +706,7 @@
 }
 
 /* Car Grid */
-.Car-grid {
+.car-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 25px;
@@ -746,7 +746,7 @@
 }
 
 .card-content h3 {
-  color: white;
+  color: black;
   margin: 0 0 5px 0;
   font-size: 18px;
   word-break: break-word;
@@ -806,13 +806,13 @@
     padding-left: 30px;
   }
 
-  .Car-grid-container {
+  .car-grid-container {
     width: calc(100% - 310px);
   }
 }
 
 @media (max-width: 992px) {
-  .Car-grid {
+  .car-grid {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   }
 }
@@ -833,7 +833,7 @@
     position: static;
   }
 
-  .Car-grid-container {
+  .car-grid-container {
     width: 100%;
     padding-right: 0;
   }
@@ -853,7 +853,7 @@
 }
 
 @media (max-width: 576px) {
-  .Car-grid {
+  .car-grid {
     grid-template-columns: 1fr;
   }
 
@@ -992,7 +992,7 @@ body {
   padding: 0;
 }
 
-.Car-grid {
+.car-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 30px;
@@ -1053,7 +1053,7 @@ body {
 .Car-card h3 {
   margin: 0 0 10px;
   font-size: 1.5rem;
-  color: white;
+  color: black;
   position: relative;
   display: inline-block;
 }
@@ -1292,7 +1292,7 @@ body {
   }
 
   /* Car grid adjustments */
-  .Car-grid {
+  .car-grid {
     grid-template-columns: 1fr;
     gap: 20px;
   }
@@ -1641,7 +1641,7 @@ body {
     display: none;
   }
 
-  .Car-grid-container {
+  .car-grid-container {
     width: 100% !important;
     padding-right: 0 !important;
   }
