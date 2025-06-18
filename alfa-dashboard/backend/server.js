@@ -19,7 +19,7 @@ connectDB();
 
 // CORS configuration
 const corsOptions = {
-  origin: ['https://alfa-motors-o5cm.vercel.app', 'https://alfa-motors.onrender.com'],
+  origin: ['https://alfa-motors-o5cm.vercel.app', 'https://alfa-motors.vercel.app'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
