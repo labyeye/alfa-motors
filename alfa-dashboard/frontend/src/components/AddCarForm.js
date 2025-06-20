@@ -21,8 +21,6 @@ const AddcarForm = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [error, setError] = useState(null);
-  const [brands, setBrands] = useState([]);
-  const [models, setModels] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     brand: "",
@@ -40,117 +38,6 @@ const AddcarForm = () => {
   });
   const [activeMenu, setActiveMenu] = useState("Add Car Data");
   const [expandedMenus, setExpandedMenus] = useState({});
-  const [isLoadingBrands, setIsLoadingBrands] = useState(false);
-  const [isLoadingModels, setIsLoadingModels] = useState(false);
-  const fetchMakes = async () => {
-    setIsLoadingBrands(true);
-    setError(null);
-
-    try {
-      const response = await axios.get(
-        "https://car-api2.p.rapidapi.com/api/makes",
-        {
-          params: {
-            direction: "asc",
-            sort: "id",
-          },
-          headers: {
-            "x-rapidapi-key":
-              "661c836913msh77663208816974ap191664jsn5ace149e58a9",
-            "x-rapidapi-host": "car-api2.p.rapidapi.com",
-          },
-        }
-      );
-
-      // Check if response is valid
-      if (response.data && Array.isArray(response.data)) {
-        setBrands(response.data);
-      } else if (response.data.data && Array.isArray(response.data.data)) {
-        setBrands(response.data.data);
-      } else {
-        throw new Error("Invalid API response format");
-      }
-    } catch (error) {
-      console.error("Error fetching makes:", error);
-      setBrands([]);
-      setError("Using fallback makes data. Some options may be limited.");
-    } finally {
-      setIsLoadingBrands(false);
-    }
-  };
-
-  // Fetch models for selected make
-  const fetchModels = async (makeName) => {
-    if (!makeName) {
-      setModels([]);
-      return;
-    }
-
-    setIsLoadingModels(true);
-    setError(null);
-
-    try {
-      // Find the make's niceName for the API call
-      const selectedMake = brands.find((b) => b.name === makeName) || [];
-
-      const response = await axios.get(
-        "https://car-api2.p.rapidapi.com/api/models",
-        {
-          params: {
-            make: selectedMake.niceName || makeName.toLowerCase(),
-            sort: "id",
-            direction: "asc",
-            verbose: "yes",
-          },
-          headers: {
-            "x-rapidapi-key":
-              "661c836913msh77663208816974ap191664jsn5ace149e58a9",
-            "x-rapidapi-host": "car-api2.p.rapidapi.com",
-          },
-        }
-      );
-
-      let modelsData = [];
-
-      // Handle different response formats
-      if (response.data && Array.isArray(response.data)) {
-        modelsData = response.data;
-      } else if (response.data.data && Array.isArray(response.data.data)) {
-        modelsData = response.data.data;
-      }
-
-      // Extract model names
-      const modelNames =
-        modelsData.length > 0 ? modelsData.map((model) => model.name) : [];
-
-      setModels(modelNames);
-    } catch (error) {
-      console.error("Error fetching models:", error);
-      setModels([]);
-      setError("Using fallback models data. Some options may be limited.");
-    } finally {
-      setIsLoadingModels(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchMakes();
-  }, []);
-
-  useEffect(() => {
-    if (formData.brand) {
-      fetchModels(formData.brand);
-    }
-  }, [formData.brand]);
-
-  const handleBrandChange = (e) => {
-    const { value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      brand: value,
-      model: "", // Reset model when brand changes
-    }));
-  };
 
   const menuItems = [
     {
@@ -232,8 +119,6 @@ const AddcarForm = () => {
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-      // Reset model when brand changes
-      ...(name === "brand" ? { model: "" } : {}),
     }));
   };
 
@@ -410,45 +295,28 @@ const AddcarForm = () => {
                 <div className="form-grid">
                   <div className="form-group">
                     <label className="form-label required">Brand</label>
-                    <select
+                    <input
+                      type="text"
                       name="brand"
-                      className="form-control select"
+                      className="form-control"
                       required
                       value={formData.brand}
-                      onChange={handleBrandChange}
-                      disabled={isLoadingBrands}
-                    >
-                      <option value="">Select Brand</option>
-                      {brands.map((brand) => (
-                        <option key={brand.id} value={brand.name}>
-                          {brand.name}
-                        </option>
-                      ))}
-                    </select>
-                    {isLoadingBrands && <small>Loading brands...</small>}
+                      onChange={handleChange}
+                      placeholder="Enter car brand (e.g., Toyota, Honda)"
+                    />
                   </div>
 
                   <div className="form-group">
                     <label className="form-label required">Model</label>
-                    <select
+                    <input
+                      type="text"
                       name="model"
-                      className="form-control select"
+                      className="form-control"
                       required
                       value={formData.model}
                       onChange={handleChange}
-                      disabled={!formData.brand || isLoadingModels}
-                    >
-                      <option value="">Select Model</option>
-                      {models.map((model, index) => (
-                        <option key={index} value={model}>
-                          {model}
-                        </option>
-                      ))}
-                    </select>
-                    {isLoadingModels && <small>Loading models...</small>}
-                    {!formData.brand && !isLoadingModels && (
-                      <small>Please select a brand first</small>
-                    )}
+                      placeholder="Enter car model (e.g., Camry, Civic)"
+                    />
                   </div>
                 </div>
 
