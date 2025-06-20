@@ -7,6 +7,7 @@ const sellLetterRoutes = require('./routes/selLetter');
 const dashboardRoutes = require('./routes/dashboard');
 const serviceBillRoutes = require('./routes/serviceBillRoutes');
 const rcRoutes = require("./routes/rcRoutes");
+const sellRoutes = require('./routes/sellRoutes');
 const carRoutes = require('./routes/carRoutes');
 const path = require("path");
 const { protect } = require('./middleware/auth');
@@ -19,7 +20,7 @@ connectDB();
 
 // CORS configuration
 const corsOptions = {
-  origin: ['https://alfa-motors.vercel.app/','https://alfa-motors-o5cm.vercel.app/'],
+  origin: ['https://alfa-motors.vercel.app','https://alfa-motors-o5cm.vercel.app'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
@@ -35,6 +36,7 @@ app.use('/api/users', protect, userRoutes);
 app.use('/api/sell-letters', sellLetterRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/service-bills', serviceBillRoutes);
+app.use('/api/sell-requests', sellRoutes);
 
 // Static files
 const uploadsPath = path.join(__dirname, "utils/uploads");
