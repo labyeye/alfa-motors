@@ -98,7 +98,7 @@ const EditCar = () => {
     const fetchCarData = async () => {
       try {
         const response = await axios.get(
-          `https://alfa-motors.onrender.com/api/cars/${id}`,
+          `http://localhost:2500/api/cars/${id}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -173,7 +173,7 @@ const EditCar = () => {
         downPayment: Number(carData.downPayment),
       };
 
-      await axios.put(`https://alfa-motors.onrender.com/api/cars/${id}`, updatedCar, {
+      await axios.put(`http://localhost:2500/api/cars/${id}`, updatedCar, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

@@ -53,7 +53,7 @@ const CreateStaff = () => {
 
     try {
       const response = await axios.post(
-        "https://alfa-motors.onrender.com/api/users",
+        "http://localhost:2500/api/users",
         formData
       );
       setSuccess(true);

@@ -79,8 +79,8 @@ const AdminPage = () => {
     setLoading(true);
     setError(null);
     const endpoint = isOwnerView
-      ? `https://alfa-motors.onrender.com/api/dashboard/owner`
-      : `https://alfa-motors.onrender.com/api/dashboard`;
+      ? `http://localhost:2500/api/dashboard/owner`
+      : `http://localhost:2500/api/dashboard`;
 
     const response = await fetch(endpoint, {
       headers: {

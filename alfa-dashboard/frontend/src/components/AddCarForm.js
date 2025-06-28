@@ -153,7 +153,7 @@ const AddcarForm = () => {
       };
 
       const response = await axios.post(
-        "https://alfa-motors.onrender.com/api/cars",
+        "http://localhost:2500/api/cars",
         carData,
         {
           headers: {

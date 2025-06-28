@@ -20,7 +20,7 @@ connectDB();
 
 // CORS configuration
 const corsOptions = {
-  origin: ['https://alfa-motors.vercel.app','https://alfa-motors-o5cm.vercel.app'],
+  origin: ['http://127.0.0.1:5502','http://localhost:3000'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,

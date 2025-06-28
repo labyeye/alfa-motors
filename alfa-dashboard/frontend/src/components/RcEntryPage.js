@@ -143,7 +143,7 @@ const RcEntryPage = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `https://alfa-motors.onrender.com/api/rc/${id}`,
+        `http://localhost:2500/api/rc/${id}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
@@ -213,7 +213,7 @@ const RcEntryPage = () => {
       };
 
       if (isEditMode) {
-        response = await fetch(`https://alfa-motors.onrender.com/api/rc/${rcId}`, {
+        response = await fetch(`http://localhost:2500/api/rc/${rcId}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -222,7 +222,7 @@ const RcEntryPage = () => {
           body: JSON.stringify(payload),
         });
       } else {
-        response = await fetch("https://alfa-motors.onrender.com/api/rc", {
+        response = await fetch("http://localhost:2500/api/rc", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -283,7 +283,7 @@ const RcEntryPage = () => {
 
     try {
       const response = await fetch(
-        `https://alfa-motors.onrender.com/api/rc/${id}/upload`,
+        `http://localhost:2500/api/rc/${id}/upload`,
         {
           method: "POST",
           headers: {
@@ -322,7 +322,7 @@ const RcEntryPage = () => {
 
   const downloadPdf = () => {
     if (!formData.pdfUrl) return;
-    window.open(`https://alfa-motors.onrender.com${formData.pdfUrl}`, "_blank");
+    window.open(`http://localhost:2500${formData.pdfUrl}`, "_blank");
   };
 
   return (

@@ -1,7 +1,7 @@
 :root {
   --primary-color: #a32919;
   --secondary-color: #100f0f;
-  --text-color: #ffffff;
+  --text-color: #000000;
   --light-gray: #a9a9a9;
   --dark-gray: #464646;
 }
@@ -367,7 +367,7 @@
   margin-top: 30px;
   position: relative;
   max-width: 600px;
-  margin-right: auto;
+  margin: auto;
 }
 
 .search-input {
@@ -391,7 +391,7 @@
 
 .search-button {
   position: absolute;
-  right: 220px;
+  right: 120px;
   top: 75px;
   background: var(--primary-color);
   border: none;
@@ -520,7 +520,7 @@ body {
 
 .nav-links a {
   position: relative;
-  color: var(--light-gray);
+  color: white;
   text-decoration: none;
   font-family: "Sansation", sans-serif;
   font-weight: 700;
@@ -560,7 +560,7 @@ body {
 
 .login-btn button {
   background-color: var(--secondary-color);
-  color: var(--text-color);
+  color: white;
   border: 1px solid var(--primary-color);
   border-radius: 25px;
   padding: 8px 25px;
@@ -601,7 +601,7 @@ body {
   max-width: 1200px;
   margin-left: 90px;
   margin-right: auto;
-  text-align: left;
+  text-align: center;
 }
 
 .hero-content h1 {
@@ -1641,7 +1641,7 @@ h2 {
 
 /* Testimonials Section */
 .testimonials-section {
-  background: linear-gradient(135deg, var(--primary-color) 0%, #ffaa17 100%);
+  background: white;
   padding: 100px 5%;
   position: relative;
   overflow: hidden;
