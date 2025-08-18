@@ -20,7 +20,7 @@ connectDB();
 
 // CORS configuration
 const corsOptions = {
-  origin: ['http://127.0.0.1:5502','http://localhost:3000'],
+  origin: ['http://127.0.0.1:5500','http://localhost:3000','https://www.alfamotorworld.com','https://alfa-motors-o5cm.vercel.app'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
@@ -38,15 +38,15 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/service-bills', serviceBillRoutes);
 app.use('/api/sell-requests', sellRoutes);
 
-// Static files
-const uploadsPath = path.join(__dirname, "utils/uploads");
+const carImagesPath = path.join(__dirname, "utils/carimages");
 app.use(
-  "/utils/uploads",  
-  express.static(uploadsPath, {
-    setHeaders: (res, path) => {
-      if (path.endsWith(".pdf")) {
+  "/carimages",
+  express.static(carImagesPath, {
+    setHeaders: (res, filePath) => {
+      res.set("Access-Control-Allow-Origin", "*");
+      if (filePath.endsWith(".pdf")) {
         res.set("Content-Type", "application/pdf");
-        res.set("Content-Disposition", "inline; filename=" + path.basename(path));
+        res.set("Content-Disposition", "inline; filename=" + path.basename(filePath));
       }
     },
   })

@@ -26,17 +26,22 @@ const EditCar = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [carData, setCarData] = useState({
-    brand: "",
+    make: "",
     model: "",
+    variant: "",
+    fuelType: "",
     modelYear: "",
+    registrationYear: "",
+    color: "",
+    chassisNo: "",
+    engineNo: "",
     kmDriven: "",
     ownership: "",
-    fuelType: "",
     daysOld: "",
-    buyprice: "",
-    price: "",
-    downPayment: "",
-    images: Array(10).fill(""), // Initialize with 10 empty strings
+    buyingPrice: "",
+    quotingPrice: "",
+    sellingPrice: "",
+    photos: [], // For file uploads
     status: "Available",
   });
 
@@ -98,7 +103,7 @@ const EditCar = () => {
     const fetchCarData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:2500/api/cars/${id}`,
+          `https://alfa-motors.onrender.com/api/cars/${id}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -145,40 +150,31 @@ const EditCar = () => {
     }));
   };
 
-  const handleImageChange = (index, value) => {
-    const newImages = [...carData.images];
-    newImages[index] = value;
+  const handleFileChange = (e) => {
     setCarData((prev) => ({
       ...prev,
-      images: newImages,
+      photos: Array.from(e.target.files),
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSaving(true);
-
     try {
-      // Filter out empty image URLs
-      const nonEmptyImages = carData.images.filter((url) => url.trim() !== "");
-
-      const updatedCar = {
-        ...carData,
-        images: nonEmptyImages,
-        modelYear: Number(carData.modelYear),
-        kmDriven: Number(carData.kmDriven),
-        daysOld: Number(carData.daysOld),
-        buyprice: Number(carData.buyprice),
-        price: Number(carData.price),
-        downPayment: Number(carData.downPayment),
-      };
-
-      await axios.put(`http://localhost:2500/api/cars/${id}`, updatedCar, {
+      const formData = new FormData();
+      Object.entries(carData).forEach(([key, value]) => {
+        if (key === "photos") {
+          value.forEach((file) => formData.append("photos", file));
+        } else {
+          formData.append(key, value);
+        }
+      });
+      await axios.put(`https://alfa-motors.onrender.com/api/cars/${id}`, formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "multipart/form-data",
         },
       });
-
       alert("Car data updated successfully!");
       navigate("/car/list");
     } catch (error) {
@@ -290,18 +286,22 @@ const EditCar = () => {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} style={styles.form}>
+          <form
+            onSubmit={handleSubmit}
+            style={styles.form}
+            encType="multipart/form-data"
+          >
             <div style={styles.formSection}>
               <h2 style={styles.sectionTitle}>
                 <Car style={styles.sectionIcon} /> Basic Information
               </h2>
               <div style={styles.formGrid}>
                 <div style={styles.formField}>
-                  <label style={styles.formLabel}>Brand</label>
+                  <label style={styles.formLabel}>Make</label>
                   <input
                     type="text"
-                    name="brand"
-                    value={carData.brand}
+                    name="make"
+                    value={carData.make}
                     onChange={handleChange}
                     style={styles.formInput}
                     required
@@ -319,7 +319,34 @@ const EditCar = () => {
                   />
                 </div>
                 <div style={styles.formField}>
-                  <label style={styles.formLabel}>Model Year</label>
+                  <label style={styles.formLabel}>Variant</label>
+                  <input
+                    type="text"
+                    name="variant"
+                    value={carData.variant}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                    required
+                  />
+                </div>
+                <div style={styles.formField}>
+                  <label style={styles.formLabel}>Fuel Type</label>
+                  <select
+                    name="fuelType"
+                    value={carData.fuelType}
+                    onChange={handleChange}
+                    style={styles.formSelect}
+                    required
+                  >
+                    <option value="Petrol">Petrol</option>
+                    <option value="Diesel">Diesel</option>
+                    <option value="EV">EV</option>
+                    <option value="CNG">CNG</option>
+                    <option value="Hybrid">Hybrid</option>
+                  </select>
+                </div>
+                <div style={styles.formField}>
+                  <label style={styles.formLabel}>Year</label>
                   <input
                     type="number"
                     name="modelYear"
@@ -328,6 +355,52 @@ const EditCar = () => {
                     style={styles.formInput}
                     min="1900"
                     max={new Date().getFullYear() + 1}
+                    required
+                  />
+                </div>
+                <div style={styles.formField}>
+                  <label style={styles.formLabel}>Registration Year</label>
+                  <input
+                    type="number"
+                    name="registrationYear"
+                    value={carData.registrationYear}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                    min="1900"
+                    max={new Date().getFullYear() + 1}
+                    required
+                  />
+                </div>
+                <div style={styles.formField}>
+                  <label style={styles.formLabel}>Color</label>
+                  <input
+                    type="text"
+                    name="color"
+                    value={carData.color}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                    required
+                  />
+                </div>
+                <div style={styles.formField}>
+                  <label style={styles.formLabel}>Chassis No</label>
+                  <input
+                    type="text"
+                    name="chassisNo"
+                    value={carData.chassisNo}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                    required
+                  />
+                </div>
+                <div style={styles.formField}>
+                  <label style={styles.formLabel}>Engine No</label>
+                  <input
+                    type="text"
+                    name="engineNo"
+                    value={carData.engineNo}
+                    onChange={handleChange}
+                    style={styles.formInput}
                     required
                   />
                 </div>
@@ -352,26 +425,10 @@ const EditCar = () => {
                     style={styles.formSelect}
                     required
                   >
-                    <option value="1st">1st Owner</option>
-                    <option value="2nd">2nd Owner</option>
-                    <option value="3rd">3rd Owner</option>
-                    <option value="4th+">4th+ Owner</option>
-                  </select>
-                </div>
-                <div style={styles.formField}>
-                  <label style={styles.formLabel}>Fuel Type</label>
-                  <select
-                    name="fuelType"
-                    value={carData.fuelType}
-                    onChange={handleChange}
-                    style={styles.formSelect}
-                    required
-                  >
-                    <option value="petrol">Petrol</option>
-                    <option value="diesel">Diesel</option>
-                    <option value="cng">CNG</option>
-                    <option value="electric">Electric</option>
-                    <option value="hybrid">Hybrid</option>
+                    <option value="1st Owner">1st Owner</option>
+                    <option value="2nd Owner">2nd Owner</option>
+                    <option value="3rd Owner">3rd Owner</option>
+                    <option value="4th Owner or more">4th Owner or more</option>
                   </select>
                 </div>
                 <div style={styles.formField}>
@@ -395,11 +452,11 @@ const EditCar = () => {
               </h2>
               <div style={styles.formGrid}>
                 <div style={styles.formField}>
-                  <label style={styles.formLabel}>Buy Price (₹)</label>
+                  <label style={styles.formLabel}>Buying Price (₹)</label>
                   <input
                     type="number"
-                    name="buyprice"
-                    value={carData.buyprice}
+                    name="buyingPrice"
+                    value={carData.buyingPrice}
                     onChange={handleChange}
                     style={styles.formInput}
                     min="0"
@@ -407,11 +464,11 @@ const EditCar = () => {
                   />
                 </div>
                 <div style={styles.formField}>
-                  <label style={styles.formLabel}>Price (₹)</label>
+                  <label style={styles.formLabel}>Quoting Price (₹)</label>
                   <input
                     type="number"
-                    name="price"
-                    value={carData.price}
+                    name="quotingPrice"
+                    value={carData.quotingPrice}
                     onChange={handleChange}
                     style={styles.formInput}
                     min="0"
@@ -419,11 +476,11 @@ const EditCar = () => {
                   />
                 </div>
                 <div style={styles.formField}>
-                  <label style={styles.formLabel}>Down Payment (₹)</label>
+                  <label style={styles.formLabel}>Selling Price (₹)</label>
                   <input
                     type="number"
-                    name="downPayment"
-                    value={carData.downPayment}
+                    name="sellingPrice"
+                    value={carData.sellingPrice}
                     onChange={handleChange}
                     style={styles.formInput}
                     min="0"
@@ -440,8 +497,8 @@ const EditCar = () => {
                     required
                   >
                     <option value="Available">Available</option>
-                    <option value="Sold">Sold</option>
-                    <option value="Reserved">Reserved</option>
+                    <option value="Sold Out">Sold Out</option>
+                    <option value="Coming Soon">Coming Soon</option>
                   </select>
                 </div>
               </div>
@@ -449,35 +506,81 @@ const EditCar = () => {
 
             <div style={styles.formSection}>
               <h2 style={styles.sectionTitle}>
-                <Car style={styles.sectionIcon} /> Images (Max 10)
+                <Car style={styles.sectionIcon} /> Photos (10-12)
               </h2>
               <div style={styles.formGrid}>
-                {Array.from({ length: 10 }).map((_, index) => (
-                  <div key={index} style={styles.formField}>
-                    <label style={styles.formLabel}>
-                      Image URL {index + 1}
-                    </label>
-                    <input
-                      type="url"
-                      value={carData.images[index] || ""}
-                      onChange={(e) => handleImageChange(index, e.target.value)}
-                      style={styles.formInput}
-                      placeholder="https://example.com/image.jpg"
-                    />
-                    {carData.images[index] && (
-                      <div style={styles.imagePreviewContainer}>
+                <input
+                  type="file"
+                  name="photos"
+                  accept="image/*"
+                  multiple
+                  onChange={handleFileChange}
+                  style={styles.formInput}
+                  required
+                />
+                {carData.photos && carData.photos.length > 0 && (
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+                    {Array.from(carData.photos).map((file, idx) => (
+                      <div
+                        key={idx}
+                        style={{ width: "100px", height: "100px", overflow: "hidden", position: "relative" }}
+                      >
                         <img
-                          src={carData.images[index]}
-                          alt={`Preview ${index + 1}`}
-                          style={styles.imagePreview}
-                          onError={(e) => {
-                            e.target.style.display = "none";
-                          }}
+                          src={
+                            typeof file === "string"
+                              ? file.startsWith("http") || file.startsWith("/")
+                                ? file
+                                : `https://alfa-motors.onrender.com/carimages/${file.replace('carimages/', '')}`
+                              : URL.createObjectURL(file)
+                          }
+                          alt={`Preview ${idx + 1}`}
+                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
                         />
+                        {/* Delete button for existing images */}
+                        {typeof file === "string" && (
+                          <button
+                            type="button"
+                            style={{
+                              position: "absolute",
+                              top: 2,
+                              right: 2,
+                              background: "rgba(255,0,0,0.7)",
+                              color: "white",
+                              border: "none",
+                              borderRadius: "50%",
+                              width: "24px",
+                              height: "24px",
+                              cursor: "pointer",
+                              fontWeight: "bold",
+                              zIndex: 2,
+                            }}
+                            onClick={async () => {
+                              if (window.confirm("Delete this image?")) {
+                                try {
+                                  await axios.delete(`https://alfa-motors.onrender.com/api/cars/${id}/photo`, {
+                                    data: { filename: file },
+                                    headers: {
+                                      Authorization: `Bearer ${localStorage.getItem("token")}`,
+                                    },
+                                  });
+                                  setCarData((prev) => ({
+                                    ...prev,
+                                    photos: prev.photos.filter((img, i) => i !== idx),
+                                  }));
+                                  alert("Image deleted successfully.");
+                                } catch (err) {
+                                  alert("Failed to delete image.");
+                                }
+                              }
+                            }}
+                          >
+                            ×
+                          </button>
+                        )}
                       </div>
-                    )}
+                    ))}
                   </div>
-                ))}
+                )}
               </div>
             </div>
 

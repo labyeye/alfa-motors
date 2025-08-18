@@ -85,7 +85,7 @@ const ListCar = () => {
     const fetchCars = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:2500/api/cars", {
+        const response = await axios.get("https://alfa-motors.onrender.com/api/cars", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -130,12 +130,12 @@ const ListCar = () => {
     if (window.confirm("Are you sure you want to delete this car?")) {
       try {
         const token = localStorage.getItem("token");
-        await axios.delete(`http://localhost:2500/api/cars/${carId}`, {
+        await axios.delete(`https://alfa-motors.onrender.com/api/cars/${carId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        setCars(cars.filter(car => car._id !== carId));
+        setCars(cars.filter((car) => car._id !== carId));
       } catch (err) {
         setError(err.response?.data?.message || "Failed to delete car");
       }
@@ -236,7 +236,9 @@ const ListCar = () => {
                     <th style={styles.th}>Model</th>
                     <th style={styles.th}>Year</th>
                     <th style={styles.th}>KM Driven</th>
-                    <th style={styles.th}>Price</th>
+                    <th style={styles.th}>Buying Price</th>
+                    <th style={styles.th}>Quoting Price</th>
+                    <th style={styles.th}>Selling Price</th>
                     <th style={styles.th}>Status</th>
                     <th style={styles.th}>Actions</th>
                   </tr>
@@ -244,13 +246,33 @@ const ListCar = () => {
                 <tbody>
                   {cars.map((car) => (
                     <tr key={car._id} style={styles.tr}>
-                      <td style={styles.td}>{car.brand}</td>
+                      <td style={styles.td}>{car.make}</td>
                       <td style={styles.td}>{car.model}</td>
                       <td style={styles.td}>{car.modelYear}</td>
                       <td style={styles.td}>
-                        {car.kmDriven.toLocaleString()}
+                        {car.kmDriven !== undefined && car.kmDriven !== null
+                          ? Number(car.kmDriven).toLocaleString()
+                          : "-"}
                       </td>
-                      <td style={styles.td}>₹{car.price.toLocaleString()}</td>
+                      <td style={styles.td}>
+                        ₹
+                        {car.buyingPrice !== undefined && car.buyingPrice !== null
+                          ? Number(car.buyingPrice).toLocaleString()
+                          : "-"}
+                      </td>
+                      <td style={styles.td}>
+                        ₹
+                        {car.quotingPrice !== undefined && car.quotingPrice !== null
+                          ? Number(car.quotingPrice).toLocaleString()
+                          : "-"}
+                      </td>
+                      <td style={styles.td}>
+                        ₹
+                        {car.sellingPrice !== undefined && car.sellingPrice !== null
+                          ? Number(car.sellingPrice).toLocaleString()
+                          : "-"}
+                      </td>
+
                       <td style={styles.td}>
                         <span
                           style={{

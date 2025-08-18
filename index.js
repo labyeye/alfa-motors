@@ -251,7 +251,7 @@ function initializeCarSlider() {
 }
 
 function fetchFeaturedCars() {
-  fetch("https://Car-builders.onrender.com/api/Cars?limit=10")
+  fetch("https://alfa-motors.onrender.com/api/Cars?limit=10")
     .then((response) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");

@@ -11,7 +11,7 @@ const SellRequests = ({ user }) => {
   useEffect(() => {
     const fetchSellRequests = async () => {
       try {
-        const response = await axios.get('http://localhost:2500/api/sell-requests', {
+        const response = await axios.get('https://alfa-motors.onrender.com/api/sell-requests', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
@@ -34,7 +34,7 @@ const SellRequests = ({ user }) => {
   const updateStatus = async (id, status) => {
     try {
       const response = await axios.patch(
-        `http://localhost:2500/api/sell-requests/${id}/status`,
+        `https://alfa-motors.onrender.com/api/sell-requests/${id}/status`,
         { status },
         {
           headers: {

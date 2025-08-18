@@ -23,18 +23,23 @@ const AddcarForm = () => {
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
-    brand: "",
+    make: "",
     model: "",
+    variant: "",
+    fuelType: "",
     modelYear: "",
+    registrationYear: "",
+    color: "",
+    chassisNo: "",
+    engineNo: "",
     kmDriven: "",
     ownership: "",
-    fuelType: "",
     daysOld: "",
-    buyprice: "",
-    price: "",
-    downPayment: "",
-    status: "",
-    images: Array(10).fill(""),
+    buyingPrice: "",
+    quotingPrice: "",
+    sellingPrice: "",
+    photos: [], // For file uploads
+    status: "Available",
   });
   const [activeMenu, setActiveMenu] = useState("Add Car Data");
   const [expandedMenus, setExpandedMenus] = useState({});
@@ -122,12 +127,10 @@ const AddcarForm = () => {
     }));
   };
 
-  const handleImageChange = (index, value) => {
-    const newImages = [...formData.images];
-    newImages[index] = value;
+  const handleFileChange = (e) => {
     setFormData((prev) => ({
       ...prev,
-      images: newImages,
+      photos: Array.from(e.target.files),
     }));
   };
 
@@ -135,34 +138,32 @@ const AddcarForm = () => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
-
     const token = localStorage.getItem("token");
-
     if (!user || !user._id || !token) {
       setError("User not authenticated. Please log in.");
       setIsSubmitting(false);
       return;
     }
-
     try {
-      const nonEmptyImages = formData.images.filter((url) => url.trim() !== "");
-      const carData = {
-        ...formData,
-        images: nonEmptyImages,
-        addedBy: user._id,
-      };
-
+      const formPayload = new FormData();
+      Object.entries(formData).forEach(([key, value]) => {
+        if (key === "photos") {
+          value.forEach((file) => formPayload.append("photos", file));
+        } else {
+          formPayload.append(key, value);
+        }
+      });
+      formPayload.append("addedBy", user._id);
       const response = await axios.post(
-        "http://localhost:2500/api/cars",
-        carData,
+        "https://alfa-motors.onrender.com/api/cars",
+        formPayload,
         {
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
           },
         }
       );
-
       if (response.data.success) {
         navigate("/admin");
       } else {
@@ -291,21 +292,20 @@ const AddcarForm = () => {
                 </div>
               )}
 
-              <form id="addCarForm" onSubmit={handleSubmit}>
+              <form id="addCarForm" onSubmit={handleSubmit} encType="multipart/form-data">
                 <div className="form-grid">
                   <div className="form-group">
-                    <label className="form-label required">Brand</label>
+                    <label className="form-label required">Make</label>
                     <input
                       type="text"
-                      name="brand"
+                      name="make"
                       className="form-control"
                       required
-                      value={formData.brand}
+                      value={formData.make}
                       onChange={handleChange}
-                      placeholder="Enter car brand (e.g., Toyota, Honda)"
+                      placeholder="Enter car make (e.g., Toyota, Honda)"
                     />
                   </div>
-
                   <div className="form-group">
                     <label className="form-label required">Model</label>
                     <input
@@ -318,23 +318,97 @@ const AddcarForm = () => {
                       placeholder="Enter car model (e.g., Camry, Civic)"
                     />
                   </div>
-                </div>
-
-                <div className="form-grid">
+                  <div className="form-group">
+                    <label className="form-label required">Variant</label>
+                    <input
+                      type="text"
+                      name="variant"
+                      className="form-control"
+                      required
+                      value={formData.variant}
+                      onChange={handleChange}
+                      placeholder="Enter car variant (e.g., GL, LXI, VXI)"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label required">Fuel Type</label>
+                    <select
+                      name="fuelType"
+                      className="form-control select"
+                      required
+                      value={formData.fuelType}
+                      onChange={handleChange}
+                    >
+                      <option value="">Select Fuel Type</option>
+                      <option value="Petrol">Petrol</option>
+                      <option value="Diesel">Diesel</option>
+                      <option value="EV">Electric</option>
+                      <option value="CNG">CNG</option>
+                      <option value="Hybrid">Hybrid</option>
+                    </select>
+                  </div>
                   <div className="form-group">
                     <label className="form-label required">Model Year</label>
                     <input
                       type="number"
                       name="modelYear"
-                      min="2000"
-                      max="2024"
+                      min="1900"
+                      max={new Date().getFullYear() + 1}
                       className="form-control"
                       required
                       value={formData.modelYear}
                       onChange={handleChange}
                     />
                   </div>
-
+                  <div className="form-group">
+                    <label className="form-label required">Registration Year</label>
+                    <input
+                      type="number"
+                      name="registrationYear"
+                      min="1900"
+                      max={new Date().getFullYear() + 1}
+                      className="form-control"
+                      required
+                      value={formData.registrationYear}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label required">Color</label>
+                    <input
+                      type="text"
+                      name="color"
+                      className="form-control"
+                      required
+                      value={formData.color}
+                      onChange={handleChange}
+                      placeholder="Enter car color"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label required">Chassis No</label>
+                    <input
+                      type="text"
+                      name="chassisNo"
+                      className="form-control"
+                      required
+                      value={formData.chassisNo}
+                      onChange={handleChange}
+                      placeholder="Enter chassis number"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label required">Engine No</label>
+                    <input
+                      type="text"
+                      name="engineNo"
+                      className="form-control"
+                      required
+                      value={formData.engineNo}
+                      onChange={handleChange}
+                      placeholder="Enter engine number"
+                    />
+                  </div>
                   <div className="form-group">
                     <label className="form-label required">KM Driven</label>
                     <input
@@ -347,9 +421,6 @@ const AddcarForm = () => {
                       onChange={handleChange}
                     />
                   </div>
-                </div>
-
-                <div className="form-grid">
                   <div className="form-group">
                     <label className="form-label required">Ownership</label>
                     <select
@@ -368,24 +439,6 @@ const AddcarForm = () => {
                       </option>
                     </select>
                   </div>
-
-                  <div className="form-group">
-                    <label className="form-label required">Fuel Type</label>
-                    <select
-                      name="fuelType"
-                      className="form-control select"
-                      required
-                      value={formData.fuelType}
-                      onChange={handleChange}
-                    >
-                      <option value="">Select Fuel Type</option>
-                      <option value="Petrol">Petrol</option>
-                      <option value="EV">Electric</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="form-grid">
                   <div className="form-group">
                     <label className="form-label required">Days Old</label>
                     <input
@@ -398,110 +451,99 @@ const AddcarForm = () => {
                       onChange={handleChange}
                     />
                   </div>
-                </div>
-
-                <div className="form-grid">
                   <div className="form-group">
-                    <label className="form-label required">Buy Price (₹)</label>
+                    <label className="form-label required">Buying Price (₹)</label>
                     <input
                       type="number"
-                      name="buyprice"
+                      name="buyingPrice"
                       min="0"
                       className="form-control"
                       required
-                      value={formData.buyprice}
+                      value={formData.buyingPrice}
                       onChange={handleChange}
                     />
                   </div>
                   <div className="form-group">
-                    <label className="form-label required">Price (₹)</label>
+                    <label className="form-label required">Quoting Price (₹)</label>
                     <input
                       type="number"
-                      name="price"
+                      name="quotingPrice"
                       min="0"
                       className="form-control"
                       required
-                      value={formData.price}
-                      onChange={handleChange}
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label required">
-                      Down Payment (₹)
-                    </label>
-                    <input
-                      type="number"
-                      name="downPayment"
-                      min="0"
-                      className="form-control"
-                      required
-                      value={formData.downPayment}
+                      value={formData.quotingPrice}
                       onChange={handleChange}
                     />
                   </div>
                   <div className="form-group">
-                    <label className="form-label">Image URLs</label>
-                    {formData.images.map((url, index) => (
-                      <div key={index} style={{ marginBottom: "8px" }}>
-                        <input
-                          type="text"
-                          placeholder={`Image URL ${index + 1} (optional)`}
-                          className="form-control"
-                          value={url}
-                          onChange={(e) =>
-                            handleImageChange(index, e.target.value)
-                          }
-                        />
-                      </div>
-                    ))}
-                    <small
-                      style={{
-                        display: "block",
-                        marginTop: "4px",
-                        color: "var(--text-secondary)",
-                        fontSize: "0.75rem",
-                      }}
+                    <label className="form-label required">Selling Price (₹)</label>
+                    <input
+                      type="number"
+                      name="sellingPrice"
+                      min="0"
+                      className="form-control"
+                      required
+                      value={formData.sellingPrice}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label required">Status</label>
+                    <select
+                      name="status"
+                      className="form-control select"
+                      required
+                      value={formData.status}
+                      onChange={handleChange}
                     >
-                      Add up to 10 image URLs (at least one recommended)
-                    </small>
+                      <option value="Available">Available</option>
+                      <option value="Sold Out">Sold Out</option>
+                      <option value="Coming Soon">Coming Soon</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label required">Photos (10-12)</label>
+                    <input
+                      type="file"
+                      name="photos"
+                      accept="image/*"
+                      multiple
+                      onChange={handleFileChange}
+                      required
+                    />
+                    {formData.photos && formData.photos.length > 0 && (
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+                        {Array.from(formData.photos).map((file, idx) => (
+                          <div key={idx} style={{ width: "100px", height: "100px", overflow: "hidden" }}>
+                            <img
+                              src={typeof file === "string" ? file : URL.createObjectURL(file)}
+                              alt={`Preview ${idx + 1}`}
+                              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label required">Status</label>
-                  <select
-                    name="status"
-                    className="form-control select"
-                    required
-                    value={formData.status}
-                    onChange={handleChange}
+                <div className="form-actions">
+                  <button
+                    type="button"
+                    className="btn btn-outlined"
+                    onClick={handleCancel}
                   >
-                    <option value="">Select Status</option>
-                    <option value="Available">Available</option>
-                    <option value="Coming Soon">Coming Soon</option>
-                    <option value="Sold Out">Sold Out</option>
-                  </select>
+                    <span>Cancel</span>
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? "Submitting..." : "Add Car"}
+                  </button>
                 </div>
               </form>
-            </div>
-
-            <div className="form-footer">
-              <button
-                type="button"
-                className="btn btn-outlined"
-                onClick={handleCancel}
-              >
-                <span>Cancel</span>
-              </button>
-              <button
-                type="submit"
-                form="addCarForm"
-                className="btn btn-primary"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? "Adding..." : "Add Car"}
-              </button>
             </div>
           </div>
         </div>

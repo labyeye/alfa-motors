@@ -79,8 +79,8 @@ const AdminPage = () => {
     setLoading(true);
     setError(null);
     const endpoint = isOwnerView
-      ? `http://localhost:2500/api/dashboard/owner`
-      : `http://localhost:2500/api/dashboard`;
+      ? `https://alfa-motors.onrender.com/api/dashboard/owner`
+      : `https://alfa-motors.onrender.com/api/dashboard`;
 
     const response = await fetch(endpoint, {
       headers: {
@@ -260,7 +260,6 @@ const AdminPage = () => {
       submenu: [
         { name: "Add Car Data", path: "/car/create" },
         { name: "List Car Data", path: "/car/list" },
-        { name: "Edit Car Data", path: "/car/edit" },
       ],
     },
     
