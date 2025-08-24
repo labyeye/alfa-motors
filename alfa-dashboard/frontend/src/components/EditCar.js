@@ -535,6 +535,10 @@ const EditCar = () => {
                           }
                           alt={`Preview ${idx + 1}`}
                           style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                              onError={(e) => {
+                                e.currentTarget.onerror = null;
+                                e.currentTarget.src = '/assets/placeholder.png';
+                              }}
                         />
                         {/* Delete button for existing images */}
                         {typeof file === "string" && (

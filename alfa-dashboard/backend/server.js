@@ -10,6 +10,7 @@ const rcRoutes = require("./routes/rcRoutes");
 const sellRoutes = require('./routes/sellRoutes');
 const carRoutes = require('./routes/carRoutes');
 const path = require("path");
+const fs = require("fs");
 const { protect } = require('./middleware/auth');
 const cors = require('cors');
 
@@ -20,7 +21,7 @@ connectDB();
 
 // CORS configuration
 const corsOptions = {
-  origin: ['http://127.0.0.1:5500','http://localhost:3000','https://www.alfamotorworld.com','https://alfa-motors-o5cm.vercel.app'],
+  origin: ['http://127.0.0.1:5502','http://localhost:3000','https://www.alfamotorworld.com','https://alfa-motors-o5cm.vercel.app'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
@@ -39,14 +40,95 @@ app.use('/api/service-bills', serviceBillRoutes);
 app.use('/api/sell-requests', sellRoutes);
 
 const carImagesPath = path.join(__dirname, "utils/carimages");
+// Serve car images and other static assets with the same CORS rules as the API.
+// We echo the incoming Origin when it's allowed (don't use wildcard when credentials are used).
 app.use(
   "/carimages",
+  (req, res, next) => {
+    const origin = req.get("origin");
+    if (Array.isArray(corsOptions.origin) && origin && corsOptions.origin.includes(origin)) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+      if (corsOptions.credentials) {
+        res.setHeader("Access-Control-Allow-Credentials", "true");
+      }
+      // Allow the front-end to read Content-Disposition if needed
+      res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+    }
+
+    // If the requested file doesn't exist, return a small PNG placeholder
+    try {
+      const requestedPath = decodeURIComponent(req.path || "");
+      const fullPath = path.join(carImagesPath, requestedPath);
+      if (!fs.existsSync(fullPath)) {
+        // 1x1 transparent PNG
+        const placeholderBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=";
+        const placeholderBuffer = Buffer.from(placeholderBase64, "base64");
+        res.setHeader("Content-Type", "image/png");
+        return res.status(200).send(placeholderBuffer);
+      }
+    } catch (err) {
+      // If something goes wrong checking the file, continue to static handler
+      console.error("Error checking carimages file existence:", err);
+    }
+
+    next();
+  },
   express.static(carImagesPath, {
     setHeaders: (res, filePath) => {
-      res.set("Access-Control-Allow-Origin", "*");
+      // Ensure PDFs are served with the correct MIME and disposition
       if (filePath.endsWith(".pdf")) {
-        res.set("Content-Type", "application/pdf");
-        res.set("Content-Disposition", "inline; filename=" + path.basename(filePath));
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", "inline; filename=" + path.basename(filePath));
+      }
+    },
+  })
+);
+
+// Serve uploaded PDFs/files used by RC entries and service bills
+const utilsUploadsPath = path.join(__dirname, "utils/uploads");
+app.use(
+  "/utils/uploads",
+  (req, res, next) => {
+    const origin = req.get("origin");
+    if (Array.isArray(corsOptions.origin) && origin && corsOptions.origin.includes(origin)) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+      if (corsOptions.credentials) {
+        res.setHeader("Access-Control-Allow-Credentials", "true");
+      }
+      res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+    }
+    next();
+  },
+  express.static(utilsUploadsPath, {
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith(".pdf")) {
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", "inline; filename=" + path.basename(filePath));
+      }
+    },
+  })
+);
+
+// Also serve general uploads (service-bills etc.)
+const uploadsPath = path.join(__dirname, "uploads");
+app.use(
+  "/uploads",
+  (req, res, next) => {
+    const origin = req.get("origin");
+    if (Array.isArray(corsOptions.origin) && origin && corsOptions.origin.includes(origin)) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+      if (corsOptions.credentials) {
+        res.setHeader("Access-Control-Allow-Credentials", "true");
+      }
+      res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+    }
+    next();
+  },
+  express.static(uploadsPath, {
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith(".pdf")) {
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", "inline; filename=" + path.basename(filePath));
       }
     },
   })

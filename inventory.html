@@ -904,9 +904,9 @@
       `;
             } else {
               // Single image
-              imageHTML = `
+          imageHTML = `
   <img src="https://alfa-motors.onrender.com/carimages/${getPhotoFilename(car.photos[0])}" 
-     alt="${car.make || car.brand || ""} ${car.model || ""}">
+    alt="${car.make || car.brand || ""} ${car.model || ""}" onerror="this.onerror=null;this.src='assets/placeholder.png'">
   `;
             }
           } else {
