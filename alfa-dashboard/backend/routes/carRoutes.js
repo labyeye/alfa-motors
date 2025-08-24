@@ -104,7 +104,8 @@ router.delete('/:id/photo', protect, async (req, res) => {
     });
     res.json({ success: true, message: 'Photo deleted' });
   } catch (err) {
-    res.status(500).json({ success: false, error: 'Server error' });
+  console.error('Error deleting photo:', err);
+  res.status(500).json({ success: false, error: 'Server error' });
   }
 });
 // Delete all photos for a car
@@ -135,11 +136,10 @@ router.delete('/:id/photos', protect, async (req, res) => {
       }
     });
 
-    // Clear photos array and save
-    car.photos = [];
-    await car.save();
+  // Clear photos array in DB. Use direct update to bypass the schema validator
+  await Car.findByIdAndUpdate(req.params.id, { $set: { photos: [] } }, { new: true });
 
-    res.json({ success: true, message: 'All photos deleted' });
+  res.json({ success: true, message: 'All photos deleted' });
   } catch (err) {
     console.error('Error deleting all photos:', err);
     res.status(500).json({ success: false, error: 'Server error' });
