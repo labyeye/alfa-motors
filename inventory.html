@@ -884,7 +884,7 @@
               .map(
                 (img) => `
               <img src="https://alfa-motors.onrender.com/carimages/${getPhotoFilename(img)}" 
-                   alt="${car.make || car.brand || ""} ${car.model || ""}">
+                   alt="${car.brand || car.brand || ""} ${car.model || ""}">
             `
               )
               .join("")}
@@ -906,7 +906,7 @@
               // Single image
           imageHTML = `
   <img src="https://alfa-motors.onrender.com/carimages/${getPhotoFilename(car.photos[0])}" 
-    alt="${car.make || car.brand || ""} ${car.model || ""}" onerror="this.onerror=null;this.src='assets/placeholder.png'">
+    alt="${car.brand || car.brand || ""} ${car.model || ""}" onerror="this.onerror=null;this.src='assets/placeholder.png'">
   `;
             }
           } else {
@@ -925,7 +925,7 @@
           }</div>
     </div>
     <div class="card-content">
-      <h3>${car.make || "Unknown Brand"} ${car.model || "Unknown Model"}</h3>
+      <h3>${car.brand || "Unknown Brand"} ${car.model || "Unknown Model"}</h3>
       <span class="model">${
         car.modelYear || new Date().getFullYear()
       } Model</span>

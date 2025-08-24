@@ -301,7 +301,7 @@ const AddcarForm = () => {
                       name="make"
                       className="form-control"
                       required
-                      value={formData.make}
+                      value={formData.brand}
                       onChange={handleChange}
                       placeholder="Enter car make (e.g., Toyota, Honda)"
                     />

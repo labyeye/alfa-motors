@@ -301,7 +301,7 @@ const EditCar = () => {
                   <input
                     type="text"
                     name="make"
-                    value={carData.make}
+                    value={carData.brand}
                     onChange={handleChange}
                     style={styles.formInput}
                     required

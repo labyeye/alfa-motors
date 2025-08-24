@@ -16,7 +16,7 @@ router.post(
   const photoPaths = req.files ? req.files.map((file) => file.filename) : [];
 
       const carData = {
-        make: req.body.make,
+        make: req.body.brand,
         model: req.body.model,
         variant: req.body.variant,
         fuelType: req.body.fuelType,
@@ -87,7 +87,8 @@ router.delete('/:id/photo', protect, async (req, res) => {
     if (car.addedBy.toString() !== req.user._id.toString()) {
       return res.status(401).json({ success: false, error: 'Not authorized' });
     }
-    const { filename } = req.body;
+    // Accept filename from request body or query string
+    let filename = req.body && req.body.filename ? req.body.filename : (req.query && req.query.filename ? req.query.filename : null);
     if (!filename) {
       return res.status(400).json({ success: false, error: 'Filename required' });
     }
@@ -127,7 +128,7 @@ router.put(
     try {
   const photoPaths = req.files ? req.files.map((file) => file.filename) : undefined;
       const updatedCar = {
-        make: req.body.make,
+        make: req.body.brand,
         model: req.body.model,
         variant: req.body.variant,
         fuelType: req.body.fuelType,

@@ -252,26 +252,29 @@ function initializeCarSlider() {
 
 function fetchFeaturedCars() {
   fetch("https://alfa-motors.onrender.com/api/Cars?limit=10")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
-    })
-    .then((Cars) => {
-      displayFeaturedCars(Cars);
-    })
-    .catch((error) => {
-      console.error("Error fetching featured Cars:", error);
-      showFeaturedCarsError();
-    });
+      .then((response) => response.json())
+      .then((payload) => displayFeaturedCars(payload))
+      .catch((error) => {
+        console.error("Error fetching featured Cars:", error);
+        showFeaturedCarsError();
+      });
 }
 
 function displayFeaturedCars(Cars) {
   const CarSlider = document.querySelector(".Car-slider");
   CarSlider.innerHTML = "";
 
-  if (Cars.length === 0) {
+  // Normalize response: accept direct array or API response object
+  let items = [];
+  if (Array.isArray(Cars)) {
+    items = Cars;
+  } else if (Cars && Array.isArray(Cars.data)) {
+    items = Cars.data;
+  } else if (Cars && Cars.success && Array.isArray(Cars.data?.data)) {
+    items = Cars.data.data;
+  }
+
+  if (!items || items.length === 0) {
     CarSlider.innerHTML = `
       <div class="no-Cars" style="width: 100%; text-align: center; padding: 40px;">
         <i class="fas fa-motorcycle" style="font-size: 3rem; color: #ccc;"></i>
@@ -281,7 +284,7 @@ function displayFeaturedCars(Cars) {
     return;
   }
 
-  Cars.forEach((Car) => {
+  items.forEach((Car) => {
     const CarCard = document.createElement("div");
     CarCard.className = "Car-card";
 
@@ -304,12 +307,12 @@ function displayFeaturedCars(Cars) {
         <img src="${
           Car.imageUrl || "https://via.placeholder.com/300x200?text=No+Image"
         }" 
-            alt="${Car.brand} ${Car.model}" 
+            alt="${Car.make} ${Car.model}" 
             onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
         <div class="status-badge ${statusClass}">${statusText}</div>
       </div>
       <div class="card-content">
-        <h3>${Car.brand} ${Car.model}</h3>
+        <h3>${Car.make} ${Car.model}</h3>
         <span class="model">${Car.modelYear} Model</span>
         <div class="details">
           <div class="detail-item">
@@ -330,11 +333,11 @@ function displayFeaturedCars(Cars) {
           </div>
         </div>
         <div class="price-container">
-          <div class="price">₹${(Car.price || 0).toLocaleString()}</div>
+          <div class="price">₹${(Car.sellingPrice || 0).toLocaleString()}</div>
           <div class="emi">Down: ₹${(
             Car.downPayment || 0
           ).toLocaleString()} | EMI: ₹${Math.round(
-      ((Car.price || 0) - (Car.downPayment || 0)) / 36
+      ((Car.sellingPrice || 0) - (Car.downPayment || 0)) / 36
     ).toLocaleString()}/month</div>
           <button class="view-details-btn" ${isDisabled ? "disabled" : ""}>
             ${isDisabled ? Car.status : "View Details"}
@@ -704,7 +707,7 @@ function translatePage(language) {
     }
   });
   
-  const brandCards = document.querySelectorAll(".brand-card h3");
+  const brandCards = document.querySelectorAll(".make-card h3");
   brandCards.forEach((brand) => {
     const key = brand.textContent.trim();
     if (translations[language] && translations[language][key]) {

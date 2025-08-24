@@ -246,7 +246,7 @@ const ListCar = () => {
                 <tbody>
                   {cars.map((car) => (
                     <tr key={car._id} style={styles.tr}>
-                      <td style={styles.td}>{car.make}</td>
+                      <td style={styles.td}>{car.brand}</td>
                       <td style={styles.td}>{car.model}</td>
                       <td style={styles.td}>{car.modelYear}</td>
                       <td style={styles.td}>
