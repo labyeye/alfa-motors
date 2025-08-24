@@ -25,6 +25,7 @@ const EditCar = () => {
   const [expandedMenus, setExpandedMenus] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isDeletingAll, setIsDeletingAll] = useState(false);
   const [carData, setCarData] = useState({
     make: "",
     model: "",
@@ -162,13 +163,27 @@ const EditCar = () => {
     setIsSaving(true);
     try {
       const formData = new FormData();
-      Object.entries(carData).forEach(([key, value]) => {
-        if (key === "photos") {
-          value.forEach((file) => formData.append("photos", file));
-        } else {
-          formData.append(key, value);
+
+      // Attach photos only if user provided new File objects (not existing string URLs)
+      if (carData.photos && carData.photos.length > 0 && typeof carData.photos[0] !== 'string') {
+        carData.photos.forEach((file) => {
+          formData.append('photos', file);
+        });
+      }
+
+      // Append non-empty primitive fields so partial updates are possible
+      const primitiveFields = [
+        'make','model','variant','fuelType','modelYear','registrationYear','color',
+        'chassisNo','engineNo','kmDriven','ownership','daysOld',
+        'buyingPrice','quotingPrice','sellingPrice','status'
+      ];
+      primitiveFields.forEach((key) => {
+        const val = carData[key];
+        if (val !== undefined && val !== null && val !== '') {
+          formData.append(key, val);
         }
       });
+
       await axios.put(`https://alfa-motors.onrender.com/api/cars/${id}`, formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -290,6 +305,7 @@ const EditCar = () => {
             onSubmit={handleSubmit}
             style={styles.form}
             encType="multipart/form-data"
+            noValidate
           >
             <div style={styles.formSection}>
               <h2 style={styles.sectionTitle}>
@@ -516,8 +532,32 @@ const EditCar = () => {
                   multiple
                   onChange={handleFileChange}
                   style={styles.formInput}
-                  required
                 />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px' }}>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      if (!window.confirm('Delete ALL images for this car? This cannot be undone.')) return;
+                      setIsDeletingAll(true);
+                      try {
+                        await axios.delete(`https://alfa-motors.onrender.com/api/cars/${id}/photos`, {
+                          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+                        });
+                        setCarData((prev) => ({ ...prev, photos: [] }));
+                        alert('All images deleted successfully.');
+                      } catch (err) {
+                        console.error('Delete all photos error:', err.response?.data || err.message || err);
+                        alert(err.response?.data?.error || 'Failed to delete all images.');
+                      } finally {
+                        setIsDeletingAll(false);
+                      }
+                    }}
+                    style={{ padding: '8px 12px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
+                    disabled={isDeletingAll}
+                  >
+                    {isDeletingAll ? 'Deleting...' : 'Delete all images'}
+                  </button>
+                </div>
                 {carData.photos && carData.photos.length > 0 && (
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
                     {Array.from(carData.photos).map((file, idx) => (

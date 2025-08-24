@@ -107,6 +107,44 @@ router.delete('/:id/photo', protect, async (req, res) => {
     res.status(500).json({ success: false, error: 'Server error' });
   }
 });
+// Delete all photos for a car
+router.delete('/:id/photos', protect, async (req, res) => {
+  try {
+    const car = await Car.findById(req.params.id);
+    if (!car) {
+      return res.status(404).json({ success: false, error: 'Car not found' });
+    }
+    if (car.addedBy.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ success: false, error: 'Not authorized' });
+    }
+
+    const fs = require('fs');
+    const path = require('path');
+    const images = Array.isArray(car.photos) ? car.photos.slice() : [];
+
+    // Remove files from disk (attempt, ignore missing)
+    images.forEach((img) => {
+      try {
+        const filename = img.split('/').pop();
+        const filePath = path.join(__dirname, '../utils/carimages/', filename.replace('carimages/', ''));
+        fs.unlink(filePath, (err) => {
+          // ignore error
+        });
+      } catch (e) {
+        // ignore
+      }
+    });
+
+    // Clear photos array and save
+    car.photos = [];
+    await car.save();
+
+    res.json({ success: true, message: 'All photos deleted' });
+  } catch (err) {
+    console.error('Error deleting all photos:', err);
+    res.status(500).json({ success: false, error: 'Server error' });
+  }
+});
 router.get("/:id", async (req, res) => {
   try {
     const car = await Car.findById(req.params.id);
@@ -126,28 +164,28 @@ router.put(
   upload.array("photos", 12),
   async (req, res) => {
     try {
-  const photoPaths = req.files ? req.files.map((file) => file.filename) : undefined;
-      const updatedCar = {
-        make: req.body.brand,
-        model: req.body.model,
-        variant: req.body.variant,
-        fuelType: req.body.fuelType,
-        modelYear: Number(req.body.modelYear),
-        registrationYear: Number(req.body.registrationYear),
-        color: req.body.color,
-        chassisNo: req.body.chassisNo,
-        engineNo: req.body.engineNo,
-        kmDriven: Number(req.body.kmDriven),
-        ownership: req.body.ownership,
-        daysOld: Number(req.body.daysOld),
-        buyingPrice: Number(req.body.buyingPrice),
-        quotingPrice: Number(req.body.quotingPrice),
-        sellingPrice: Number(req.body.sellingPrice),
-        status: req.body.status,
-        addedBy: req.user._id,
-      };
-      if (photoPaths) updatedCar.photos = photoPaths;
-      const car = await Car.findByIdAndUpdate(req.params.id, updatedCar, { new: true });
+    const photoPaths = req.files ? req.files.map((file) => file.filename) : undefined;
+        // Build update object only from provided fields to allow partial updates
+        const updatedCar = {};
+        if (req.body.brand !== undefined && req.body.brand !== "") updatedCar.make = req.body.brand;
+        if (req.body.model !== undefined && req.body.model !== "") updatedCar.model = req.body.model;
+        if (req.body.variant !== undefined && req.body.variant !== "") updatedCar.variant = req.body.variant;
+        if (req.body.fuelType !== undefined && req.body.fuelType !== "") updatedCar.fuelType = req.body.fuelType;
+        if (req.body.modelYear !== undefined && req.body.modelYear !== "") updatedCar.modelYear = Number(req.body.modelYear);
+        if (req.body.registrationYear !== undefined && req.body.registrationYear !== "") updatedCar.registrationYear = Number(req.body.registrationYear);
+        if (req.body.color !== undefined && req.body.color !== "") updatedCar.color = req.body.color;
+        if (req.body.chassisNo !== undefined && req.body.chassisNo !== "") updatedCar.chassisNo = req.body.chassisNo;
+        if (req.body.engineNo !== undefined && req.body.engineNo !== "") updatedCar.engineNo = req.body.engineNo;
+        if (req.body.kmDriven !== undefined && req.body.kmDriven !== "") updatedCar.kmDriven = Number(req.body.kmDriven);
+        if (req.body.ownership !== undefined && req.body.ownership !== "") updatedCar.ownership = req.body.ownership;
+        if (req.body.daysOld !== undefined && req.body.daysOld !== "") updatedCar.daysOld = Number(req.body.daysOld);
+        if (req.body.buyingPrice !== undefined && req.body.buyingPrice !== "") updatedCar.buyingPrice = Number(req.body.buyingPrice);
+        if (req.body.quotingPrice !== undefined && req.body.quotingPrice !== "") updatedCar.quotingPrice = Number(req.body.quotingPrice);
+        if (req.body.sellingPrice !== undefined && req.body.sellingPrice !== "") updatedCar.sellingPrice = Number(req.body.sellingPrice);
+        if (req.body.status !== undefined && req.body.status !== "") updatedCar.status = req.body.status;
+        // Do not overwrite addedBy on update
+    if (photoPaths && photoPaths.length > 0) updatedCar.photos = photoPaths;
+        const car = await Car.findByIdAndUpdate(req.params.id, updatedCar, { new: true, runValidators: true });
       if (!car) {
         return res.status(404).json({ success: false, error: "Car not found" });
       }
