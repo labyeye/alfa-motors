@@ -111,13 +111,11 @@ const EditCar = () => {
             },
           }
         );
-        const images = [
-          ...(response.data.images || []),
-          ...Array(10).fill(""),
-        ].slice(0, 10);
+        // Backend stores uploaded filenames in `photos`; normalize to `photos` in state
+        const photos = [...(response.data.photos || []), ...Array(10).fill("")].slice(0, 10);
         setCarData({
           ...response.data,
-          images: images,
+          photos: photos,
         });
         setIsLoading(false);
       } catch (error) {
@@ -156,6 +154,18 @@ const EditCar = () => {
       ...prev,
       photos: Array.from(e.target.files),
     }));
+  };
+
+  const buildImageUrl = (file) => {
+    if (!file) return '/assets/placeholder.png';
+    // If it's a full URL or starts with /, return as-is
+    if (file.startsWith('http') || file.startsWith('/')) return file;
+    // Strip potential 'carimages/' prefix
+    const filename = file.replace('carimages/', '');
+    // Prefer production host if configured, otherwise localhost
+    const PROD_HOST = 'https://alfa-motors.onrender.com';
+    const host = window.location.hostname === 'localhost' ? 'https://alfa-motors.onrender.com' : PROD_HOST;
+    return `${host}/carimages/${filename}`;
   };
 
   const handleSubmit = async (e) => {
@@ -565,14 +575,8 @@ const EditCar = () => {
                         key={idx}
                         style={{ width: "100px", height: "100px", overflow: "hidden", position: "relative" }}
                       >
-                        <img
-                          src={
-                            typeof file === "string"
-                              ? file.startsWith("http") || file.startsWith("/")
-                                ? file
-                                : `https://alfa-motors.onrender.com/carimages/${file.replace('carimages/', '')}`
-                              : URL.createObjectURL(file)
-                          }
+                          <img
+                          src={typeof file === 'string' ? buildImageUrl(file) : URL.createObjectURL(file)}
                           alt={`Preview ${idx + 1}`}
                           style={{ width: "100%", height: "100%", objectFit: "cover" }}
                               onError={(e) => {
