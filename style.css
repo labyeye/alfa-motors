@@ -42,9 +42,8 @@
 }
 
 .whatsapp-btn {
-  background-color: #25D366;
+  background-color: #25d366;
   text-decoration: none;
-
 }
 
 .call-btn {
@@ -371,10 +370,9 @@
 }
 
 .search-input {
-  width: 50%;
+  width: 90%;
   padding: 15px 60px 15px 20px;
   border-radius: 30px;
-  margin-left: 10px;
   margin-top: 70px;
   border: none;
   font-size: 18px;
@@ -391,7 +389,7 @@
 
 .search-button {
   position: absolute;
-  right: 120px;
+  right: -45px;
   top: 75px;
   background: var(--primary-color);
   border: none;
@@ -419,10 +417,13 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  background-image: radial-gradient(circle at center,
+  background-image: radial-gradient(
+      circle at center,
       rgba(0, 0, 0, 0.7) 0%,
       rgba(0, 0, 0, 0.85) 60%,
-      rgba(0, 0, 0, 0.95) 100%), url('https://images.overdrive.in/wp-content/odgallery/2018/06/42636_2018%20Ducati%20Panigale%20V4-2018-022.JPG');
+      rgba(0, 0, 0, 0.95) 100%
+    ),
+    url("https://images.overdrive.in/wp-content/odgallery/2018/06/42636_2018%20Ducati%20Panigale%20V4-2018-022.JPG");
   background-size: cover;
   background-position: center;
   z-index: 1;
@@ -437,25 +438,28 @@ body {
 }
 
 /* Hero Slider Styles */
-.hero-slider {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-}
-
-.slider-dots {
-  position: absolute;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
+/* Modern hero section centering and style */
+.hero-content {
   display: flex;
-  gap: 10px;
-  z-index: 10;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
-.floating-buttons {
-  bottom: 70px;
+.hero-content h1 {
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 1em;
+}
+
+.hero-line {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 0.5em;
 }
 
 @media (max-width: 768px) {
@@ -495,7 +499,11 @@ body {
   position: absolute;
   width: 100%;
   height: 100%;
-  background: radial-gradient(50% 50% at 77% 49%, rgba(48, 46, 46, 1) 0%, rgba(1, 1, 1, 0) 100%);
+  background: radial-gradient(
+    50% 50% at 77% 49%,
+    rgba(48, 46, 46, 1) 0%,
+    rgba(1, 1, 1, 0) 100%
+  );
 }
 
 .navbar {
@@ -530,7 +538,7 @@ body {
 }
 
 .nav-links a::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 0;
   height: 2px;
@@ -555,7 +563,7 @@ body {
 
 .nav-links a.active,
 .nav-links a:hover {
-  color: var(--text-color);
+  color: white;
 }
 
 .login-btn button {
@@ -574,13 +582,18 @@ body {
 }
 
 .login-btn button::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: left 0.7s ease;
   z-index: -1;
 }
@@ -597,10 +610,7 @@ body {
   position: relative;
   z-index: 5;
   margin-top: 5%;
-  padding: 0 5%;
   max-width: 1200px;
-  margin-left: 90px;
-  margin-right: auto;
   text-align: center;
 }
 
@@ -615,7 +625,11 @@ body {
 
 .hero-line {
   display: block;
-  background: linear-gradient(188deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.7) 100%);
+  background: linear-gradient(
+    188deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 0.7) 100%
+  );
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -651,7 +665,11 @@ body {
 @media only screen and (max-width: 768px) {
   .hero-line {
     display: block;
-    background: linear-gradient(188deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.7) 100%);
+    background: linear-gradient(
+      188deg,
+      rgba(255, 255, 255, 1) 0%,
+      rgba(255, 255, 255, 0.7) 100%
+    );
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -701,10 +719,8 @@ body {
   }
 }
 
-
 .hero-line.highlight {
-  animation: fadeInUp 0.8s ease 0.3s forwards,
-    pulse 2s ease-in-out 2s infinite;
+  animation: fadeInUp 0.8s ease 0.3s forwards, pulse 2s ease-in-out 2s infinite;
 }
 
 @media (max-width: 1200px) {
@@ -717,7 +733,6 @@ body {
   }
 }
 
-
 @media (max-width: 480px) {
   .hero-content h1 {
     font-size: 2.5rem;
@@ -727,7 +742,6 @@ body {
     font-size: 3rem;
   }
 }
-
 
 .cta-button {
   background-color: var(--primary-color);
@@ -776,13 +790,17 @@ h2 {
 }
 
 .brands-section::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -50%;
   left: -50%;
   width: 80%;
   height: 200%;
-  background: radial-gradient(circle, rgba(163, 41, 25, 0.1) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(163, 41, 25, 0.1) 0%,
+    transparent 70%
+  );
   z-index: 0;
 }
 
@@ -1039,14 +1057,11 @@ h2 {
   gap: 25px;
 }
 
-
-
 .process-step:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   border-color: rgba(255, 255, 255, 0.2);
 }
-
 
 /* Inventory Section */
 .inventory-section {
@@ -1063,13 +1078,17 @@ h2 {
 }
 
 .stats-section::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -50%;
   right: -50%;
   width: 80%;
   height: 200%;
-  background: radial-gradient(circle, rgba(163, 41, 25, 0.1) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(163, 41, 25, 0.1) 0%,
+    transparent 70%
+  );
   z-index: 0;
 }
 
@@ -1092,7 +1111,7 @@ h2 {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 15px;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.4s ease;
@@ -1185,9 +1204,8 @@ h2 {
   transform: translateY(-3px);
 }
 .kannada-font {
-  font-family: 'Noto Sans Kannada', sans-serif;
+  font-family: "Noto Sans Kannada", sans-serif;
 }
-
 
 /* Services Section */
 .services-section {
@@ -1195,7 +1213,6 @@ h2 {
   padding: 80px 5%;
   position: relative;
   overflow: hidden;
-
 }
 
 .services-section h2 {
@@ -1207,13 +1224,17 @@ h2 {
 }
 
 .services-section::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at 20% 50%, rgba(163, 41, 25, 0.1) 0%, transparent 50%);
+  background: radial-gradient(
+    circle at 20% 50%,
+    rgba(163, 41, 25, 0.1) 0%,
+    transparent 50%
+  );
   z-index: 0;
 }
 
@@ -1298,13 +1319,17 @@ h2 {
 }
 
 .styles-section::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -50%;
   left: -50%;
   width: 80%;
   height: 200%;
-  background: radial-gradient(circle, rgba(163, 41, 25, 0.1) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(163, 41, 25, 0.1) 0%,
+    transparent 70%
+  );
   z-index: 0;
 }
 .styles-section {
@@ -1381,19 +1406,19 @@ h2 {
     min-width: 140px;
     max-width: 140px;
   }
-  
+
   .style-card img {
     height: 100px;
   }
-  
+
   .style-content {
     padding: 12px;
   }
-  
+
   .style-content h3 {
     font-size: 1rem;
   }
-  
+
   .style-content p {
     font-size: 0.75rem;
   }
@@ -1481,7 +1506,6 @@ h2 {
 
   .stat-number {
     font-size: 2rem;
-    
   }
 
   .stat-label {
@@ -1513,13 +1537,17 @@ h2 {
 }
 
 .sell-section::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -50%;
   right: -50%;
   width: 80%;
   height: 200%;
-  background: radial-gradient(circle, rgba(163, 41, 25, 0.1) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(163, 41, 25, 0.1) 0%,
+    transparent 70%
+  );
   z-index: 0;
 }
 
@@ -1561,7 +1589,6 @@ h2 {
   gap: 15px;
   opacity: 0.9;
   transition: all 0.3s ease;
-
 }
 
 .sell-step:hover {
@@ -1622,7 +1649,7 @@ h2 {
 }
 
 .sell-cta .cta-button::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -1648,13 +1675,17 @@ h2 {
 }
 
 .testimonials-section::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at 20% 50%, rgba(163, 41, 25, 0.1) 0%, transparent 50%);
+  background: radial-gradient(
+    circle at 20% 50%,
+    rgba(163, 41, 25, 0.1) 0%,
+    transparent 50%
+  );
   z-index: 0;
 }
 
@@ -1663,11 +1694,11 @@ h2 {
   margin-bottom: 70px;
   position: relative;
   display: inline-block;
-  color:#000000
+  color: #000000;
 }
 
 .testimonials-section h2::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -15px;
   left: 50%;
@@ -1705,13 +1736,17 @@ h2 {
 }
 
 .testimonial::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 50%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.03) 0%,
+    rgba(255, 255, 255, 0) 50%
+  );
   z-index: -1;
 }
 
@@ -1789,7 +1824,7 @@ h2 {
 }
 
 .quote::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   top: 0;
@@ -2181,7 +2216,6 @@ input[type="range"]::-webkit-slider-thumb {
   text-decoration: none;
   color: inherit;
   display: block;
-
 }
 
 .style-card {
@@ -2253,11 +2287,16 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .hero-slide::before {
-  content: '';
+  content: "";
   position: absolute;
   width: 100%;
   height: 100%;
-  background-image: radial-gradient(circle at center, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.85) 60%, rgba(0, 0, 0, 0.95) 100%);
+  background-image: radial-gradient(
+    circle at center,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.85) 60%,
+    rgba(0, 0, 0, 0.95) 100%
+  );
 }
 
 .social-icons {
@@ -2296,13 +2335,12 @@ input[type="range"]::-webkit-slider-thumb {
   font-size: 0.9rem;
 }
 
-
 .mobile-menu-toggle {
   display: none;
   background: none;
   border: none;
   color: white;
-  font-size: 2.0rem;
+  font-size: 2rem;
   cursor: pointer;
   z-index: 1001;
   position: absolute;
@@ -2364,10 +2402,13 @@ input[type="range"]::-webkit-slider-thumb {
   }
 
   .hero-content {
-    margin-top: 30%;
-    margin-left: auto;
-    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
     text-align: center;
+    margin: 0 auto;
     padding: 0 20px;
   }
 
@@ -2407,6 +2448,7 @@ input[type="range"]::-webkit-slider-thumb {
   }
 
   .search-button {
+    
     top: 32px;
   }
 
@@ -2456,7 +2498,6 @@ input[type="range"]::-webkit-slider-thumb {
     height: 30px;
     right: 21%;
     top: 24px;
-
   }
 }
 
@@ -2526,7 +2567,6 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 @media (max-width: 768px) {
-
   @keyframes slideCars {
     0% {
       transform: translateX(0%);

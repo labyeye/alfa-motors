@@ -302,11 +302,23 @@ function displayFeaturedCars(Cars) {
       isDisabled = true;
     }
 
+    // Use car.photos[0] if available, normalize like inventory.html
+    let imgSrc = "https://via.placeholder.com/300x200?text=No+Image";
+    if (Array.isArray(Car.photos) && Car.photos.length > 0) {
+      let filename = Car.photos[0];
+      if (filename.startsWith("carimages/")) filename = filename.replace("carimages/", "");
+      if (filename.startsWith("assets/")) {
+        imgSrc = filename;
+      } else {
+        imgSrc = `https://alfa-motors.onrender.com/carimages/${filename}`;
+      }
+    } else if (Car.imageUrl) {
+      imgSrc = Car.imageUrl;
+    }
+
     CarCard.innerHTML = `
       <div class="image-container">
-        <img src="${
-          Car.imageUrl || "https://via.placeholder.com/300x200?text=No+Image"
-        }" 
+        <img src="${imgSrc}" 
             alt="${Car.make} ${Car.model}" 
             onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
         <div class="status-badge ${statusClass}">${statusText}</div>

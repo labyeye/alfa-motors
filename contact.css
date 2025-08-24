@@ -1,3 +1,54 @@
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li {
+  margin: 0 15px;
+}
+
+.nav-links a {
+  position: relative;
+  color: black;
+  text-decoration: none;
+  font-family: "Sansation", sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  transition: color 0.3s;
+  padding: 5px 0;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: var(--primary-color);
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after,
+.nav-links a.active::after {
+  width: 100%;
+}
+
+.nav-links li {
+  transition: transform 0.3s ease;
+}
+
+.nav-links li:hover {
+  transform: translateY(-3px);
+}
+
+.nav-links a.active,
+.nav-links a:hover {
+  color: black;
+}
 .hero-section {
   position: relative;
   width: 100%;
