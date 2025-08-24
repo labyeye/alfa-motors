@@ -725,7 +725,7 @@
               if (data.success && Array.isArray(data.data)) {
                 allCars = data.data.map((car) => ({
                   ...car,
-                  brand: car.brand?.trim(), // Ensure brand is trimmed
+                  brand: car.make?.trim(), // Ensure brand is trimmed
                 }));
                 applyAllFilters();
               }
@@ -854,7 +854,7 @@
           carCard.className = "car-card";
 
           // Set data attributes for filtering
-          carCard.dataset.brand = car.brand || "";
+          carCard.dataset.brand = car.make || "";
           carCard.dataset.sellingPrice = car.sellingPrice || 0;
           carCard.dataset.year = car.modelYear || new Date().getFullYear();
           carCard.dataset.km = car.kmDriven || 0;
@@ -884,7 +884,7 @@
               .map(
                 (img) => `
               <img src="https://alfa-motors.onrender.com/carimages/${getPhotoFilename(img)}" 
-                   alt="${car.brand || car.brand || ""} ${car.model || ""}">
+                   alt="${car.make || car.make || ""} ${car.model || ""}">
             `
               )
               .join("")}
@@ -906,7 +906,7 @@
               // Single image
           imageHTML = `
   <img src="https://alfa-motors.onrender.com/carimages/${getPhotoFilename(car.photos[0])}" 
-    alt="${car.brand || car.brand || ""} ${car.model || ""}" onerror="this.onerror=null;this.src='assets/placeholder.png'">
+    alt="${car.make || car.make || ""} ${car.model || ""}" onerror="this.onerror=null;this.src='assets/placeholder.png'">
   `;
             }
           } else {
@@ -925,7 +925,7 @@
           }</div>
     </div>
     <div class="card-content">
-      <h3>${car.brand || "Unknown Brand"} ${car.model || "Unknown Model"}</h3>
+      <h3>${car.make || "Unknown Brand"} ${car.model || "Unknown Model"}</h3>
       <span class="model">${
         car.modelYear || new Date().getFullYear()
       } Model</span>
@@ -1020,7 +1020,7 @@
           function showImage(idx) {
             currentIndex = idx;
             mainImg.src = normalizeImagePath(images[idx]);
-            mainImg.alt = `${car.brand} ${car.model} ${idx+1}`;
+            mainImg.alt = `${car.make} ${car.model} ${idx+1}`;
             Array.from(thumbnailsContainer.children).forEach((thumb, i) => {
               thumb.style.border = i === idx ? '2px solid #3b82f6' : 'none';
             });
@@ -1028,7 +1028,7 @@
           images.forEach((img, idx) => {
             const thumb = document.createElement("img");
             thumb.src = normalizeImagePath(img);
-            thumb.alt = `${car.brand} ${car.model} ${idx+1}`;
+            thumb.alt = `${car.make} ${car.model} ${idx+1}`;
             thumb.style.width = "60px";
             thumb.style.height = "40px";
             thumb.style.objectFit = "cover";
@@ -1041,7 +1041,7 @@
           carouselPrev.onclick = () => showImage((currentIndex - 1 + images.length) % images.length);
           carouselNext.onclick = () => showImage((currentIndex + 1) % images.length);
           // Populate other car details
-          document.getElementById("popup-Car-title").textContent = `${car.brand || ""} ${car.model || ""}`;
+          document.getElementById("popup-Car-title").textContent = `${car.make || ""} ${car.model || ""}`;
           document.getElementById("popup-Car-model").textContent = `${car.modelYear || ""} Model`;
           document.getElementById("popup-Car-km").textContent = `${(car.kmDriven || 0).toLocaleString()} km`;
           document.getElementById("popup-Car-owner").textContent = (typeof formatOwnership === "function" ? formatOwnership(car.ownership || "1") : (car.ownership || "1"));
@@ -1229,11 +1229,11 @@
               const brand = this.dataset.brand;
 
               // Toggle brand filter
-              if (currentFilters.brand === brand) {
-                currentFilters.brand = null;
+              if (currentFilters.make === brand) {
+                currentFilters.make = null;
                 this.classList.remove("active");
               } else {
-                currentFilters.brand = brand;
+                currentFilters.make = brand;
 
                 // Update active state
                 document
@@ -1245,7 +1245,7 @@
               // Update UI and apply filters
               const brandBtn = document.querySelector('[data-filter="brand"]');
               if (brandBtn) {
-                brandBtn.innerHTML = currentFilters.brand
+                brandBtn.innerHTML = currentFilters.make
                   ? `${brand} <i class="fas fa-chevron-down"></i>`
                   : `Brand <i class="fas fa-chevron-down"></i>`;
               }
@@ -1405,15 +1405,15 @@
             .forEach((option) => {
               option.addEventListener("click", function () {
                 const brand = this.dataset.brand;
-                currentFilters.brand =
-                  brand === currentFilters.brand ? null : brand;
+                currentFilters.make =
+                  brand === currentFilters.make ? null : brand;
                 applyAllFilters();
 
                 // Update button text
                 const brandBtn = document.querySelector(
                   '[data-filter="brand"]'
                 );
-                brandBtn.innerHTML = currentFilters.brand
+                brandBtn.innerHTML = currentFilters.make
                   ? `${brand} <i class="fas fa-chevron-down"></i>`
                   : `Brand <i class="fas fa-chevron-down"></i>`;
 
@@ -1546,15 +1546,15 @@
             .forEach((option) => {
               option.addEventListener("click", function () {
                 const brand = this.dataset.brand;
-                currentFilters.brand =
-                  brand === currentFilters.brand ? null : brand;
+                currentFilters.make =
+                  brand === currentFilters.make ? null : brand;
                 applyAllFilters();
 
                 // Update button text
                 const brandBtn = document.querySelector(
                   '[data-filter="brand"]'
                 );
-                brandBtn.innerHTML = currentFilters.brand
+                brandBtn.innerHTML = currentFilters.make
                   ? `${brand} <i class="fas fa-chevron-down"></i>`
                   : `Brand <i class="fas fa-chevron-down"></i>`;
 
@@ -1562,8 +1562,8 @@
                 document.querySelectorAll(".brand-logo").forEach((logo) => {
                   logo.classList.remove("active");
                   if (
-                    currentFilters.brand &&
-                    logo.dataset.brand === currentFilters.brand
+                    currentFilters.make &&
+                    logo.dataset.brand === currentFilters.make
                   ) {
                     logo.classList.add("active");
                   }
@@ -1679,11 +1679,11 @@
             const price = car.sellingPrice || 0;
             const year = car.modelYear || new Date().getFullYear();
             const km = car.kmDriven || 0;
-            const brand = (car.brand || "").toLowerCase();
+            const brand = (car.make || "").toLowerCase();
             const owner = car.ownership || "";
             const fuel = car.fuelType || "";
 
-            console.log(`Car ${car.brand} ${car.model}:`);
+            console.log(`Car ${car.make} ${car.model}:`);
             console.log(
               `Year: ${year} (filter: ${currentFilters.minYear}-${currentFilters.maxYear})`
             );
@@ -1702,11 +1702,11 @@
             const kmMatch =
               km >= currentFilters.minKm && km <= currentFilters.maxKm;
             const brandMatch =
-              !currentFilters.brand ||
-              car.brand
+              !currentFilters.make ||
+              car.make
                 .toLowerCase()
-                .includes(currentFilters.brand.toLowerCase());
-            console.log(`Brand match for ${car.brand}: ${brandMatch}`);
+                .includes(currentFilters.make.toLowerCase());
+            console.log(`Brand match for ${car.make}: ${brandMatch}`);
 
             const ownerMatch =
               !currentFilters.owner || owner.includes(currentFilters.owner);
