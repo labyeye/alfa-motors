@@ -9,6 +9,7 @@ const serviceBillRoutes = require('./routes/serviceBillRoutes');
 const rcRoutes = require("./routes/rcRoutes");
 const sellRoutes = require('./routes/sellRoutes');
 const carRoutes = require('./routes/carRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
 const path = require("path");
 const fs = require("fs");
 const { protect } = require('./middleware/auth');
@@ -21,7 +22,7 @@ connectDB();
 
 // CORS configuration
 const corsOptions = {
-  origin: ['http://127.0.0.1:5500','http://localhost:3000','https://www.alfamotorworld.com','https://alfa-motors-o5cm.vercel.app'],
+  origin: ['http://127.0.0.1:5502','http://localhost:3000','https://www.alfamotorworld.com','https://alfa-motors-o5cm.vercel.app'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
@@ -38,6 +39,7 @@ app.use('/api/sell-letters', sellLetterRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/service-bills', serviceBillRoutes);
 app.use('/api/sell-requests', sellRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 const carImagesPath = path.join(__dirname, "utils/carimages");
 // Serve car images and other static assets with the same CORS rules as the API.

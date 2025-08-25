@@ -385,6 +385,14 @@
                       >
                     </button>
                     <button class="sort-option" data-sort="year-old">
+                    <!-- 5-star social-like icon that opens review modal -->
+                    <a class="footer-stars" title="Leave a review" aria-label="Leave a review">
+                      <i class="fa-solid fa-star" style="color:#f59e0b;margin-right:2px"></i>
+                      <i class="fa-solid fa-star" style="color:#f59e0b;margin-right:2px"></i>
+                      <i class="fa-solid fa-star" style="color:#f59e0b;margin-right:2px"></i>
+                      <i class="fa-solid fa-star" style="color:#f59e0b;margin-right:2px"></i>
+                      <i class="fa-solid fa-star" style="color:#f59e0b"></i>
+                    </a>
                       <span data-translate="Year: Oldest First"
                         >Year: Oldest First</span
                       >
@@ -874,10 +882,7 @@
           let imageHTML = "";
           if (Array.isArray(car.photos) && car.photos.length > 0) {
             // Helper to strip 'carimages/' prefix if present
-            const getPhotoFilename = (img) =>
-              img.startsWith("carimages/")
-                ? img.replace("carimages/", "")
-                : img;
+            const getPhotoFilename = (img) => img.startsWith('carimages/') ? img.replace('carimages/', '') : img;
             if (car.photos.length > 1) {
               // Multiple images - create slider
               imageHTML = `
@@ -886,9 +891,7 @@
             ${car.photos
               .map(
                 (img) => `
-              <img src="https://alfa-motors.onrender.com/carimages/${getPhotoFilename(
-                img
-              )}" 
+              <img src="https://alfa-motors.onrender.com/carimages/${getPhotoFilename(img)}" 
                    alt="${car.make || car.make || ""} ${car.model || ""}">
             `
               )
@@ -909,13 +912,9 @@
       `;
             } else {
               // Single image
-              imageHTML = `
-  <img src="https://alfa-motors.onrender.com/carimages/${getPhotoFilename(
-    car.photos[0]
-  )}" 
-    alt="${car.make || car.make || ""} ${
-                car.model || ""
-              }" onerror="this.onerror=null;this.src='assets/placeholder.png'">
+          imageHTML = `
+  <img src="https://alfa-motors.onrender.com/carimages/${getPhotoFilename(car.photos[0])}" 
+    alt="${car.make || car.make || ""} ${car.model || ""}" onerror="this.onerror=null;this.src='assets/placeholder.png'">
   `;
             }
           } else {
@@ -950,6 +949,10 @@
         <div class="detail-item">
           <i class="fas fa-gas-pump"></i>
           <span>${car.fuelType || "Petrol"}</span>
+        </div>
+        <div class="detail-item">
+          <i class="fas fa-calendar-alt"></i>
+          <span>${formatAge(car.daysOld || 0)}</span>
         </div>
       </div>
       <div class="price-container">
@@ -986,14 +989,15 @@
           document.querySelectorAll(".car-card").forEach((card) => {
             const viewDetailsBtn = card.querySelector(".view-details-btn");
             const contactBtn = card.querySelector(".contact-btn");
+
             if (viewDetailsBtn && !viewDetailsBtn.disabled) {
               viewDetailsBtn.addEventListener("click", (e) => {
                 e.stopPropagation();
                 const CarData = JSON.parse(card.dataset.CarData);
-                const carQuery = encodeURIComponent(JSON.stringify(CarData));
-                window.location.href = `vehicledetail.html?car=${carQuery}`;
+                showCarPopup(CarData);
               });
             }
+
             if (contactBtn && !contactBtn.disabled) {
               contactBtn.addEventListener("click", (e) => {
                 e.stopPropagation();
@@ -1010,35 +1014,29 @@
           const mainImg = document.getElementById("popup-Car-image");
           // Carousel logic
           let currentIndex = 0;
-          const thumbnailsContainer = document.getElementById(
-            "popup-Car-thumbnails"
-          );
+          const thumbnailsContainer = document.getElementById("popup-Car-thumbnails");
           const carouselPrev = document.getElementById("carousel-prev");
           const carouselNext = document.getElementById("carousel-next");
           thumbnailsContainer.innerHTML = "";
-          let images =
-            car.photos && car.photos.length > 0
-              ? car.photos
-              : ["assets/owner.png"];
+          let images = car.photos && car.photos.length > 0 ? car.photos : ["assets/owner.png"];
           function normalizeImagePath(img) {
             let filename = img;
-            if (filename.startsWith("carimages/"))
-              filename = filename.replace("carimages/", "");
-            if (filename.startsWith("assets/")) return filename;
+            if (filename.startsWith('carimages/')) filename = filename.replace('carimages/', '');
+            if (filename.startsWith('assets/')) return filename;
             return `https://alfa-motors.onrender.com/carimages/${filename}`;
           }
           function showImage(idx) {
             currentIndex = idx;
             mainImg.src = normalizeImagePath(images[idx]);
-            mainImg.alt = `${car.make} ${car.model} ${idx + 1}`;
+            mainImg.alt = `${car.make} ${car.model} ${idx+1}`;
             Array.from(thumbnailsContainer.children).forEach((thumb, i) => {
-              thumb.style.border = i === idx ? "2px solid #3b82f6" : "none";
+              thumb.style.border = i === idx ? '2px solid #3b82f6' : 'none';
             });
           }
           images.forEach((img, idx) => {
             const thumb = document.createElement("img");
             thumb.src = normalizeImagePath(img);
-            thumb.alt = `${car.make} ${car.model} ${idx + 1}`;
+            thumb.alt = `${car.make} ${car.model} ${idx+1}`;
             thumb.style.width = "60px";
             thumb.style.height = "40px";
             thumb.style.objectFit = "cover";
@@ -1048,39 +1046,20 @@
             thumbnailsContainer.appendChild(thumb);
           });
           showImage(0);
-          carouselPrev.onclick = () =>
-            showImage((currentIndex - 1 + images.length) % images.length);
-          carouselNext.onclick = () =>
-            showImage((currentIndex + 1) % images.length);
+          carouselPrev.onclick = () => showImage((currentIndex - 1 + images.length) % images.length);
+          carouselNext.onclick = () => showImage((currentIndex + 1) % images.length);
           // Populate other car details
-          document.getElementById("popup-Car-title").textContent = `${
-            car.make || ""
-          } ${car.model || ""}`;
-          document.getElementById("popup-Car-model").textContent = `${
-            car.modelYear || ""
-          } Model`;
-          document.getElementById("popup-Car-km").textContent = `${(
-            car.kmDriven || 0
-          ).toLocaleString()} km`;
-          document.getElementById("popup-Car-owner").textContent =
-            typeof formatOwnership === "function"
-              ? formatOwnership(car.ownership || "1")
-              : car.ownership || "1";
-          document.getElementById("popup-Car-fuel").textContent =
-            car.fuelType || "Petrol";
-          document.getElementById("popup-Car-age").textContent =
-            typeof formatAge === "function"
-              ? formatAge(car.daysOld || 0)
-              : car.daysOld || 0;
-          document.getElementById("popup-Car-price").textContent = `₹${(
-            car.sellingPrice || 0
-          ).toLocaleString()}`;
+          document.getElementById("popup-Car-title").textContent = `${car.make || ""} ${car.model || ""}`;
+          document.getElementById("popup-Car-model").textContent = `${car.modelYear || ""} Model`;
+          document.getElementById("popup-Car-km").textContent = `${(car.kmDriven || 0).toLocaleString()} km`;
+          document.getElementById("popup-Car-owner").textContent = (typeof formatOwnership === "function" ? formatOwnership(car.ownership || "1") : (car.ownership || "1"));
+          document.getElementById("popup-Car-fuel").textContent = car.fuelType || "Petrol";
+          document.getElementById("popup-Car-age").textContent = (typeof formatAge === "function" ? formatAge(car.daysOld || 0) : (car.daysOld || 0));
+          document.getElementById("popup-Car-price").textContent = `₹${(car.sellingPrice || 0).toLocaleString()}`;
 
           // Contact Seller button navigation
-          const contactBtn = popup.querySelector(".contact-btn");
-          contactBtn.onclick = () => {
-            window.location.href = "contact.html";
-          };
+          const contactBtn = popup.querySelector('.contact-btn');
+          contactBtn.onclick = () => { window.location.href = 'contact.html'; };
 
           // Show popup
           popup.classList.add("active");
@@ -1944,233 +1923,34 @@
 
       gtag("config", "G-ETL311CBE6");
     </script>
-    <div
-      class="Car-popup-overlay"
-      style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(30, 41, 59, 0.85);
-        z-index: 9999;
-        display: none;
-        align-items: center;
-        justify-content: center;
-      "
-    >
-      <div
-        class="Car-popup"
-        style="
-          background: #fff;
-          border-radius: 16px;
-          max-width: 600px;
-          width: 95vw;
-          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
-          position: relative;
-          padding: 32px 24px;
-        "
-      >
-        <button
-          class="close-popup"
-          style="
-            position: absolute;
-            top: 18px;
-            right: 18px;
-            background: #f87171;
-            color: #fff;
-            border: none;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            font-size: 1.5rem;
-            cursor: pointer;
-          "
-        >
-          &times;
-        </button>
-        <div
-          class="popup-content"
-          style="display: flex; flex-direction: column; align-items: center"
-        >
-          <div
-            class="popup-image-container"
-            style="width: 100%; margin-bottom: 18px"
-          >
-            <div
-              id="popup-carousel"
-              style="
-                position: relative;
-                width: 100%;
-                max-width: 400px;
-                margin: 0 auto;
-              "
-            >
-              <img
-                id="popup-Car-image"
-                src=""
-                alt="Car Image"
-                style="
-                  width: 100%;
-                  max-height: 260px;
-                  object-fit: cover;
-                  border-radius: 12px;
-                  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-                "
-              />
-              <button
-                id="carousel-prev"
-                style="
-                  position: absolute;
-                  top: 50%;
-                  left: 8px;
-                  transform: translateY(-50%);
-                  background: #334155;
-                  color: #fff;
-                  border: none;
-                  border-radius: 50%;
-                  width: 32px;
-                  height: 32px;
-                  font-size: 1.2rem;
-                  cursor: pointer;
-                "
-              >
-                &#8592;
-              </button>
-              <button
-                id="carousel-next"
-                style="
-                  position: absolute;
-                  top: 50%;
-                  right: 8px;
-                  transform: translateY(-50%);
-                  background: #334155;
-                  color: #fff;
-                  border: none;
-                  border-radius: 50%;
-                  width: 32px;
-                  height: 32px;
-                  font-size: 1.2rem;
-                  cursor: pointer;
-                "
-              >
-                &#8594;
-              </button>
+  <!-- Review modal script -->
+  <script src="/review.js"></script>
+    <div class="Car-popup-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(30,41,59,0.85); z-index: 9999; display: none; align-items: center; justify-content: center;">
+      <div class="Car-popup" style="background: #fff; border-radius: 16px; max-width: 600px; width: 95vw; box-shadow: 0 8px 32px rgba(0,0,0,0.18); position: relative; padding: 32px 24px;">
+        <button class="close-popup" style="position: absolute; top: 18px; right: 18px; background: #f87171; color: #fff; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 1.5rem; cursor: pointer;">&times;</button>
+        <div class="popup-content" style="display: flex; flex-direction: column; align-items: center;">
+          <div class="popup-image-container" style="width: 100%; margin-bottom: 18px;">
+            <div id="popup-carousel" style="position: relative; width: 100%; max-width: 400px; margin: 0 auto;">
+              <img id="popup-Car-image" src="" alt="Car Image" style="width: 100%; max-height: 260px; object-fit: cover; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);" />
+              <button id="carousel-prev" style="position: absolute; top: 50%; left: 8px; transform: translateY(-50%); background: #334155; color: #fff; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 1.2rem; cursor: pointer;">&#8592;</button>
+              <button id="carousel-next" style="position: absolute; top: 50%; right: 8px; transform: translateY(-50%); background: #334155; color: #fff; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 1.2rem; cursor: pointer;">&#8594;</button>
             </div>
-            <div
-              id="popup-Car-thumbnails"
-              style="
-                display: flex;
-                justify-content: center;
-                gap: 8px;
-                margin-top: 10px;
-              "
-            ></div>
+            <div id="popup-Car-thumbnails" style="display: flex; justify-content: center; gap: 8px; margin-top: 10px;"></div>
           </div>
-          <div class="popup-details" style="width: 100%">
-            <h2
-              id="popup-Car-title"
-              style="
-                font-size: 2rem;
-                font-weight: 700;
-                color: #1e293b;
-                margin-bottom: 8px;
-              "
-            ></h2>
-            <span
-              class="model"
-              id="popup-Car-model"
-              style="
-                font-size: 1.1rem;
-                color: #64748b;
-                margin-bottom: 12px;
-                display: block;
-              "
-            ></span>
-            <div
-              class="details"
-              style="
-                display: flex;
-                flex-wrap: wrap;
-                gap: 16px;
-                margin-bottom: 18px;
-              "
-            >
-              <div
-                class="detail-item"
-                style="
-                  display: flex;
-                  align-items: center;
-                  gap: 6px;
-                  color: #334155;
-                "
-              >
-                <i class="fas fa-tachometer-alt"></i
-                ><span id="popup-Car-km"></span>
-              </div>
-              <div
-                class="detail-item"
-                style="
-                  display: flex;
-                  align-items: center;
-                  gap: 6px;
-                  color: #334155;
-                "
-              >
-                <i class="fas fa-user"></i><span id="popup-Car-owner"></span>
-              </div>
-              <div
-                class="detail-item"
-                style="
-                  display: flex;
-                  align-items: center;
-                  gap: 6px;
-                  color: #334155;
-                "
-              >
-                <i class="fas fa-gas-pump"></i><span id="popup-Car-fuel"></span>
-              </div>
-              <div
-                class="detail-item"
-                style="
-                  display: flex;
-                  align-items: center;
-                  gap: 6px;
-                  color: #334155;
-                "
-              >
-                <i class="fas fa-calendar-alt"></i
-                ><span id="popup-Car-age"></span>
-              </div>
+          <div class="popup-details" style="width: 100%;">
+            <h2 id="popup-Car-title" style="font-size: 2rem; font-weight: 700; color: #1e293b; margin-bottom: 8px;"></h2>
+            <span class="model" id="popup-Car-model" style="font-size: 1.1rem; color: #64748b; margin-bottom: 12px; display: block;"></span>
+            <div class="details" style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 18px;">
+              <div class="detail-item" style="display: flex; align-items: center; gap: 6px; color: #334155;"><i class="fas fa-tachometer-alt"></i><span id="popup-Car-km"></span></div>
+              <div class="detail-item" style="display: flex; align-items: center; gap: 6px; color: #334155;"><i class="fas fa-user"></i><span id="popup-Car-owner"></span></div>
+              <div class="detail-item" style="display: flex; align-items: center; gap: 6px; color: #334155;"><i class="fas fa-gas-pump"></i><span id="popup-Car-fuel"></span></div>
+              <div class="detail-item" style="display: flex; align-items: center; gap: 6px; color: #334155;"><i class="fas fa-calendar-alt"></i><span id="popup-Car-age"></span></div>
             </div>
-            <div class="price-container" style="margin-bottom: 18px">
-              <div
-                class="price"
-                id="popup-Car-price"
-                style="font-size: 1.5rem; font-weight: 600; color: #10b981"
-              ></div>
-              <div
-                class="emi"
-                id="popup-Car-emi"
-                style="font-size: 1rem; color: #64748b"
-              ></div>
+            <div class="price-container" style="margin-bottom: 18px;">
+              <div class="price" id="popup-Car-price" style="font-size: 1.5rem; font-weight: 600; color: #10b981;"></div>
+              <div class="emi" id="popup-Car-emi" style="font-size: 1rem; color: #64748b;"></div>
             </div>
-            <button
-              class="contact-btn"
-              style="
-                background: #3b82f6;
-                color: #fff;
-                border: none;
-                border-radius: 8px;
-                padding: 12px 24px;
-                font-size: 1rem;
-                font-weight: 500;
-                cursor: pointer;
-                margin-top: 10px;
-              "
-            >
-              Contact Seller
-            </button>
+            <button class="contact-btn" style="background: #3b82f6; color: #fff; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1rem; font-weight: 500; cursor: pointer; margin-top: 10px;">Contact Seller</button>
           </div>
         </div>
       </div>
@@ -2276,6 +2056,7 @@
                   Chevrolet
                 </button>
                 <button class="filter-option" data-brand="Chrysler">
+
                   Chrysler
                 </button>
                 <button class="filter-option" data-brand="Ferrari">
