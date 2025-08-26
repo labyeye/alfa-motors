@@ -990,13 +990,29 @@
             const viewDetailsBtn = card.querySelector(".view-details-btn");
             const contactBtn = card.querySelector(".contact-btn");
 
-            if (viewDetailsBtn && !viewDetailsBtn.disabled) {
-              viewDetailsBtn.addEventListener("click", (e) => {
-                e.stopPropagation();
-                const CarData = JSON.parse(card.dataset.CarData);
-                showCarPopup(CarData);
-              });
+            // Navigate to vehicledetail page with encoded car data
+            function goToDetails(e) {
+              if (e && e.stopPropagation) e.stopPropagation();
+              try {
+                const CarData = JSON.parse(card.dataset.CarData || '{}');
+                const q = encodeURIComponent(JSON.stringify(CarData));
+                window.location.href = `vehicledetail.html?car=${q}`;
+              } catch (err) {
+                console.error('Failed to open details', err);
+              }
             }
+
+            if (viewDetailsBtn && !viewDetailsBtn.disabled) {
+              viewDetailsBtn.addEventListener("click", goToDetails);
+            }
+
+            // make the whole card clickable (but preserve button behavior)
+            card.addEventListener('click', (e) => {
+              // ignore clicks originating from buttons (they have their own handlers)
+              const target = e.target;
+              if (target && (target.closest('.contact-btn') || target.closest('.view-details-btn'))) return;
+              goToDetails(e);
+            });
 
             if (contactBtn && !contactBtn.disabled) {
               contactBtn.addEventListener("click", (e) => {
