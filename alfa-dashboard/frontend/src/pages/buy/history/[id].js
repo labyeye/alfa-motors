@@ -13,7 +13,7 @@ export default function BuyLetterDetailPage() {
     if (id) {
       const fetchLetter = async () => {
         try {
-          const response = await fetch(`https://alfa-motors.onrender.com/api/buy-letter/${id}`);
+          const response = await fetch(`https://alfa-motors-5yfh.vercel.app/api/buy-letter/${id}`);
           if (response.ok) {
             const data = await response.json();
             setLetterData(data);

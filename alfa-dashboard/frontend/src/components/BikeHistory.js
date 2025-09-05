@@ -37,7 +37,7 @@ const BikeHistory = () => {
       setLoading(true);
       const [buyLetters, sellLetters, serviceBills] = await Promise.all([
         axios.get(
-          `https://alfa-motors.onrender.com/api/buy-letter/by-registration?registrationNumber=${searchTerm}`,
+          `https://alfa-motors-5yfh.vercel.app/api/buy-letter/by-registration?registrationNumber=${searchTerm}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -45,7 +45,7 @@ const BikeHistory = () => {
           }
         ),
         axios.get(
-          `https://alfa-motors.onrender.com/api/sell-letters/by-registration?registrationNumber=${searchTerm}`,
+          `https://alfa-motors-5yfh.vercel.app/api/sell-letters/by-registration?registrationNumber=${searchTerm}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -53,7 +53,7 @@ const BikeHistory = () => {
           }
         ),
         axios.get(
-          `https://alfa-motors.onrender.com/api/service-bills/by-registration?registrationNumber=${searchTerm}`,
+          `https://alfa-motors-5yfh.vercel.app/api/service-bills/by-registration?registrationNumber=${searchTerm}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,

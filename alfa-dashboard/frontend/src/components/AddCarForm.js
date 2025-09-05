@@ -155,7 +155,7 @@ const AddcarForm = () => {
       });
       formPayload.append("addedBy", user._id);
       const response = await axios.post(
-        "https://alfa-motors.onrender.com/api/cars",
+        "https://alfa-motors-5yfh.vercel.app/api/cars",
         formPayload,
         {
           headers: {

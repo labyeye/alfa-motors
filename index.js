@@ -251,7 +251,7 @@ function initializeCarSlider() {
 }
 
 function fetchFeaturedCars() {
-  fetch("https://alfa-motors.onrender.com/api/Cars?limit=10")
+  fetch("https://alfa-motors-5yfh.vercel.app/api/Cars?limit=10")
       .then((response) => response.json())
       .then((payload) => displayFeaturedCars(payload))
       .catch((error) => {
@@ -310,7 +310,7 @@ function displayFeaturedCars(Cars) {
       if (filename.startsWith("assets/")) {
         imgSrc = filename;
       } else {
-        imgSrc = `https://alfa-motors.onrender.com/carimages/${filename}`;
+        imgSrc = `https://alfa-motors-5yfh.vercel.app/carimages/${filename}`;
       }
     } else if (Car.imageUrl) {
       imgSrc = Car.imageUrl;

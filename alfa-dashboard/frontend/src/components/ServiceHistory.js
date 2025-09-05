@@ -43,7 +43,7 @@ const ServiceHistory = () => {
 
         // Fetch service bills
         const serviceResponse = await axios.get(
-          `https://alfa-motors.onrender.com/api/service-bills?page=${currentPage}`,
+          `https://alfa-motors-5yfh.vercel.app/api/service-bills?page=${currentPage}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -55,7 +55,7 @@ const ServiceHistory = () => {
 
         // Fetch purchase history (if needed)
         const purchaseResponse = await axios.get(
-          `https://alfa-motors.onrender.com/api/buy-letters`,
+          `https://alfa-motors-5yfh.vercel.app/api/buy-letters`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -66,7 +66,7 @@ const ServiceHistory = () => {
 
         // Fetch sell history (if needed)
         const sellResponse = await axios.get(
-          `https://alfa-motors.onrender.com/api/sell-letters`,
+          `https://alfa-motors-5yfh.vercel.app/api/sell-letters`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -119,7 +119,7 @@ const ServiceHistory = () => {
   const handleDownload = async (billId) => {
     try {
       const response = await axios.get(
-        `https://alfa-motors.onrender.com/api/service-bills/${billId}/download`,
+        `https://alfa-motors-5yfh.vercel.app/api/service-bills/${billId}/download`,
         {
           responseType: "blob",
           headers: {
@@ -144,7 +144,7 @@ const ServiceHistory = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this service bill?")) {
       try {
-        await axios.delete(`https://alfa-motors.onrender.com/api/service-bills/${id}`, {
+        await axios.delete(`https://alfa-motors-5yfh.vercel.app/api/service-bills/${id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
