@@ -13,9 +13,6 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
-    <style>
-      /* Mobile menu styles for vehicledetail page */
-    </style>
   </head>
   <body>
     <div class="hero-section">
@@ -70,28 +67,30 @@
             <div class="vehicle-detail-item">
               <i class="fas fa-tachometer-alt"></i>
               <span style="font-weight: bold">Vehicle Driven</span>
-              <span style="margin-left:10px" id="vehicleKm">0 km</span>
+              <span style="margin-left: 10px" id="vehicleKm">0 km</span>
             </div>
             <div class="vehicle-detail-item">
               <i class="fas fa-user"></i>
               <span style="font-weight: bold">Ownership</span>
-              <span style="margin-left:10px" id="vehicleOwner">1st Owner</span>
+              <span style="margin-left: 10px" id="vehicleOwner">1st Owner</span>
             </div>
             <div class="vehicle-detail-item">
               <i class="fas fa-gas-pump"></i>
               <span style="font-weight: bold">Fuel Type</span>
-              <span style="margin-left:10px" id="vehicleFuel">Petrol</span>
+              <span style="margin-left: 10px" id="vehicleFuel">Petrol</span>
             </div>
             <div class="vehicle-detail-item">
               <i class="fas fa-palette"></i>
               <span style="font-weight: bold">Vehicle Color</span>
-              <span style="margin-left:10px" id="vehicleColor">Color</span>
+              <span style="margin-left: 10px" id="vehicleColor">Color</span>
             </div>
 
             <div class="vehicle-detail-item">
               <i class="fas fa-id-card"></i>
               <span style="font-weight: bold">Reg Year</span>
-              <span style="margin-left:10px" id="vehicleRegYear">Reg Year</span>
+              <span style="margin-left: 10px" id="vehicleRegYear"
+                >Reg Year</span
+              >
             </div>
           </div>
           <div class="vehicle-price" id="vehiclePrice">₹0</div>
@@ -127,9 +126,11 @@
     </div>
     <div id="mobileMenu" class="mobile-menu" aria-hidden="true"></div>
     <script>
+      // Mobile Menu Functionality
       (function () {
         const mobileMenu = document.getElementById("mobileMenu");
         const toggle = document.querySelector(".mobile-menu-toggle");
+
         function buildMenu() {
           if (!mobileMenu) return;
           mobileMenu.innerHTML = `
@@ -164,13 +165,12 @@
         }
 
         if (toggle) toggle.addEventListener("click", openMenu);
-        // close if clicking outside
         mobileMenu.addEventListener("click", (e) => {
           if (e.target === mobileMenu) closeMenu();
         });
       })();
 
-      // Helper to format ownership
+      // Helper Functions
       function formatOwnership(owner) {
         if (owner === "1" || owner.includes("1st")) return "1st Owner";
         if (owner === "2" || owner.includes("2nd")) return "2nd Owner";
@@ -178,15 +178,15 @@
           return "3+ Owner";
         return owner;
       }
-      // Helper to format age
-      function formatAge(days) {
-        if (!days || days < 30) return `${days} days`;
-        const months = Math.floor(days / 30);
-        if (months < 12) return `${months} month${months > 1 ? "s" : ""}`;
-        const years = Math.floor(months / 12);
-        return `${years} year${years > 1 ? "s" : ""}`;
+
+      function normalizeImagePath(img) {
+        let filename = img;
+        if (filename.startsWith("carimages/"))
+          filename = filename.replace("carimages/", "");
+        if (filename.startsWith("assets/")) return filename;
+        return `https://alfa-motors-5yfh.vercel.app/carimages/${filename}`;
       }
-      // Get car data from query params
+
       function getCarDataFromQuery() {
         const params = new URLSearchParams(window.location.search);
         try {
@@ -195,8 +195,21 @@
           return null;
         }
       }
+
+      function carIdFromQuery() {
+        const params = new URLSearchParams(window.location.search);
+        try {
+          const car = JSON.parse(decodeURIComponent(params.get("car")));
+          return car && car._id ? car._id : null;
+        } catch {
+          return null;
+        }
+      }
+
+      // Load Car Data
       const car = getCarDataFromQuery();
       if (car) {
+        // Populate car details
         document.getElementById("vehicleTitle").textContent = `${
           car.brand || car.make || ""
         } ${car.model || ""}`;
@@ -212,7 +225,6 @@
         document.getElementById("vehicleFuel").textContent =
           car.fuelType || "Petrol";
         document.getElementById("vehicleColor").textContent = car.color || "";
-
         document.getElementById("vehicleRegYear").textContent =
           car.registrationYear || "";
         document.getElementById("vehiclePrice").textContent = `₹${(
@@ -226,6 +238,7 @@
           ((car.sellingPrice || car.price || 0) - (car.downPayment || 0)) / 36
         ).toLocaleString()}/month`;
 
+        // Handle images
         const images =
           car.photos && car.photos.length > 0
             ? car.photos
@@ -233,131 +246,43 @@
         const mainImg = document.getElementById("mainVehicleImg");
         const thumbnails = document.getElementById("vehicleThumbnails");
         thumbnails.innerHTML = "";
-        function normalizeImagePath(img) {
-          let filename = img;
-          if (filename.startsWith("carimages/"))
-            filename = filename.replace("carimages/", "");
-          if (filename.startsWith("assets/")) return filename;
-          return `https://alfa-motors-5yfh.vercel.app/carimages/${filename}`;
-        }
 
-        // If mobile, replace main image with a swipeable slider.
+        // Mobile Image Layout
         if (window.innerWidth <= 900) {
-          // build a flex row: thumbnails column + slider
           const container = document.createElement("div");
-          container.style.display = "flex";
-          container.style.flexDirection = "row";
-          container.style.width = "100%";
-          container.style.alignItems = "flex-start";
+          container.className = "vehicle-image-block mobile-image-block";
 
-          // Thumbnails column
-          const thumbCol = document.createElement("div");
-          thumbCol.className = "vehicle-thumbnails mobile-thumbnails";
-          thumbCol.style.display = "flex";
-          thumbCol.style.flexDirection = "column";
-          thumbCol.style.overflowY = "auto";
-          thumbCol.style.overflowX = "hidden";
-          thumbCol.style.maxHeight = 40 * 5 + 8 * 4 + "px"; // 5 images + 4 gaps
-          thumbCol.style.gap = "8px";
-          thumbCol.style.marginRight = "10px";
+          // Main image
+          const mainImgMobile = document.createElement("img");
+          mainImgMobile.className = "vehicle-main-img mobile-main-img";
+          mainImgMobile.src = normalizeImagePath(images[0]);
+          mainImgMobile.alt = "Main Car Image";
+          container.appendChild(mainImgMobile);
 
-          // Slider
-          const slider = document.createElement("div");
-          slider.className = "mobile-slider";
-          slider.style.flex = "1";
-          slider.innerHTML = `
-            <div class="slides" aria-live="polite"></div>
-            <div class="slide-dots" role="tablist"></div>
-          `;
-
-          container.appendChild(thumbCol);
-          container.appendChild(slider);
-          mainImg.parentNode.replaceChild(container, mainImg);
-
-          const slides = slider.querySelector(".slides");
-          const dots = slider.querySelector(".slide-dots");
+          // Thumbnails row
+          const thumbRow = document.createElement("div");
+          thumbRow.className = "vehicle-thumbnails mobile-thumbnails";
 
           images.forEach((img, idx) => {
-            // Thumbnails
             const thumb = document.createElement("img");
             thumb.src = normalizeImagePath(img);
             thumb.alt = `Car ${idx + 1}`;
-            thumb.style.width = "56px";
-            thumb.style.height = "40px";
-            thumb.style.objectFit = "cover";
-            thumb.style.borderRadius = "8px";
-            thumb.style.cursor = "pointer";
-            thumb.style.border = "2px solid transparent";
-            thumb.onclick = () => showSlide(idx);
-            if (idx === 0) thumb.classList.add("selected");
-            thumbCol.appendChild(thumb);
-
-            // Slides
-            const slide = document.createElement("div");
-            slide.className = "slide";
-            const iEl = document.createElement("img");
-            iEl.src = normalizeImagePath(img);
-            iEl.alt = `Car ${idx + 1}`;
-            iEl.style.width = "100%";
-            iEl.style.height = "auto";
-            iEl.style.maxWidth = "100vw";
-            iEl.style.objectFit = "cover";
-            slide.appendChild(iEl);
-            slides.appendChild(slide);
-
-            // Dots
-            const dot = document.createElement("button");
-            dot.className = "slide-dot";
-            dot.setAttribute("aria-label", `View image ${idx + 1}`);
-            dot.addEventListener("click", () => showSlide(idx));
-            dots.appendChild(dot);
+            thumb.style.border =
+              idx === 0 ? "2px solid #ff6b00" : "2px solid transparent";
+            thumb.onclick = () => {
+              mainImgMobile.src = normalizeImagePath(img);
+              Array.from(thumbRow.children).forEach((t, i) => {
+                t.style.border =
+                  i === idx ? "2px solid #ff6b00" : "2px solid transparent";
+              });
+            };
+            thumbRow.appendChild(thumb);
           });
 
-          let currentIndex = 0;
-          function showSlide(i) {
-            if (!slides) return;
-            currentIndex =
-              ((i % images.length) + images.length) % images.length;
-            slides.style.transform = `translateX(-${currentIndex * 100}%)`;
-            Array.from(slider.querySelectorAll(".slide-dot")).forEach(
-              (d, idx) => d.classList.toggle("active", idx === currentIndex)
-            );
-            Array.from(thumbCol.children).forEach((t, idx) =>
-              t.classList.toggle("selected", idx === currentIndex)
-            );
-            // Scroll thumbnail column to keep selected in view (limit to 5 visible)
-            const selectedThumb = thumbCol.children[currentIndex];
-            if (selectedThumb) {
-              const thumbHeight = selectedThumb.offsetHeight + 8; // image + gap
-              const colHeight = thumbCol.offsetHeight;
-              // Only scroll if more than 5 images
-              if (thumbCol.children.length > 5) {
-                const scrollTo = Math.max(0, (currentIndex - 2) * thumbHeight);
-                thumbCol.scrollTop = scrollTo;
-              } else {
-                thumbCol.scrollTop = 0;
-              }
-            }
-          }
-          // Touch support
-          let startX = 0;
-          let deltaX = 0;
-          slides.addEventListener("touchstart", (e) => {
-            startX = e.touches[0].clientX;
-            deltaX = 0;
-          });
-          slides.addEventListener("touchmove", (e) => {
-            deltaX = e.touches[0].clientX - startX;
-          });
-          slides.addEventListener("touchend", () => {
-            if (deltaX > 40) showSlide(currentIndex - 1);
-            else if (deltaX < -40) showSlide(currentIndex + 1);
-          });
-
-          // initial
-          showSlide(0);
+          container.appendChild(thumbRow);
+          mainImg.parentNode.replaceChild(container, mainImg);
         } else {
-          // desktop behavior: thumbnails and a single main image
+          // Desktop Image Layout
           images.forEach((img, idx) => {
             const thumb = document.createElement("img");
             thumb.src = normalizeImagePath(img);
@@ -373,13 +298,10 @@
             thumbnails.appendChild(thumb);
           });
           mainImg.src = normalizeImagePath(images[0]);
-          mainImg.style.width = "100%";
-          mainImg.style.height = "auto";
-          mainImg.style.maxWidth = "100vw";
-          mainImg.style.objectFit = "cover";
         }
       }
-      // Fetch other cars from backend and show in slider
+
+      // Load Other Cars
       fetch("https://alfa-motors-5yfh.vercel.app/api/cars")
         .then((response) => response.json())
         .then((data) => {
@@ -387,15 +309,17 @@
             const cars = data.data;
             const otherCarsRow = document.getElementById("otherCarsRow");
             otherCarsRow.innerHTML = "";
+
             cars.forEach((car) => {
-              // Skip current car if present in query
               if (car._id && car._id === (carIdFromQuery() || "")) return;
+
               const imgSrc =
                 car.photos && car.photos.length > 0
                   ? car.photos[0].startsWith("assets/")
                     ? car.photos[0]
                     : `https://alfa-motors-5yfh.vercel.app/carimages/${car.photos[0]}`
                   : "assets/owner.png";
+
               const statusClass =
                 car.status === "Available"
                   ? "status-available"
@@ -404,53 +328,57 @@
                   : car.status === "Coming Soon"
                   ? "status-coming-soon"
                   : "status-available";
+
               const ownerText = formatOwnership(car.ownership || "1");
+
               const card = document.createElement("div");
               card.className = "other-car-card";
               card.innerHTML = `
-          <div class="image-container">
-            <img src="${imgSrc}" alt="${car.brand || car.make || ""} ${
+                <div class="image-container">
+                  <img src="${imgSrc}" alt="${car.brand || car.make || ""} ${
                 car.model || ""
               }" class="other-car-img" />
-            <div class="status-badge ${statusClass}">${
+                  <div class="status-badge ${statusClass}">${
                 car.status || "Available"
               }</div>
-          </div>
-          <div class="card-content">
-            <h3>${car.brand || car.make || "Unknown Brand"} ${
+                </div>
+                <div class="card-content">
+                  <h3>${car.brand || car.make || "Unknown Brand"} ${
                 car.model || "Unknown Model"
               }</h3>
-            <span class="model">${car.modelYear || "-"} Model</span>
-            <div class="details">
-              <div class="detail-item"><i class="fas fa-tachometer-alt"></i> <span>${(
-                car.kmDriven || 0
-              ).toLocaleString()} km</span></div>
-              <div class="detail-item"><i class="fas fa-user"></i> <span>${ownerText}</span></div>
-              <div class="detail-item"><i class="fas fa-gas-pump"></i> <span>${
-                car.fuelType || "Petrol"
-              }</span></div>
-            </div>
-            <div class="price-container">
-              <div class="price">₹${(
-                car.sellingPrice ||
-                car.price ||
-                0
-              ).toLocaleString()}</div>
-              <div class="button-group">
-                <button class="contact-btn" ${
-                  car.status !== "Available" ? "disabled" : ""
-                }>Contact Seller</button>
-                <button class="view-details-btn" ${
-                  car.status !== "Available" ? "disabled" : ""
-                }>View Details</button>
-              </div>
-            </div>
-          </div>
-        `;
-              // Button listeners
+                  <span class="model">${car.modelYear || "-"} Model</span>
+                  <div class="details">
+                    <div class="detail-item"><i class="fas fa-tachometer-alt"></i> <span>${(
+                      car.kmDriven || 0
+                    ).toLocaleString()} km</span></div>
+                    <div class="detail-item"><i class="fas fa-user"></i> <span>${ownerText}</span></div>
+                    <div class="detail-item"><i class="fas fa-gas-pump"></i> <span>${
+                      car.fuelType || "Petrol"
+                    }</span></div>
+                  </div>
+                  <div class="price-container">
+                    <div class="price">₹${(
+                      car.sellingPrice ||
+                      car.price ||
+                      0
+                    ).toLocaleString()}</div>
+                    <div class="button-group">
+                      <button class="contact-btn" ${
+                        car.status !== "Available" ? "disabled" : ""
+                      }>Contact Seller</button>
+                      <button class="view-details-btn" ${
+                        car.status !== "Available" ? "disabled" : ""
+                      }>View Details</button>
+                    </div>
+                  </div>
+                </div>
+              `;
+
+              // Add event listeners
               setTimeout(() => {
                 const viewDetailsBtn = card.querySelector(".view-details-btn");
                 const contactBtn = card.querySelector(".contact-btn");
+
                 if (viewDetailsBtn && !viewDetailsBtn.disabled) {
                   viewDetailsBtn.onclick = (e) => {
                     e.stopPropagation();
@@ -458,6 +386,7 @@
                     window.location.href = `vehicledetail.html?car=${carQuery}`;
                   };
                 }
+
                 if (contactBtn && !contactBtn.disabled) {
                   contactBtn.onclick = (e) => {
                     e.stopPropagation();
@@ -465,231 +394,53 @@
                   };
                 }
               }, 0);
+
               otherCarsRow.appendChild(card);
             });
+
+            // Enable auto-scroll for other cars
+            enableAutoSlider();
           }
         });
-      function carIdFromQuery() {
-        const params = new URLSearchParams(window.location.search);
-        try {
-          const car = JSON.parse(decodeURIComponent(params.get("car")));
-          return car && car._id ? car._id : null;
-        } catch {
-          return null;
-        }
-      }
-      // After rendering other cars, add auto-scroll to slider
+
+      // Auto-scroll functionality
       function enableAutoSlider() {
         const row = document.getElementById("otherCarsRow");
         if (!row) return;
+
         let scrollAmount = 0;
         let maxScroll = row.scrollWidth - row.clientWidth;
         let direction = 1;
+
         let interval = setInterval(() => {
           if (row.scrollWidth <= row.clientWidth) return;
+
           if (scrollAmount >= maxScroll) direction = -1;
           if (scrollAmount <= 0) direction = 1;
-          scrollAmount += direction * 320; // card width
+
+          scrollAmount += direction * 320;
           if (scrollAmount < 0) scrollAmount = 0;
           if (scrollAmount > maxScroll) scrollAmount = maxScroll;
+
           row.scrollTo({ left: scrollAmount, behavior: "smooth" });
         }, 3000);
+
         row.addEventListener("mouseenter", () => clearInterval(interval));
         row.addEventListener("mouseleave", () => {
           interval = setInterval(() => {
             if (row.scrollWidth <= row.clientWidth) return;
+
             if (scrollAmount >= maxScroll) direction = -1;
             if (scrollAmount <= 0) direction = 1;
+
             scrollAmount += direction * 320;
             if (scrollAmount < 0) scrollAmount = 0;
             if (scrollAmount > maxScroll) scrollAmount = maxScroll;
+
             row.scrollTo({ left: scrollAmount, behavior: "smooth" });
-          }, 1000);
+          }, 3000);
         });
       }
-      // Call after cards are rendered
-      fetch("https://alfa-motors-5yfh.vercel.app/api/cars")
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.success && Array.isArray(data.data)) {
-            const cars = data.data;
-            const otherCarsRow = document.getElementById("otherCarsRow");
-            otherCarsRow.innerHTML = "";
-            cars.forEach((car) => {
-              // Skip current car if present in query
-              if (car._id && car._id === (carIdFromQuery() || "")) return;
-              const imgSrc =
-                car.photos && car.photos.length > 0
-                  ? car.photos[0].startsWith("assets/")
-                    ? car.photos[0]
-                    : `https://alfa-motors-5yfh.vercel.app/carimages/${car.photos[0]}`
-                  : "assets/owner.png";
-              const statusClass =
-                car.status === "Available"
-                  ? "status-available"
-                  : car.status === "Sold Out"
-                  ? "status-sold"
-                  : car.status === "Coming Soon"
-                  ? "status-coming-soon"
-                  : "status-available";
-              const ownerText = formatOwnership(car.ownership || "1");
-              const card = document.createElement("div");
-              card.className = "other-car-card";
-              card.innerHTML = `
-          <div class="image-container">
-            <img src="${imgSrc}" alt="${car.brand || car.make || ""} ${
-                car.model || ""
-              }" class="other-car-img" />
-            <div class="status-badge ${statusClass}">${
-                car.status || "Available"
-              }</div>
-          </div>
-          <div class="card-content">
-            <h3>${car.brand || car.make || "Unknown Brand"} ${
-                car.model || "Unknown Model"
-              }</h3>
-            <span class="model">${car.modelYear || "-"} Model</span>
-            <div class="details">
-              <div class="detail-item"><i class="fas fa-tachometer-alt"></i> <span>${(
-                car.kmDriven || 0
-              ).toLocaleString()} km</span></div>
-              <div class="detail-item"><i class="fas fa-user"></i> <span>${ownerText}</span></div>
-              <div class="detail-item"><i class="fas fa-gas-pump"></i> <span>${
-                car.fuelType || "Petrol"
-              }</span></div>
-            </div>
-            <div class="price-container">
-              <div class="price">₹${(
-                car.sellingPrice ||
-                car.price ||
-                0
-              ).toLocaleString()}</div>
-              <div class="button-group">
-                <button class="contact-btn" ${
-                  car.status !== "Available" ? "disabled" : ""
-                }>Contact Seller</button>
-                <button class="view-details-btn" ${
-                  car.status !== "Available" ? "disabled" : ""
-                }>View Details</button>
-              </div>
-            </div>
-          </div>
-        `;
-              // Button listeners
-              setTimeout(() => {
-                const viewDetailsBtn = card.querySelector(".view-details-btn");
-                const contactBtn = card.querySelector(".contact-btn");
-                if (viewDetailsBtn && !viewDetailsBtn.disabled) {
-                  viewDetailsBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    const carQuery = encodeURIComponent(JSON.stringify(car));
-                    window.location.href = `vehicledetail.html?car=${carQuery}`;
-                  };
-                }
-                if (contactBtn && !contactBtn.disabled) {
-                  contactBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    window.location.href = "contact.html";
-                  };
-                }
-              }, 0);
-              otherCarsRow.appendChild(card);
-            });
-            enableAutoSlider();
-          }
-        });
-      // --- THUMBNAIL SLIDER LOGIC ---
-      (function () {
-        const mainImg = document.getElementById("mainVehicleImg");
-        const thumbnails = document.getElementById("vehicleThumbnails");
-        if (!mainImg || !thumbnails) return;
-
-        setTimeout(() => {
-          const thumbs = Array.from(thumbnails.querySelectorAll("img"));
-          if (thumbs.length <= 5) return;
-
-          // Wrap thumbnails in scroll container
-          const scrollContainer = document.createElement("div");
-          scrollContainer.className = "vehicle-thumbnails-scroll";
-          scrollContainer.style.overflowX = "auto";
-          scrollContainer.style.whiteSpace = "nowrap";
-          scrollContainer.style.scrollBehavior = "smooth";
-          thumbs.forEach((img) => {
-            img.style.display = "inline-block";
-            img.style.marginRight = "6px";
-            img.style.width = "120px";
-            img.style.height = "110px";
-            scrollContainer.appendChild(img);
-          });
-          thumbnails.appendChild(scrollContainer);
-
-          let currentMainIdx = 0;
-        
-          function updateThumbs() {
-            thumbs.forEach((img, idx) => {
-              img.classList.toggle("selected", idx === currentMainIdx);
-            });
-            mainImg.src = thumbs[currentMainIdx].src;
-            // Scroll thumbnail strip to keep selected in view
-            const thumbWidth = thumbs[0].offsetWidth + 12;
-            const visibleStart = scrollContainer.scrollLeft;
-            const visibleEnd = visibleStart + scrollContainer.offsetWidth;
-            const thumbLeft = currentMainIdx * thumbWidth;
-            const thumbRight = thumbLeft + thumbWidth;
-            if (thumbLeft < visibleStart) {
-              scrollContainer.scrollLeft = thumbLeft;
-            } else if (thumbRight > visibleEnd) {
-              scrollContainer.scrollLeft =
-                thumbRight - scrollContainer.offsetWidth;
-            }
-          }
-          updateThumbs();
-
-          // Clicking a thumbnail changes main image
-          thumbs.forEach((img, idx) => {
-            img.onclick = function () {
-              currentMainIdx = idx;
-              updateThumbs();
-            };
-          });
-
-          // Create slider buttons
-          const prevBtn = document.createElement("button");
-          prevBtn.className = "slider-btn prev";
-          prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
-          prevBtn.onclick = function (e) {
-            e.stopPropagation();
-            if (currentMainIdx > 0) {
-              currentMainIdx--;
-              updateThumbs();
-            }
-          };
-          const nextBtn = document.createElement("button");
-          nextBtn.className = "slider-btn next";
-          nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
-          nextBtn.onclick = function (e) {
-            e.stopPropagation();
-            if (currentMainIdx < thumbs.length - 1) {
-              currentMainIdx++;
-              updateThumbs();
-            }
-          };
-          thumbnails.appendChild(prevBtn);
-          thumbnails.appendChild(nextBtn);
-
-          // Show/hide buttons on main image hover
-          const imageBlock = mainImg.closest(".vehicle-image-block");
-          if (imageBlock) {
-            imageBlock.addEventListener("mouseenter", () => {
-              prevBtn.style.opacity = nextBtn.style.opacity = "1";
-            });
-            imageBlock.addEventListener("mouseleave", () => {
-              prevBtn.style.opacity = nextBtn.style.opacity = "0";
-            });
-            prevBtn.style.opacity = nextBtn.style.opacity = "0";
-          }
-        }, 500);
-      })();
     </script>
   </body>
 </html>
