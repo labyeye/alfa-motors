@@ -18,18 +18,35 @@ const cors = require('cors');
 const app = express();
 
 // Connect to database
+
 connectDB();
 
 // CORS configuration
 const corsOptions = {
-  origin: ['http://127.0.0.1:5500','http://localhost:3000','https://www.alfamotorworld.com','https://alfa-motors-o5cm.vercel.app'],
+  origin: ['http://127.0.0.1:5502','http://localhost:3000','https://www.alfamotorworld.com','https://alfa-motors-o5cm.vercel.app','https://https://alfa-motors-5yfh.vercel.app'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 };
 
-app.use(express.json());
+// Increase request body size limit
+app.use(express.json({ limit: '20mb' }));
+app.use(express.urlencoded({ extended: true, limit: '20mb' }));
+
+// Handle CORS for all routes and preflight
+// Set common CORS headers for all API responses
+app.use((req, res, next) => {
+  const origin = req.get('origin');
+  if (Array.isArray(corsOptions.origin) && origin && corsOptions.origin.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
+});
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 app.use('/api/auth', authRoutes);
 app.use("/api/rc", rcRoutes);

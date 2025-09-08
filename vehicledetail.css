@@ -601,71 +601,129 @@ body {
 @media (max-width: 900px) {
   .vehicle-main-section {
     flex-direction: column;
-    padding: 18px 8px 18px 8px;
+    padding: 16px;
     gap: 16px;
-    margin: 12px auto 0 auto;
-    max-width: 90%;
-    width: 90%;
+    margin: 16px auto 0 auto;
+    max-width: 100%;
+    background: #fff;
     border-radius: 12px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
   }
   .vehicle-image-block {
     flex-direction: column;
     align-items: center;
-    min-width: 0;
-    width: 90%;
-    padding: 0;
+    width: 100%;
+    gap: 12px;
   }
+
   .vehicle-main-img {
-    width: 90% !important;
-    max-width: 90% !important;
-    height: auto !important;
-    max-height: 260px !important;
-    margin: 0 auto 12px auto;
+    width: 100%;
+    height: 280px !important;
+    max-height: 280px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
+
   .vehicle-thumbnails {
+    display: flex;
     flex-direction: row;
     gap: 8px;
     overflow-x: auto;
-    padding-bottom: 8px;
-    margin-bottom: 8px;
-    width: 100vw;
+    padding: 8px 0;
+    width: 100%;
     justify-content: flex-start;
-    margin-left: 0;
+    scrollbar-width: thin;
+    scrollbar-color: #ff6b00 #f3f4f6;
   }
+
+  .vehicle-thumbnails::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .vehicle-thumbnails::-webkit-scrollbar-track {
+    background: #f3f4f6;
+    border-radius: 2px;
+  }
+
+  .vehicle-thumbnails::-webkit-scrollbar-thumb {
+    background: #ff6b00;
+    border-radius: 2px;
+  }
+
   .vehicle-thumbnails img {
-    width: 52px !important;
-    height: 36px !important;
+    width: 60px;
+    height: 45px;
+    object-fit: cover;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border 0.2s;
+    background: #f3f4f6;
+    flex-shrink: 0;
   }
+
+  .vehicle-thumbnails img.selected {
+    border: 2px solid #ff6b00;
+  }
+
   .vehicle-details-block {
     margin-left: 0;
-    width: 100vw;
-    min-width: 0;
-    padding: 12px 8px 12px 8px;
-    margin-top: 12px;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    margin-top: 0;
+    width: 100%;
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 12px;
   }
   .vehicle-title {
-    font-size: 1.3rem;
+    font-size: 1.5rem;
+    margin-bottom: 4px;
   }
   .vehicle-model {
     font-size: 1rem;
+    margin-bottom: 16px;
   }
   .vehicle-details-grid {
-    display: grid;
     grid-template-columns: 1fr;
-    width: 100vw;
-    min-width: 0;
-    margin-bottom: 12px;
-    padding: 12px 6px;
-    background: #F2F5FA;
-    border-radius: 8px;
+    gap: 12px;
+    width: 100%;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .vehicle-detail-item {
+    font-size: 0.95rem;
+    padding: 8px 0;
+  }
+
+  .vehicle-price {
+    font-size: 1.4rem;
+    margin-bottom: 8px;
+  }
+
+  .vehicle-emi {
+    font-size: 1rem;
+    margin-bottom: 16px;
+  }
+
+  .add-to-cart-btn {
+    width: 100%;
+    padding: 14px 0;
+    font-size: 1.1rem;
+    margin-bottom: 16px;
   }
   .why-choose-row {
-    gap: 12px;
+    gap: 16px;
     flex-wrap: wrap;
-    margin: 18px 0 0 0;
+    margin: 16px 0 0 0;
+  }
+
+  .why-choose-item {
+    font-size: 0.9rem;
+  }
+
+  .why-choose-item i {
+    font-size: 1.6rem;
   }
   .other-cars-section {
     margin: 24px auto 0 auto;
@@ -676,18 +734,12 @@ body {
   .other-cars-title {
     font-size: 1.1rem;
     padding-left: 12px;
-    margin-bottom: 12px;
-  }
-  .other-cars-row {
-    padding-left: 8px;
-    gap: 12px;
-    width: 100vw;
+    gap: 16px;
   }
   .other-car-card {
-    min-width: 220px;
-    max-width: 220px;
-    padding: 18px 10px 18px 10px;
-    margin-bottom: 10px;
+    min-width: 240px;
+    max-width: 240px;
+    padding: 16px;
   }
 }
 
