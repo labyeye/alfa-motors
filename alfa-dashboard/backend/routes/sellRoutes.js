@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.post('/api/sell-request', upload.array('images', 5), async (req, res) => {
+router.post('/', upload.array('images', 5), async (req, res) => {
   try {
     const { brand, model, year, price, name, email, phone } = req.body;
 
@@ -48,7 +48,7 @@ router.post('/api/sell-request', upload.array('images', 5), async (req, res) => 
   }
 });
 
-router.get('/api/sell-requests', protect, async (req, res) => {
+router.get('/', protect, async (req, res) => {
   try {
     const requests = await SellRequest.find().sort({ createdAt: -1 });
     res.json(requests);
@@ -58,7 +58,7 @@ router.get('/api/sell-requests', protect, async (req, res) => {
   }
 });
 
-router.patch('/api/sell-requests/:id/status', protect, async (req, res) => {
+router.patch('/:id/status', protect, async (req, res) => {
   try {
     const { status } = req.body;
     if (!['Pending', 'Approved', 'Rejected'].includes(status)) {
@@ -82,7 +82,7 @@ router.patch('/api/sell-requests/:id/status', protect, async (req, res) => {
   }
 });
 
-router.get('/api/sell-requests/:id', protect, async (req, res) => {
+router.get('/:id', protect, async (req, res) => {
   try {
     const request = await SellRequest.findById(req.params.id);
     if (!request) {

@@ -29,12 +29,9 @@ const corsOptions = {
   credentials: true,
 };
 
-// Increase request body size limit
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 
-// Handle CORS for all routes and preflight
-// Set common CORS headers for all API responses
 app.use((req, res, next) => {
   const origin = req.get('origin');
   if (Array.isArray(corsOptions.origin) && origin && corsOptions.origin.includes(origin)) {
@@ -51,7 +48,7 @@ app.options('*', cors(corsOptions));
 app.use('/api/auth', authRoutes);
 app.use("/api/rc", rcRoutes);
 app.use('/api/cars', carRoutes);
-app.use('/api/users', protect, userRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/sell-letters', sellLetterRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/service-bills', serviceBillRoutes);
@@ -59,8 +56,6 @@ app.use('/api/sell-requests', sellRoutes);
 app.use('/api/reviews', reviewRoutes);
 
 const carImagesPath = path.join(__dirname, "utils/carimages");
-// Serve car images and other static assets with the same CORS rules as the API.
-// We echo the incoming Origin when it's allowed (don't use wildcard when credentials are used).
 app.use(
   "/carimages",
   (req, res, next) => {
@@ -70,11 +65,8 @@ app.use(
       if (corsOptions.credentials) {
         res.setHeader("Access-Control-Allow-Credentials", "true");
       }
-      // Allow the front-end to read Content-Disposition if needed
       res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
     }
-
-    // If the requested file doesn't exist, return a small PNG placeholder
     try {
       const requestedPath = decodeURIComponent(req.path || "");
       const fullPath = path.join(carImagesPath, requestedPath);

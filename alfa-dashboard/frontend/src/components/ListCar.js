@@ -85,7 +85,7 @@ const ListCar = () => {
     const fetchCars = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:2500/api/cars", {
+        const response = await axios.get("https://alfa-motors-5yfh.vercel.app/api/cars", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -130,7 +130,7 @@ const ListCar = () => {
     if (window.confirm("Are you sure you want to delete this car?")) {
       try {
         const token = localStorage.getItem("token");
-        await axios.delete(`http://localhost:2500/api/cars/${carId}`, {
+        await axios.delete(`https://alfa-motors-5yfh.vercel.app/api/cars/${carId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
