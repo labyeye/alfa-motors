@@ -2866,6 +2866,19 @@ input[type="range"]::-webkit-slider-thumb {
 
   .Car-card {
     height: 500px;
+    overflow: hidden;
+  }
+
+  .Car-card .detail-item {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .Car-card .detail-item span {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .Car-card img {

@@ -409,7 +409,7 @@ function displayFeaturedCars(Cars) {
           </div>
           <div class="detail-item">
             <i class="fas fa-user"></i>
-            <span>${formatOwnership(Car.ownership || "1")}</span>
+            <span title="${formatOwnership(Car.ownership || "1")}">${formatOwnership(Car.ownership || "1")}</span>
           </div>
           <div class="detail-item">
             <i class="fas fa-gas-pump"></i>

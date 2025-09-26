@@ -1218,6 +1218,53 @@ body {
   box-shadow: 0 5px 15px rgba(163, 41, 25, 0.4);
 }
 
+/* Keep all car cards the same fixed height and prevent long detail text from
+   wrapping and pushing content down. The card uses flex-column so a fixed
+   height plus overflow/truncation keeps buttons and price aligned. */
+.Car-card {
+  height: 520px; /* adjust as needed for your layout */
+}
+
+.Car-card .card-content {
+  overflow: hidden; /* ensure internal overflow is clipped */
+}
+
+/* Allow detail items to shrink and truncate their text instead of wrapping */
+.Car-card .detail-item {
+  /* when used inside grid cells, allow the flex child to shrink */
+  flex: 1 1 auto;
+  min-width: 0; /* important to allow shrinking inside flex/grid */
+}
+
+.Car-card .detail-item span {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* show "..." for long ownership text */
+}
+
+/* Specific rules for featured slider (Best Cars) to keep parity with inventory cards */
+.Car-slider .Car-card {
+  height: 520px; /* match inventory card height */
+  overflow: hidden;
+}
+
+.Car-slider .Car-card .card-content {
+  overflow: hidden;
+}
+
+.Car-slider .Car-card .detail-item {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.Car-slider .Car-card .detail-item span {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .Car-card button:hover::after {
   left: 100%;
 }
