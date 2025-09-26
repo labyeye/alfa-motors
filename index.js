@@ -1,5 +1,67 @@
 // main.js
 
+// Sticky Navbar Functionality
+function initializeStickyNavbar() {
+  const navbar = document.querySelector('.navbar');
+  
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 100) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+  });
+}
+
+// Enhanced Search with Auto-complete
+function initializeSearchFeatures() {
+  const searchInput = document.getElementById('searchInput');
+  const suggestions = [
+    'BMW X5', 'Audi A4', 'Mercedes C-Class', 'Toyota Corolla', 'Honda Civic',
+    'BMW 3 Series', 'Audi Q5', 'Mercedes E-Class', 'Toyota Camry', 'Honda Accord',
+    'SUV', 'Sedan', 'Hatchback', 'Luxury Cars', 'Electric Cars'
+  ];
+  
+  if (searchInput) {
+    // Create suggestions dropdown
+    const suggestionsContainer = document.createElement('div');
+    suggestionsContainer.className = 'search-suggestions';
+    searchInput.parentNode.appendChild(suggestionsContainer);
+    
+    searchInput.addEventListener('input', (e) => {
+      const value = e.target.value.toLowerCase();
+      const filtered = suggestions.filter(suggestion => 
+        suggestion.toLowerCase().includes(value)
+      );
+      
+      if (value && filtered.length > 0) {
+        suggestionsContainer.innerHTML = filtered
+          .slice(0, 5)
+          .map(suggestion => `<div class="suggestion-item">${suggestion}</div>`)
+          .join('');
+        suggestionsContainer.style.display = 'block';
+      } else {
+        suggestionsContainer.style.display = 'none';
+      }
+    });
+    
+    // Handle suggestion clicks
+    suggestionsContainer.addEventListener('click', (e) => {
+      if (e.target.classList.contains('suggestion-item')) {
+        searchInput.value = e.target.textContent;
+        suggestionsContainer.style.display = 'none';
+      }
+    });
+    
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!searchInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+        suggestionsContainer.style.display = 'none';
+      }
+    });
+  }
+}
+
 // Hero Slider Functionality
 function initializeHeroSlider() {
   const heroSlider = document.createElement("div");
@@ -19,8 +81,22 @@ function initializeHeroSlider() {
     heroSlider.appendChild(slideDiv);
   });
 
+  // Place the hero slider into the DOM. Older markup used a
+  // `.background-image` element which may have been removed —
+  // guard against that to avoid throwing an error and stopping
+  // script execution (which previously prevented the language
+  // modal buttons from receiving their click handlers).
   const backgroundImageDiv = document.querySelector(".background-image");
-  backgroundImageDiv.parentNode.replaceChild(heroSlider, backgroundImageDiv);
+  const heroSection = document.querySelector('.hero-section');
+  if (backgroundImageDiv && backgroundImageDiv.parentNode) {
+    backgroundImageDiv.parentNode.replaceChild(heroSlider, backgroundImageDiv);
+  } else if (heroSection) {
+    // Insert as the first child so it sits behind the hero content
+    heroSection.insertBefore(heroSlider, heroSection.firstChild);
+  } else {
+    // As a last resort append to body
+    document.body.appendChild(heroSlider);
+  }
   
   const dotsContainer = document.createElement("div");
   dotsContainer.className = "slider-dots";
@@ -407,7 +483,7 @@ const translations = {
     "Get Your": "Get Your",
     "Dream Car": "Dream Car",
     Car: "Car",
-    "Refurbished Cars": "Refurbished Cars",
+    "Best Cars": "Best Cars",
     "Sell Car": "Sell Car",
     "Car Service": "Car Service",
     "Price Calculator": "Price Calculator",
@@ -532,7 +608,7 @@ const translations = {
     "Get Your": "ನಿಮ್ಮ",
     "Dream Car": "ಕನಸಿನ ಕಾರ್",
     Car: "ಕಾರ್",
-    "Refurbished Cars": "ಮರುನಿರ್ಮಿತ ಕಾರ್‌ಗಳು",
+    "Best Cars": "ಉತ್ತಮ ಕಾರ್‌ಗಳು",
     "Sell Car": "ಕಾರ್ ಮಾರಾಟ ಮಾಡಿ",
     "Car Service": "ಕಾರ್ ಸರ್ವೀಸ್",
     "Price Calculator": "ಬೆಲೆ ಲೆಕ್ಕಾಚಾರ",
@@ -732,12 +808,26 @@ function translatePage(language) {
 }
 
 function initializeTranslation() {
-  document.querySelectorAll(".language-btn").forEach((button) => {
-    button.addEventListener("click", function () {
+  const languageButtons = document.querySelectorAll(".language-btn");
+  languageButtons.forEach((button) => {
+    button.addEventListener("click", function (e) {
+      // prevent any parent handlers or overlays from swallowing clicks
+      e.stopPropagation();
+      e.preventDefault();
       const lang = this.getAttribute("data-lang");
       translatePage(lang);
     });
   });
+
+  // Close modal when clicking outside the popup content
+  const languagePopup = document.getElementById('languagePopup');
+  if (languagePopup) {
+    languagePopup.addEventListener('click', function (e) {
+      if (e.target === languagePopup) {
+        languagePopup.style.display = 'none';
+      }
+    });
+  }
 
   const updateMobileMenu = () => {
     const mobileMenu = document.querySelector(".mobile-menu");
@@ -771,6 +861,8 @@ function initializeGoogleAnalytics() {
 
 // Initialize all functionality when DOM is loaded
 document.addEventListener("DOMContentLoaded", function () {
+  initializeStickyNavbar();
+  initializeSearchFeatures();
   initializeHeroSlider();
   initializeMobileMenu();
   initializeLazyLoading();

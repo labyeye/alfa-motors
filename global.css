@@ -11,6 +11,81 @@ body {
     padding: 0px;
     width: 100%;
     height: 100%;
+    font-family: 'Open Sans', sans-serif;
+    line-height: 1.6;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+p, span, div {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+}
+
+.cta-text, button {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+}
+
+/* Layout improvements with proper spacing */
+.section-padding {
+    padding: 80px 5%;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Grid layouts */
+.grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+}
+
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+}
+
+/* Responsive grid */
+@media (max-width: 1024px) {
+    .grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .grid-4, .grid-3, .grid-2 {
+        grid-template-columns: 1fr;
+    }
+    
+    .section-padding {
+        padding: 60px 5%;
+    }
+}
+
+/* White space improvements */
+.spacing-40 {
+    padding: 40px;
+}
+
+.margin-bottom-40 {
+    margin-bottom: 40px;
 }
 
 /* a blue color as a generic focus style */

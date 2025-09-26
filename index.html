@@ -50,7 +50,7 @@
     <link rel="icon" type="image/svg+xml" href="./assets/logo2.svg" />
     <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap"
       rel="stylesheet"
     />
     <!-- Replace the current Font Awesome links in <head> with this: -->
@@ -131,7 +131,6 @@
       </div>
     </div>
     <div class="hero-section" itemscope itemtype="https://schema.org/WPHeader">
-      <div class="background-image"></div>
       <nav class="navbar" aria-label="Main navigation">
         <a href="index.html" class="logo-link"
           ><div class="logo">
@@ -152,14 +151,41 @@
               >Home</a
             >
           </li>
-          <li>
-            <a href="inventory.html" data-translate="Buy Car">Buy Car</a>
+          <li class="mega-menu-trigger">
+            <a href="inventory.html" data-translate="Vehicles for Sale">Vehicles for Sale</a>
+            <div class="mega-menu">
+              <div class="mega-menu-content">
+                <div class="mega-menu-column">
+                  <h3>Categories</h3>
+                  <a href="inventory.html?category=suv">SUV</a>
+                  <a href="inventory.html?category=sedan">Sedan</a>
+                  <a href="inventory.html?category=hatchback">Hatchback</a>
+                  <a href="inventory.html?category=luxury">Luxury</a>
+                  <a href="inventory.html?category=electric">Electric</a>
+                </div>
+                <div class="mega-menu-column">
+                  <h3>Popular Brands</h3>
+                  <a href="inventory.html?brand=bmw">BMW</a>
+                  <a href="inventory.html?brand=audi">Audi</a>
+                  <a href="inventory.html?brand=mercedes">Mercedes</a>
+                  <a href="inventory.html?brand=toyota">Toyota</a>
+                  <a href="inventory.html?brand=honda">Honda</a>
+                </div>
+                <div class="mega-menu-column">
+                  <h3>Featured Vehicles</h3>
+                  <div class="featured-vehicle-preview">
+                    <img src="./assets/images/featured-1.jpg" alt="Featured Vehicle" />
+                    <span>BMW X5 - ₹35,00,000</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </li>
           <li>
-            <a href="sell.html" data-translate="Sell Your Car">Sell Your Car</a>
+            <a href="sell.html" data-translate="Sell Your Vehicle">Sell Your Vehicle</a>
           </li>
+          <li><a href="#" data-translate="Financing">Financing</a></li>
           <li><a href="about.html" data-translate="About Us">About Us</a></li>
-          <li><a href="#" data-translate="Updates">Updates</a></li>
           <li><a href="contact.html" data-translate="Contact">Contact</a></li>
         </ul>
         <div class="login-btn">
@@ -176,16 +202,26 @@
 
       <div class="hero-content">
         <h1 itemprop="headline">
-          <span class="hero-line" data-translate="Get Your">Get Your</span>
-          <span class="hero-line highlight" data-translate="Dream Car"
-            >Dream Car</span
+          <span class="hero-line" data-translate="Find Your">Find Your</span>
+          <span class="hero-line highlight" data-translate="Dream Car Today"
+            >Dream Car Today</span
           >
           <span
             class="hero-line subtitle"
-            data-translate="Ride Into Freedom with the Car You've Always Wanted"
-            >Ride Into Freedom with the Car You've Always Wanted</span
+            data-translate="Premium Pre-Owned Vehicles with Complete Transparency"
+            >Premium Pre-Owned Vehicles with Complete Transparency</span
           >
         </h1>
+        
+        <div class="hero-cta">
+          <a href="inventory.html" class="cta-button primary">
+            <span class="cta-text">Explore Vehicles</span>
+            <i class="fas fa-arrow-right"></i>
+          </a>
+          <a href="sell.html" class="cta-button secondary">
+            <span class="cta-text">Sell Your Car</span>
+          </a>
+        </div>
 
         <div class="search-container">
           <form action="inventory.html" method="get" id="searchForm">
@@ -219,7 +255,7 @@
     </div>
     <section class="featured-Cars-section">
       <div class="section-header">
-        <h2 data-translate="Refurbished Cars">Refurbished Cars</h2>
+        <h2 data-translate="Best Cars">Best Cars</h2>
         <a href="inventory.html" class="view-all" data-translate="View All"
           >View All</a
         >
@@ -417,7 +453,7 @@
         </div>
         <div class="service-card">
           <img
-            src="https://icons.veryicon.com/png/o/miscellaneous/ios-apple-icon/ios-calculator-9.png"
+            src="https://cdn-icons-png.flaticon.com/512/1176/1176289.png"
             style="width: 50px"
           />
           <h3 data-translate="Price Calculator">Price Calculator</h3>
@@ -472,7 +508,7 @@
         <div class="stat-card">
           <div class="stat-image">
             <img
-              src="https://icons.veryicon.com/png/o/miscellaneous/icon-library-of-grey-sun-1/work-experience-1.png"
+              src="https://cdn-icons-png.flaticon.com/512/3504/3504016.png"
             />
           </div>
 
