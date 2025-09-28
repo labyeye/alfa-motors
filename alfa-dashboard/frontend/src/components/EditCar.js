@@ -16,6 +16,13 @@ import {
 } from "lucide-react";
 import AuthContext from "../context/AuthContext";
 import logo from "../images/company.png";
+// Detect API base dynamically to avoid hard-coded hosts and CORS mismatches
+const API_BASE = (function() {
+  const host = window.location.hostname;
+  if (host === 'localhost' || host.startsWith('127.')) return 'http://localhost:5000';
+  // Production API (Vercel)
+  return 'https://alfa-motors-5yfh.vercel.app';
+})();
 
 const EditCar = () => {
   const { id } = useParams();
@@ -104,7 +111,7 @@ const EditCar = () => {
     const fetchCarData = async () => {
       try {
         const response = await axios.get(
-          `https://alfa-motors.onrender.com/api/cars/${id}`,
+              `${API_BASE}/api/cars/${id}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -187,10 +194,7 @@ const EditCar = () => {
     if (file.startsWith('http') || file.startsWith('/')) return file;
     // Strip potential 'carimages/' prefix
     const filename = file.replace('carimages/', '');
-    // Prefer production host if configured, otherwise localhost
-    const PROD_HOST = 'https://alfa-motors.onrender.com';
-    const host = window.location.hostname === 'localhost' ? 'https://alfa-motors.onrender.com' : PROD_HOST;
-    return `${host}/carimages/${filename}`;
+    return `${API_BASE}/carimages/${filename}`;
   };
 
   const compressImage = (file, maxWidth = 1200, quality = 0.8) => {
@@ -225,7 +229,7 @@ const EditCar = () => {
       const photoFormData = new FormData();
       photoFormData.append('photo', finalFile);
       
-      const response = await axios.post(`https://alfa-motors.onrender.com/api/cars/${id}/photo`, photoFormData, {
+      const response = await axios.post(`${API_BASE}/api/cars/${id}/photo`, photoFormData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "multipart/form-data",
@@ -248,7 +252,7 @@ const EditCar = () => {
 
   const handleDeletePhoto = async (filename) => {
     try {
-      await axios.delete(`https://alfa-motors.onrender.com/api/cars/${id}/photo`, {
+      await axios.delete(`${API_BASE}/api/cars/${id}/photo`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -295,7 +299,7 @@ const EditCar = () => {
       });
 
       // Update text fields
-      await axios.put(`https://alfa-motors.onrender.com/api/cars/${id}`, textData, {
+      await axios.put(`${API_BASE}/api/cars/${id}`, textData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
@@ -324,7 +328,7 @@ const EditCar = () => {
             const photoFormData = new FormData();
             photoFormData.append('photo', finalFile);
             
-            await axios.post(`https://alfa-motors.onrender.com/api/cars/${id}/photo`, photoFormData, {
+            await axios.post(`${API_BASE}/api/cars/${id}/photo`, photoFormData, {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "multipart/form-data",
@@ -704,7 +708,7 @@ const EditCar = () => {
                       if (!window.confirm('Delete ALL images for this car? This cannot be undone.')) return;
                       setIsDeletingAll(true);
                       try {
-                        await axios.delete(`https://alfa-motors.onrender.com/api/cars/${id}/photos`, {
+                        await axios.delete(`${API_BASE}/api/cars/${id}/photos`, {
                           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
                         });
                         setCarData((prev) => ({ ...prev, photos: [] }));
