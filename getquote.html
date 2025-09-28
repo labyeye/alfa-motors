@@ -31,11 +31,50 @@
             /></div
         ></a>
         <ul class="nav-links">
-          <li><a href="index.html" data-translate="Home">Home</a></li>
-          <li><a href="inventory.html" data-translate="Buy Car">Buy Car</a></li>
-          <li><a href="sell.html" data-translate="Sell Your Car">Sell Your Car</a></li>
+          <li>
+            <a
+              href="index.html"
+              class="active"
+              aria-current="page"
+              data-translate="Home"
+              >Home</a
+            >
+          </li>
+
+          <li class="mega-menu-trigger">
+            <a href="inventory.html" data-translate="Vehicles for Sale"
+              >Vehicles for Sale</a
+            >
+            <div class="mega-menu">
+              <div class="mega-menu-content">
+                <div class="mega-menu-column">
+                  <h3>Categories</h3>
+                  <a href="inventory.html?category=suv">SUV</a>
+                  <a href="inventory.html?category=sedan">Sedan</a>
+                  <a href="inventory.html?category=hatchback">Hatchback</a>
+                  <a href="inventory.html?category=luxury">Luxury</a>
+                  <a href="inventory.html?category=electric">Electric</a>
+                </div>
+                <div class="mega-menu-column">
+                  <h3>Popular Brands</h3>
+                  <a href="inventory.html?brand=bmw">BMW</a>
+                  <a href="inventory.html?brand=audi">Audi</a>
+                  <a href="inventory.html?brand=mercedes">Mercedes</a>
+                  <a href="inventory.html?brand=toyota">Toyota</a>
+                  <a href="inventory.html?brand=honda">Honda</a>
+                </div>
+                
+              </div>
+            </div>
+          </li>
+          <li>
+            <a href="sell.html" data-translate="Sell Your Vehicle"
+              >Sell Your Vehicle</a
+            >
+          </li>
+          <li><a href="happy-customers.html">Happy Customers</a></li>
+          <li><a href="#" data-translate="Financing">Financing</a></li>
           <li><a href="about.html" data-translate="About Us">About Us</a></li>
-          <li><a href="#" data-translate="Updates">Updates</a></li>
           <li><a href="contact.html" data-translate="Contact">Contact</a></li>
         </ul>
         <div class="login-btn">
@@ -46,8 +85,12 @@
       </nav>
       <section class="quote-section">
         <div class="quote-content">
-          <h2 data-translate="Get Your Perfect Car Quote">Get Your Perfect Car Quote</h2>
-          <p data-translate="Tell us what you're looking for and we'll match you with the best options in your budget. Our experts will contact you with personalized recommendations.">
+          <h2 data-translate="Get Your Perfect Car Quote">
+            Get Your Perfect Car Quote
+          </h2>
+          <p
+            data-translate="Tell us what you're looking for and we'll match you with the best options in your budget. Our experts will contact you with personalized recommendations."
+          >
             Tell us what you're looking for and we'll match you with the best
             options in your budget. Our experts will contact you with
             personalized recommendations.
@@ -57,8 +100,12 @@
             <div class="quote-step">
               <div class="step-number">1</div>
               <div class="step-content">
-                <h4 data-translate="Fill the Quote Form">Fill the Quote Form</h4>
-                <p data-translate="Provide details about the Car you're interested in and your budget.">
+                <h4 data-translate="Fill the Quote Form">
+                  Fill the Quote Form
+                </h4>
+                <p
+                  data-translate="Provide details about the Car you're interested in and your budget."
+                >
                   Provide details about the Car you're interested in and your
                   budget.
                 </p>
@@ -67,8 +114,12 @@
             <div class="quote-step">
               <div class="step-number">2</div>
               <div class="step-content">
-                <h4 data-translate="Get Expert Recommendations">Get Expert Recommendations</h4>
-                <p data-translate="Our team will analyze your requirements and find the best matches.">
+                <h4 data-translate="Get Expert Recommendations">
+                  Get Expert Recommendations
+                </h4>
+                <p
+                  data-translate="Our team will analyze your requirements and find the best matches."
+                >
                   Our team will analyze your requirements and find the best
                   matches.
                 </p>
@@ -78,7 +129,9 @@
               <div class="step-number">3</div>
               <div class="step-content">
                 <h4 data-translate="Receive Your Quote">Receive Your Quote</h4>
-                <p data-translate="We'll contact you with detailed options and pricing information.">
+                <p
+                  data-translate="We'll contact you with detailed options and pricing information."
+                >
                   We'll contact you with detailed options and pricing
                   information.
                 </p>
@@ -91,7 +144,9 @@
               class="cta-button"
               onclick="document.getElementById('quote-form').scrollIntoView({ behavior: 'smooth' })"
             >
-              <span data-translate="Get Your Quote Now">Get Your Quote Now</span>
+              <span data-translate="Get Your Quote Now"
+                >Get Your Quote Now</span
+              >
             </button>
           </div>
         </div>
@@ -101,7 +156,9 @@
             <h3 data-translate="Quote Request">Quote Request</h3>
 
             <div class="form-group">
-              <label for="quote-name" data-translate="Full Name*">Full Name*</label>
+              <label for="quote-name" data-translate="Full Name*"
+                >Full Name*</label
+              >
               <input
                 type="text"
                 id="quote-name"
@@ -123,7 +180,9 @@
             </div>
 
             <div class="form-group">
-              <label for="quote-phone" data-translate="Phone Number*">Phone Number*</label>
+              <label for="quote-phone" data-translate="Phone Number*"
+                >Phone Number*</label
+              >
               <input
                 type="tel"
                 id="quote-phone"
@@ -134,7 +193,9 @@
             </div>
 
             <div class="form-group">
-              <label for="quote-brand" data-translate="Preferred Brand*">Preferred Brand*</label>
+              <label for="quote-brand" data-translate="Preferred Brand*"
+                >Preferred Brand*</label
+              >
               <select id="quote-brand" name="brand" required>
                 <option value="">Select Brand</option>
                 <option value="KTM">KTM</option>
@@ -150,7 +211,9 @@
             </div>
 
             <div class="form-group">
-              <label for="quote-model" data-translate="Preferred Model">Preferred Model</label>
+              <label for="quote-model" data-translate="Preferred Model"
+                >Preferred Model</label
+              >
               <input
                 type="text"
                 id="quote-model"
@@ -160,7 +223,9 @@
             </div>
 
             <div class="form-group">
-              <label for="quote-year" data-translate="Preferred Year*">Preferred Year*</label>
+              <label for="quote-year" data-translate="Preferred Year*"
+                >Preferred Year*</label
+              >
               <select id="quote-year" name="year" required>
                 <option value="">Select Year</option>
                 <option value="2024">2024</option>
@@ -178,7 +243,9 @@
             </div>
 
             <div class="form-group">
-              <label for="quote-budget" data-translate="Price Budget (₹)*">Price Budget (₹)*</label>
+              <label for="quote-budget" data-translate="Price Budget (₹)*"
+                >Price Budget (₹)*</label
+              >
               <input
                 type="number"
                 id="quote-budget"
@@ -189,7 +256,9 @@
             </div>
 
             <div class="form-group">
-              <label for="quote-notes" data-translate="Additional Requirements">Additional Requirements</label>
+              <label for="quote-notes" data-translate="Additional Requirements"
+                >Additional Requirements</label
+              >
               <textarea
                 id="quote-notes"
                 name="notes"
@@ -204,12 +273,20 @@
                 name="agree-terms"
                 required
               />
-              <label for="agree-terms-quote"
-                data-translate="I agree to the terms and conditions and privacy policy*">I agree to the terms and conditions and privacy policy*</label
+              <label
+                for="agree-terms-quote"
+                data-translate="I agree to the terms and conditions and privacy policy*"
+                >I agree to the terms and conditions and privacy policy*</label
               >
             </div>
 
-            <button type="submit" class="submit-btn" data-translate="Request Quote">Request Quote</button>
+            <button
+              type="submit"
+              class="submit-btn"
+              data-translate="Request Quote"
+            >
+              Request Quote
+            </button>
           </form>
         </div>
       </section>
@@ -241,9 +318,9 @@
             <i class="fas fa-quote-right"></i>
           </div>
           <p class="quote">
-            Got an excellent quote for my Dream Car through Alfa Motors World. The
-            team understood my requirements perfectly and found me a great deal
-            within my budget.
+            Got an excellent quote for my Dream Car through Alfa Motors World.
+            The team understood my requirements perfectly and found me a great
+            deal within my budget.
           </p>
           <div class="testimonial-footer">
             <span class="testimonial-date">15 May 2023</span>
@@ -328,22 +405,51 @@
       <div class="footer-content">
         <div class="footer-section">
           <div class="logo">
-            <img src="./assets/logo2.svg" style="width: 50px" alt="Alfa Motors World Logo" />
+            <img
+              src="./assets/logo2.svg"
+              style="width: 50px"
+              alt="Alfa Motors World Logo"
+            />
           </div>
-          <p data-translate="Bringing the future of Car riding to you today.">Bringing the future of Car riding to you today.</p>
+          <p data-translate="Bringing the future of Car riding to you today.">
+            Bringing the future of Car riding to you today.
+          </p>
           <div class="social-icons">
-            <a href="https://www.facebook.com/share/1Ao18FYX8e/"><i class="fa-brands fa-facebook-f"
-                style="color: #0400ff;"></i></a>
-            <a href="https://www.instagram.com/Carbuilders41?igsh=ZDk5M3NxdmI1Ymhp"
-              aria-label="Visit our Instagram profile"><img
-                src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" style="width:20px" /></a>
-            <a href="https://wa.me/919036818492"><i class="fa-brands fa-whatsapp" style="color: #00a841;"></i></a>
-            <a class="footer-stars" title="Leave a review" aria-label="Leave a review">
-              <i class="fa-solid fa-star" style="color:#f59e0b;margin-right:2px"></i>
-              <i class="fa-solid fa-star" style="color:#f59e0b;margin-right:2px"></i>
-              <i class="fa-solid fa-star" style="color:#f59e0b;margin-right:2px"></i>
-              <i class="fa-solid fa-star" style="color:#f59e0b;margin-right:2px"></i>
-              <i class="fa-solid fa-star" style="color:#f59e0b"></i>
+            <a href="https://www.facebook.com/share/1Ao18FYX8e/"
+              ><i class="fa-brands fa-facebook-f" style="color: #0400ff"></i
+            ></a>
+            <a
+              href="https://www.instagram.com/Carbuilders41?igsh=ZDk5M3NxdmI1Ymhp"
+              aria-label="Visit our Instagram profile"
+              ><img
+                src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png"
+                style="width: 20px"
+            /></a>
+            <a href="https://wa.me/919036818492"
+              ><i class="fa-brands fa-whatsapp" style="color: #00a841"></i
+            ></a>
+            <a
+              class="footer-stars"
+              title="Leave a review"
+              aria-label="Leave a review"
+            >
+              <i
+                class="fa-solid fa-star"
+                style="color: #f59e0b; margin-right: 2px"
+              ></i>
+              <i
+                class="fa-solid fa-star"
+                style="color: #f59e0b; margin-right: 2px"
+              ></i>
+              <i
+                class="fa-solid fa-star"
+                style="color: #f59e0b; margin-right: 2px"
+              ></i>
+              <i
+                class="fa-solid fa-star"
+                style="color: #f59e0b; margin-right: 2px"
+              ></i>
+              <i class="fa-solid fa-star" style="color: #f59e0b"></i>
             </a>
           </div>
         </div>
@@ -351,8 +457,14 @@
           <h3 data-translate="Quick Links">Quick Links</h3>
           <ul>
             <li><a href="index.html" data-translate="Home">Home</a></li>
-            <li><a href="inventory.html" data-translate="Buy Car">Buy Car</a></li>
-            <li><a href="sell.html" data-translate="Sell Your Car">Sell Your Car</a></li>
+            <li>
+              <a href="inventory.html" data-translate="Buy Car">Buy Car</a>
+            </li>
+            <li>
+              <a href="sell.html" data-translate="Sell Your Car"
+                >Sell Your Car</a
+              >
+            </li>
             <li><a href="about.html" data-translate="About Us">About Us</a></li>
             <li><a href="#" data-translate="Updates">Updates</a></li>
             <li><a href="contact.html" data-translate="Contact">Contact</a></li>
@@ -360,38 +472,53 @@
         </div>
         <div class="footer-section">
           <h3 data-translate="Contact Us">Contact Us</h3>
-          <p data-translate="No 97, 2, Bannerghatta Rd, opposite to D-Mart, Bohra Layout, Gottigere, Bengaluru, Karnataka 560083">
+          <p
+            data-translate="No 97, 2, Bannerghatta Rd, opposite to D-Mart, Bohra Layout, Gottigere, Bengaluru, Karnataka 560083"
+          >
             <i class="fas fa-map-marker-alt"></i> Rambag Chowk, Rambag Road
             Kabristaan k bagal me, Gaushala Chowk Mandir , Muzaffarpur, Bihar
             842002
           </p>
-          <span itemprop="telephone">+91 8210283582 / 7564987167 / 9825944897</span>
+          <span itemprop="telephone"
+            >+91 8210283582 / 7564987167 / 9825944897</span
+          >
         </div>
       </div>
       <div class="footer-bottom">
-        <p data-translate="&copy; 2023 Alfa Motors World. All rights reserved.">&copy; 2023 Alfa Motors World. All rights reserved.</p>
-        <a href="www.pixelatenest.com" style="color: #a9a9a9" data-translate="Designed By Pixelate Nest">Designed By Pixelate Nest</a>
+        <p data-translate="&copy; 2023 Alfa Motors World. All rights reserved.">
+          &copy; 2023 Alfa Motors World. All rights reserved.
+        </p>
+        <a
+          href="www.pixelatenest.com"
+          style="color: #a9a9a9"
+          data-translate="Designed By Pixelate Nest"
+          >Designed By Pixelate Nest</a
+        >
       </div>
     </footer>
-  <script>
+    <script>
       document.addEventListener("DOMContentLoaded", function () {
         const translations = {
           en: {
-            "Home": "Home",
+            Home: "Home",
             "Buy Car": "Buy Car",
             "Sell Your Car": "Sell Your Car",
             "About Us": "About Us",
-            "Updates": "Updates",
-            "Contact": "Contact",
+            Updates: "Updates",
+            Contact: "Contact",
             "Get the Quote": "Get the Quote",
             "Get Your Perfect Car Quote": "Get Your Perfect Car Quote",
-            "Tell us what you're looking for and we'll match you with the best options in your budget. Our experts will contact you with personalized recommendations.": "Tell us what you're looking for and we'll match you with the best options in your budget. Our experts will contact you with personalized recommendations.",
+            "Tell us what you're looking for and we'll match you with the best options in your budget. Our experts will contact you with personalized recommendations.":
+              "Tell us what you're looking for and we'll match you with the best options in your budget. Our experts will contact you with personalized recommendations.",
             "Fill the Quote Form": "Fill the Quote Form",
-            "Provide details about the Car you're interested in and your budget.": "Provide details about the Car you're interested in and your budget.",
+            "Provide details about the Car you're interested in and your budget.":
+              "Provide details about the Car you're interested in and your budget.",
             "Get Expert Recommendations": "Get Expert Recommendations",
-            "Our team will analyze your requirements and find the best matches.": "Our team will analyze your requirements and find the best matches.",
+            "Our team will analyze your requirements and find the best matches.":
+              "Our team will analyze your requirements and find the best matches.",
             "Receive Your Quote": "Receive Your Quote",
-            "We'll contact you with detailed options and pricing information.": "We'll contact you with detailed options and pricing information.",
+            "We'll contact you with detailed options and pricing information.":
+              "We'll contact you with detailed options and pricing information.",
             "Get Your Quote Now": "Get Your Quote Now",
             "Quote Request": "Quote Request",
             "Full Name*": "Full Name*",
@@ -399,21 +526,25 @@
             "Phone Number*": "Phone Number*",
           },
           hi: {
-            "Home": "होम",
+            Home: "होम",
             "Buy Car": "बाइक खरीदें",
             "Sell Your Car": "अपनी बाइक बेचें",
             "About Us": "हमारे बारे में",
-            "Updates": "अपडेट्स",
-            "Contact": "संपर्क करें",
+            Updates: "अपडेट्स",
+            Contact: "संपर्क करें",
             "Get the Quote": "कीमत पता करें",
             "Get Your Perfect Car Quote": "अपने आदर्श बाइक कीमत पता करें",
-            "Tell us what you're looking for and we'll match you with the best options in your budget. Our experts will contact you with personalized recommendations.": "हम आपके आवश्यकताओं के अनुसार आपको सबसे अच्छे विकल्पों को देंगे और हमारे विशेषज्ञ आपको अपनी बाइक की विशिष्ट सिफारिशों के साथ संपर्क करेंगे।",
+            "Tell us what you're looking for and we'll match you with the best options in your budget. Our experts will contact you with personalized recommendations.":
+              "हम आपके आवश्यकताओं के अनुसार आपको सबसे अच्छे विकल्पों को देंगे और हमारे विशेषज्ञ आपको अपनी बाइक की विशिष्ट सिफारिशों के साथ संपर्क करेंगे।",
             "Fill the Quote Form": "कीमत पता फॉर्म भरें",
-            "Provide details about the Car you're interested in and your budget.": "आपके द्वारा दिए गए बाइक के बारे में विवरण और आपकी बचत दें",
+            "Provide details about the Car you're interested in and your budget.":
+              "आपके द्वारा दिए गए बाइक के बारे में विवरण और आपकी बचत दें",
             "Get Expert Recommendations": "विशेषज्ञ सिफारिशें प्राप्त करें",
-            "Our team will analyze your requirements and find the best matches.": "हमारा टीम आपकी आवश्यकताओं का विश्लेषण करेगा और सबसे अच्छे मैच को खोजेगा।",
+            "Our team will analyze your requirements and find the best matches.":
+              "हमारा टीम आपकी आवश्यकताओं का विश्लेषण करेगा और सबसे अच्छे मैच को खोजेगा।",
             "Receive Your Quote": "आपकी कीमत प्राप्त करें",
-            "We'll contact you with detailed options and pricing information.": "हम आपको विवरणपूर्ण विकल्पों और कीमत जानकारी के साथ संपर्क करेंगे।",
+            "We'll contact you with detailed options and pricing information.":
+              "हम आपको विवरणपूर्ण विकल्पों और कीमत जानकारी के साथ संपर्क करेंगे।",
             "Get Your Quote Now": "अभी आपकी कीमत पता करें",
             "Quote Request": "कीमत पता अनुरोध",
             "Full Name*": "पूरा नाम*",
@@ -421,12 +552,12 @@
             "Phone Number*": "फ़ोन नंबर*",
             "Preferred Brand*": "पसंदीदा ब्रांड*",
             "Preferred Model": "पसंदीदा मॉडल",
-          }
+          },
         };
-  
+
         const preferredLanguage =
           localStorage.getItem("preferredLanguage") || "en";
-  
+
         if (preferredLanguage !== "en") {
           document.body.classList.add("hindi-font");
           const elements = document.querySelectorAll("[data-translate]");
@@ -439,7 +570,7 @@
               element.textContent = translations[preferredLanguage][key];
             }
           });
-  
+
           const formLabels = {
             "Car-brand": "Brand*",
             "Car-model": "Model*",
@@ -450,7 +581,7 @@
             "seller-email": "Email*",
             "seller-phone": "Phone Number*",
           };
-  
+
           Object.entries(formLabels).forEach(([id, enText]) => {
             const element = document.getElementById(id);
             if (element && translations[preferredLanguage][enText]) {
@@ -465,7 +596,7 @@
               }
             }
           });
-  
+
           const uiElements = {
             "image-upload-label span": "Click to upload images",
             "agree-terms-label":
@@ -473,7 +604,7 @@
             "submit-btn": "Get Instant Valuation",
             "testimonials-title": "What Our Sellers Say",
           };
-  
+
           Object.entries(uiElements).forEach(([selector, enText]) => {
             const element = document.querySelector(selector);
             if (element && translations[preferredLanguage][enText]) {
@@ -483,7 +614,7 @@
         }
       });
     </script>
-  <script src="/review.js"></script>
+    <script src="/review.js"></script>
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {

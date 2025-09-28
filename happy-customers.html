@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Happy Customers — Alfa Motor World</title>
+  <meta name="description" content="See our happy customers who sold their cars through Alfa Motor World. Browse our gallery of satisfied customers and their testimonials." />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="./global.css" />
+  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="./happy-customers.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+<body>
+  <div class="hero-section gallery-hero">
+    <nav class="navbar" aria-label="Main navigation">
+      <a href="index.html" class="logo-link">
+        <div class="logo">
+          <img src="./assets/logo2.svg" class="logo-img" alt="Alfa Motors World Logo" itemprop="logo" />
+        </div>
+      </a>
+      <button class="mobile-menu-toggle" aria-label="Open menu">
+        <i class="fas fa-bars"></i>
+      </button>
+      <ul class="nav-links">
+        <li><a href="index.html" data-translate="Home">Home</a></li>
+        <li class="mega-menu-trigger">
+          <a href="inventory.html" data-translate="Vehicles for Sale">Vehicles for Sale</a>
+          <div class="mega-menu">
+            <div class="mega-menu-content">
+              <div class="mega-menu-column">
+                <h3>Categories</h3>
+                <a href="inventory.html?category=suv">SUV</a>
+                <a href="inventory.html?category=sedan">Sedan</a>
+                <a href="inventory.html?category=hatchback">Hatchback</a>
+                <a href="inventory.html?category=luxury">Luxury</a>
+                <a href="inventory.html?category=electric">Electric</a>
+              </div>
+              <div class="mega-menu-column">
+                <h3>Popular Brands</h3>
+                <a href="inventory.html?brand=bmw">BMW</a>
+                <a href="inventory.html?brand=audi">Audi</a>
+                <a href="inventory.html?brand=mercedes">Mercedes</a>
+                <a href="inventory.html?brand=toyota">Toyota</a>
+                <a href="inventory.html?brand=honda">Honda</a>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li><a href="sell.html" data-translate="Sell Your Vehicle">Sell Your Vehicle</a></li>
+        <li><a href="happy-customers.html" class="active">Happy Customers</a></li>
+        <li><a href="#" data-translate="Financing">Financing</a></li>
+        <li><a href="about.html" data-translate="About Us">About Us</a></li>
+        <li><a href="contact.html" data-translate="Contact">Contact</a></li>
+      </ul>
+      <div class="login-btn">
+        <a href="/getquote.html">
+          <button data-translate="Get the Quote">Get the Quote</button>
+        </a>
+      </div>
+    </nav>
+
+    <div class="hero-content gallery-hero-content">
+      <div class="hero-text">
+        <h1 class="hero-title" data-translate="Happy Customers">Happy Customers</h1>
+        <p class="hero-description" data-translate="Celebrating the joy of our satisfied customers who trusted Alfa Motor World with their car selling journey. Each story represents trust, satisfaction, and success.">Celebrating the joy of our satisfied customers who trusted Alfa Motor World with their car selling journey. Each story represents trust, satisfaction, and success.</p>
+      </div>
+    </div>
+  </div>
+
+  <section class="gallery-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Our Success Stories</h2>
+        <p class="section-subtitle">Real customers, real satisfaction</p>
+      </div>
+      
+      <div id="loading" class="loading">Loading our happy customers...</div>
+      <div id="gallery" class="masonry-gallery">
+        <!-- Cards inserted by JS -->
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const API_BASE = window.HAPPY_API_BASE || (location.hostname === 'localhost' ? 'http://localhost:2500' : 'https://alfa-motors-5yfh.vercel.app');
+    const gallery = document.getElementById('gallery');
+    const loading = document.getElementById('loading');
+
+    async function fetchSold() {
+      try {
+        const res = await fetch(`${API_BASE}/api/cars/sold`);
+        const json = await res.json();
+        loading.style.display = 'none';
+        if (!json.success) return gallery.innerHTML = '<p>Failed to load.</p>';
+        const cars = json.data || [];
+        if (cars.length === 0) return gallery.innerHTML = '<p>No sold cars yet.</p>';
+        gallery.innerHTML = cars.map((car, index) => {
+          const thumb = (car.sold && car.sold.customerPhotos && car.sold.customerPhotos[0]) || (car.photos && car.photos[0]) || '';
+          const thumbUrl = thumb ? `${API_BASE}/carimages/${thumb.replace('carimages/','')}` : './assets/placeholder.png';
+          const customer = car.sold?.customerName || '';
+          const testimonial = car.sold?.testimonial || '';
+          const carTitle = `${car.make} ${car.model}${car.variant ? ' ' + car.variant : ''} (${car.modelYear || ''})`;
+          
+          return `
+            <article class="gallery-card" data-aos="fade-up" data-aos-delay="${(index % 4) * 100}">
+              <div class="card-image-container">
+                <img src="${thumbUrl}" alt="${car.make} ${car.model}" loading="lazy" />
+                <div class="sold-badge">SOLD</div>
+                <div class="card-overlay">
+                  <div class="overlay-content">
+                    <h4 style="color: white; margin: 0; font-size: 1.1rem;">${carTitle}</h4>
+                    ${customer ? `<p style="color: #ffeb3b; margin: 5px 0 0 0; font-weight: 600;">— ${customer}</p>` : ''}
+                  </div>
+                </div>
+              </div>
+              <div class="card-content">
+                <h3 class="car-title">${carTitle}</h3>
+                ${customer ? `<div class="customer-name">${customer}</div>` : ''}
+                ${testimonial ? `<p class="testimonial">${testimonial}</p>` : ''}
+              </div>
+            </article>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error(err);
+        loading.textContent = 'Failed to load gallery.';
+      }
+    }
+
+    fetchSold();
+  </script>
+</body>
+</html>

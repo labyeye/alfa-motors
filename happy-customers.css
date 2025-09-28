@@ -1,0 +1,262 @@
+:root {
+  --primary-color: #0D1B2A;
+  --secondary-color: #C0C0C0;
+  --text-color: #000000;
+  --accent-red: #E63946;
+  --light-gray: #a9a9a9;
+  --dark-gray: #464646;
+  --white: #ffffff;
+}
+
+/* Gallery Hero Section */
+.gallery-hero {
+  background: linear-gradient(135deg, var(--primary-color) 0%, #1a2937 100%);
+  min-height: 60vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.gallery-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('./assets/images/hero-pattern.png') repeat;
+  opacity: 0.1;
+  z-index: 1;
+}
+
+.gallery-hero-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-text {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.hero-description {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+/* Gallery Section */
+.gallery-section {
+  padding: 80px 0;
+  background-color: #f8f9fa;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 15px;
+}
+
+.section-subtitle {
+  font-size: 1.1rem;
+  color: var(--dark-gray);
+  margin: 0;
+}
+
+/* Masonry Gallery Layout */
+.masonry-gallery {
+  column-count: 4;
+  column-gap: 20px;
+  column-fill: balance;
+}
+
+.gallery-card {
+  background: var(--white);
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  break-inside: avoid;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.gallery-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.card-image-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.gallery-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.gallery-card:hover img {
+  transform: scale(1.05);
+}
+
+.card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.8) 100%);
+  opacity: 0;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: flex-end;
+  padding: 20px;
+}
+
+.gallery-card:hover .card-overlay {
+  opacity: 1;
+}
+
+.card-content {
+  padding: 20px;
+  position: relative;
+}
+
+.car-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 8px;
+}
+
+.customer-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--accent-red);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.customer-name::before {
+  content: '👤';
+  margin-right: 8px;
+}
+
+.testimonial {
+  font-size: 0.9rem;
+  color: var(--dark-gray);
+  line-height: 1.5;
+  font-style: italic;
+  position: relative;
+  padding-left: 15px;
+  border-left: 3px solid var(--accent-red);
+}
+
+.testimonial::before {
+  content: '"';
+  font-size: 2rem;
+  color: var(--accent-red);
+  position: absolute;
+  left: -8px;
+  top: -10px;
+}
+
+.sold-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: var(--accent-red);
+  color: white;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Loading State */
+.loading {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 1.2rem;
+  color: var(--dark-gray);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .masonry-gallery {
+    column-count: 3;
+  }
+  .hero-title {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .masonry-gallery {
+    column-count: 2;
+    column-gap: 15px;
+  }
+  
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .hero-description {
+    font-size: 1rem;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .gallery-section {
+    padding: 60px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .masonry-gallery {
+    column-count: 1;
+  }
+  
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .container {
+    padding: 0 15px;
+  }
+}
