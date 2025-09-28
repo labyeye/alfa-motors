@@ -17,5 +17,9 @@
 			"maxDuration": 30,
 			"memory": 1024
 		}
+	},
+	"regions": ["bom1"],
+	"env": {
+		"VERCEL_TIMEOUT": "30"
 	}
 }

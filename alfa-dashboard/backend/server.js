@@ -23,27 +23,45 @@ connectDB();
 
 // CORS configuration
 const corsOptions = {
-  origin: ['http://127.0.0.1:5500','http://localhost:3000','https://www.alfamotorworld.com','https://alfa-motors-o5cm.vercel.app','https://alfa-motors-5yfh.vercel.app'],
+  origin: [
+    'http://127.0.0.1:5500',
+    'http://localhost:3000', 
+    'https://www.alfamotorworld.com',
+    'https://alfa-motors-o5cm.vercel.app',
+    'https://alfa-motors-5yfh.vercel.app',
+    'http://localhost:5500',
+    'http://127.0.0.1:3000'
+  ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 };
 
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
+// Enable pre-flight for all routes
+app.options('*', cors(corsOptions));
+
+// Apply CORS middleware
+app.use(cors(corsOptions));
+
+// Additional CORS headers middleware
 app.use((req, res, next) => {
   const origin = req.get('origin');
-  if (Array.isArray(corsOptions.origin) && origin && corsOptions.origin.includes(origin)) {
+  if (corsOptions.origin.includes(origin)) {
     res.header('Access-Control-Allow-Origin', origin);
   }
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.header('Access-Control-Allow-Credentials', 'true');
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
   next();
 });
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
 
 app.use('/api/auth', authRoutes);
 app.use("/api/rc", rcRoutes);

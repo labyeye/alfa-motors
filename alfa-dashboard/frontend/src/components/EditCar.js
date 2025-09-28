@@ -152,8 +152,18 @@ const EditCar = () => {
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
     
-    // For better UX, we can either replace all photos or add to existing ones
-    // Let's replace for now, but you can modify this behavior
+    // Check file sizes and warn if they're too large
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB per file
+    const largeFiles = files.filter(file => file.size > MAX_FILE_SIZE);
+    
+    if (largeFiles.length > 0) {
+      alert(`Warning: ${largeFiles.length} file(s) are larger than 5MB. Consider compressing them or use "Add Single Photo" for better reliability.`);
+    }
+    
+    if (files.length > 6) {
+      alert('Warning: Uploading many files at once may fail. Consider using "Add Single Photo" for better reliability.');
+    }
+    
     setCarData((prev) => ({
       ...prev,
       photos: files,
@@ -183,10 +193,37 @@ const EditCar = () => {
     return `${host}/carimages/${filename}`;
   };
 
+  const compressImage = (file, maxWidth = 1200, quality = 0.8) => {
+    return new Promise((resolve) => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      img.onload = () => {
+        const ratio = Math.min(maxWidth / img.width, maxWidth / img.height);
+        canvas.width = img.width * ratio;
+        canvas.height = img.height * ratio;
+        
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        
+        canvas.toBlob(resolve, 'image/jpeg', quality);
+      };
+      
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
   const handleAddPhoto = async (file) => {
     try {
+      // Compress image if it's too large
+      let finalFile = file;
+      if (file.size > 2 * 1024 * 1024) { // If > 2MB
+        finalFile = await compressImage(file);
+        console.log(`Compressed ${file.name} from ${(file.size / 1024 / 1024).toFixed(2)}MB to ${(finalFile.size / 1024 / 1024).toFixed(2)}MB`);
+      }
+      
       const photoFormData = new FormData();
-      photoFormData.append('photo', file);
+      photoFormData.append('photo', finalFile);
       
       const response = await axios.post(`https://alfa-motors-5yfh.vercel.app/api/cars/${id}/photo`, photoFormData, {
         headers: {
@@ -204,7 +241,8 @@ const EditCar = () => {
       alert('Photo added successfully!');
     } catch (error) {
       console.error('Error adding photo:', error);
-      alert('Failed to add photo. Please try again.');
+      const errorMsg = error.response?.data?.error || error.response?.data?.message || 'Failed to add photo. Please try again.';
+      alert(errorMsg);
     }
   };
 
@@ -269,22 +307,39 @@ const EditCar = () => {
                            carData.photos.some(photo => photo instanceof File);
       
       if (hasNewPhotos) {
-        const photoFormData = new FormData();
         const newPhotos = carData.photos.filter(photo => photo instanceof File);
+        let successCount = 0;
         
-        newPhotos.forEach((file) => {
-          photoFormData.append('photos', file);
-        });
+        // Upload photos one by one to avoid payload size limits
+        for (let i = 0; i < newPhotos.length; i++) {
+          const file = newPhotos[i];
+          
+          try {
+            // Compress large images
+            let finalFile = file;
+            if (file.size > 2 * 1024 * 1024) {
+              finalFile = await compressImage(file);
+            }
+            
+            const photoFormData = new FormData();
+            photoFormData.append('photo', finalFile);
+            
+            await axios.post(`https://alfa-motors-5yfh.vercel.app/api/cars/${id}/photo`, photoFormData, {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "multipart/form-data",
+              },
+            });
+            successCount++;
+          } catch (photoError) {
+            console.error(`Error uploading photo ${i + 1}:`, photoError);
+            // Don't alert for individual failures during bulk upload
+          }
+        }
         
-        // Add replacePhotos flag if user wants to replace all photos
-        photoFormData.append('replacePhotos', 'true');
-        
-        await axios.put(`https://alfa-motors-5yfh.vercel.app/api/cars/${id}/photos`, photoFormData, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        if (successCount < newPhotos.length) {
+          alert(`Uploaded ${successCount} of ${newPhotos.length} photos. Some uploads failed - you can try uploading them individually.`);
+        }
       }
       
       alert("Car data updated successfully!");
