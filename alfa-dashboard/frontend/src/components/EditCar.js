@@ -104,7 +104,7 @@ const EditCar = () => {
     const fetchCarData = async () => {
       try {
         const response = await axios.get(
-          `https://alfa-motors-5yfh.vercel.app/api/cars/${id}`,
+          `https://alfa-motors.onrender.com/api/cars/${id}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -188,8 +188,8 @@ const EditCar = () => {
     // Strip potential 'carimages/' prefix
     const filename = file.replace('carimages/', '');
     // Prefer production host if configured, otherwise localhost
-    const PROD_HOST = 'https://alfa-motors-5yfh.vercel.app';
-    const host = window.location.hostname === 'localhost' ? 'https://alfa-motors-5yfh.vercel.app' : PROD_HOST;
+    const PROD_HOST = 'https://alfa-motors.onrender.com';
+    const host = window.location.hostname === 'localhost' ? 'https://alfa-motors.onrender.com' : PROD_HOST;
     return `${host}/carimages/${filename}`;
   };
 
@@ -225,7 +225,7 @@ const EditCar = () => {
       const photoFormData = new FormData();
       photoFormData.append('photo', finalFile);
       
-      const response = await axios.post(`https://alfa-motors-5yfh.vercel.app/api/cars/${id}/photo`, photoFormData, {
+      const response = await axios.post(`https://alfa-motors.onrender.com/api/cars/${id}/photo`, photoFormData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "multipart/form-data",
@@ -248,7 +248,7 @@ const EditCar = () => {
 
   const handleDeletePhoto = async (filename) => {
     try {
-      await axios.delete(`https://alfa-motors-5yfh.vercel.app/api/cars/${id}/photo`, {
+      await axios.delete(`https://alfa-motors.onrender.com/api/cars/${id}/photo`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -295,7 +295,7 @@ const EditCar = () => {
       });
 
       // Update text fields
-      await axios.put(`https://alfa-motors-5yfh.vercel.app/api/cars/${id}`, textData, {
+      await axios.put(`https://alfa-motors.onrender.com/api/cars/${id}`, textData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
@@ -324,7 +324,7 @@ const EditCar = () => {
             const photoFormData = new FormData();
             photoFormData.append('photo', finalFile);
             
-            await axios.post(`https://alfa-motors-5yfh.vercel.app/api/cars/${id}/photo`, photoFormData, {
+            await axios.post(`https://alfa-motors.onrender.com/api/cars/${id}/photo`, photoFormData, {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "multipart/form-data",
@@ -704,7 +704,7 @@ const EditCar = () => {
                       if (!window.confirm('Delete ALL images for this car? This cannot be undone.')) return;
                       setIsDeletingAll(true);
                       try {
-                        await axios.delete(`https://alfa-motors-5yfh.vercel.app/api/cars/${id}/photos`, {
+                        await axios.delete(`https://alfa-motors.onrender.com/api/cars/${id}/photos`, {
                           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
                         });
                         setCarData((prev) => ({ ...prev, photos: [] }));

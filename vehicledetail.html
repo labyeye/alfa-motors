@@ -201,7 +201,7 @@
         if (filename.startsWith("carimages/"))
           filename = filename.replace("carimages/", "");
         if (filename.startsWith("assets/")) return filename;
-        return `https://alfa-motors-5yfh.vercel.app/carimages/${filename}`;
+        return `https://alfa-motors.onrender.com/carimages/${filename}`;
       }
 
       function getCarDataFromQuery() {
@@ -268,7 +268,7 @@
           if (filename.startsWith("carimages/"))
             filename = filename.replace("carimages/", "");
           if (filename.startsWith("assets/")) return filename;
-          return `https://alfa-motors-5yfh.vercel.app/carimages/${filename}`;
+          return `https://alfa-motors.onrender.com/carimages/${filename}`;
         }
 
         // Mobile Image Layout
@@ -325,7 +325,7 @@
         }
       }
       // Fetch other cars from backend and show in slider
-      fetch("https://alfa-motors-5yfh.vercel.app/api/cars")
+      fetch("https://alfa-motors.onrender.com/api/cars")
         .then((response) => response.json())
         .then((data) => {
           if (data.success && Array.isArray(data.data)) {
@@ -340,7 +340,7 @@
                 car.photos && car.photos.length > 0
                   ? car.photos[0].startsWith("assets/")
                     ? car.photos[0]
-                    : `https://alfa-motors-5yfh.vercel.app/carimages/${car.photos[0]}`
+                    : `https://alfa-motors.onrender.com/carimages/${car.photos[0]}`
                   : "assets/owner.png";
 
               const statusClass =
@@ -465,7 +465,7 @@
         });
       }
       // Call after cards are rendered
-      fetch("https://alfa-motors-5yfh.vercel.app/api/cars")
+      fetch("https://alfa-motors.onrender.com/api/cars")
         .then((response) => response.json())
         .then((data) => {
           if (data.success && Array.isArray(data.data)) {
@@ -479,7 +479,7 @@
                 car.photos && car.photos.length > 0
                   ? car.photos[0].startsWith("assets/")
                     ? car.photos[0]
-                    : `https://alfa-motors-5yfh.vercel.app/carimages/${car.photos[0]}`
+                    : `https://alfa-motors.onrender.com/carimages/${car.photos[0]}`
                   : "assets/owner.png";
               const statusClass =
                 car.status === "Available"

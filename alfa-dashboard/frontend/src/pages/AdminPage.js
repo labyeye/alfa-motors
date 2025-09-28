@@ -79,8 +79,8 @@ const AdminPage = () => {
     setLoading(true);
     setError(null);
     const endpoint = isOwnerView
-      ? `https://alfa-motors-5yfh.vercel.app/api/dashboard/owner`
-      : `https://alfa-motors-5yfh.vercel.app/api/dashboard`;
+      ? `https://alfa-motors.onrender.com/api/dashboard/owner`
+      : `https://alfa-motors.onrender.com/api/dashboard`;
 
     const response = await fetch(endpoint, {
       headers: {
