@@ -20,6 +20,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import logo from '../images/company.png';
+const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'http://localhost:2500' : 'https://alfa-motors-5yfh.vercel.app');
 
 const BikeHistory = () => {
   const { user } = useContext(AuthContext);
@@ -37,7 +38,7 @@ const BikeHistory = () => {
       setLoading(true);
       const [buyLetters, sellLetters, serviceBills] = await Promise.all([
         axios.get(
-          `https://alfa-motors.onrender.com/api/buy-letter/by-registration?registrationNumber=${searchTerm}`,
+          `${API_BASE}/api/buy-letter/by-registration?registrationNumber=${searchTerm}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -45,7 +46,7 @@ const BikeHistory = () => {
           }
         ),
         axios.get(
-          `https://alfa-motors.onrender.com/api/sell-letters/by-registration?registrationNumber=${searchTerm}`,
+          `${API_BASE}/api/sell-letters/by-registration?registrationNumber=${searchTerm}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -53,7 +54,7 @@ const BikeHistory = () => {
           }
         ),
         axios.get(
-          `https://alfa-motors.onrender.com/api/service-bills/by-registration?registrationNumber=${searchTerm}`,
+          `${API_BASE}/api/service-bills/by-registration?registrationNumber=${searchTerm}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,

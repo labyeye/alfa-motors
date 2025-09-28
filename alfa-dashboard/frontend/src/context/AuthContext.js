@@ -8,6 +8,8 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+          const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'http://localhost:2500' : 'https://alfa-motors-5yfh.vercel.app');
+
 
   useEffect(() => {
     checkUserLoggedIn();
@@ -18,7 +20,7 @@ export const AuthProvider = ({ children }) => {
       const token = localStorage.getItem('token');
       if (token) {
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        const res = await axios.get('https://alfa-motors.onrender.com/api/auth/me');
+        const res = await axios.get(`${API_BASE}/api/auth/me`);
         setUser(res.data);
       }
     } catch (err) {
@@ -30,7 +32,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const res = await axios.post('https://alfa-motors.onrender.com/api/auth/login', { email, password });
+  const res = await axios.post(`${API_BASE}/api/auth/login`, { email, password });
       localStorage.setItem('token', res.data.token);
       axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
       setUser(res.data);

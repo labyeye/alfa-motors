@@ -16,6 +16,7 @@ import RcFormPage from "./components/RcEntryPage";
 import AddcarForm from "./components/AddCarForm";
 import ListCar from "./components/ListCar";
 import EditCar from "./components/EditCar";
+import GalleryManagement from "./pages/GalleryManagement";
 
 function App() {
   return (
@@ -78,6 +79,14 @@ function App() {
             element={
               <PrivateRoute roles={["admin", "staff"]}>
                 <EditCar />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/gallery"
+            element={
+              <PrivateRoute roles={["admin", "staff"]}>
+                <GalleryManagement />
               </PrivateRoute>
             }
           />

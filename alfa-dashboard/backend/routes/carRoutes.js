@@ -4,6 +4,7 @@ const router = express.Router();
 const Car = require("../models/Car");
 const { protect } = require("../middleware/auth");
 const upload = require("../utils/fileUpload");
+const path = require('path');
 
 // API endpoint for adding a car (for React frontend)
 router.post(
@@ -303,6 +304,94 @@ router.post(
     }
   }
 );
+
+// Get sold cars (public)
+router.get('/sold', async (req, res) => {
+  try {
+    // Use lean() to return plain JS objects and avoid Mongoose document getters
+    const docs = await Car.find({ status: 'Sold Out' }).select('make model variant modelYear photos sold').lean();
+
+    const soldCars = (docs || []).map(doc => ({
+      _id: doc._id,
+      make: doc.make || '',
+      model: doc.model || '',
+      variant: doc.variant || '',
+      modelYear: doc.modelYear || '',
+      photos: Array.isArray(doc.photos) ? doc.photos : [],
+      sold: doc.sold || {},
+    }));
+
+    return res.json({ success: true, data: soldCars });
+  } catch (err) {
+    console.error('Error fetching sold cars:', err);
+    return res.status(500).json({ success: false, error: 'Server error' });
+  }
+});
+
+// Mark a car as sold with optional details
+router.put('/:id/mark-sold', protect, async (req, res) => {
+  try {
+    const car = await Car.findById(req.params.id);
+    if (!car) return res.status(404).json({ success: false, error: 'Car not found' });
+    if (car.addedBy.toString() !== req.user._id.toString()) return res.status(401).json({ success: false, error: 'Not authorized' });
+
+    car.status = 'Sold Out';
+    car.sold = car.sold || {};
+    if (req.body.customerName) car.sold.customerName = req.body.customerName;
+    if (req.body.testimonial) car.sold.testimonial = req.body.testimonial;
+    car.sold.soldAt = req.body.soldAt ? new Date(req.body.soldAt) : new Date();
+
+    await car.save();
+    res.json({ success: true, data: car });
+  } catch (err) {
+    console.error('Error marking sold:', err);
+    res.status(500).json({ success: false, error: 'Server error' });
+  }
+});
+
+// Add customer photo for sold car
+router.post('/:id/sold-photo', protect, upload.single('photo'), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ success: false, error: 'No photo provided' });
+    const car = await Car.findById(req.params.id);
+    if (!car) return res.status(404).json({ success: false, error: 'Car not found' });
+    if (car.addedBy.toString() !== req.user._id.toString()) return res.status(401).json({ success: false, error: 'Not authorized' });
+
+    car.sold = car.sold || {};
+    car.sold.customerPhotos = car.sold.customerPhotos || [];
+    car.sold.customerPhotos.push(req.file.filename);
+    await car.save();
+    res.json({ success: true, data: car, newPhoto: req.file.filename });
+  } catch (err) {
+    console.error('Error adding sold photo:', err);
+    res.status(500).json({ success: false, error: 'Server error' });
+  }
+});
+
+// Delete sold customer photo
+router.delete('/:id/sold-photo', protect, async (req, res) => {
+  try {
+    const { filename } = req.body;
+    if (!filename) return res.status(400).json({ success: false, error: 'filename required' });
+    const car = await Car.findById(req.params.id);
+    if (!car) return res.status(404).json({ success: false, error: 'Car not found' });
+    if (car.addedBy.toString() !== req.user._id.toString()) return res.status(401).json({ success: false, error: 'Not authorized' });
+
+    car.sold = car.sold || {};
+    car.sold.customerPhotos = (car.sold.customerPhotos || []).filter(p => p !== filename && p !== `carimages/${filename}`);
+    await car.save();
+
+    // remove file
+    const fs = require('fs');
+    const filePath = path.join(__dirname, '../utils/carimages/', filename.replace('carimages/', ''));
+    fs.unlink(filePath, () => {});
+
+    res.json({ success: true, data: car });
+  } catch (err) {
+    console.error('Error deleting sold photo:', err);
+    res.status(500).json({ success: false, error: 'Server error' });
+  }
+});
 
 router.delete("/:id", protect, async (req, res) => {
   try {

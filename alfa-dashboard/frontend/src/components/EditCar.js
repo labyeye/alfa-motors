@@ -16,11 +16,9 @@ import {
 } from "lucide-react";
 import AuthContext from "../context/AuthContext";
 import logo from "../images/company.png";
-// Detect API base dynamically to avoid hard-coded hosts and CORS mismatches
 const API_BASE = (function() {
   const host = window.location.hostname;
-  if (host === 'localhost' || host.startsWith('127.')) return 'http://localhost:5000';
-  // Production API (Vercel)
+  if (host === 'localhost' || host.startsWith('127.')) return 'http://localhost:2500';
   return 'https://alfa-motors-5yfh.vercel.app';
 })();
 
@@ -75,6 +73,11 @@ const EditCar = () => {
         { name: "List Car Data", path: "/car/list" },
         { name: "Edit Car Data", path: "/car/edit" },
       ],
+    },
+    {
+      name: "Gallery Management",
+      icon: Car,
+      path: "/gallery",
     },
     {
       name: "Sell",
@@ -271,6 +274,47 @@ const EditCar = () => {
     } catch (error) {
       console.error('Error deleting photo:', error);
       alert('Failed to delete photo. Please try again.');
+    }
+  };
+
+  // Sold management: add customer photo
+  const handleAddSoldPhoto = async (file) => {
+    try {
+      let finalFile = file;
+      if (file.size > 2 * 1024 * 1024) finalFile = await compressImage(file);
+      const fd = new FormData();
+      fd.append('photo', finalFile);
+      const res = await axios.post(`${API_BASE}/api/cars/${id}/sold-photo`, fd, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}`, 'Content-Type': 'multipart/form-data' }
+      });
+      setCarData(prev => ({ ...prev, sold: res.data.data.sold }));
+      alert('Customer photo added');
+    } catch (err) {
+      console.error('Error adding sold photo', err);
+      alert('Failed to add customer photo');
+    }
+  };
+
+  const handleDeleteSoldPhoto = async (filename) => {
+    try {
+      await axios.delete(`${API_BASE}/api/cars/${id}/sold-photo`, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }, data: { filename } });
+      setCarData(prev => ({ ...prev, sold: { ...(prev.sold || {}), customerPhotos: (prev.sold?.customerPhotos || []).filter(p => p !== filename) } }));
+      alert('Customer photo deleted');
+    } catch (err) {
+      console.error('Error deleting sold photo', err);
+      alert('Failed to delete customer photo');
+    }
+  };
+
+  const handleMarkSold = async () => {
+    try {
+      const payload = { customerName: carData.sold?.customerName || '', testimonial: carData.sold?.testimonial || '' };
+      const res = await axios.put(`${API_BASE}/api/cars/${id}/mark-sold`, payload, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+      setCarData(prev => ({ ...prev, status: 'Sold Out', sold: res.data.data.sold }));
+      alert('Car marked as sold');
+    } catch (err) {
+      console.error('Error marking sold', err);
+      alert('Failed to mark sold');
     }
   };
 
@@ -772,6 +816,54 @@ const EditCar = () => {
                             ×
                           </button>
                         )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div style={styles.formSection}>
+              <h2 style={styles.sectionTitle}>
+                <Car style={styles.sectionIcon} /> Sold / Customer Details
+              </h2>
+              <div style={styles.formGrid}>
+                <div style={styles.formField}>
+                  <label style={styles.formLabel}>Customer Name</label>
+                  <input
+                    type="text"
+                    name="customerName"
+                    value={carData.sold?.customerName || ''}
+                    onChange={(e) => setCarData(prev => ({ ...prev, sold: { ...(prev.sold||{}), customerName: e.target.value } }))}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formField}>
+                  <label style={styles.formLabel}>Testimonial</label>
+                  <textarea
+                    name="testimonial"
+                    value={carData.sold?.testimonial || ''}
+                    onChange={(e) => setCarData(prev => ({ ...prev, sold: { ...(prev.sold||{}), testimonial: e.target.value } }))}
+                    style={{ ...styles.formInput, height: '100px' }}
+                  />
+                </div>
+
+                <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                  <div>
+                    <label style={styles.formLabel}>Add Customer Photo</label>
+                    <input type="file" accept="image/*" onChange={async (e) => { if (e.target.files[0]) await handleAddSoldPhoto(e.target.files[0]); e.target.value=''; }} />
+                  </div>
+                  <div>
+                    <button type="button" onClick={handleMarkSold} style={{ padding: '8px 12px', background: '#10b981', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>Mark as Sold</button>
+                  </div>
+                </div>
+
+                {carData.sold?.customerPhotos && carData.sold.customerPhotos.length > 0 && (
+                  <div style={{ display: 'flex', gap: '8px', marginTop: '12px', flexWrap: 'wrap' }}>
+                    {carData.sold.customerPhotos.map((p, idx) => (
+                      <div key={idx} style={{ width: 80, height: 80, position: 'relative' }}>
+                        <img src={buildImageUrl(p)} alt={`cust-${idx}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e)=>{e.currentTarget.onerror=null; e.currentTarget.src='/assets/placeholder.png'}} />
+                        <button type="button" onClick={() => { if (window.confirm('Delete this customer photo?')) handleDeleteSoldPhoto(p); }} style={{ position: 'absolute', top: 2, right: 2, background: 'rgba(255,0,0,0.7)', color: '#fff', border: 'none', borderRadius: '50%', width: 22, height: 22, cursor: 'pointer' }}>×</button>
                       </div>
                     ))}
                   </div>

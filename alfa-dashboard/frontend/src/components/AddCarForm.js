@@ -43,6 +43,11 @@ const AddcarForm = () => {
   });
   const [activeMenu, setActiveMenu] = useState("Add Car Data");
   const [expandedMenus, setExpandedMenus] = useState({});
+  const API_BASE =
+    window.API_BASE ||
+    (window.location.hostname === "localhost"
+      ? "http://localhost:2500"
+      : "https://alfa-motors-5yfh.vercel.app");
 
   const menuItems = [
     {
@@ -66,6 +71,11 @@ const AddcarForm = () => {
         { name: "List Car Data", path: "/car/list" },
         { name: "Edit Car Data", path: "/car/edit" },
       ],
+    },
+    {
+      name: "Gallery Management",
+      icon: Car,
+      path: "/gallery",
     },
     {
       name: "Sell",
@@ -154,16 +164,12 @@ const AddcarForm = () => {
         }
       });
       formPayload.append("addedBy", user._id);
-      const response = await axios.post(
-        "https://alfa-motors.onrender.com/api/cars",
-        formPayload,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.post(`${API_BASE}/api/cars`, formPayload, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (response.data.success) {
         navigate("/admin");
       } else {
@@ -292,7 +298,11 @@ const AddcarForm = () => {
                 </div>
               )}
 
-              <form id="addCarForm" onSubmit={handleSubmit} encType="multipart/form-data">
+              <form
+                id="addCarForm"
+                onSubmit={handleSubmit}
+                encType="multipart/form-data"
+              >
                 <div className="form-grid">
                   <div className="form-group">
                     <label className="form-label required">Make</label>
@@ -361,7 +371,9 @@ const AddcarForm = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label className="form-label required">Registration Year</label>
+                    <label className="form-label required">
+                      Registration Year
+                    </label>
                     <input
                       type="number"
                       name="registrationYear"
@@ -452,7 +464,9 @@ const AddcarForm = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label className="form-label required">Buying Price (₹)</label>
+                    <label className="form-label required">
+                      Buying Price (₹)
+                    </label>
                     <input
                       type="number"
                       name="buyingPrice"
@@ -464,7 +478,9 @@ const AddcarForm = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label className="form-label required">Quoting Price (₹)</label>
+                    <label className="form-label required">
+                      Quoting Price (₹)
+                    </label>
                     <input
                       type="number"
                       name="quotingPrice"
@@ -476,7 +492,9 @@ const AddcarForm = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label className="form-label required">Selling Price (₹)</label>
+                    <label className="form-label required">
+                      Selling Price (₹)
+                    </label>
                     <input
                       type="number"
                       name="sellingPrice"
@@ -502,7 +520,9 @@ const AddcarForm = () => {
                     </select>
                   </div>
                   <div className="form-group">
-                    <label className="form-label required">Photos (10-12)</label>
+                    <label className="form-label required">
+                      Photos (10-12)
+                    </label>
                     <input
                       type="file"
                       name="photos"
@@ -512,13 +532,34 @@ const AddcarForm = () => {
                       required
                     />
                     {formData.photos && formData.photos.length > 0 && (
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: "10px",
+                        }}
+                      >
                         {Array.from(formData.photos).map((file, idx) => (
-                          <div key={idx} style={{ width: "100px", height: "100px", overflow: "hidden" }}>
+                          <div
+                            key={idx}
+                            style={{
+                              width: "100px",
+                              height: "100px",
+                              overflow: "hidden",
+                            }}
+                          >
                             <img
-                              src={typeof file === "string" ? file : URL.createObjectURL(file)}
+                              src={
+                                typeof file === "string"
+                                  ? file
+                                  : URL.createObjectURL(file)
+                              }
                               alt={`Preview ${idx + 1}`}
-                              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "cover",
+                              }}
                             />
                           </div>
                         ))}

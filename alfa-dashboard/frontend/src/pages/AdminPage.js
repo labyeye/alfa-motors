@@ -22,6 +22,7 @@ import { Bar, Pie } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import logo from '../images/company.png';
 import AuthContext from "../context/AuthContext";
+const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'http://localhost:2500' : 'https://alfa-motors-5yfh.vercel.app');
 
 // Register ChartJS components
 ChartJS.register(
@@ -79,8 +80,8 @@ const AdminPage = () => {
     setLoading(true);
     setError(null);
     const endpoint = isOwnerView
-      ? `https://alfa-motors.onrender.com/api/dashboard/owner`
-      : `https://alfa-motors.onrender.com/api/dashboard`;
+      ? `${API_BASE}/api/dashboard/owner`
+      : `${API_BASE}/api/dashboard`;
 
     const response = await fetch(endpoint, {
       headers: {
@@ -270,6 +271,11 @@ const AdminPage = () => {
         { name: "Create Sell Letter", path: "/sell/create" },
         { name: "Sell Letter History", path: "/sell/history" },
       ],
+    },
+    {
+      name: "Gallery Management",
+      icon: Car,
+      path: "/gallery",
     },
     {
       name: "Service",

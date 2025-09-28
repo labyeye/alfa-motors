@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import AuthContext from "../context/AuthContext";
 import logo from '../images/company.png';
+const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'http://localhost:2500' : 'https://alfa-motors-5yfh.vercel.app');
 
 const StaffList = () => {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ const StaffList = () => {
   useEffect(() => {
     const fetchStaff = async () => {
       try {
-        const response = await axios.get("https://alfa-motors.onrender.com/api/users");
+  const response = await axios.get(`${API_BASE}/api/users`);
         setStaff(response.data);
       } catch (err) {
         setError(
@@ -51,7 +52,7 @@ const StaffList = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this staff member?")) {
       try {
-        await axios.delete(`https://alfa-motors.onrender.com/api/users/${id}`);
+  await axios.delete(`${API_BASE}/api/users/${id}`);
         setStaff(staff.filter((user) => user._id !== id));
       } catch (err) {
         setError(
@@ -99,6 +100,11 @@ const StaffList = () => {
         { name: "List Car Data", path: "/car/list" },
         { name: "Edit Car Data", path: "/car/edit" },
       ],
+    },
+    {
+      name: "Gallery Management",
+      icon: Car,
+      path: "/gallery",
     },
     
     {

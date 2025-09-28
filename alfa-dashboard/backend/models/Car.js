@@ -81,6 +81,13 @@ const carSchema = new mongoose.Schema({
       message: 'You must upload between 1 and 12 photos.'
     }
   },
+  // Sold information (optional)
+  sold: {
+    soldAt: { type: Date },
+    customerName: { type: String },
+    testimonial: { type: String },
+    customerPhotos: { type: [String], default: [] }
+  },
   status: {
     type: String,
     required: [true, 'Status is required'],

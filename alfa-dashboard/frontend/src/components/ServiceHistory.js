@@ -35,6 +35,7 @@ const ServiceHistory = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [showVehicleHistory, setShowVehicleHistory] = useState(false);
   const navigate = useNavigate();
+const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'http://localhost:2500' : 'https://alfa-motors-5yfh.vercel.app');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,7 +44,7 @@ const ServiceHistory = () => {
 
         // Fetch service bills
         const serviceResponse = await axios.get(
-          `https://alfa-motors.onrender.com/api/service-bills?page=${currentPage}`,
+          `${API_BASE}/api/service-bills?page=${currentPage}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -55,7 +56,7 @@ const ServiceHistory = () => {
 
         // Fetch purchase history (if needed)
         const purchaseResponse = await axios.get(
-          `https://alfa-motors.onrender.com/api/buy-letters`,
+          `${API_BASE}/api/buy-letters`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -66,7 +67,7 @@ const ServiceHistory = () => {
 
         // Fetch sell history (if needed)
         const sellResponse = await axios.get(
-          `https://alfa-motors.onrender.com/api/sell-letters`,
+          `${API_BASE}/api/sell-letters`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -119,7 +120,7 @@ const ServiceHistory = () => {
   const handleDownload = async (billId) => {
     try {
       const response = await axios.get(
-        `https://alfa-motors.onrender.com/api/service-bills/${billId}/download`,
+        `${API_BASE}/api/service-bills/${billId}/download`,
         {
           responseType: "blob",
           headers: {
@@ -144,7 +145,7 @@ const ServiceHistory = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this service bill?")) {
       try {
-        await axios.delete(`https://alfa-motors.onrender.com/api/service-bills/${id}`, {
+  await axios.delete(`${API_BASE}/api/service-bills/${id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -186,6 +187,11 @@ const ServiceHistory = () => {
         { name: "List Car Data", path: "/car/list" },
         { name: "Edit Car Data", path: "/car/edit" },
       ],
+    },
+    {
+      name: "Gallery Management",
+      icon: Car,
+      path: "/gallery",
     },
     
     {

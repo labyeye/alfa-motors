@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import AuthContext from "../context/AuthContext";
 import logo from '../images/company.png';
+const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'http://localhost:2500' : 'https://alfa-motors-5yfh.vercel.app');
 
 const CreateStaff = () => {
   const navigate = useNavigate();
@@ -53,7 +54,7 @@ const CreateStaff = () => {
 
     try {
       const response = await axios.post(
-        "https://alfa-motors.onrender.com/api/users",
+        `${API_BASE}/api/users`,
         formData
       );
       setSuccess(true);
@@ -115,6 +116,11 @@ const CreateStaff = () => {
         { name: "List Car Data", path: "/car/list" },
         { name: "Edit Car Data", path: "/car/edit" },
       ],
+    },
+    {
+      name: "Gallery Management",
+      icon: Car,
+      path: "/gallery",
     },
     
     {

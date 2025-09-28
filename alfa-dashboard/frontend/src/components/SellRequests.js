@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'http://localhost:2500' : 'https://alfa-motors-5yfh.vercel.app');
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -11,7 +12,7 @@ const SellRequests = ({ user }) => {
   useEffect(() => {
     const fetchSellRequests = async () => {
       try {
-        const response = await axios.get('https://alfa-motors.onrender.com/api/sell-requests', {
+  const response = await axios.get(`${API_BASE}/api/sell-requests`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
@@ -34,7 +35,7 @@ const SellRequests = ({ user }) => {
   const updateStatus = async (id, status) => {
     try {
       const response = await axios.patch(
-        `https://alfa-motors.onrender.com/api/sell-requests/${id}/status`,
+        `${API_BASE}/api/sell-requests/${id}/status`,
         { status },
         {
           headers: {
