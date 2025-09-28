@@ -51,46 +51,61 @@
         </div>
       </nav>
       <div class="vehicle-main-section">
-        <div class="vehicle-image-block">
-          <img
-            id="mainVehicleImg"
-            class="vehicle-main-img"
-            src="assets/owner.png"
-            alt="Car"
-          />
-          <div class="vehicle-thumbnails" id="vehicleThumbnails"></div>
-        </div>
-        <div class="vehicle-details-block">
+        <div class="vehicle-content-row">
+          <div class="vehicle-image-block">
+            <img
+              id="mainVehicleImg"
+              class="vehicle-main-img"
+              src="assets/owner.png"
+              alt="Car"
+            />
+            <div class="vehicle-thumbnails" id="vehicleThumbnails"></div>
+          </div>
+          <div class="vehicle-details-block">
           <div class="vehicle-title" id="vehicleTitle">Car Brand Model</div>
           <div class="vehicle-model" id="vehicleModel">2022 Model</div>
           <div class="vehicle-details-grid">
             <div class="vehicle-detail-item">
-              <i class="fas fa-tachometer-alt"></i>
-              <span style="font-weight: bold">Vehicle Driven</span>
-              <span style="margin-left: 10px" id="vehicleKm">0 km</span>
+              <div class="detail-label">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Vehicle Driven</span>
+              </div>
+              <div class="detail-value" id="vehicleKm">0 km</div>
             </div>
             <div class="vehicle-detail-item">
-              <i class="fas fa-user"></i>
-              <span style="font-weight: bold">Ownership</span>
-              <span style="margin-left: 10px" id="vehicleOwner">1st Owner</span>
+              <div class="detail-label">
+                <i class="fas fa-user"></i>
+                <span>Ownership</span>
+              </div>
+              <div class="detail-value" id="vehicleOwner">1st Owner</div>
             </div>
             <div class="vehicle-detail-item">
-              <i class="fas fa-gas-pump"></i>
-              <span style="font-weight: bold">Fuel Type</span>
-              <span style="margin-left: 10px" id="vehicleFuel">Petrol</span>
+              <div class="detail-label">
+                <i class="fas fa-gas-pump"></i>
+                <span>Fuel Type</span>
+              </div>
+              <div class="detail-value" id="vehicleFuel">Petrol</div>
             </div>
             <div class="vehicle-detail-item">
-              <i class="fas fa-palette"></i>
-              <span style="font-weight: bold">Vehicle Color</span>
-              <span style="margin-left: 10px" id="vehicleColor">Color</span>
+              <div class="detail-label">
+                <i class="fas fa-palette"></i>
+                <span>Vehicle Color</span>
+              </div>
+              <div class="detail-value" id="vehicleColor">Color</div>
             </div>
-
             <div class="vehicle-detail-item">
-              <i class="fas fa-id-card"></i>
-              <span style="font-weight: bold">Reg Year</span>
-              <span style="margin-left: 10px" id="vehicleRegYear"
-                >Reg Year</span
-              >
+              <div class="detail-label">
+                <i class="fas fa-id-card"></i>
+                <span>Registration Year</span>
+              </div>
+              <div class="detail-value" id="vehicleRegYear">Reg Year</div>
+            </div>
+            <div class="vehicle-detail-item">
+              <div class="detail-label">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Model Year</span>
+              </div>
+              <div class="detail-value" id="vehicleModelYear">Model Year</div>
             </div>
           </div>
           <div class="vehicle-price" id="vehiclePrice">₹0</div>
@@ -103,22 +118,24 @@
           >
             Contact Seller
           </button>
+          </div>
         </div>
+        
       </div>
       <div class="why-choose-row">
-        <div class="why-choose-item">
-          <i class="fas fa-shield-alt"></i> Verified Documents
+          <div class="why-choose-item">
+            <i class="fas fa-shield-alt"></i> Verified Documents
+          </div>
+          <div class="why-choose-item">
+            <i class="fas fa-car"></i> Quality Checked
+          </div>
+          <div class="why-choose-item">
+            <i class="fas fa-star"></i> Great Value
+          </div>
+          <div class="why-choose-item">
+            <i class="fas fa-heart"></i> Trusted Seller
+          </div>
         </div>
-        <div class="why-choose-item">
-          <i class="fas fa-car"></i> Quality Checked
-        </div>
-        <div class="why-choose-item">
-          <i class="fas fa-star"></i> Great Value
-        </div>
-        <div class="why-choose-item">
-          <i class="fas fa-heart"></i> Trusted Seller
-        </div>
-      </div>
       <div class="other-cars-section">
         <h2 class="other-cars-title">Other Cars You May Like</h2>
         <div class="other-cars-row" id="otherCarsRow"></div>

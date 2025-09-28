@@ -77,6 +77,28 @@ router.get("/", async (req, res) => {
     });
   }
 });
+
+// Get single car
+router.get("/:id", async (req, res) => {
+  try {
+    const car = await Car.findById(req.params.id).populate("addedBy", "username");
+    if (!car) {
+      return res.status(404).json({
+        success: false,
+        error: "Car not found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      data: car,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: "Server error",
+    });
+  }
+});
 // Delete a single car photo
 router.delete('/:id/photo', protect, async (req, res) => {
   try {
@@ -157,35 +179,32 @@ router.get("/:id", async (req, res) => {
     res.status(500).json({ success: false, error: "Server error" });
   }
 });
-// Update a car
+// Update car details (text fields only - no images)
 router.put(
   "/:id",
   protect,
-  upload.array("photos", 12),
   async (req, res) => {
     try {
-    const photoPaths = req.files ? req.files.map((file) => file.filename) : undefined;
-        // Build update object only from provided fields to allow partial updates
-        const updatedCar = {};
-        if (req.body.brand !== undefined && req.body.brand !== "") updatedCar.make = req.body.brand;
-        if (req.body.model !== undefined && req.body.model !== "") updatedCar.model = req.body.model;
-        if (req.body.variant !== undefined && req.body.variant !== "") updatedCar.variant = req.body.variant;
-        if (req.body.fuelType !== undefined && req.body.fuelType !== "") updatedCar.fuelType = req.body.fuelType;
-        if (req.body.modelYear !== undefined && req.body.modelYear !== "") updatedCar.modelYear = Number(req.body.modelYear);
-        if (req.body.registrationYear !== undefined && req.body.registrationYear !== "") updatedCar.registrationYear = Number(req.body.registrationYear);
-        if (req.body.color !== undefined && req.body.color !== "") updatedCar.color = req.body.color;
-        if (req.body.chassisNo !== undefined && req.body.chassisNo !== "") updatedCar.chassisNo = req.body.chassisNo;
-        if (req.body.engineNo !== undefined && req.body.engineNo !== "") updatedCar.engineNo = req.body.engineNo;
-        if (req.body.kmDriven !== undefined && req.body.kmDriven !== "") updatedCar.kmDriven = Number(req.body.kmDriven);
-        if (req.body.ownership !== undefined && req.body.ownership !== "") updatedCar.ownership = req.body.ownership;
-        if (req.body.daysOld !== undefined && req.body.daysOld !== "") updatedCar.daysOld = Number(req.body.daysOld);
-        if (req.body.buyingPrice !== undefined && req.body.buyingPrice !== "") updatedCar.buyingPrice = Number(req.body.buyingPrice);
-        if (req.body.quotingPrice !== undefined && req.body.quotingPrice !== "") updatedCar.quotingPrice = Number(req.body.quotingPrice);
-        if (req.body.sellingPrice !== undefined && req.body.sellingPrice !== "") updatedCar.sellingPrice = Number(req.body.sellingPrice);
-        if (req.body.status !== undefined && req.body.status !== "") updatedCar.status = req.body.status;
-        // Do not overwrite addedBy on update
-    if (photoPaths && photoPaths.length > 0) updatedCar.photos = photoPaths;
-        const car = await Car.findByIdAndUpdate(req.params.id, updatedCar, { new: true, runValidators: true });
+      // Build update object only from provided fields to allow partial updates
+      const updatedCar = {};
+      if (req.body.brand !== undefined && req.body.brand !== "") updatedCar.make = req.body.brand;
+      if (req.body.model !== undefined && req.body.model !== "") updatedCar.model = req.body.model;
+      if (req.body.variant !== undefined && req.body.variant !== "") updatedCar.variant = req.body.variant;
+      if (req.body.fuelType !== undefined && req.body.fuelType !== "") updatedCar.fuelType = req.body.fuelType;
+      if (req.body.modelYear !== undefined && req.body.modelYear !== "") updatedCar.modelYear = Number(req.body.modelYear);
+      if (req.body.registrationYear !== undefined && req.body.registrationYear !== "") updatedCar.registrationYear = Number(req.body.registrationYear);
+      if (req.body.color !== undefined && req.body.color !== "") updatedCar.color = req.body.color;
+      if (req.body.chassisNo !== undefined && req.body.chassisNo !== "") updatedCar.chassisNo = req.body.chassisNo;
+      if (req.body.engineNo !== undefined && req.body.engineNo !== "") updatedCar.engineNo = req.body.engineNo;
+      if (req.body.kmDriven !== undefined && req.body.kmDriven !== "") updatedCar.kmDriven = Number(req.body.kmDriven);
+      if (req.body.ownership !== undefined && req.body.ownership !== "") updatedCar.ownership = req.body.ownership;
+      if (req.body.daysOld !== undefined && req.body.daysOld !== "") updatedCar.daysOld = Number(req.body.daysOld);
+      if (req.body.buyingPrice !== undefined && req.body.buyingPrice !== "") updatedCar.buyingPrice = Number(req.body.buyingPrice);
+      if (req.body.quotingPrice !== undefined && req.body.quotingPrice !== "") updatedCar.quotingPrice = Number(req.body.quotingPrice);
+      if (req.body.sellingPrice !== undefined && req.body.sellingPrice !== "") updatedCar.sellingPrice = Number(req.body.sellingPrice);
+      if (req.body.status !== undefined && req.body.status !== "") updatedCar.status = req.body.status;
+      
+      const car = await Car.findByIdAndUpdate(req.params.id, updatedCar, { new: true, runValidators: true });
       if (!car) {
         return res.status(404).json({ success: false, error: "Car not found" });
       }
@@ -202,6 +221,81 @@ router.put(
           error: messages,
         });
       }
+      res.status(500).json({
+        success: false,
+        error: "Server error",
+      });
+    }
+  }
+);
+
+// Update car images (separate endpoint to handle large payloads)
+router.put(
+  "/:id/photos",
+  protect,
+  upload.array("photos", 12),
+  async (req, res) => {
+    try {
+      const photoPaths = req.files ? req.files.map((file) => file.filename) : [];
+      
+      if (photoPaths.length === 0) {
+        return res.status(400).json({ success: false, error: "No photos provided" });
+      }
+      
+      const car = await Car.findById(req.params.id);
+      if (!car) {
+        return res.status(404).json({ success: false, error: "Car not found" });
+      }
+      
+      // Replace existing photos or append new ones based on request
+      if (req.body.replacePhotos === 'true') {
+        car.photos = photoPaths;
+      } else {
+        car.photos = [...car.photos, ...photoPaths];
+      }
+      
+      await car.save();
+      
+      res.status(200).json({
+        success: true,
+        data: car,
+      });
+    } catch (err) {
+      console.error("Error updating car photos:", err);
+      res.status(500).json({
+        success: false,
+        error: "Server error",
+      });
+    }
+  }
+);
+
+// Add single photo to existing car
+router.post(
+  "/:id/photo",
+  protect,
+  upload.single("photo"),
+  async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ success: false, error: "No photo provided" });
+      }
+      
+      const car = await Car.findById(req.params.id);
+      if (!car) {
+        return res.status(404).json({ success: false, error: "Car not found" });
+      }
+      
+      car.photos.push(req.file.filename);
+      await car.save();
+      
+      res.status(200).json({
+        success: true,
+        data: car,
+        newPhoto: req.file.filename
+      });
+    } catch (err) {
+      console.error("Error adding photo:", err);
       res.status(500).json({
         success: false,
         error: "Server error",

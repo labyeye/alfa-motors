@@ -1783,7 +1783,7 @@ h2 {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  background: white;
+  background: rgba(255, 255, 255, 0.05);
   gap: 50px;
   padding: 80px 5%;
   position: relative;
@@ -1816,14 +1816,14 @@ h2 {
   text-align: left;
   margin-bottom: 20px;
   font-size: 2.5rem;
-  background: black;
+  background: white;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .sell-content p {
-  color: black;
+  color: white;
   line-height: 1.8;
   margin-bottom: 30px;
   font-size: 1.1rem;
@@ -1864,13 +1864,13 @@ h2 {
 }
 
 .step-content h4 {
-  color: black;
+  color: white;
   margin: 0 0 5px 0;
   font-size: 1.1rem;
 }
 
 .step-content p {
-  color: black;
+  color: white;
   margin: 0;
   font-size: 0.95rem;
 }

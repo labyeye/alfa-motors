@@ -150,10 +150,25 @@ const EditCar = () => {
   };
 
   const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    
+    // For better UX, we can either replace all photos or add to existing ones
+    // Let's replace for now, but you can modify this behavior
     setCarData((prev) => ({
       ...prev,
-      photos: Array.from(e.target.files),
+      photos: files,
     }));
+    
+    // Clear the input for next use
+    e.target.value = '';
+  };
+  
+  const handleSingleFileAdd = async (e) => {
+    const file = e.target.files[0];
+    if (file && id) {
+      await handleAddPhoto(file);
+    }
+    e.target.value = ''; // Clear input
   };
 
   const buildImageUrl = (file) => {
@@ -168,46 +183,116 @@ const EditCar = () => {
     return `${host}/carimages/${filename}`;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSaving(true);
+  const handleAddPhoto = async (file) => {
     try {
-      const formData = new FormData();
-
-      // Attach photos only if user provided new File objects (not existing string URLs)
-      if (carData.photos && carData.photos.length > 0 && typeof carData.photos[0] !== 'string') {
-        carData.photos.forEach((file) => {
-          formData.append('photos', file);
-        });
-      }
-
-      // Append non-empty primitive fields so partial updates are possible
-      const primitiveFields = [
-        'make','model','variant','fuelType','modelYear','registrationYear','color',
-        'chassisNo','engineNo','kmDriven','ownership','daysOld',
-        'buyingPrice','quotingPrice','sellingPrice','status'
-      ];
-      primitiveFields.forEach((key) => {
-        const val = carData[key];
-        if (val !== undefined && val !== null && val !== '') {
-          formData.append(key, val);
-        }
-      });
-
-      await axios.put(`https://alfa-motors-5yfh.vercel.app/api/cars/${id}`, formData, {
+      const photoFormData = new FormData();
+      photoFormData.append('photo', file);
+      
+      const response = await axios.post(`https://alfa-motors-5yfh.vercel.app/api/cars/${id}/photo`, photoFormData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "multipart/form-data",
         },
       });
+      
+      // Update local state with new photo
+      setCarData(prev => ({
+        ...prev,
+        photos: [...(prev.photos || []), response.data.newPhoto]
+      }));
+      
+      alert('Photo added successfully!');
+    } catch (error) {
+      console.error('Error adding photo:', error);
+      alert('Failed to add photo. Please try again.');
+    }
+  };
+
+  const handleDeletePhoto = async (filename) => {
+    try {
+      await axios.delete(`https://alfa-motors-5yfh.vercel.app/api/cars/${id}/photo`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        data: { filename }
+      });
+      
+      // Update local state by removing the photo
+      setCarData(prev => ({
+        ...prev,
+        photos: prev.photos.filter(photo => 
+          (typeof photo === 'string' ? photo : photo.name) !== filename
+        )
+      }));
+      
+      alert('Photo deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting photo:', error);
+      alert('Failed to delete photo. Please try again.');
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSaving(true);
+    try {
+      // Step 1: Update text fields first (lightweight request)
+      const textData = {};
+      const primitiveFields = [
+        'make','model','variant','fuelType','modelYear','registrationYear','color',
+        'chassisNo','engineNo','kmDriven','ownership','daysOld',
+        'buyingPrice','quotingPrice','sellingPrice','status'
+      ];
+      
+      primitiveFields.forEach((key) => {
+        const val = carData[key];
+        if (val !== undefined && val !== null && val !== '') {
+          // Map 'make' to 'brand' for backend compatibility
+          if (key === 'make') {
+            textData.brand = val;
+          } else {
+            textData[key] = val;
+          }
+        }
+      });
+
+      // Update text fields
+      await axios.put(`https://alfa-motors-5yfh.vercel.app/api/cars/${id}`, textData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      // Step 2: Handle photo uploads separately if new photos are provided
+      const hasNewPhotos = carData.photos && carData.photos.length > 0 && 
+                           carData.photos.some(photo => photo instanceof File);
+      
+      if (hasNewPhotos) {
+        const photoFormData = new FormData();
+        const newPhotos = carData.photos.filter(photo => photo instanceof File);
+        
+        newPhotos.forEach((file) => {
+          photoFormData.append('photos', file);
+        });
+        
+        // Add replacePhotos flag if user wants to replace all photos
+        photoFormData.append('replacePhotos', 'true');
+        
+        await axios.put(`https://alfa-motors-5yfh.vercel.app/api/cars/${id}/photos`, photoFormData, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      }
+      
       alert("Car data updated successfully!");
       navigate("/car/list");
     } catch (error) {
       console.error("Error updating car:", error);
-      alert(
-        error.response?.data?.message ||
-          "Failed to update car data. Please try again."
-      );
+      const errorMessage = error.response?.data?.error || error.response?.data?.message || "Failed to update car data. Please try again.";
+      alert(Array.isArray(errorMessage) ? errorMessage.join(', ') : errorMessage);
     } finally {
       setIsSaving(false);
     }
@@ -535,15 +620,29 @@ const EditCar = () => {
                 <Car style={styles.sectionIcon} /> Photos (10-12)
               </h2>
               <div style={styles.formGrid}>
-                <input
-                  type="file"
-                  name="photos"
-                  accept="image/*"
-                  multiple
-                  onChange={handleFileChange}
-                  style={styles.formInput}
-                />
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px' }}>
+                <div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>
+                  <div>
+                    <label style={styles.formLabel}>Replace All Photos:</label>
+                    <input
+                      type="file"
+                      name="photos"
+                      accept="image/*"
+                      multiple
+                      onChange={handleFileChange}
+                      style={styles.formInput}
+                    />
+                  </div>
+                  <div>
+                    <label style={styles.formLabel}>Add Single Photo:</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleSingleFileAdd}
+                      style={styles.formInput}
+                    />
+                  </div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
                   <button
                     type="button"
                     onClick={async () => {
@@ -567,6 +666,9 @@ const EditCar = () => {
                   >
                     {isDeletingAll ? 'Deleting...' : 'Delete all images'}
                   </button>
+                  <small style={{ color: '#666', marginLeft: '8px' }}>
+                    Tip: Use "Add Single Photo" for individual uploads to avoid large payloads
+                  </small>
                 </div>
                 {carData.photos && carData.photos.length > 0 && (
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
@@ -602,23 +704,9 @@ const EditCar = () => {
                               fontWeight: "bold",
                               zIndex: 2,
                             }}
-                            onClick={async () => {
+                            onClick={() => {
                               if (window.confirm("Delete this image?")) {
-                                try {
-                                  await axios.delete(`https://alfa-motors-5yfh.vercel.app/api/cars/${id}/photo`, {
-                                    data: { filename: file },
-                                    headers: {
-                                      Authorization: `Bearer ${localStorage.getItem("token")}`,
-                                    },
-                                  });
-                                  setCarData((prev) => ({
-                                    ...prev,
-                                    photos: prev.photos.filter((img, i) => i !== idx),
-                                  }));
-                                  alert("Image deleted successfully.");
-                                } catch (err) {
-                                  alert("Failed to delete image.");
-                                }
+                                handleDeletePhoto(file);
                               }
                             }}
                           >
