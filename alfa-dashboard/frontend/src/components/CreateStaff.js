@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import AuthContext from "../context/AuthContext";
 import logo from '../images/company.png';
-const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'http://localhost:2500' : 'https://alfa-motors-5yfh.vercel.app');
+const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'http://localhost:2500' : 'https://alfa-motors.onrender.com');
 
 const CreateStaff = () => {
   const navigate = useNavigate();

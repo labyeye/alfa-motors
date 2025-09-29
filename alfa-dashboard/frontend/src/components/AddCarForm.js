@@ -47,7 +47,7 @@ const AddcarForm = () => {
     window.API_BASE ||
     (window.location.hostname === "localhost"
       ? "http://localhost:2500"
-      : "https://alfa-motors-5yfh.vercel.app");
+      : "https://alfa-motors.onrender.com");
 
   const menuItems = [
     {

@@ -22,7 +22,7 @@ import { Bar, Pie } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import logo from '../images/company.png';
 import AuthContext from "../context/AuthContext";
-const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'http://localhost:2500' : 'https://alfa-motors-5yfh.vercel.app');
+const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'http://localhost:2500' : 'https://alfa-motors.onrender.com');
 
 // Register ChartJS components
 ChartJS.register(
