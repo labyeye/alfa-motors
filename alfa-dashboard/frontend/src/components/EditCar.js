@@ -179,8 +179,31 @@ const EditCar = () => {
   };
 
   const handleFileUpload = async (files) => {
+    if (files.length === 0) return;
+    
+    // Validate file count
+    if (files.length > 12) {
+      alert('Please select maximum 12 images at once.');
+      return;
+    }
+    
+    // Validate file types
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    const invalidFiles = files.filter(file => !validTypes.includes(file.type));
+    if (invalidFiles.length > 0) {
+      alert('Please select only image files (JPEG, JPG, PNG, WEBP).');
+      return;
+    }
+    
     try {
+      // Show loading state
+      const uploadingPhotos = files.map((_, index) => `uploading-${index}`);
+      setCarData(prev => ({ ...prev, photos: uploadingPhotos }));
+      
       const formData = new FormData();
+      
+      // Add replace flag to replace all existing photos
+      formData.append('replacePhotos', 'true');
       
       for (let file of files) {
         formData.append('photos', file);
@@ -203,10 +226,36 @@ const EditCar = () => {
       const car = updatedResponse.data && updatedResponse.data.data ? updatedResponse.data.data : updatedResponse.data;
       setCarData(prev => ({ ...prev, photos: car.photos || [] }));
       
-      alert('Photos uploaded successfully!');
+      alert(`${files.length} photos uploaded successfully!`);
     } catch (error) {
       console.error('Error uploading photos:', error);
+      setCarData(prev => ({ ...prev, photos: [] })); // Reset on error
       alert('Failed to upload photos. Please try again.');
+    }
+  };
+  
+  const handleDeletePhoto = async (photoToDelete) => {
+    try {
+      // Extract just the filename from the path
+      const filename = photoToDelete.replace('carimages/', '').replace(`${API_BASE}/carimages/`, '');
+      
+      await axios.delete(`${API_BASE}/api/cars/${id}/photo`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        data: { filename: filename }
+      });
+      
+      // Remove from local state
+      setCarData(prev => ({
+        ...prev,
+        photos: prev.photos.filter(photo => photo !== photoToDelete)
+      }));
+      
+      alert('Photo deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting photo:', error);
+      alert('Failed to delete photo. Please try again.');
     }
   };
 
@@ -615,15 +664,19 @@ const EditCar = () => {
                   <Upload size={48} style={styles.uploadIcon} />
                   <h3 style={styles.uploadTitle}>Upload Vehicle Photos</h3>
                   <p style={styles.uploadSubtitle}>
-                    Select up to 12 high-quality images of the vehicle
+                    Select up to 12 high-quality images (JPEG, PNG, WEBP)
+                  </p>
+                  <p style={styles.uploadNote}>
+                    ⚠️ Uploading new photos will replace all existing photos
                   </p>
                   <input
                     type="file"
-                    accept="image/*"
+                    accept="image/jpeg,image/jpg,image/png,image/webp"
                     multiple
                     onChange={(e) => {
                       if (e.target.files.length > 0) {
                         handleFileUpload(Array.from(e.target.files));
+                        e.target.value = ''; // Reset input
                       }
                     }}
                     style={styles.fileInput}
@@ -636,7 +689,20 @@ const EditCar = () => {
 
                 {carData.photos && carData.photos.length > 0 && (
                   <div style={styles.photoGrid}>
-                    {carData.photos.map((photo, index) => (
+                    {carData.photos.map((photo, index) => {
+                      // Show loading placeholder for uploading photos
+                      if (typeof photo === 'string' && photo.startsWith('uploading-')) {
+                        return (
+                          <div key={index} style={styles.photoCard}>
+                            <div style={styles.uploadingPlaceholder}>
+                              <div style={styles.uploadingSpinner}></div>
+                              <span style={styles.uploadingText}>Uploading...</span>
+                            </div>
+                          </div>
+                        );
+                      }
+                      
+                      return (
                       <div key={index} style={styles.photoCard}>
                         <img
                           src={buildImageUrl(photo)}
@@ -650,18 +716,16 @@ const EditCar = () => {
                           type="button"
                           style={styles.deletePhotoButton}
                           onClick={() => {
-                            if (window.confirm('Delete this photo?')) {
-                              setCarData(prev => ({
-                                ...prev,
-                                photos: prev.photos.filter((_, i) => i !== index)
-                              }));
+                            if (window.confirm('Delete this photo from server? This cannot be undone.')) {
+                              handleDeletePhoto(photo);
                             }
                           }}
                         >
                           <X size={16} />
                         </button>
                       </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -687,6 +751,21 @@ const EditCar = () => {
     </div>
   );
 };
+
+// Add CSS animation for spinners
+const styleSheet = document.styleSheets[0];
+if (styleSheet && !document.querySelector('#spinner-keyframes')) {
+  const keyframes = `
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  `;
+  styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
+  const style = document.createElement('style');
+  style.id = 'spinner-keyframes';
+  document.head.appendChild(style);
+}
 
 const styles = {
   container: {
@@ -937,7 +1016,13 @@ const styles = {
   uploadSubtitle: {
     fontSize: "0.875rem",
     color: "#6b7280",
+    margin: "0 0 8px 0",
+  },
+  uploadNote: {
+    fontSize: "0.75rem",
+    color: "#f59e0b",
     margin: "0 0 24px 0",
+    fontWeight: "600",
   },
   fileInput: {
     display: "none",
@@ -989,6 +1074,29 @@ const styles = {
     borderRadius: "50%",
     cursor: "pointer",
     transition: "all 0.2s ease",
+  },
+  uploadingPlaceholder: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#f3f4f6",
+    color: "#6b7280",
+  },
+  uploadingSpinner: {
+    width: "24px",
+    height: "24px",
+    border: "3px solid #e5e7eb",
+    borderTop: "3px solid #3b82f6",
+    borderRadius: "50%",
+    animation: "spin 1s linear infinite",
+    marginBottom: "8px",
+  },
+  uploadingText: {
+    fontSize: "0.75rem",
+    fontWeight: "500",
   },
   
   // Submit Section Styles
