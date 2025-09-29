@@ -30,6 +30,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+  "lint": "eslint . --ext .js,.jsx",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -52,6 +53,7 @@
     ]
   },
   "devDependencies": {
+    "eslint": "^8.50.0",
     "source-map-loader": "^5.0.0",
     "webpack-dev-server": "^5.2.1"
   }
