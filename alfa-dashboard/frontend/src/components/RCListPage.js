@@ -289,17 +289,57 @@ const RcListPage = () => {
     {
       name: "Dashboard",
       icon: LayoutDashboard,
-      path: "/admin",
+      path: (userRole) => (userRole === "admin" ? "/admin" : "/staff"),
     },
     {
-      name: "RC Entry",
-      icon: ShoppingCart,
-      path: "/rcentry",
+      name: "RTO",
+      icon: Car,
+      submenu: [
+        { name: "RC Entry", path: "/rc/create" },
+        { name: "RC List", path: "/rc/list" },
+      ],
     },
     {
-      name: "RC Status",
+      name: "Car Management",
+      icon: CarFront,
+      submenu: [
+        { name: "Add Car Data", path: "/car/create" },
+        { name: "List Car Data", path: "/car/list" },
+        { name: "Edit Car Data", path: "/car/edit" },
+      ],
+    },
+    {
+      name: "Sell",
       icon: TrendingUp,
-      path: "/rclist",
+      submenu: [
+        { name: "Create Sell Letter", path: "/sell/create" },
+        { name: "Sell Letter History", path: "/sell/history" },
+      ],
+    },
+    {
+      name: "Service",
+      icon: Wrench,
+      submenu: [
+        { name: "Create Service Bill", path: "/service/create" },
+        { name: "Service History", path: "/service/history" },
+      ],
+    },
+    ...(user?.role !== "staff"
+      ? [
+          {
+            name: "Staff",
+            icon: Users,
+            submenu: [
+              { name: "Create Staff ID", path: "/staff/create" },
+              { name: "Staff List", path: "/staff/list" },
+            ],
+          },
+        ]
+      : []),
+    {
+      name: "Vehicle History",
+      icon: Bike,
+      path: "/bike-history",
     },
   ];
 

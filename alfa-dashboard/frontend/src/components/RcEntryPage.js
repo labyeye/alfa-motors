@@ -51,6 +51,8 @@ const RcEntryPage = () => {
   const { user } = useContext(AuthContext);
   const [activeMenu, setActiveMenu] = useState("RC Entry");
   const [expandedMenus, setExpandedMenus] = useState({});
+  
+
   const menuItems = [
     {
       name: "Dashboard",
@@ -65,15 +67,16 @@ const RcEntryPage = () => {
         { name: "RC List", path: "/rc/list" },
       ],
     },
+    
     {
       name: "Car Management",
       icon: CarFront,
       submenu: [
         { name: "Add Car Data", path: "/car/create" },
         { name: "List Car Data", path: "/car/list" },
-        { name: "Edit Car Data", path: "/car/edit" },
       ],
     },
+    
     {
       name: "Sell",
       icon: TrendingUp,
@@ -83,6 +86,11 @@ const RcEntryPage = () => {
       ],
     },
     {
+      name: "Gallery Management",
+      icon: Car,
+      path: "/gallery",
+    },
+    {
       name: "Service",
       icon: Wrench,
       submenu: [
@@ -90,18 +98,14 @@ const RcEntryPage = () => {
         { name: "Service History", path: "/service/history" },
       ],
     },
-    ...(user?.role !== "staff"
-      ? [
-          {
-            name: "Staff",
-            icon: Users,
-            submenu: [
-              { name: "Create Staff ID", path: "/staff/create" },
-              { name: "Staff List", path: "/staff/list" },
-            ],
-          },
-        ]
-      : []),
+    {
+      name: "Staff",
+      icon: Users,
+      submenu: [
+        { name: "Create Staff ID", path: "/staff/create" },
+        { name: "Staff List", path: "/staff/list" },
+      ],
+    },
     {
       name: "Vehicle History",
       icon: Bike,

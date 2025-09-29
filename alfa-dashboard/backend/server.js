@@ -10,6 +10,7 @@ const rcRoutes = require("./routes/rcRoutes");
 const sellRoutes = require('./routes/sellRoutes');
 const carRoutes = require('./routes/carRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
+const galleryRoutes = require('./routes/galleryRoutes');
 const path = require("path");
 const fs = require("fs");
 const { protect } = require('./middleware/auth');
@@ -72,6 +73,7 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/service-bills', serviceBillRoutes);
 app.use('/api/sell-requests', sellRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api/gallery', galleryRoutes);
 
 const carImagesPath = path.join(__dirname, "utils/carimages");
 app.use(

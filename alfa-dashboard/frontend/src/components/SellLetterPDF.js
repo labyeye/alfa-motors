@@ -109,6 +109,8 @@ const SellLetterForm = () => {
     });
   }, []);
 
+  
+
   const menuItems = [
     {
       name: "Dashboard",
@@ -123,13 +125,13 @@ const SellLetterForm = () => {
         { name: "RC List", path: "/rc/list" },
       ],
     },
+    
     {
       name: "Car Management",
       icon: CarFront,
       submenu: [
         { name: "Add Car Data", path: "/car/create" },
         { name: "List Car Data", path: "/car/list" },
-        { name: "Edit Car Data", path: "/car/edit" },
       ],
     },
     
@@ -140,6 +142,11 @@ const SellLetterForm = () => {
         { name: "Create Sell Letter", path: "/sell/create" },
         { name: "Sell Letter History", path: "/sell/history" },
       ],
+    },
+    {
+      name: "Gallery Management",
+      icon: Car,
+      path: "/gallery",
     },
     {
       name: "Service",

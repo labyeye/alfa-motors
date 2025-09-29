@@ -16,6 +16,7 @@ import {
   Car,
 } from "lucide-react";
 import logo from "../images/company.png";
+import Sidebar from "./Sidebar";
 
 const AddcarForm = () => {
   const { user } = useContext(AuthContext);
@@ -49,6 +50,8 @@ const AddcarForm = () => {
       ? "http://localhost:2500"
       : "https://alfa-motors.onrender.com");
 
+  
+
   const menuItems = [
     {
       name: "Dashboard",
@@ -63,20 +66,16 @@ const AddcarForm = () => {
         { name: "RC List", path: "/rc/list" },
       ],
     },
+    
     {
       name: "Car Management",
       icon: CarFront,
       submenu: [
         { name: "Add Car Data", path: "/car/create" },
         { name: "List Car Data", path: "/car/list" },
-        { name: "Edit Car Data", path: "/car/edit" },
       ],
     },
-    {
-      name: "Gallery Management",
-      icon: Car,
-      path: "/gallery",
-    },
+    
     {
       name: "Sell",
       icon: TrendingUp,
@@ -84,6 +83,11 @@ const AddcarForm = () => {
         { name: "Create Sell Letter", path: "/sell/create" },
         { name: "Sell Letter History", path: "/sell/history" },
       ],
+    },
+    {
+      name: "Gallery Management",
+      icon: Car,
+      path: "/gallery",
     },
     {
       name: "Service",
@@ -194,74 +198,7 @@ const AddcarForm = () => {
 
   return (
     <div style={styles.container}>
-      {/* Sidebar */}
-      <div style={styles.sidebar}>
-        <div style={styles.sidebarHeader}>
-          <img
-            src={logo}
-            alt="logo"
-            style={{ width: "12.5rem", height: "7.5rem", color: "#7c3aed" }}
-          />
-          <p style={styles.sidebarSubtitle}>Welcome, Alfa Motor World</p>
-        </div>
-
-        <nav style={styles.nav}>
-          {menuItems.map((item) => (
-            <div key={item.name}>
-              <div
-                style={{
-                  ...styles.menuItem,
-                  ...(activeMenu === item.name ? styles.menuItemActive : {}),
-                }}
-                onClick={() => {
-                  if (item.submenu) {
-                    toggleMenu(item.name);
-                  } else {
-                    handleMenuClick(item.name, item.path);
-                  }
-                }}
-              >
-                <div style={styles.menuItemContent}>
-                  <item.icon size={20} style={styles.menuIcon} />
-                  <span style={styles.menuText}>{item.name}</span>
-                </div>
-                {item.submenu &&
-                  (expandedMenus[item.name] ? (
-                    <ChevronDown size={16} />
-                  ) : (
-                    <ChevronRight size={16} />
-                  ))}
-              </div>
-
-              {item.submenu && expandedMenus[item.name] && (
-                <div style={styles.submenu}>
-                  {item.submenu.map((subItem) => (
-                    <div
-                      key={subItem.name}
-                      style={{
-                        ...styles.submenuItem,
-                        ...(activeMenu === subItem.name
-                          ? styles.submenuItemActive
-                          : {}),
-                      }}
-                      onClick={() =>
-                        handleMenuClick(subItem.name, subItem.path)
-                      }
-                    >
-                      {subItem.name}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-
-          <div style={styles.logoutButton} onClick={handleLogout}>
-            <LogOut size={20} style={styles.menuIcon} />
-            <span style={styles.menuText}>Logout</span>
-          </div>
-        </nav>
-      </div>
+      <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
 
       {/* Main Content */}
       <div style={styles.mainContent}>

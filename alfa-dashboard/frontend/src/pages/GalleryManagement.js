@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import AuthContext from "../context/AuthContext";
 import logo from "../images/company.png";
+import Sidebar from "../components/Sidebar";
 
 const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'http://localhost:2500' : 'https://alfa-motors.onrender.com');
 
@@ -119,19 +120,37 @@ const GalleryManagement = () => {
 
   const handleAddSoldPhoto = async (carId, file) => {
     if (!file) return;
+    setUploadingIds(prev => [...prev, carId]);
+    const fd = new FormData();
+    fd.append('photo', file);
+    fd.append('carId', carId);
+
     try {
-      setUploadingIds(prev => [...prev, carId]);
-      const fd = new FormData();
-      fd.append('photo', file);
-      const res = await axios.post(`${API_BASE}/api/cars/${carId}/sold-photo`, fd, {
+      // Try the new gallery endpoint first
+      const res = await axios.post(`${API_BASE}/api/gallery`, fd, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}`, 'Content-Type': 'multipart/form-data' }
       });
-      const updatedSold = res.data?.data?.sold;
-      setSoldCars(prev => prev.map(c => c._id === carId ? { ...c, sold: updatedSold } : c));
-      alert('Customer photo uploaded');
+
+      const galleryItem = res.data?.data;
+      // Also update soldCars state by adding the filename to sold.customerPhotos for immediate UI reflection
+      if (galleryItem && galleryItem.filename) {
+        setSoldCars(prev => prev.map(c => c._id === carId ? { ...c, sold: { ...(c.sold || {}), customerPhotos: [...((c.sold && c.sold.customerPhotos) || []), galleryItem.filename] } } : c));
+      }
+      alert('Customer photo uploaded to gallery');
     } catch (err) {
-      console.error('Upload sold photo error:', err);
-      alert(err.response?.data?.error || 'Failed to upload photo');
+      console.warn('Gallery upload failed, falling back to car sold-photo:', err?.response?.status);
+      try {
+        // Fallback to existing endpoint for backward compatibility
+        const res2 = await axios.post(`${API_BASE}/api/cars/${carId}/sold-photo`, fd, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}`, 'Content-Type': 'multipart/form-data' }
+        });
+        const updatedSold = res2.data?.data?.sold;
+        setSoldCars(prev => prev.map(c => c._id === carId ? { ...c, sold: updatedSold } : c));
+        alert('Customer photo uploaded');
+      } catch (err2) {
+        console.error('Upload failed:', err2);
+        alert(err2.response?.data?.error || 'Failed to upload photo');
+      }
     } finally {
       setUploadingIds(prev => prev.filter(id => id !== carId));
     }
@@ -176,74 +195,7 @@ const GalleryManagement = () => {
 
   return (
     <div style={styles.container}>
-      {/* Sidebar */}
-      <div style={styles.sidebar}>
-        <div style={styles.sidebarHeader}>
-          <img
-            src={logo}
-            alt="logo"
-            style={{ width: "12.5rem", height: "7.5rem", color: "#7c3aed" }}
-          />
-          <p style={styles.sidebarSubtitle}>Welcome, Alfa Motor World</p>
-        </div>
-
-        <nav style={styles.nav}>
-          {menuItems.map((item) => (
-            <div key={item.name}>
-              <div
-                style={{
-                  ...styles.menuItem,
-                  ...(activeMenu === item.name ? styles.menuItemActive : {}),
-                }}
-                onClick={() => {
-                  if (item.submenu) {
-                    toggleMenu(item.name);
-                  } else {
-                    handleMenuClick(item.name, item.path);
-                  }
-                }}
-              >
-                <div style={styles.menuItemContent}>
-                  <item.icon size={20} style={styles.menuIcon} />
-                  <span style={styles.menuText}>{item.name}</span>
-                </div>
-                {item.submenu &&
-                  (expandedMenus[item.name] ? (
-                    <ChevronDown size={16} />
-                  ) : (
-                    <ChevronRight size={16} />
-                  ))}
-              </div>
-
-              {item.submenu && expandedMenus[item.name] && (
-                <div style={styles.submenu}>
-                  {item.submenu.map((subItem) => (
-                    <div
-                      key={subItem.name}
-                      style={{
-                        ...styles.submenuItem,
-                        ...(activeMenu === subItem.name
-                          ? styles.submenuItemActive
-                          : {}),
-                      }}
-                      onClick={() =>
-                        handleMenuClick(subItem.name, subItem.path)
-                      }
-                    >
-                      {subItem.name}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-
-          <div style={styles.logoutButton} onClick={handleLogout}>
-            <LogOut size={20} style={styles.menuIcon} />
-            <span style={styles.menuText}>Logout</span>
-          </div>
-        </nav>
-      </div>
+      <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
 
       {/* Main Content */}
       <div style={styles.mainContent}>

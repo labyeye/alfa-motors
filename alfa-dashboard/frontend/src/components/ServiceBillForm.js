@@ -450,6 +450,8 @@ const ServiceBillForm = () => {
   };
 
   // In the menuItems array (around line 250 in BuyLetterPDF.js)
+  
+
   const menuItems = [
     {
       name: "Dashboard",
@@ -464,13 +466,13 @@ const ServiceBillForm = () => {
         { name: "RC List", path: "/rc/list" },
       ],
     },
+    
     {
       name: "Car Management",
       icon: CarFront,
       submenu: [
         { name: "Add Car Data", path: "/car/create" },
         { name: "List Car Data", path: "/car/list" },
-        { name: "Edit Car Data", path: "/car/edit" },
       ],
     },
     
@@ -483,6 +485,11 @@ const ServiceBillForm = () => {
       ],
     },
     {
+      name: "Gallery Management",
+      icon: Car,
+      path: "/gallery",
+    },
+    {
       name: "Service",
       icon: Wrench,
       submenu: [
@@ -490,19 +497,14 @@ const ServiceBillForm = () => {
         { name: "Service History", path: "/service/history" },
       ],
     },
-    // Add the conditional check here
-    ...(user?.role !== "staff"
-      ? [
-          {
-            name: "Staff",
-            icon: Users,
-            submenu: [
-              { name: "Create Staff ID", path: "/staff/create" },
-              { name: "Staff List", path: "/staff/list" },
-            ],
-          },
-        ]
-      : []),
+    {
+      name: "Staff",
+      icon: Users,
+      submenu: [
+        { name: "Create Staff ID", path: "/staff/create" },
+        { name: "Staff List", path: "/staff/list" },
+      ],
+    },
     {
       name: "Vehicle History",
       icon: Bike,

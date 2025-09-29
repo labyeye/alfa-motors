@@ -21,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 import { Bar, Pie } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import logo from '../images/company.png';
+import Sidebar from "../components/Sidebar";
 import AuthContext from "../context/AuthContext";
 const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'http://localhost:2500' : 'https://alfa-motors.onrender.com');
 
@@ -466,104 +467,6 @@ const AdminPage = () => {
   </div>
 );
 
-  // const RevenueCard = () => (
-  //   <div style={styles.revenueCard}>
-  //     <h3 style={styles.revenueTitle}>
-  //       {isOwnerView ? "My Financial Summary" : "Business Revenue Overview"}
-  //     </h3>
-  //     {loading ? (
-  //       <div style={styles.revenueGrid}>
-  //         {Array(3)
-  //           .fill()
-  //           .map((_, index) => (
-  //             <div key={index} style={styles.revenueItem}>
-  //               <p style={styles.revenueLabel}>Loading...</p>
-  //               <p
-  //                 style={{
-  //                   ...styles.revenueValue,
-  //                   color: ["#dc2626", "#059669", "#2563eb"][index],
-  //                 }}
-  //               >
-  //                 -
-  //               </p>
-  //             </div>
-  //           ))}
-  //       </div>
-  //     ) : error ? (
-  //       <div style={{ textAlign: 'center', padding: '20px' }}>
-  //         <p style={{ color: '#ef4444' }}>{error}</p>
-  //       </div>
-  //     ) : (
-  //       <div style={styles.revenueGrid}>
-  //         <div style={styles.revenueItem}>
-  //           <p style={styles.revenueLabel}>
-  //             {isOwnerView ? "My Total Purchases" : "Total Business Purchases"}
-  //           </p>
-  //           <p style={{ ...styles.revenueValue, color: "#dc2626" }}>
-  //             {formatCurrency(dashboardData.totalBuyValue)}
-  //             {isOwnerView && (
-  //               <span
-  //                 style={{
-  //                   fontSize: "0.875rem",
-  //                   color: "#6b7280",
-  //                   display: "block",
-  //                 }}
-  //               >
-  //                 ({dashboardData.totalBuyLetters} transactions)
-  //               </span>
-  //             )}
-  //           </p>
-  //         </div>
-  //         <div style={styles.revenueItem}>
-  //           <p style={styles.revenueLabel}>
-  //             {isOwnerView ? "My Total Sales" : "Total Business Sales"}
-  //           </p>
-  //           <p style={{ ...styles.revenueValue, color: "#059669" }}>
-  //             {formatCurrency(dashboardData.totalSellValue)}
-  //             {isOwnerView && (
-  //               <span
-  //                 style={{
-  //                   fontSize: "0.875rem",
-  //                   color: "#6b7280",
-  //                   display: "block",
-  //                 }}
-  //               >
-  //                 ({dashboardData.totalSellLetters} transactions)
-  //               </span>
-  //             )}
-  //           </p>
-  //         </div>
-  //         <div style={styles.revenueItem}>
-  //           <p style={styles.revenueLabel}>Net Profit/Loss</p>
-  //           <p
-  //             style={{
-  //               ...styles.revenueValue,
-  //               color: dashboardData.profit >= 0 ? "#2563eb" : "#dc2626",
-  //             }}
-  //           >
-  //             {formatCurrency(dashboardData.profit)}
-  //             {dashboardData.totalBuyValue > 0 && (
-  //               <span
-  //                 style={{
-  //                   fontSize: "0.875rem",
-  //                   color: dashboardData.profit >= 0 ? "#059669" : "#dc2626",
-  //                   display: "block",
-  //                 }}
-  //               >
-  //                 {dashboardData.profit >= 0 ? "Profit" : "Loss"}:{" "}
-  //                 {Math.abs(
-  //                   (dashboardData.profit / dashboardData.totalBuyValue) * 100
-  //                 ).toFixed(2)}
-  //                 %
-  //               </span>
-  //             )}
-  //           </p>
-  //         </div>
-  //       </div>
-  //     )}
-  //   </div>
-  // );
-
   const ChartsSection = () => {
     if (loading) {
       return (
@@ -627,65 +530,7 @@ const AdminPage = () => {
 
   return (
     <div style={styles.container}>
-      {/* Sidebar */}
-      <div style={styles.sidebar}>
-        <div style={styles.sidebarHeader}>
-         <img src={logo} alt="logo" style={{width: '12.5rem', height: '7.5rem', color: '#7c3aed'}} />
-          <p style={styles.sidebarSubtitle}>Welcome, Alfa Motor World</p>
-        </div>
-
-        <nav style={styles.nav}>
-          {menuItems.map((item) => (
-            <div key={item.name}>
-              <div
-                style={{
-                  ...styles.menuItem,
-                  ...(activeMenu === item.name ? styles.menuItemActive : {}),
-                }}
-                onClick={() => {
-                  if (item.submenu) {
-                    toggleMenu(item.name);
-                  } else {
-                    handleMenuClick(item.name, item.path);
-                  }
-                }}
-              >
-                <div style={styles.menuItemContent}>
-                  <item.icon size={20} style={styles.menuIcon} />
-                  <span style={styles.menuText}>{item.name}</span>
-                </div>
-                {item.submenu &&
-                  (expandedMenus[item.name] ? (
-                    <ChevronDown size={16} />
-                  ) : (
-                    <ChevronRight size={16} />
-                  ))}
-              </div>
-
-              {item.submenu && expandedMenus[item.name] && (
-                <div style={styles.submenu}>
-                  {item.submenu.map((subItem) => (
-                    <div
-                      key={subItem.name}
-                      style={styles.submenuItem}
-                      onClick={() =>
-                        handleMenuClick(subItem.name, subItem.path)
-                      }
-                    >
-                      {subItem.name}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-
-          <div style={styles.logoutButton} onClick={handleLogout}>
-            <LogOut size={20} style={styles.menuIcon} />
-            <span style={styles.menuText}>Logout</span>
-          </div>
-        </nav>
-      </div>
+      <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
 
       {/* Main Content */}
       <div style={styles.mainContent}>
