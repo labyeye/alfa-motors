@@ -3,11 +3,18 @@ const router = express.Router();
 const SellRequest = require('../models/SellRequest');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 const {protect} = require('../middleware/auth');
+
+// Ensure uploads directory exists
+const uploadsDir = path.join(__dirname, '../public/uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'public/uploads/');
+    cb(null, uploadsDir);
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + path.extname(file.originalname));

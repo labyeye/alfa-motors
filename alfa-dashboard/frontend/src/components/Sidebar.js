@@ -10,6 +10,7 @@ import {
   ChevronDown,
   ChevronRight,
   Bike,
+  Camera,
   CarFront,
   Car,
 } from "lucide-react";
@@ -49,7 +50,13 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
       submenu: [
         { name: "Create Sell Letter", path: "/sell/create" },
         { name: "Sell Letter History", path: "/sell/history" },
+        { name: "Sell Queries", path: "/sell-requests" },
       ],
+    },
+    {
+      name: "Gallery Management",
+      icon: Camera,
+      path: "/gallery",
     },
     {
       name: "Service",

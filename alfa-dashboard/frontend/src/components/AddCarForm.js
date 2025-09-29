@@ -48,7 +48,7 @@ const AddcarForm = () => {
     window.API_BASE ||
     (window.location.hostname === "localhost"
       ? "http://localhost:2500"
-      : "https://alfa-motors.onrender.com");
+      : "http://localhost:2500");
 
   
 

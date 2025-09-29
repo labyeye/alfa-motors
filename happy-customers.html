@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <div class="hero-content gallery-hero-content">
+    <div class="gallery-hero-content">
       <div class="hero-text">
         <h1 class="hero-title" data-translate="Happy Customers">Happy Customers</h1>
         <p class="hero-description" data-translate="Celebrating the joy of our satisfied customers who trusted Alfa Motor World with their car selling journey. Each story represents trust, satisfaction, and success.">Celebrating the joy of our satisfied customers who trusted Alfa Motor World with their car selling journey. Each story represents trust, satisfaction, and success.</p>
@@ -107,41 +107,28 @@
   </section>
 
   <script>
-    const API_BASE = window.HAPPY_API_BASE || (location.hostname === 'localhost' ? 'http://localhost:2500' : 'https://alfa-motors.onrender.com');
+    const API_BASE = window.HAPPY_API_BASE || (location.hostname === 'localhost' ? 'http://localhost:2500' : 'http://localhost:2500');
     const gallery = document.getElementById('gallery');
     const loading = document.getElementById('loading');
 
-    async function fetchSold() {
+    async function fetchGallery() {
       try {
-        const res = await fetch(`${API_BASE}/api/cars/sold`);
+        // Fetch gallery items from the new gallery API
+        const res = await fetch(`${API_BASE}/api/gallery`);
         const json = await res.json();
         loading.style.display = 'none';
-        if (!json.success) return gallery.innerHTML = '<p>Failed to load.</p>';
-        const cars = json.data || [];
-        if (cars.length === 0) return gallery.innerHTML = '<p>No sold cars yet.</p>';
-        gallery.innerHTML = cars.map((car, index) => {
-          const thumb = (car.sold && car.sold.customerPhotos && car.sold.customerPhotos[0]) || (car.photos && car.photos[0]) || '';
-          const thumbUrl = thumb ? `${API_BASE}/carimages/${thumb.replace('carimages/','')}` : './assets/placeholder.png';
-          const customer = car.sold?.customerName || '';
-          const testimonial = car.sold?.testimonial || '';
-          const carTitle = `${car.make} ${car.model}${car.variant ? ' ' + car.variant : ''} (${car.modelYear || ''})`;
+        
+        if (!json.success) return gallery.innerHTML = '<p>Failed to load gallery.</p>';
+        const items = json.data || [];
+        if (items.length === 0) return gallery.innerHTML = '<p>No gallery photos yet. Upload some photos in Gallery Management!</p>';
+
+        gallery.innerHTML = items.map((item, index) => {
+          const thumbUrl = `${API_BASE}/carimages/${item.filename}`;
           
           return `
             <article class="gallery-card" data-aos="fade-up" data-aos-delay="${(index % 4) * 100}">
               <div class="card-image-container">
-                <img src="${thumbUrl}" alt="${car.make} ${car.model}" loading="lazy" />
-                <div class="sold-badge">SOLD</div>
-                <div class="card-overlay">
-                  <div class="overlay-content">
-                    <h4 style="color: white; margin: 0; font-size: 1.1rem;">${carTitle}</h4>
-                    ${customer ? `<p style="color: #ffeb3b; margin: 5px 0 0 0; font-weight: 600;">— ${customer}</p>` : ''}
-                  </div>
-                </div>
-              </div>
-              <div class="card-content">
-                <h3 class="car-title">${carTitle}</h3>
-                ${customer ? `<div class="customer-name">${customer}</div>` : ''}
-                ${testimonial ? `<p class="testimonial">${testimonial}</p>` : ''}
+                <img src="${thumbUrl}" alt="Gallery photo" loading="lazy" onerror="this.src='./assets/placeholder.png'" />
               </div>
             </article>
           `;
@@ -152,7 +139,7 @@
       }
     }
 
-    fetchSold();
+    fetchGallery();
   </script>
 </body>
 </html>

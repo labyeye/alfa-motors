@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { PDFDocument } from "pdf-lib";
 import { saveAs } from "file-saver";
 import {
@@ -22,6 +22,7 @@ import {
   Car,
   CarFront,
   Bike,
+  Search,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -36,6 +37,9 @@ const ServiceBillForm = () => {
   const [expandedMenus, setExpandedMenus] = useState({});
   const navigate = useNavigate();
   const [isSaving, setIsSaving] = useState(false);
+  const [availableCars, setAvailableCars] = useState([]);
+  const [selectedCarId, setSelectedCarId] = useState("");
+  const [isLoadingCars, setIsLoadingCars] = useState(false);
   const [formData, setFormData] = useState({
     taxEnabled: false,
     businessName: "",
@@ -49,13 +53,12 @@ const ServiceBillForm = () => {
     customerPhone: "",
     customerAddress: "",
     customerEmail: "",
-    vehicleType: "bike",
-    vehicleBrand: "",
-    vehicleModel: "",
-    registrationNumber: "",
-    chassisNumber: "",
-    engineNumber: "",
-    kmReading: "",
+  vehicleType: "car",
+  vehicleBrand: "",
+  vehicleModel: "",
+  chassisNumber: "",
+  engineNumber: "",
+  kmReading: "",
     serviceDate: new Date().toISOString().split("T")[0],
     deliveryDate: new Date(Date.now() + 86400000).toISOString().split("T")[0], // Tomorrow's date
     serviceType: "regular",
@@ -71,7 +74,69 @@ const ServiceBillForm = () => {
   });
 
   const [previewMode, setPreviewMode] = useState(false);
-  const API_BASE_URL = "https://alfa-motors.onrender.com/api";
+  const API_BASE_URL = "http://localhost:2500/api";
+
+  // Fetch available cars on component mount
+  useEffect(() => {
+    fetchAvailableCars();
+  }, []);
+
+  const fetchAvailableCars = async () => {
+    try {
+      setIsLoadingCars(true);
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`${API_BASE_URL}/cars`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const cars = response.data.data || [];
+      console.debug('Fetched cars:', cars);
+      setAvailableCars(cars);
+    } catch (error) {
+      console.error("Error fetching cars:", error);
+      alert("Failed to load vehicle data. You can still enter details manually.");
+    } finally {
+      setIsLoadingCars(false);
+    }
+  };
+
+  const handleVehicleSelection = (carId) => {
+    setSelectedCarId(carId);
+    if (carId) {
+      const selectedCar = availableCars.find(car => car._id === carId);
+      if (selectedCar) {
+        console.debug('Selected car for autofill:', selectedCar);
+        // Fallbacks for different possible field names
+        const chassis = selectedCar.chassisNo || selectedCar.chassisNumber || selectedCar.chassis || selectedCar.vin || selectedCar.chassisNumberRaw || "";
+        const engine = selectedCar.engineNo || selectedCar.engineNumber || selectedCar.engine || "";
+        const km = typeof selectedCar.kmDriven !== 'undefined' && selectedCar.kmDriven !== null
+          ? selectedCar.kmDriven
+          : (selectedCar.mileage || selectedCar.km || selectedCar.km_reading || "");
+
+        setFormData(prev => ({
+          ...prev,
+          vehicleType: "car",
+          vehicleBrand: selectedCar.make || "",
+          vehicleModel: selectedCar.model || "",
+          chassisNumber: chassis || "",
+          engineNumber: engine || "",
+          kmReading: km !== "" ? String(km) : "",
+        }));
+      }
+    } else {
+      // Clear fields if no vehicle selected
+      setFormData(prev => ({
+        ...prev,
+        vehicleType: "car",
+        vehicleBrand: "",
+        vehicleModel: "",
+        chassisNumber: "",
+        engineNumber: "",
+        kmReading: "",
+      }));
+    }
+  };
   const calculateAmounts = (data) => {
     const totalAmount = (data.serviceItems || []).reduce(
       (sum, item) => sum + (item.quantity || 0) * (item.rate || 0),
@@ -311,7 +376,6 @@ const ServiceBillForm = () => {
       });
       page.drawText(billData.vehicleBrand, { x: 150, y: 600, size: 11 });
       page.drawText(billData.vehicleModel, { x: 300, y: 600, size: 11 });
-      page.drawText(billData.registrationNumber, { x: 450, y: 600, size: 11 });
       page.drawText(billData.chassisNumber || "N/A", {
         x: 50,
         y: 580,
@@ -711,25 +775,36 @@ const ServiceBillForm = () => {
               <h2 style={styles.sectionTitle}>
                 <Car style={styles.sectionIcon} /> Vehicle Information
               </h2>
-              <div style={styles.formGrid}>
+              
+              {/* Vehicle Selection from Inventory */}
+              <div style={styles.vehicleSelectionContainer}>
                 <div style={styles.formField}>
                   <label style={styles.formLabel}>
-                    <Car style={styles.formIcon} />
-                    Vehicle Type || वाहन का प्रकार
+                    <Search style={styles.formIcon} />
+                    Select Vehicle from Inventory || इन्वेंटरी से वाहन चुनें
                   </label>
                   <select
-                    name="vehicleType"
-                    value={formData.vehicleType}
-                    onChange={handleChange}
+                    value={selectedCarId}
+                    onChange={(e) => handleVehicleSelection(e.target.value)}
                     style={styles.formSelect}
-                    required
+                    disabled={isLoadingCars}
                   >
-                    <option value="bike">Bike</option>
-                    <option value="scooter">Scooter</option>
-                    <option value="car">Car</option>
-                    <option value="other">Other</option>
+                    <option value="">
+                      {isLoadingCars ? "Loading vehicles..." : "Select a vehicle or enter manually"}
+                    </option>
+                    {availableCars.map((car) => (
+                      <option key={car._id} value={car._id}>
+                        {car.make} {car.model} {car.variant} ({car.modelYear})
+                      </option>
+                    ))}
                   </select>
                 </div>
+                <div style={styles.orDivider}>
+                  <span>OR Enter Manually || या मैन्युअल रूप से दर्ज करें</span>
+                </div>
+              </div>
+
+              <div style={styles.formGrid}>
                 <div style={styles.formField}>
                   <label style={styles.formLabel}>
                     <Car style={styles.formIcon} />
@@ -759,22 +834,6 @@ const ServiceBillForm = () => {
                     onInput={handleInput}
                     style={styles.formInput}
                     required
-                  />
-                </div>
-                <div style={styles.formField}>
-                  <label style={styles.formLabel}>
-                    <Car style={styles.formIcon} />
-                    Registration Number || रजिस्ट्रेशन नंबर
-                  </label>
-                  <input
-                    type="text"
-                    name="registrationNumber"
-                    value={formData.registrationNumber}
-                    onChange={handleChange}
-                    onInput={handleInput}
-                    style={styles.formInput}
-                    required
-                    maxLength={15}
                   />
                 </div>
                 <div style={styles.formField}>
@@ -1522,6 +1581,46 @@ const styles = {
   },
   buttonIcon: {
     marginRight: "8px",
+  },
+  vehicleSelectionContainer: {
+    backgroundColor: "#f8fafc",
+    border: "2px dashed #cbd5e1",
+    borderRadius: "12px",
+    padding: "20px",
+    marginBottom: "24px",
+    textAlign: "center",
+  },
+  orDivider: {
+    margin: "16px 0",
+    position: "relative",
+    textAlign: "center",
+    color: "#6b7280",
+    fontSize: "0.875rem",
+    fontWeight: "500",
+  },
+  orDivider: {
+    margin: "16px 0",
+    position: "relative",
+    textAlign: "center",
+    color: "#6b7280",
+    fontSize: "0.875rem",
+    fontWeight: "500",
+    "::before": {
+      content: '""',
+      position: "absolute",
+      top: "50%",
+      left: 0,
+      right: 0,
+      height: "1px",
+      backgroundColor: "#d1d5db",
+      zIndex: 1,
+    },
+  },
+  "orDivider span": {
+    backgroundColor: "#f8fafc",
+    padding: "0 16px",
+    position: "relative",
+    zIndex: 2,
   },
 };
 

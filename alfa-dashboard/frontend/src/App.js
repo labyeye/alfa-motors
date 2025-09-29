@@ -17,6 +17,7 @@ import AddcarForm from "./components/AddCarForm";
 import ListCar from "./components/ListCar";
 import EditCar from "./components/EditCar";
 import GalleryManagement from "./pages/GalleryManagement";
+import SellRequests from "./components/SellRequests";
 
 function App() {
   return (
@@ -96,6 +97,23 @@ function App() {
             element={
               <PrivateRoute roles={["admin", "staff"]}>
                 <SellLetterForm />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/sell-requests"
+            element={
+              <PrivateRoute roles={["admin", "staff"]}>
+                <SellRequests />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/sell-requests/:id"
+            element={
+              <PrivateRoute roles={["admin", "staff"]}>
+                {/* Ideally a detail page component would be used; reusing SellRequests page for now */}
+                <SellRequests />
               </PrivateRoute>
             }
           />

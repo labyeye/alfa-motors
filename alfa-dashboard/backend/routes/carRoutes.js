@@ -2,6 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const Car = require("../models/Car");
+const Gallery = require("../models/Gallery");
 const { protect } = require("../middleware/auth");
 const upload = require("../utils/fileUpload");
 const path = require('path');
@@ -361,6 +362,23 @@ router.post('/:id/sold-photo', protect, upload.single('photo'), async (req, res)
     car.sold.customerPhotos = car.sold.customerPhotos || [];
     car.sold.customerPhotos.push(req.file.filename);
     await car.save();
+
+    // Also create a Gallery document so uploads via this legacy endpoint
+    // appear in the /api/gallery listing used by the admin UI and public pages
+    try {
+      const galleryItem = new Gallery({
+        car: car._id,
+        filename: req.file.filename,
+        caption: req.body.caption || '',
+        testimonial: req.body.testimonial || '',
+        uploadedBy: req.user._id,
+      });
+      await galleryItem.save();
+    } catch (gErr) {
+      console.warn('Failed to create gallery document for sold-photo upload:', gErr);
+      // non-fatal: continue returning success for the car update
+    }
+
     res.json({ success: true, data: car, newPhoto: req.file.filename });
   } catch (err) {
     console.error('Error adding sold photo:', err);

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { protect } = require('../middleware/auth');
+const { protect, admin } = require('../middleware/auth');
 const upload = require('../utils/fileUpload');
 const galleryController = require('../controllers/galleryController');
 
@@ -9,5 +9,14 @@ router.post('/', protect, upload.single('photo'), galleryController.uploadGaller
 
 // Public listing of gallery items
 router.get('/', galleryController.listGallery);
+
+// Update gallery item (caption/testimonial)
+router.put('/:id', protect, galleryController.updateGallery);
+
+// Delete gallery item
+router.delete('/:id', protect, galleryController.deleteGallery);
+
+// Delete ALL gallery items (admin only)
+router.delete('/', protect, admin, galleryController.deleteAllGallery);
 
 module.exports = router;

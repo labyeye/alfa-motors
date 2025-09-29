@@ -29,7 +29,7 @@ const corsOptions = {
     'http://localhost:3000', 
     'https://www.alfamotorworld.com',
     'https://alfa-motors-o5cm.vercel.app',
-    'https://alfa-motors.onrender.com',
+    'http://localhost:2500',
     'http://localhost:5500',
     'http://127.0.0.1:3000'
   ],
@@ -63,6 +63,20 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+// Serve public directory for sell request uploads
+app.use('/public', express.static(path.join(__dirname, 'public'), {
+  setHeaders: (res, filePath) => {
+    // Set CORS headers for image files
+    const origin = res.req.get('origin');
+    if (corsOptions.origin.includes(origin)) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      if (corsOptions.credentials) {
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+      }
+    }
+  }
+}));
 
 app.use('/api/auth', authRoutes);
 app.use("/api/rc", rcRoutes);

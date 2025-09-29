@@ -22,7 +22,11 @@ import AuthContext from "../context/AuthContext";
 import logo from "../images/company.png";
 import Sidebar from "../components/Sidebar";
 
-const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'http://localhost:2500' : 'https://alfa-motors.onrender.com');
+const API_BASE =
+  window.API_BASE ||
+  (window.location.hostname === "localhost"
+    ? "http://localhost:2500"
+    : "https://alfa-motors.onrender.com");
 
 const GalleryManagement = () => {
   const { user } = useContext(AuthContext);
@@ -33,6 +37,12 @@ const GalleryManagement = () => {
   const [uploadingIds, setUploadingIds] = useState([]);
   const [allCars, setAllCars] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  // Gallery items and edit UI state
+  const [galleryItems, setGalleryItems] = useState([]);
+  const [editingId, setEditingId] = useState(null);
+  const [editCaption, setEditCaption] = useState("");
+  const [editTestimonial, setEditTestimonial] = useState("");
 
   const menuItems = [
     {
@@ -97,22 +107,42 @@ const GalleryManagement = () => {
     fetchData();
   }, []);
 
+  // Debug effect to monitor galleryItems state changes
+  useEffect(() => {
+    console.log('Gallery items state changed:', galleryItems.length, galleryItems);
+  }, [galleryItems]);
+
   const fetchData = async () => {
     try {
       setLoading(true);
-      
+
       // Fetch sold cars for gallery
-      const soldResponse = await axios.get(`${API_BASE}/api/cars/sold`);
-      setSoldCars(soldResponse.data.data || []);
+      
+
+      // Fetch gallery items
+      console.log('Fetching gallery items...');
+      const galleryResp = await axios.get(`${API_BASE}/api/gallery`);
+      const galleryItemsData = galleryResp.data.data || [];
+      console.log('Gallery items fetched:', galleryItemsData.length, galleryItemsData);
+      setGalleryItems(galleryItemsData);
 
       // Fetch all cars to manage which ones appear in gallery
+      console.log('Fetching all cars...');
       const allResponse = await axios.get(`${API_BASE}/api/cars`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
-      setAllCars(allResponse.data.data || []);
+      const allCarsData = allResponse.data.data || [];
+      console.log('All cars fetched:', allCarsData.length);
+      setAllCars(allCarsData);
       
+      console.log('Data fetch completed successfully');
     } catch (error) {
       console.error("Error fetching data:", error);
+      console.error("Error details:", error.response?.data);
+      // Set empty arrays on error to prevent undefined state
+      setSoldCars([]);
+      setGalleryItems([]);
+      setAllCars([]);
     } finally {
       setLoading(false);
     }
@@ -120,39 +150,238 @@ const GalleryManagement = () => {
 
   const handleAddSoldPhoto = async (carId, file) => {
     if (!file) return;
-    setUploadingIds(prev => [...prev, carId]);
+    setUploadingIds((prev) => [...prev, carId]);
     const fd = new FormData();
-    fd.append('photo', file);
-    fd.append('carId', carId);
+    fd.append("photo", file);
+    fd.append("carId", carId);
 
     try {
       // Try the new gallery endpoint first
       const res = await axios.post(`${API_BASE}/api/gallery`, fd, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}`, 'Content-Type': 'multipart/form-data' }
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "multipart/form-data",
+        },
       });
 
       const galleryItem = res.data?.data;
       // Also update soldCars state by adding the filename to sold.customerPhotos for immediate UI reflection
       if (galleryItem && galleryItem.filename) {
-        setSoldCars(prev => prev.map(c => c._id === carId ? { ...c, sold: { ...(c.sold || {}), customerPhotos: [...((c.sold && c.sold.customerPhotos) || []), galleryItem.filename] } } : c));
+        setSoldCars((prev) =>
+          prev.map((c) =>
+            c._id === carId
+              ? {
+                  ...c,
+                  sold: {
+                    ...(c.sold || {}),
+                    customerPhotos: [
+                      ...((c.sold && c.sold.customerPhotos) || []),
+                      galleryItem.filename,
+                    ],
+                  },
+                }
+              : c
+          )
+        );
       }
-      alert('Customer photo uploaded to gallery');
+      alert("Customer photo uploaded to gallery");
     } catch (err) {
-      console.warn('Gallery upload failed, falling back to car sold-photo:', err?.response?.status);
+      console.warn(
+        "Gallery upload failed, falling back to car sold-photo:",
+        err?.response?.status
+      );
       try {
         // Fallback to existing endpoint for backward compatibility
-        const res2 = await axios.post(`${API_BASE}/api/cars/${carId}/sold-photo`, fd, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}`, 'Content-Type': 'multipart/form-data' }
-        });
+        const res2 = await axios.post(
+          `${API_BASE}/api/cars/${carId}/sold-photo`,
+          fd,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
         const updatedSold = res2.data?.data?.sold;
-        setSoldCars(prev => prev.map(c => c._id === carId ? { ...c, sold: updatedSold } : c));
-        alert('Customer photo uploaded');
+        setSoldCars((prev) =>
+          prev.map((c) => (c._id === carId ? { ...c, sold: updatedSold } : c))
+        );
+        alert("Customer photo uploaded");
       } catch (err2) {
-        console.error('Upload failed:', err2);
-        alert(err2.response?.data?.error || 'Failed to upload photo');
+        console.error("Upload failed:", err2);
+        alert(err2.response?.data?.error || "Failed to upload photo");
       }
     } finally {
-      setUploadingIds(prev => prev.filter(id => id !== carId));
+      setUploadingIds((prev) => prev.filter((id) => id !== carId));
+    }
+  };
+
+  const handleAddSoldPhotos = async (carId, files) => {
+    if (!files || files.length === 0) return;
+    
+    setUploadingIds(prev => [...prev, carId]);
+    const fileArray = Array.from(files);
+    const totalFiles = fileArray.length;
+    let successCount = 0;
+    let failCount = 0;
+    
+    // Show initial progress
+    alert(`Starting upload of ${totalFiles} photo(s) for this car...`);
+    
+    // Upload files one by one
+    for (let i = 0; i < fileArray.length; i++) {
+      const file = fileArray[i];
+      const fd = new FormData();
+      fd.append('photo', file);
+      fd.append('carId', carId);
+
+      try {
+        // Try the new gallery endpoint first
+        const res = await axios.post(`${API_BASE}/api/gallery`, fd, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}`, 'Content-Type': 'multipart/form-data' }
+        });
+
+        const galleryItem = res.data?.data;
+        // Also update soldCars state by adding the filename to sold.customerPhotos for immediate UI reflection
+        if (galleryItem && galleryItem.filename) {
+          setSoldCars(prev => prev.map(c => c._id === carId ? { ...c, sold: { ...(c.sold || {}), customerPhotos: [...((c.sold && c.sold.customerPhotos) || []), galleryItem.filename] } } : c));
+          setGalleryItems(prev => [galleryItem, ...prev]);
+        }
+        successCount++;
+      } catch (err) {
+        console.warn('Gallery upload failed, trying fallback:', err?.response?.status);
+        try {
+          // Fallback to existing endpoint for backward compatibility
+          const res2 = await axios.post(`${API_BASE}/api/cars/${carId}/sold-photo`, fd, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}`, 'Content-Type': 'multipart/form-data' }
+          });
+          const updatedSold = res2.data?.data?.sold;
+          setSoldCars(prev => prev.map(c => c._id === carId ? { ...c, sold: updatedSold } : c));
+          successCount++;
+        } catch (err2) {
+          console.error(`Upload failed for file ${i + 1}:`, err2);
+          failCount++;
+        }
+      }
+    }
+    
+    // Show final result
+    if (successCount === totalFiles) {
+      alert(`All ${totalFiles} photo(s) uploaded successfully for this car!`);
+    } else if (successCount > 0) {
+      alert(`${successCount} of ${totalFiles} photo(s) uploaded successfully. ${failCount} failed.`);
+    } else {
+      alert(`Failed to upload all ${totalFiles} photo(s). Please try again.`);
+    }
+    
+    setUploadingIds(prev => prev.filter(id => id !== carId));
+  };
+
+  // Edit handlers
+  const startEdit = (item) => {
+    setEditingId(item._id);
+    setEditCaption(item.caption || "");
+    setEditTestimonial(item.testimonial || "");
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditCaption("");
+    setEditTestimonial("");
+  };
+
+  const saveEdit = async (id) => {
+    try {
+      const res = await axios.put(
+        `${API_BASE}/api/gallery/${id}`,
+        { caption: editCaption, testimonial: editTestimonial },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+      const updated = res.data.data;
+      setGalleryItems((prev) =>
+        prev.map((it) => (it._id === id ? updated : it))
+      );
+      // Also update soldCars testimonial if present
+      setSoldCars((prev) =>
+        prev.map((c) =>
+          c._id === updated.car
+            ? {
+                ...c,
+                sold: { ...(c.sold || {}), testimonial: updated.testimonial },
+              }
+            : c
+        )
+      );
+      cancelEdit();
+      alert("Gallery item updated");
+    } catch (err) {
+      console.error("Update failed", err);
+      alert(err.response?.data?.error || "Failed to update");
+    }
+  };
+
+  const deleteItem = async (id) => {
+    if (
+      !window.confirm(
+        "Delete this gallery item? This will remove the image file and detach it from any car."
+      )
+    )
+      return;
+    try {
+      await axios.delete(`${API_BASE}/api/gallery/${id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      setGalleryItems((prev) => prev.filter((it) => it._id !== id));
+      // Also refresh soldCars to reflect possible removal
+      fetchData();
+      alert("Gallery item deleted");
+    } catch (err) {
+      console.error("Delete failed", err);
+      alert(err.response?.data?.error || "Failed to delete");
+    }
+  };
+
+  const handleDirectUpload = async (files) => {
+    if (!files || files.length === 0) return;
+    
+    const fileArray = Array.from(files);
+    const totalFiles = fileArray.length;
+    let successCount = 0;
+    let failCount = 0;
+    
+    // Show initial progress
+    alert(`Starting upload of ${totalFiles} photo(s)...`);
+    
+    // Upload files one by one
+    for (let i = 0; i < fileArray.length; i++) {
+      const file = fileArray[i];
+      const fd = new FormData();
+      fd.append('photo', file);
+      
+      try {
+        const res = await axios.post(`${API_BASE}/api/gallery`, fd, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}`, 'Content-Type': 'multipart/form-data' }
+        });
+        const galleryItem = res.data?.data;
+        if (galleryItem) {
+          setGalleryItems(prev => [galleryItem, ...prev]);
+          successCount++;
+        }
+      } catch (err) {
+        console.error(`Upload failed for file ${i + 1}:`, err);
+        failCount++;
+      }
+    }
+    
+    // Show final result
+    if (successCount === totalFiles) {
+      alert(`All ${totalFiles} photo(s) uploaded successfully!`);
+    } else if (successCount > 0) {
+      alert(`${successCount} of ${totalFiles} photo(s) uploaded successfully. ${failCount} failed.`);
+    } else {
+      alert(`Failed to upload all ${totalFiles} photo(s). Please try again.`);
     }
   };
 
@@ -178,9 +407,9 @@ const GalleryManagement = () => {
   };
 
   const buildImageUrl = (file) => {
-    if (!file) return '/assets/placeholder.png';
-    if (file.startsWith('http') || file.startsWith('/')) return file;
-    const filename = file.replace('carimages/', '');
+    if (!file) return "/assets/placeholder.png";
+    if (file.startsWith("http") || file.startsWith("/")) return file;
+    const filename = file.replace("carimages/", "");
     return `${API_BASE}/carimages/${filename}`;
   };
 
@@ -214,6 +443,35 @@ const GalleryManagement = () => {
                 <ExternalLink size={16} />
                 View Public Gallery
               </a>
+                <button
+                  style={{
+                    ...styles.viewGalleryButton,
+                    backgroundColor: '#ef4444',
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                  onClick={async () => {
+                    if (!window.confirm('Delete ALL gallery images and testimonials? This cannot be undone.')) return;
+                    try {
+                      const resp = await axios.delete(`${API_BASE}/api/gallery`, {
+                        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+                      });
+                      if (resp.data && resp.data.success) {
+                        setGalleryItems([]);
+                        // Refresh soldCars to remove references
+                        fetchData();
+                        alert(`Deleted ${resp.data.deletedCount || 0} gallery files`);
+                      } else {
+                        alert('Failed to delete all gallery items');
+                      }
+                    } catch (err) {
+                      console.error('Delete all failed', err);
+                      alert(err.response?.data?.message || err.response?.data?.error || 'Failed to delete all gallery items');
+                    }
+                  }}
+                >
+                  Delete All
+                </button>
             </div>
           </div>
 
@@ -236,14 +494,162 @@ const GalleryManagement = () => {
             </div>
           </div>
 
+          {/* Upload Section */}
+          <div style={{ marginBottom: 24 }}>
+            <h2 style={{ margin: '0 0 12px 0' }}>Upload New Photo</h2>
+            <div style={{ padding: 16, backgroundColor: '#f8fafc', borderRadius: 8, border: '2px dashed #cbd5e1' }}>
+              <label style={{ display: 'block', textAlign: 'center', cursor: 'pointer' }}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  style={{ display: 'none' }}
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files.length > 0) {
+                      handleDirectUpload(e.target.files);
+                    }
+                    e.target.value = '';
+                  }}
+                />
+                <div style={{ padding: 20 }}>
+                  <Camera size={48} style={{ color: '#94a3b8', marginBottom: 16 }} />
+                  <p style={{ margin: 0, color: '#64748b', fontWeight: 500 }}>Click to upload photos to gallery</p>
+                  <p style={{ margin: '4px 0 0 0', color: '#94a3b8', fontSize: '0.875rem' }}>Select multiple JPG, PNG, WEBP files up to 5MB each</p>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          {/* Management table */}
+          <div style={{ marginBottom: 24 }}>
+            <h2 style={{ margin: "0 0 12px 0" }}>Uploaded Gallery Items</h2>
+            {galleryItems.length === 0 ? (
+              <p style={{ color: "#64748b" }}>No gallery items yet</p>
+            ) : (
+              <div
+                style={{
+                  overflowX: "auto",
+                  background: "#fff",
+                  padding: 12,
+                  borderRadius: 8,
+                }}
+              >
+                <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                  <thead>
+                    <tr>
+                      <th style={styles.th}>Preview</th>
+                      <th style={styles.th}>Car</th>
+                      <th style={styles.th}>Caption</th>
+                      <th style={styles.th}>Testimonial</th>
+                      <th style={styles.th}>Uploaded By</th>
+                      <th style={styles.th}>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {galleryItems.map((item) => (
+                      <tr
+                        key={item._id}
+                        style={{ borderTop: "1px solid #e6eef8" }}
+                      >
+                        <td style={styles.td}>
+                          <img
+                            src={buildImageUrl(item.filename)}
+                            alt={item.caption || "gallery"}
+                            style={{
+                              width: 80,
+                              height: 60,
+                              objectFit: "cover",
+                              borderRadius: 6,
+                            }}
+                          />
+                        </td>
+                        <td style={styles.td}>
+                          {item.car ? `${item.car}` : "—"}
+                        </td>
+                        <td style={styles.td}>
+                          {editingId === item._id ? (
+                            <input
+                              value={editCaption}
+                              onChange={(e) => setEditCaption(e.target.value)}
+                              style={{ width: "100%" }}
+                            />
+                          ) : (
+                            item.caption || "—"
+                          )}
+                        </td>
+                        <td style={styles.td}>
+                          {editingId === item._id ? (
+                            <input
+                              value={editTestimonial}
+                              onChange={(e) =>
+                                setEditTestimonial(e.target.value)
+                              }
+                              style={{ width: "100%" }}
+                            />
+                          ) : (
+                            item.testimonial || "—"
+                          )}
+                        </td>
+                        <td style={styles.td}>
+                          {item.uploadedBy?.username || "—"}
+                        </td>
+                        <td style={styles.td}>
+                          {editingId === item._id ? (
+                            <>
+                              <button
+                                style={styles.smallButton}
+                                onClick={() => saveEdit(item._id)}
+                              >
+                                Save
+                              </button>
+                              <button
+                                style={styles.smallButtonSecondary}
+                                onClick={cancelEdit}
+                              >
+                                Cancel
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                style={styles.smallButton}
+                                onClick={() => startEdit(item)}
+                              >
+                                Edit
+                              </button>
+                              <button
+                                style={styles.smallButtonDanger}
+                                onClick={() => deleteItem(item._id)}
+                              >
+                                Delete
+                              </button>
+                            </>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+
+          
+
           <div style={styles.section}>
             <h2 style={styles.sectionTitle}>Happy Customer Gallery</h2>
             {soldCars.length === 0 ? (
               <div style={styles.emptyState}>
-                <Camera size={48} style={{ color: "#94a3b8", marginBottom: "16px" }} />
-                <h3 style={{ color: "#64748b", margin: "0 0 8px 0" }}>No sold cars in gallery yet</h3>
+                <Camera
+                  size={48}
+                  style={{ color: "#94a3b8", marginBottom: "16px" }}
+                />
+                <h3 style={{ color: "#64748b", margin: "0 0 8px 0" }}>
+                  No sold cars in gallery yet
+                </h3>
                 <p style={{ color: "#94a3b8", margin: 0 }}>
-                  Mark cars as sold and add customer testimonials to build your gallery
+                  Mark cars as sold and add customer testimonials to build your
+                  gallery
                 </p>
               </div>
             ) : (
@@ -253,14 +659,15 @@ const GalleryManagement = () => {
                     <div style={styles.cardImage}>
                       <img
                         src={buildImageUrl(
-                          (car.sold?.customerPhotos && car.sold.customerPhotos[0]) ||
-                          (car.photos && car.photos[0])
+                          (car.sold?.customerPhotos &&
+                            car.sold.customerPhotos[0]) ||
+                            (car.photos && car.photos[0])
                         )}
                         alt={`${car.make} ${car.model}`}
                         style={styles.cardImg}
                         onError={(e) => {
                           e.currentTarget.onerror = null;
-                          e.currentTarget.src = '/assets/placeholder.png';
+                          e.currentTarget.src = "/assets/placeholder.png";
                         }}
                       />
                       <div style={styles.soldBadge}>SOLD</div>
@@ -270,10 +677,14 @@ const GalleryManagement = () => {
                         {car.make} {car.model} {car.variant} ({car.modelYear})
                       </h3>
                       {car.sold?.customerName && (
-                        <p style={styles.customerName}>👤 {car.sold.customerName}</p>
+                        <p style={styles.customerName}>
+                          👤 {car.sold.customerName}
+                        </p>
                       )}
                       {car.sold?.testimonial && (
-                        <p style={styles.testimonial}>"{car.sold.testimonial}"</p>
+                        <p style={styles.testimonial}>
+                          "{car.sold.testimonial}"
+                        </p>
                       )}
                       <div style={styles.cardActions}>
                         <button
@@ -284,10 +695,25 @@ const GalleryManagement = () => {
                           Edit Details
                         </button>
                         <label style={styles.uploadLabel}>
-                          <input type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => { if (e.target.files[0]) handleAddSoldPhoto(car._id, e.target.files[0]); e.target.value=''; }} />
-                          <button style={styles.uploadButton} disabled={uploadingIds.includes(car._id)}>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            style={{ display: "none" }}
+                            onChange={(e) => {
+                              if (e.target.files && e.target.files.length > 0)
+                                handleAddSoldPhotos(car._id, e.target.files);
+                              e.target.value = "";
+                            }}
+                          />
+                          <button
+                            style={styles.uploadButton}
+                            disabled={uploadingIds.includes(car._id)}
+                          >
                             <Plus size={14} />
-                            {uploadingIds.includes(car._id) ? 'Uploading...' : 'Add Photo'}
+                            {uploadingIds.includes(car._id)
+                              ? "Uploading..."
+                              : "Add Photos"}
                           </button>
                         </label>
                       </div>
@@ -551,19 +977,116 @@ const styles = {
     transition: "background-color 0.2s",
   },
   uploadLabel: {
-    display: 'inline-block'
+    display: "inline-block",
   },
   uploadButton: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-    padding: '8px 12px',
-    backgroundColor: '#10b981',
-    color: 'white',
-    border: 'none',
-    borderRadius: '6px',
-    fontSize: '0.875rem',
-    cursor: 'pointer'
+    display: "flex",
+    alignItems: "center",
+    gap: "6px",
+    padding: "8px 12px",
+    backgroundColor: "#10b981",
+    color: "white",
+    border: "none",
+    borderRadius: "6px",
+    fontSize: "0.875rem",
+    cursor: "pointer",
+  },
+  th: {
+    textAlign: "left",
+    padding: "8px 12px",
+    color: "#334155",
+    fontSize: "0.9rem",
+    fontWeight: 600,
+  },
+  td: {
+    padding: "10px 12px",
+    color: "#475569",
+    fontSize: "0.9rem",
+    verticalAlign: "middle",
+  },
+  smallButton: {
+    padding: "6px 10px",
+    marginRight: 8,
+    backgroundColor: "#3b82f6",
+    color: "#fff",
+    border: "none",
+    borderRadius: 6,
+    cursor: "pointer",
+  },
+  smallButtonSecondary: {
+    padding: "6px 10px",
+    marginRight: 8,
+    backgroundColor: "#94a3b8",
+    color: "#fff",
+    border: "none",
+    borderRadius: 6,
+    cursor: "pointer",
+  },
+  smallButtonDanger: {
+    padding: "6px 10px",
+    backgroundColor: "#ef4444",
+    color: "#fff",
+    border: "none",
+    borderRadius: 6,
+    cursor: "pointer",
+  },
+  header: {
+    marginBottom: "32px",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+  },
+  pageTitle: {
+    fontSize: "1.875rem",
+    fontWeight: "700",
+    color: "#1e293b",
+    margin: 0,
+  },
+  pageSubtitle: {
+    fontSize: "1rem",
+    color: "#64748b",
+    margin: "8px 0 0 0",
+  },
+  actionButtons: {
+    display: "flex",
+    gap: "12px",
+  },
+  viewGalleryButton: {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    padding: "10px 16px",
+    backgroundColor: "#3b82f6",
+    color: "white",
+    textDecoration: "none",
+    borderRadius: "6px",
+    fontSize: "0.875rem",
+    fontWeight: "500",
+    transition: "background-color 0.2s",
+  },
+  statsGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+    gap: "20px",
+    marginBottom: "32px",
+  },
+  statCard: {
+    backgroundColor: "white",
+    padding: "24px",
+    borderRadius: "12px",
+    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+    textAlign: "center",
+  },
+  statNumber: {
+    fontSize: "2rem",
+    fontWeight: "700",
+    color: "#1e293b",
+    margin: "0 0 8px 0",
+  },
+  statLabel: {
+    fontSize: "0.875rem",
+    color: "#64748b",
+    margin: 0,
   },
 };
 

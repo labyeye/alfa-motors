@@ -22,7 +22,7 @@
     />
     <link
       rel="preconnect"
-      href="https://alfa-motors.onrender.com"
+      href="http://localhost:2500"
       crossorigin
     />
     <link
@@ -80,7 +80,7 @@
         ]
       }
     </script>
-    <link rel="stylesheet" href="globals.css" />
+  <link rel="stylesheet" href="global.css" />
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="quote.css" />
 
@@ -715,7 +715,7 @@
 
             // Send data to server
             const response = await fetch(
-              "https://alfa-motors.onrender.com/api/quote-request",
+              "http://localhost:2500/api/quote-request",
               {
                 method: "POST",
                 headers: {
