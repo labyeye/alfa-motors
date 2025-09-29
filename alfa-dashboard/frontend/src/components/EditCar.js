@@ -48,6 +48,7 @@ const EditCar = () => {
     quotingPrice: "",
     sellingPrice: "",
     photos: [], // For file uploads
+    replacePhotos: false,
     status: "Available",
   });
 
@@ -113,18 +114,19 @@ const EditCar = () => {
   useEffect(() => {
     const fetchCarData = async () => {
       try {
-        const response = await axios.get(
-              `${API_BASE}/api/cars/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const response = await axios.get(`${API_BASE}/api/cars/${id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        // Support both response shapes: { success:true, data: car } or plain car
+        const car = response.data && response.data.data ? response.data.data : response.data;
+
         // Backend stores uploaded filenames in `photos`; normalize to `photos` in state
-        const photos = [...(response.data.photos || []), ...Array(10).fill("")].slice(0, 10);
+        const photos = [...(car.photos || []), ...Array(10).fill("")].slice(0, 10);
         setCarData({
-          ...response.data,
+          ...car,
           photos: photos,
         });
         setIsLoading(false);
@@ -159,26 +161,16 @@ const EditCar = () => {
     }));
   };
 
-  const handleFileChange = (e) => {
+  // handleFileChange now accepts optional `replace` flag (true when Replace All Photos used)
+  const handleFileChange = (e, replace = false) => {
     const files = Array.from(e.target.files);
-    
-    // Check file sizes and warn if they're too large
-    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB per file
-    const largeFiles = files.filter(file => file.size > MAX_FILE_SIZE);
-    
-    if (largeFiles.length > 0) {
-      alert(`Warning: ${largeFiles.length} file(s) are larger than 5MB. Consider compressing them or use "Add Single Photo" for better reliability.`);
-    }
-    
-    if (files.length > 6) {
-      alert('Warning: Uploading many files at once may fail. Consider using "Add Single Photo" for better reliability.');
-    }
-    
+
     setCarData((prev) => ({
       ...prev,
       photos: files,
+      replacePhotos: replace,
     }));
-    
+
     // Clear the input for next use
     e.target.value = '';
   };
@@ -351,42 +343,34 @@ const EditCar = () => {
       });
 
       // Step 2: Handle photo uploads separately if new photos are provided
-      const hasNewPhotos = carData.photos && carData.photos.length > 0 && 
+      const hasNewPhotos = carData.photos && carData.photos.length > 0 &&
                            carData.photos.some(photo => photo instanceof File);
-      
+
       if (hasNewPhotos) {
         const newPhotos = carData.photos.filter(photo => photo instanceof File);
-        let successCount = 0;
-        
-        // Upload photos one by one to avoid payload size limits
-        for (let i = 0; i < newPhotos.length; i++) {
-          const file = newPhotos[i];
-          
-          try {
-            // Compress large images
-            let finalFile = file;
+        try {
+          const photoFormData = new FormData();
+
+          for (let i = 0; i < newPhotos.length; i++) {
+            let file = newPhotos[i];
+            // compress if large
             if (file.size > 2 * 1024 * 1024) {
-              finalFile = await compressImage(file);
+              file = await compressImage(file);
             }
-            
-            const photoFormData = new FormData();
-            photoFormData.append('photo', finalFile);
-            
-            await axios.post(`${API_BASE}/api/cars/${id}/photo`, photoFormData, {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "multipart/form-data",
-              },
-            });
-            successCount++;
-          } catch (photoError) {
-            console.error(`Error uploading photo ${i + 1}:`, photoError);
-            // Don't alert for individual failures during bulk upload
+            photoFormData.append('photos', file);
           }
-        }
-        
-        if (successCount < newPhotos.length) {
-          alert(`Uploaded ${successCount} of ${newPhotos.length} photos. Some uploads failed - you can try uploading them individually.`);
+          // If user used the Replace All Photos input, indicate replacement
+          if (carData.replacePhotos) photoFormData.append('replacePhotos', 'true');
+
+          await axios.put(`${API_BASE}/api/cars/${id}/photos`, photoFormData, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "multipart/form-data",
+            },
+          });
+        } catch (err) {
+          console.error('Error uploading photos batch:', err);
+          alert('Some or all photo uploads failed. Please try again.');
         }
       }
       
@@ -731,7 +715,7 @@ const EditCar = () => {
                       name="photos"
                       accept="image/*"
                       multiple
-                      onChange={handleFileChange}
+                      onChange={(e) => handleFileChange(e, true)}
                       style={styles.formInput}
                     />
                   </div>
