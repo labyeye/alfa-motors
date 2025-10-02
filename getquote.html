@@ -124,7 +124,7 @@
               >Vehicles for Sale</a
             >
             <div class="mega-menu">
-              <div class="mega-menu-content">
+            <a href="#leave-review" class="footer-stars" role="button" title="Leave a review" aria-label="Leave a review">
                 <div class="mega-menu-column">
                   <h3>Categories</h3>
                   <a href="inventory.html?category=suv">SUV</a>
@@ -380,7 +380,7 @@
               class="user-avatar"
             />
             <div class="user-info">
-              <h4 class="user-name">Rahul Sharma</h4>
+              <h3 class="user-name">Rahul Sharma</h3>
               <p class="user-location">Muzaffarpur, Bihar</p>
               <div class="rating">
                 <i class="fas fa-star"></i>
@@ -472,10 +472,10 @@
         </div>
       </div>
 
-      <div class="testimonial-nav">
-        <div class="testimonial-dot active"></div>
-        <div class="testimonial-dot"></div>
-        <div class="testimonial-dot"></div>
+      <div class="testimonial-nav" aria-label="Testimonial navigation">
+        <button type="button" class="testimonial-dot active" aria-label="Show testimonial 1" aria-current="true"></button>
+        <button type="button" class="testimonial-dot" aria-label="Show testimonial 2" aria-current="false"></button>
+        <button type="button" class="testimonial-dot" aria-label="Show testimonial 3" aria-current="false"></button>
       </div>
     </section>
     <footer class="footer">
@@ -763,6 +763,7 @@
 
           dots.forEach((dot, i) => {
             dot.classList.toggle("active", i === index);
+            dot.setAttribute('aria-current', i === index ? 'true' : 'false');
           });
 
           currentTestimonial = index;
@@ -770,6 +771,12 @@
 
         dots.forEach((dot, i) => {
           dot.addEventListener("click", () => showTestimonial(i));
+          dot.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              showTestimonial(i);
+            }
+          });
         });
 
         // Auto-rotate testimonials
@@ -784,9 +791,12 @@
     </script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        const toggleBtn = document.createElement("button");
-        toggleBtn.className = "mobile-menu-toggle";
-        toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
+  const toggleBtn = document.createElement("button");
+  toggleBtn.className = "mobile-menu-toggle";
+  toggleBtn.setAttribute('aria-label', 'Open menu');
+  toggleBtn.setAttribute('aria-expanded', 'false');
+  toggleBtn.setAttribute('aria-controls', 'mobileMenu');
+  toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
 
         const navbar = document.querySelector(".navbar");
         navbar.appendChild(toggleBtn);

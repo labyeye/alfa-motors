@@ -30,6 +30,7 @@ p, span, div {
 .cta-text, button {
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
+    color: inherit; /* ensure CTA text inherits the button's color for proper contrast */
 }
 
 /* Layout improvements with proper spacing */

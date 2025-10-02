@@ -60,6 +60,26 @@
       ]
     }
     </script>
+    <!-- Accessibility helper: ensure every <img> has an alt attribute -->
+    <script>
+      (function(){
+        function populateAlts(){
+          document.querySelectorAll('img:not([alt])').forEach(function(img){
+            try{
+              var src = img.getAttribute('src') || '';
+              if(/logo|icon|decor|sprite|background|arrow|dot|star|placeholder/i.test(src)){
+                img.setAttribute('alt','');
+              } else {
+                var name = src.split('/').pop().split('?')[0].split('.')[0] || 'image';
+                name = name.replace(/[-_]+/g,' ').replace(/\d+/g,'').trim();
+                img.setAttribute('alt', name || 'image');
+              }
+            }catch(e){}
+          });
+        }
+        if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', populateAlts); else populateAlts();
+      })();
+    </script>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="contact.css" />
     <link
@@ -275,11 +295,7 @@
             <a href="https://wa.me/919036818492"
               ><i class="fa-brands fa-whatsapp" style="color: #00a841"></i
             ></a>
-            <a
-              class="footer-stars"
-              title="Leave a review"
-              aria-label="Leave a review"
-            >
+            <a href="#leave-review" class="footer-stars" role="button" title="Leave a review" aria-label="Leave a review">
               <i
                 class="fa-solid fa-star"
                 style="color: #f59e0b; margin-right: 2px"

@@ -120,7 +120,7 @@
             <div class="sell-step">
               <div class="step-number">1</div>
               <div class="step-content">
-                <h4 data-translate="Enter Your Car Details">
+                    <h3 data-translate="Enter Your Car Details">
                   Enter Your Car Details
                 </h4>
                 <p
@@ -134,7 +134,7 @@
             <div class="sell-step">
               <div class="step-number">2</div>
               <div class="step-content">
-                <h4 data-translate="Get Instant Valuation">
+                    <h3 data-translate="Get Instant Valuation">
                   Get Instant Valuation
                 </h4>
                 <p
@@ -148,7 +148,7 @@
             <div class="sell-step">
               <div class="step-number">3</div>
               <div class="step-content">
-                <h4 data-translate="Schedule Pickup & Get Paid">
+                    <h3 data-translate="Schedule Pickup & Get Paid">
                   Schedule Pickup & Get Paid
                 </h4>
                 <p
@@ -386,7 +386,7 @@
               aria-label="Watch on Youtube"
               ><i class="fa-brands fa-youtube" style="color: #fa0000"></i
             ></a>
-            <a class="footer-stars" title="Leave a review" aria-label="Leave a review">
+            <a href="#leave-review" class="footer-stars" role="button" title="Leave a review" aria-label="Leave a review">
               <i class="fa-solid fa-star" style="color:#f59e0b;margin-right:2px"></i>
               <i class="fa-solid fa-star" style="color:#f59e0b;margin-right:2px"></i>
               <i class="fa-solid fa-star" style="color:#f59e0b;margin-right:2px"></i>
@@ -618,6 +618,8 @@
 
           dots.forEach((dot, i) => {
             dot.classList.toggle("active", i === index);
+            // update aria-current for assistive tech
+            dot.setAttribute('aria-current', i === index ? 'true' : 'false');
           });
 
           currentTestimonial = index;
@@ -625,6 +627,12 @@
 
         dots.forEach((dot, i) => {
           dot.addEventListener("click", () => showTestimonial(i));
+          dot.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              showTestimonial(i);
+            }
+          });
         });
 
         setInterval(() => {

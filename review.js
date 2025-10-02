@@ -254,16 +254,16 @@
         const info = document.createElement('div');
         info.className = 'user-info';
 
-        const h4 = document.createElement('h4');
-        h4.className = 'user-name';
-        h4.setAttribute('itemprop', 'author');
-        h4.textContent = r.name || 'Anonymous';
+  const h3 = document.createElement('h3');
+  h3.className = 'user-name';
+  h3.setAttribute('itemprop', 'author');
+  h3.textContent = r.name || 'Anonymous';
 
         const loc = document.createElement('p');
         loc.className = 'user-location';
         loc.textContent = r.location || ''; // optional
 
-        info.appendChild(h4);
+  info.appendChild(h3);
         info.appendChild(loc);
         // rating
         const ratingEl = createStars(r.rating || 5);
@@ -314,9 +314,13 @@
       if (nav) {
         nav.innerHTML = '';
         reviews.forEach((_, i) => {
-          const dot = document.createElement('div');
+          // create a real button so it's keyboard accessible
+          const dot = document.createElement('button');
+          dot.type = 'button';
           dot.className = 'testimonial-dot' + (i === 0 ? ' active' : '');
-          if (i === 0) dot.setAttribute('aria-current', 'true');
+          dot.setAttribute('aria-label', `Show testimonial ${i + 1}`);
+          // mark current state for assistive tech
+          dot.setAttribute('aria-current', i === 0 ? 'true' : 'false');
           nav.appendChild(dot);
         });
       }

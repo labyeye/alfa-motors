@@ -131,6 +131,26 @@
         ]
       }
     </script>
+    <!-- Accessibility helper: ensure every <img> has an alt attribute -->
+    <script>
+      (function(){
+        function populateAlts(){
+          document.querySelectorAll('img:not([alt])').forEach(function(img){
+            try{
+              var src = img.getAttribute('src') || '';
+              if(/logo|icon|decor|sprite|background|arrow|dot|star|placeholder/i.test(src)){
+                img.setAttribute('alt','');
+              } else {
+                var name = src.split('/').pop().split('?')[0].split('.')[0] || 'image';
+                name = name.replace(/[-_]+/g,' ').replace(/\d+/g,'').trim();
+                img.setAttribute('alt', name || 'image');
+              }
+            }catch(e){}
+          });
+        }
+        if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', populateAlts); else populateAlts();
+      })();
+    </script>
     <link rel="stylesheet" href="./global.css" />
     <link rel="stylesheet" href="./style.css" />
     <link rel="stylesheet" href="./inventory.css" />
@@ -559,11 +579,7 @@
                     </button>
                     <button class="sort-option" data-sort="year-old">
                       <!-- 5-star social-like icon that opens review modal -->
-                      <a
-                        class="footer-stars"
-                        title="Leave a review"
-                        aria-label="Leave a review"
-                      >
+                      <a href="#leave-review" class="footer-stars" role="button" title="Leave a review" aria-label="Leave a review">
                         <i
                           class="fa-solid fa-star"
                           style="color: #f59e0b; margin-right: 2px"
@@ -2244,15 +2260,19 @@
     </script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        const toggleBtn = document.createElement("button");
-        toggleBtn.className = "mobile-menu-toggle";
-        toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
+  const toggleBtn = document.createElement("button");
+  toggleBtn.className = "mobile-menu-toggle";
+  toggleBtn.setAttribute('aria-label', 'Open menu');
+  toggleBtn.setAttribute('aria-expanded', 'false');
+  toggleBtn.setAttribute('aria-controls', 'mobileMenu');
+  toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
 
         const navbar = document.querySelector(".navbar");
         navbar.appendChild(toggleBtn);
 
-        const mobileMenu = document.createElement("div");
-        mobileMenu.className = "mobile-menu";
+  const mobileMenu = document.createElement("div");
+  mobileMenu.id = 'mobileMenu';
+  mobileMenu.className = "mobile-menu";
         mobileMenu.innerHTML = `
       <button class="close-btn"><i class="fas fa-times"></i></button>
       <ul class="nav-links">
@@ -2272,6 +2292,8 @@
 
         toggleBtn.addEventListener("click", function () {
           mobileMenu.classList.add("active");
+          toggleBtn.setAttribute('aria-expanded', 'true');
+          mobileMenu.setAttribute('aria-hidden', 'false');
         });
 
         mobileMenu

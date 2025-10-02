@@ -114,6 +114,26 @@
         "priceRange": "₹50,000 - ₹25,00,000"
       }
     </script>
+    <!-- Accessibility helper: ensure every <img> has an alt attribute -->
+    <script>
+      (function(){
+        function populateAlts(){
+          document.querySelectorAll('img:not([alt])').forEach(function(img){
+            try{
+              var src = img.getAttribute('src') || '';
+              if(/logo|icon|decor|sprite|background|arrow|dot|star|placeholder/i.test(src)){
+                img.setAttribute('alt',''); // decorative
+              } else {
+                var name = src.split('/').pop().split('?')[0].split('.')[0] || 'image';
+                name = name.replace(/[-_]+/g,' ').replace(/\d+/g,'').trim();
+                img.setAttribute('alt', name || 'image');
+              }
+            }catch(e){}
+          });
+        }
+        if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', populateAlts); else populateAlts();
+      })();
+    </script>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -522,7 +542,7 @@
       <div class="stats-container">
         <div class="stat-card">
           <div class="stat-image">
-            <img src="https://cdn-icons-png.flaticon.com/512/55/55283.png" />
+            <img src="https://cdn-icons-png.flaticon.com/512/55/55283.png" alt="Cars sold icon" />
           </div>
           <div class="stat-number" data-count="2000">0+</div>
           <div class="stat-label" data-translate="Cars Sold">Cars Sold</div>
@@ -531,6 +551,7 @@
           <div class="stat-image">
             <img
               src="https://static.vecteezy.com/system/resources/previews/019/879/187/non_2x/car-monochrome-icon-on-transparent-background-free-png.png"
+              alt="Car icon"
             />
           </div>
 
@@ -1263,7 +1284,7 @@
               loading="lazy"
             />
             <div class="user-info">
-              <h4 class="user-name" itemprop="author">Sarah J.</h4>
+              <h3 class="user-name" itemprop="author">Sarah J.</h3>
               <p class="user-location">Mumbai, Maharashtra</p>
               <div
                 class="rating"
@@ -1406,9 +1427,9 @@
       </div>
 
       <div class="testimonial-nav" aria-label="Testimonial navigation">
-        <div class="testimonial-dot active" aria-current="true"></div>
-        <div class="testimonial-dot"></div>
-        <div class="testimonial-dot"></div>
+        <button type="button" class="testimonial-dot active" aria-label="Show testimonial 1" aria-current="true"></button>
+        <button type="button" class="testimonial-dot" aria-label="Show testimonial 2" aria-current="false"></button>
+        <button type="button" class="testimonial-dot" aria-label="Show testimonial 3" aria-current="false"></button>
       </div>
     </section>
 
@@ -1460,7 +1481,7 @@
               ><i class="fa-brands fa-youtube" style="color: #fa0000"></i
             ></a>
             <a
-              class="footer-stars"
+              href="#leave-review" class="footer-stars" role="button"
               title="Leave a review"
               aria-label="Leave a review"
             >
