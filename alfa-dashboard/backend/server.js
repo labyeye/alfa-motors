@@ -29,7 +29,7 @@ const corsOptions = {
     'http://localhost:3000', 
     'https://www.alfamotorworld.com',
     'https://alfa-motors-o5cm.vercel.app',
-    'https://alfa-motors.onrender.com',
+    'https://alfa-motors.onrender.com ',
     'http://localhost:5500',
     'http://127.0.0.1:3000'
   ],

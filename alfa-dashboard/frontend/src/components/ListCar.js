@@ -86,7 +86,7 @@ const ListCar = () => {
     const fetchCars = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("https://alfa-motors.onrender.com/api/cars", {
+        const response = await axios.get("https://alfa-motors.onrender.com /api/cars", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -131,7 +131,7 @@ const ListCar = () => {
     if (window.confirm("Are you sure you want to delete this car?")) {
       try {
         const token = localStorage.getItem("token");
-        await axios.delete(`https://alfa-motors.onrender.com/api/cars/${carId}`, {
+        await axios.delete(`https://alfa-motors.onrender.com /api/cars/${carId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

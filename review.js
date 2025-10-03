@@ -1,6 +1,6 @@
 // review.js - handles opening modal, collecting form data and submitting to backend
 (function () {
-  const API_BASE = window.REVIEW_API_BASE || 'https://alfa-motors.onrender.com/api/reviews';
+  const API_BASE = window.REVIEW_API_BASE || 'https://alfa-motors.onrender.com /api/reviews';
 
   function createModal() {
     if (document.getElementById('review-modal')) return;
