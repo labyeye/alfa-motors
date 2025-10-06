@@ -74,7 +74,7 @@ const ServiceBillForm = () => {
   });
 
   const [previewMode, setPreviewMode] = useState(false);
-  const API_BASE_URL = "https://alfa-motors.onrender.com /api";
+  const API_BASE_URL = "https://alfa-motors.onrender.com/api";
 
   // Fetch available cars on component mount
   useEffect(() => {

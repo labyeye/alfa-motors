@@ -68,10 +68,10 @@ function initializeHeroSlider() {
   heroSlider.className = "hero-slider";
 
   const slides = [
-    "https://c4.wallpaperflare.com/wallpaper/309/686/573/red-aston-martin-sports-car-wallpaper-preview.jpg",
-    "https://spn-sta.spinny.com/blog/20240110142245/hyundai-Creta-facelift-2024-1160x653.webp?compress=true&quality=80&w=1200&dpr=2.6",
-    "https://stimg.cardekho.com/images/carexteriorimages/930x620/Tata/Curvv/9578/1723033064164/front-left-side-47.jpg?impolicy=resize&imwidth=420",
-    "https://www.shutterstock.com/image-photo/close-rear-old-black-car-600nw-723619777.jpg",
+    "https://static.vecteezy.com/system/resources/previews/023/977/549/non_2x/front-view-dark-silhouette-of-a-modern-luxury-black-car-isolated-on-black-background-ai-generated-free-photo.jpg",
+    "https://images.unsplash.com/photo-1724391114112-c83ad59f1d5f?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "https://cdn.wallpapersafari.com/23/31/eBJ6Dl.jpg",
+    "https://i.ytimg.com/vi/1xcmpmHmbD0/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLBiX9zzRTzCNv30D7_c8ykr8wRH6g",
   ];
 
   slides.forEach((slide, index) => {
@@ -80,12 +80,6 @@ function initializeHeroSlider() {
     slideDiv.style.backgroundImage = `url(${slide})`;
     heroSlider.appendChild(slideDiv);
   });
-
-  // Place the hero slider into the DOM. Older markup used a
-  // `.background-image` element which may have been removed —
-  // guard against that to avoid throwing an error and stopping
-  // script execution (which previously prevented the language
-  // modal buttons from receiving their click handlers).
   const backgroundImageDiv = document.querySelector(".background-image");
   const heroSection = document.querySelector('.hero-section');
   if (backgroundImageDiv && backgroundImageDiv.parentNode) {
@@ -327,7 +321,7 @@ function initializeCarSlider() {
 }
 
 function fetchFeaturedCars() {
-  fetch("https://alfa-motors.onrender.com /api/Cars?limit=10")
+  fetch("https://alfa-motors.onrender.com/api/Cars?limit=10")
       .then((response) => response.json())
       .then((payload) => displayFeaturedCars(payload))
       .catch((error) => {
@@ -386,7 +380,7 @@ function displayFeaturedCars(Cars) {
       if (filename.startsWith("assets/")) {
         imgSrc = filename;
       } else {
-        imgSrc = `https://alfa-motors.onrender.com /carimages/${filename}`;
+  imgSrc = `https://alfa-motors.onrender.com/carimages/${filename}`;
       }
     } else if (Car.imageUrl) {
       imgSrc = Car.imageUrl;

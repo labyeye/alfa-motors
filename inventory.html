@@ -25,7 +25,7 @@
     />
     <link
       rel="preconnect"
-      href="https://alfa-motors.onrender.com "
+  href="https://alfa-motors.onrender.com"
       crossorigin
     />
     <link
@@ -1021,7 +1021,7 @@
         let currentSort = "default"; // Declare this ONCE at the top level
 
         function loadCars() {
-          fetch("https://alfa-motors.onrender.com /api/cars")
+          fetch("https://alfa-motors.onrender.com/api/cars")
             .then((response) => response.json())
             .then((data) => {
               console.log("Loaded cars data:", data); // Inspect the data structure
@@ -1189,7 +1189,7 @@
             ${car.photos
               .map(
                 (img) => `
-              <img src="https://alfa-motors.onrender.com /carimages/${getPhotoFilename(
+              <img src="https://alfa-motors.onrender.com/carimages/${getPhotoFilename(
                 img
               )}" 
                    alt="${car.make || car.make || ""} ${car.model || ""}">
@@ -1213,7 +1213,7 @@
             } else {
               // Single image
               imageHTML = `
-  <img src="https://alfa-motors.onrender.com /carimages/${getPhotoFilename(
+  <img src="https://alfa-motors.onrender.com/carimages/${getPhotoFilename(
     car.photos[0]
   )}" 
     alt="${car.make || car.make || ""} ${
@@ -1354,7 +1354,7 @@
             if (filename.startsWith("carimages/"))
               filename = filename.replace("carimages/", "");
             if (filename.startsWith("assets/")) return filename;
-            return `https://alfa-motors.onrender.com /carimages/${filename}`;
+            return `https://alfa-motors.onrender.com/carimages/${filename}`;
           }
           function showImage(idx) {
             currentIndex = idx;
