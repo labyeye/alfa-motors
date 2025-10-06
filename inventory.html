@@ -168,6 +168,7 @@
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      crossorigin="anonymous"
     />
     <!-- Critical responsive & accessibility styles -->
     <style>
@@ -2530,22 +2531,72 @@
         }
       }
     </script>
-    <!-- Google tag (gtag.js) -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-N2NFEWQNVB"
-    ></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
+    <!-- Analytics: load only after user consent to avoid third-party cookies by default -->
+<style>
+  .cookie-consent{position:fixed;left:16px;right:16px;bottom:18px;background:#fff;border-radius:8px;padding:12px 16px;box-shadow:0 8px 30px rgba(0,0,0,0.12);display:flex;gap:12px;align-items:center;z-index:99999}
+  .cookie-consent p{margin:0;font-size:0.95rem;color:#222}
+  .cookie-consent .actions{margin-left:auto;display:flex;gap:8px}
+  .cookie-consent button{padding:8px 12px;border-radius:6px;border:none;cursor:pointer}
+  .cookie-consent .accept{background:#0d1b2a;color:#fff}
+  .cookie-consent .reject{background:#f1f1f1}
+</style>
+<div id="cookieConsent" class="cookie-consent" role="dialog" aria-live="polite" aria-label="Cookie consent" hidden>
+  <p>We use analytics to improve the site. Accept to enable Google Analytics. You can change this later in privacy settings.</p>
+  <div class="actions">
+    <button id="rejectCookies" class="reject">Reject</button>
+    <button id="acceptCookies" class="accept">Accept</button>
+  </div>
+</div>
+<script>
+  (function(){
+    const cookieKey = 'alfa_analytics_consent';
+    function hasConsent(){ return localStorage.getItem(cookieKey) === 'granted'; }
+    function setConsent(val){ localStorage.setItem(cookieKey, val ? 'granted' : 'denied'); }
 
-      gtag("config", "G-N2NFEWQNVB");
-    </script>
-    <!-- Review modal script -->
-    <script src="/review.js"></script>
+    function loadGTag(){
+      if (window.gaLoaded) return;
+      const s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-N2NFEWQNVB';
+      s.onload = function(){
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);} window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', 'G-N2NFEWQNVB', { 'anonymize_ip': true });
+        window.gaLoaded = true;
+      };
+      document.head.appendChild(s);
+    }
+
+    // If consent already given, load analytics immediately
+    if (hasConsent()) loadGTag();
+
+    // show banner only if user hasn't made a choice
+    if (localStorage.getItem(cookieKey) === null) {
+      const banner = document.getElementById('cookieConsent');
+      banner.hidden = false;
+      document.getElementById('acceptCookies').addEventListener('click', function(){
+        setConsent(true); banner.hidden = true; loadGTag();
+      });
+      document.getElementById('rejectCookies').addEventListener('click', function(){
+        setConsent(false); banner.hidden = true;
+      });
+    }
+
+    // Privacy improvements: set referrerpolicy and lazy loading for external imgs
+    document.addEventListener('DOMContentLoaded', function(){
+      document.querySelectorAll('img').forEach(function(img){
+        try{
+          const src = img.getAttribute('src') || '';
+          if (/^https?:\/\//i.test(src) && !src.startsWith(window.location.origin)){
+            if (!img.hasAttribute('referrerpolicy')) img.setAttribute('referrerpolicy','no-referrer');
+          }
+          if (!img.hasAttribute('loading')) img.setAttribute('loading','lazy');
+        }catch(e){}
+      });
+    });
+  })();
+</script>
     <div
       class="Car-popup-overlay"
       style="
