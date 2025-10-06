@@ -90,7 +90,7 @@
 }
 
 .sell-form h3 {
-  color: white;
+  color: var(--primary-color);
   margin: 0 0 20px 0;
   font-size: 1.5rem;
   position: relative;
@@ -104,7 +104,7 @@
   left: 0;
   width: 50px;
   height: 3px;
-  background: linear-gradient(90deg, var(--primary-color), #ff6b4a);
+  background: linear-gradient(90deg, var(--primary-color), #ffffff);
 }
 
 .form-group {
@@ -114,7 +114,7 @@
 }
 
 .form-group label {
-  color: white;
+  color: var(--primary-color);
   font-size: 0.95rem;
 }
 
@@ -213,9 +213,11 @@
 .checkbox-group label {
   margin: 0;
 }
-
+.step-content h3 {
+  color: var(--primary-color);
+}
 .submit-btn {
-  background: linear-gradient(90deg, var(--primary-color), #ff6b4a);
+  background: linear-gradient(90deg, var(--primary-color), #ffffff);
   color: white;
   border: none;
   border-radius: 30px;

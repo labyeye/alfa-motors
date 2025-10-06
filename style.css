@@ -9,6 +9,67 @@
   --white: #ffffff;
 }
 
+/* Accessibility: visible skip link for keyboard users */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.skip-link:focus {
+  position: fixed;
+  left: 16px;
+  top: 16px;
+  width: auto;
+  height: auto;
+  padding: 8px 12px;
+  background: var(--primary-color);
+  color: white;
+  z-index: 9999;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Make all images responsive and avoid layout shift */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Logo sizing to avoid CLS and preserve layout */
+.logo-img {
+  width: 160px;
+  height: auto;
+  display: block;
+}
+
+/* Responsive hero typography */
+.hero-content h1 {
+  font-size: clamp(1.6rem, 4vw, 3rem);
+  line-height: 1.05;
+}
+.hero-content .subtitle {
+  font-size: clamp(0.9rem, 2.2vw, 1.1rem);
+  font-weight: 400;
+}
+
+/* Allow nav links to wrap on small screens rather than overflowing */
+.nav-links {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Make search input stretch on small screens */
+@media (max-width: 600px) {
+  .search-container { width: 100%; }
+  .search-input { width: 100%; box-sizing: border-box; }
+}
+
 .floating-buttons {
   position: fixed;
   bottom: 30px;
@@ -97,6 +158,7 @@
 
 /* Featured Cars Section - White Background */
 .featured-Cars-section {
+  width: 100%;
   padding: 80px 5%;
   background-color: white;
   margin-top: 0;
@@ -104,6 +166,7 @@
 
 .featured-Cars-section .section-header {
   display: flex;
+  width: 100%;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 50px;
@@ -147,7 +210,7 @@
 
 .Car-slider-container {
   position: relative;
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 0 40px;
 }
@@ -206,8 +269,9 @@
 
 /* Car Card Styles - Similar to inventory.css but with white background */
 .Car-slider .Car-card {
-  flex: 0 0 calc(25% - 15px);
-  min-width: 280px;
+  /* width is controlled via JS to fit a variable number of cards per view */
+  flex: 0 0 auto;
+  min-width: unset;
   background: white;
   border-radius: 12px;
   overflow: hidden;
@@ -368,6 +432,7 @@
 /* Responsive styles */
 @media (max-width: 1024px) {
   .Car-slider .Car-card {
+    /* JS will calculate width; keep CSS fallback */
     flex: 0 0 calc(33.333% - 14px);
   }
 }
@@ -1038,7 +1103,7 @@ h2 {
 
 /* Brands Section */
 .brands-section {
-  background: linear-gradient(135deg, var(--primary-color) 0%, #ffaa17 100%);
+  background: linear-gradient(135deg, var(--primary-color) 0%, #ffffff 100%);
   padding: 80px 5%;
   position: relative;
   overflow: hidden;
@@ -1236,15 +1301,6 @@ h2 {
   margin: auto;
 }
 
-.step-image-2 {
-  width: 190px;
-  height: 190px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: auto;
-}
 
 .step-image-2 img {
   width: 100%;
@@ -1254,8 +1310,8 @@ h2 {
 }
 
 .step-image img {
-  width: 100%;
-  height: 100%;
+  width: 60px;
+  height: 60px;
   object-fit: contain;
   transition: transform 0.3s ease;
 }
@@ -1274,6 +1330,73 @@ h2 {
   font-size: 1rem;
   line-height: 1.6;
   margin: 0;
+}
+
+/* Sell cards design (rounded white cards with big faint number overlay) */
+.sell-cards {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+
+.sell-card {
+  background: #F8F8F8;
+  color: #222;
+  width: 30px;
+  height: 390px;
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: 0 8px 22px rgba(27, 31, 33, 0.06);
+  border: 1px solid #f0f0f0;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.sell-card .step-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  background: #f8f8f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  resize: contain;
+}
+
+.sell-card h3 {
+  margin: 20px 0 60px;
+  font-size: 1.1rem;
+  color: #111;
+}
+
+.sell-card .sell-desc {
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 160px;
+}
+
+.sell-card .number-overlay {
+  position: absolute;
+  right: 18px;
+  bottom: 12px;
+  font-size: 88px;
+  font-weight: 800;
+  color: rgba(0,0,0,0.06);
+  pointer-events: none;
+}
+
+@media (max-width: 1000px) {
+  .sell-card { width: 48%; }
+}
+
+@media (max-width: 600px) {
+  .sell-card { width: 100%; }
+  .sell-card .number-overlay { font-size: 64px; right: 14px; }
 }
 
 @media (max-width: 768px) {
@@ -1325,7 +1448,7 @@ h2 {
 
 /* Stats Section */
 .stats-section {
-  background: linear-gradient(135deg, var(--primary-color) 0%, #ffaa17 100%);
+  background: linear-gradient(135deg, var(--primary-color) 0%, #ffffff 100%);
   padding: 80px 5%;
   text-align: center;
   position: relative;
@@ -1567,7 +1690,7 @@ h2 {
 }
 
 .styles-section {
-  background: linear-gradient(135deg, var(--primary-color) 0%, #ffaa17 100%);
+  background: linear-gradient(135deg, var(--primary-color) 0%, #ffffff 100%);
   padding: 80px 5%;
   position: relative;
   overflow: hidden;
@@ -1595,14 +1718,14 @@ h2 {
 
 .styles-container-wrapper {
   position: relative;
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
 }
 
 .styles-container {
   display: flex;
   gap: 15px;
-  transition: transform 0.5s ease;
+  /* animation will control transform for continuous scrolling */
   width: max-content;
 }
 
@@ -1682,12 +1805,13 @@ h2 {
 .styles-container {
   display: flex;
   flex-wrap: nowrap;
-  justify-content: center;
   gap: 30px;
-  max-width: 1200px;
-  margin: 0 auto;
   position: relative;
   z-index: 1;
+}
+
+.styles-container-wrapper {
+  overflow: hidden; /* hide the scroll during animation */
 }
 
 .style-card {
@@ -1784,8 +1908,9 @@ h2 {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  background: rgba(255, 255, 255, 0.05);
+  background: white;
   gap: 50px;
+  margin-top: 40px;
   padding: 80px 5%;
   position: relative;
   overflow: hidden;
@@ -1798,11 +1923,6 @@ h2 {
   right: -50%;
   width: 80%;
   height: 200%;
-  background: radial-gradient(
-    circle,
-    rgba(163, 41, 25, 0.1) 0%,
-    transparent 70%
-  );
   z-index: 0;
 }
 
@@ -1817,14 +1937,14 @@ h2 {
   text-align: left;
   margin-bottom: 20px;
   font-size: 2.5rem;
-  background: white;
+  background: var(--primary-color);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .sell-content p {
-  color: white;
+  color: var(--primary-color);
   line-height: 1.8;
   margin-bottom: 30px;
   font-size: 1.1rem;
@@ -1852,8 +1972,8 @@ h2 {
 }
 
 .step-number {
-  background: linear-gradient(135deg, var(--primary-color), #ff6b4a);
-  color: white;
+  background: linear-gradient(135deg, var(--primary-color), #ffffff);
+  color: var(--primary-color);
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -1865,13 +1985,13 @@ h2 {
 }
 
 .step-content h4 {
-  color: white;
+  color: var(--primary-color);
   margin: 0 0 5px 0;
   font-size: 1.1rem;
 }
 
 .step-content p {
-  color: white;
+  color: var(--primary-color);
   margin: 0;
   font-size: 0.95rem;
 }
@@ -1884,8 +2004,8 @@ h2 {
 }
 
 .sell-cta .cta-button {
-  background: linear-gradient(90deg, var(--primary-color), #ff6b4a);
-  color: white;
+  background: linear-gradient(90deg, var(--primary-color), #ffffff);
+  color: var(--primary-color);
   border: none;
   border-radius: 30px;
   padding: 18px 45px;
@@ -1895,12 +2015,10 @@ h2 {
   transition: all 0.3s;
   position: relative;
   z-index: 1;
-  box-shadow: 0 5px 15px rgba(163, 41, 25, 0.3);
 }
 
 .sell-cta .cta-button:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(163, 41, 25, 0.4);
 }
 
 .sell-cta .cta-button::before {
@@ -1938,7 +2056,7 @@ h2 {
   height: 100%;
   background: radial-gradient(
     circle at 20% 50%,
-    rgba(163, 41, 25, 0.1) 0%,
+    #0E1B2A -100%,
     transparent 50%
   );
   z-index: 0;
@@ -2478,8 +2596,8 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .footer {
-  background-color: white;
-  color: black;
+  background: var(--primary-color) ;
+  color: white;
   padding: 60px 5% 20px;
 }
 
@@ -2499,11 +2617,11 @@ input[type="range"]::-webkit-slider-thumb {
 .footer-section h3 {
   font-size: 1.3rem;
   margin-bottom: 20px;
-  color: black;
+  color: white;
 }
 
 .footer-section p {
-  color: black;
+  color: white;
   line-height: 1.6;
   margin-bottom: 15px;
 }
@@ -2518,7 +2636,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .footer-section ul li a {
-  color: black;
+  color: white;
   text-decoration: none;
   transition: color 0.3s;
 }

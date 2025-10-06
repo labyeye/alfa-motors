@@ -60,7 +60,6 @@
           <li>
             <a
               href="index.html"
-              class="active"
               aria-current="page"
               data-translate="Home"
               >Home</a
@@ -91,7 +90,8 @@
             </div>
           </li>
           <li>
-            <a href="sell.html" data-translate="Sell Your Vehicle">Sell Your Vehicle</a>
+            <a href="sell.html"  
+               data-translate="Sell Your Vehicle">Sell Your Vehicle</a>
           </li>
           <li><a href="happy-customers.html">Happy Customers</a></li>
           <li><a href="#" data-translate="Financing">Financing</a></li>
@@ -352,21 +352,58 @@
       </section>
     </div>
 
-    <footer class="footer">
+    <footer class="footer" itemscope itemtype="https://schema.org/WPFooter">
       <div class="footer-content">
-        <div class="footer-section">
+        <div
+          class="footer-section"
+          itemscope
+          itemtype="https://schema.org/Organization"
+        >
           <div class="logo">
             <img
               src="./assets/logo2.svg"
-              style="width: 50px"
               alt="Alfa Motors World Logo"
+              width="120"
+              height="120"
+              itemprop="logo"
             />
           </div>
-          <p data-translate="Bringing the future of Car riding to you today.">
-            Bringing the future of Car riding to you today.
+          <p
+            itemprop="description"
+            data-translate="India's most trusted marketplace for premium pre-owned Cars since 2018."
+          >
+            India's most trusted marketplace for premium pre-owned Cars since
+            2018.
           </p>
+          <a
+              href="#leave-review"
+              class="footer-stars"
+              role="button"
+              title="Leave a review"
+              aria-label="Leave a review"
+            >
+              <i
+                class="fa-solid fa-star"
+                style="color: #f59e0b; margin-right: 2px"
+              ></i>
+              <i
+                class="fa-solid fa-star"
+                style="color: #f59e0b; margin-right: 2px"
+              ></i>
+              <i
+                class="fa-solid fa-star"
+                style="color: #f59e0b; margin-right: 2px"
+              ></i>
+              <i
+                class="fa-solid fa-star"
+                style="color: #f59e0b; margin-right: 2px"
+              ></i>
+              <i class="fa-solid fa-star" style="color: #f59e0b"></i>
+            </a>
           <div class="social-icons">
-            <a href="https://www.facebook.com/share/1Ao18FYX8e/"
+            <a
+              href="https://www.facebook.com/share/1Ao18FYX8e/"
+              aria-label="Visit our Facebook page"
               ><i class="fa-brands fa-facebook-f" style="color: #0400ff"></i
             ></a>
             <a
@@ -386,49 +423,81 @@
               aria-label="Watch on Youtube"
               ><i class="fa-brands fa-youtube" style="color: #fa0000"></i
             ></a>
-            <a href="#leave-review" class="footer-stars" role="button" title="Leave a review" aria-label="Leave a review">
-              <i class="fa-solid fa-star" style="color:#f59e0b;margin-right:2px"></i>
-              <i class="fa-solid fa-star" style="color:#f59e0b;margin-right:2px"></i>
-              <i class="fa-solid fa-star" style="color:#f59e0b;margin-right:2px"></i>
-              <i class="fa-solid fa-star" style="color:#f59e0b;margin-right:2px"></i>
-              <i class="fa-solid fa-star" style="color:#f59e0b"></i>
-            </a>
+            
           </div>
         </div>
         <div class="footer-section">
-          <h3 data-translate="Quick Links">Quick Links</h3>
+          <h3>Quick Links</h3>
           <ul>
-            <li><a href="index.html" data-translate="Home">Home</a></li>
             <li>
-              <a href="inventory.html" data-translate="Buy Car">Buy Car</a>
+              <a href="index.html" aria-label="Home page" data-translate="Home"
+                >Home</a
+              >
             </li>
             <li>
-              <a href="sell.html" data-translate="Sell Your Car"
+              <a
+                href="inventory.html"
+                aria-label="Browse our Car inventory"
+                data-translate="Buy Car"
+                >Buy Car</a
+              >
+            </li>
+            <li>
+              <a
+                href="sell.html"
+                aria-label="Sell your Car"
+                data-translate="Sell Your Car"
                 >Sell Your Car</a
               >
             </li>
-            <li><a href="about.html" data-translate="About Us">About Us</a></li>
-            <li><a href="#" data-translate="Updates">Updates</a></li>
-            <li><a href="contact.html" data-translate="Contact">Contact</a></li>
+            <li>
+              <a
+                href="about.html"
+                aria-label="About Alfa Motors World"
+                data-translate="About Us"
+                >About Us</a
+              >
+            </li>
+            <li>
+              <a
+                href="contact.html"
+                aria-label="Contact us"
+                data-translate="Contact"
+                >Contact</a
+              >
+            </li>
           </ul>
         </div>
-        <div class="footer-section">
-          <h3 data-translate="Contact Us">Contact Us</h3>
-          <p
-            data-translate="No 97, 2, Bannerghatta Rd, opposite to D-Mart, Bohra Layout, Gottigere, Bengaluru, Karnataka 560083"
-          >
-            <i class="fas fa-map-marker-alt"></i> Rambag Chowk, Rambag Road
-            Kabristaan k bagal me, Gaushala Chowk Mandir , Muzaffarpur, Bihar
-            842002
+        <div
+          class="footer-section"
+          itemscope
+          itemtype="https://schema.org/PostalAddress"
+        >
+          <h3>Contact Us</h3>
+          <p itemprop="streetAddress">
+            <i class="fas fa-map-marker-alt" aria-hidden="true"></i> No 97, 2, Bannerghatta Rd, opposite to D-Mart, Bohra Layout, Gottigere, Bengaluru, Karnataka 560083
           </p>
-          <span itemprop="telephone"
-            >+91 8210283582 / 7564987167 / 9825944897</span
-          >
+          <p>
+            <i class="fas fa-phone" aria-hidden="true"></i>
+            <span itemprop="telephone"
+              >+91 9036818492</span
+            >
+          </p>
+          
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2023 Alfa Motors World. All rights reserved.</p>
-        <a href="www.pixelatenest.com" style="color: #a9a9a9"
+        <p>
+          &copy; <span itemprop="copyrightYear">2023</span>
+          <span itemprop="copyrightHolder">Alfa Motors World</span>.
+          <span data-translate="All rights reserved."
+            >All rights reserved.</span
+          >
+        </p>
+        <a
+          href="https://www.pixelatenest.com"
+          style="color: #a9a9a9"
+          aria-label="Website designed by Pixelate Nest"
           >Designed By Pixelate Nest</a
         >
       </div>
@@ -583,7 +652,7 @@
         mobileMenu.innerHTML = `
           <button class="close-btn"><i class="fas fa-times"></i></button>
           <ul class="nav-links">
-            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="index.html" >Home</a></li>
             <li><a href="inventory.html">Buy Car</a></li>
             <li><a href="sell.html">Sell Your Car</a></li>
             <li><a href="about.html">About Us</a></li>
@@ -823,7 +892,7 @@
         dataLayer.push(arguments);
       }
       gtag("js", new Date());
-      gtag("config", "G-ETL311CBE6");
+      gtag("config", "G-N2NFEWQNVB");
     </script>
     <div class="floating-buttons">
       <a

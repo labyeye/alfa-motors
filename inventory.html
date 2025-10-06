@@ -25,7 +25,7 @@
     />
     <link
       rel="preconnect"
-  href="https://alfa-motors.onrender.com"
+      href="https://alfa-motors.onrender.com"
       crossorigin
     />
     <link
@@ -33,9 +33,13 @@
       href="https://www.googletagmanager.com"
       crossorigin
     />
-  <meta name="theme-color" content="#ffffff" />
-  <link rel="icon" href="/favicon.ico" />
-  <link rel="icon" type="image/svg+xml" href="/assets/logo2.svg" />
+    <!-- Performance: preconnect fonts and CDN for faster resource fetch -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo2.svg" />
 
     <meta property="og:type" content="website" />
     <meta
@@ -133,22 +137,29 @@
     </script>
     <!-- Accessibility helper: ensure every <img> has an alt attribute -->
     <script>
-      (function(){
-        function populateAlts(){
-          document.querySelectorAll('img:not([alt])').forEach(function(img){
-            try{
-              var src = img.getAttribute('src') || '';
-              if(/logo|icon|decor|sprite|background|arrow|dot|star|placeholder/i.test(src)){
-                img.setAttribute('alt','');
+      (function () {
+        function populateAlts() {
+          document.querySelectorAll("img:not([alt])").forEach(function (img) {
+            try {
+              var src = img.getAttribute("src") || "";
+              if (
+                /logo|icon|decor|sprite|background|arrow|dot|star|placeholder/i.test(
+                  src
+                )
+              ) {
+                img.setAttribute("alt", "");
               } else {
-                var name = src.split('/').pop().split('?')[0].split('.')[0] || 'image';
-                name = name.replace(/[-_]+/g,' ').replace(/\d+/g,'').trim();
-                img.setAttribute('alt', name || 'image');
+                var name =
+                  src.split("/").pop().split("?")[0].split(".")[0] || "image";
+                name = name.replace(/[-_]+/g, " ").replace(/\d+/g, "").trim();
+                img.setAttribute("alt", name || "image");
               }
-            }catch(e){}
+            } catch (e) {}
           });
         }
-        if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', populateAlts); else populateAlts();
+        if (document.readyState === "loading")
+          document.addEventListener("DOMContentLoaded", populateAlts);
+        else populateAlts();
       })();
     </script>
     <link rel="stylesheet" href="./global.css" />
@@ -158,6 +169,70 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
+    <!-- Critical responsive & accessibility styles -->
+    <style>
+      /* Skip link (visible on keyboard focus) */
+      .skip-link {
+        position: absolute;
+        left: -9999px;
+        top: auto;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+      }
+      .skip-link:focus {
+        position: fixed;
+        left: 16px;
+        top: 16px;
+        width: auto;
+        height: auto;
+        padding: 8px 12px;
+        background: #0d1b2a;
+        color: #fff;
+        border-radius: 4px;
+        z-index: 9999;
+      }
+
+      /* Prevent image layout shift and ensure responsive images */
+      .car-grid img,
+      .brand-logos-container img,
+      .logo img {
+        display: block;
+        max-width: 100%;
+        height: auto;
+      }
+      .car-card .image-container img,
+      .car-grid img {
+        aspect-ratio: 16/9;
+        object-fit: cover;
+      }
+      .brand-logos-container img {
+        width: 80px;
+        height: auto;
+        object-fit: contain;
+      }
+
+      /* Responsive heading */
+      .inventory-hero .section-header h1 {
+        font-size: clamp(1.4rem, 3.5vw, 2.4rem);
+        line-height: 1.05;
+      }
+
+      /* Ensure filters/sidebar collapse on small screens */
+      @media (max-width: 900px) {
+        .inventory-content {
+          flex-direction: column;
+        }
+        .sidebar-filters {
+          width: 100%;
+          order: 2;
+        }
+        .car-grid-container {
+          width: 100%;
+          order: 1;
+        }
+      }
+    </style>
   </head>
 
   <body>
@@ -176,11 +251,7 @@
         <button class="mobile-menu-toggle"><i class="fas fa-bars"></i></button>
         <ul class="nav-links">
           <li>
-            <a
-              href="index.html"
-              class="active"
-              aria-current="page"
-              data-translate="Home"
+            <a href="index.html" aria-current="page" data-translate="Home"
               >Home</a
             >
           </li>
@@ -579,7 +650,13 @@
                     </button>
                     <button class="sort-option" data-sort="year-old">
                       <!-- 5-star social-like icon that opens review modal -->
-                      <a href="#leave-review" class="footer-stars" role="button" title="Leave a review" aria-label="Leave a review">
+                      <a
+                        href="#leave-review"
+                        class="footer-stars"
+                        role="button"
+                        title="Leave a review"
+                        aria-label="Leave a review"
+                      >
                         <i
                           class="fa-solid fa-star"
                           style="color: #f59e0b; margin-right: 2px"
@@ -824,19 +901,58 @@
       </section>
     </div>
 
-    <footer class="footer">
+    <footer class="footer" itemscope itemtype="https://schema.org/WPFooter">
       <div class="footer-content">
-        <div class="footer-section">
+        <div
+          class="footer-section"
+          itemscope
+          itemtype="https://schema.org/Organization"
+        >
           <div class="logo">
             <img
               src="./assets/logo2.svg"
-              style="width: 50px"
               alt="Alfa Motors World Logo"
+              width="120"
+              height="120"
+              itemprop="logo"
             />
           </div>
-          <p>Bringing the future of Car riding to you today.</p>
+          <p
+            itemprop="description"
+            data-translate="India's most trusted marketplace for premium pre-owned Cars since 2018."
+          >
+            India's most trusted marketplace for premium pre-owned Cars since
+            2018.
+          </p>
+          <a
+            href="#leave-review"
+            class="footer-stars"
+            role="button"
+            title="Leave a review"
+            aria-label="Leave a review"
+          >
+            <i
+              class="fa-solid fa-star"
+              style="color: #f59e0b; margin-right: 2px"
+            ></i>
+            <i
+              class="fa-solid fa-star"
+              style="color: #f59e0b; margin-right: 2px"
+            ></i>
+            <i
+              class="fa-solid fa-star"
+              style="color: #f59e0b; margin-right: 2px"
+            ></i>
+            <i
+              class="fa-solid fa-star"
+              style="color: #f59e0b; margin-right: 2px"
+            ></i>
+            <i class="fa-solid fa-star" style="color: #f59e0b"></i>
+          </a>
           <div class="social-icons">
-            <a href="https://www.facebook.com/share/1Ao18FYX8e/"
+            <a
+              href="https://www.facebook.com/share/1Ao18FYX8e/"
+              aria-label="Visit our Facebook page"
               ><i class="fa-brands fa-facebook-f" style="color: #0400ff"></i
             ></a>
             <a
@@ -849,7 +965,7 @@
             <a
               href="https://wa.me/919036818492"
               aria-label="Chat with us on WhatsApp"
-              ><i class="fa-brands fa-whatsapp" style="color: #00a841"></i
+              ><i class="fa-brands fa-whatsapp" style="color: #00a9a1"></i
             ></a>
             <a
               href="https://youtube.com/@Carbuilders-vo2nm?feature=shared"
@@ -861,29 +977,74 @@
         <div class="footer-section">
           <h3>Quick Links</h3>
           <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="inventory.html">Buy Car</a></li>
-            <li><a href="sell.html">Sell Your Car</a></li>
-            <li><a href="about.html">About Us</a></li>
-            <li><a href="#" data-translate="Updates">Updates</a></li>
-            <li><a href="contact.html" data-translate="Contact">Contact</a></li>
+            <li>
+              <a href="index.html" aria-label="Home page" data-translate="Home"
+                >Home</a
+              >
+            </li>
+            <li>
+              <a
+                href="inventory.html"
+                aria-label="Browse our Car inventory"
+                data-translate="Buy Car"
+                >Buy Car</a
+              >
+            </li>
+            <li>
+              <a
+                href="sell.html"
+                aria-label="Sell your Car"
+                data-translate="Sell Your Car"
+                >Sell Your Car</a
+              >
+            </li>
+            <li>
+              <a
+                href="about.html"
+                aria-label="About Alfa Motors World"
+                data-translate="About Us"
+                >About Us</a
+              >
+            </li>
+            <li>
+              <a
+                href="contact.html"
+                aria-label="Contact us"
+                data-translate="Contact"
+                >Contact</a
+              >
+            </li>
           </ul>
         </div>
-        <div class="footer-section">
+        <div
+          class="footer-section"
+          itemscope
+          itemtype="https://schema.org/PostalAddress"
+        >
           <h3>Contact Us</h3>
-          <p>
-            <i class="fas fa-map-marker-alt"></i> No 97, 2, Bannerghatta Rd,
-            opposite to D-Mart, Bohra Layout, Gottigere, Bengaluru, Karnataka
-            560083
+          <p itemprop="streetAddress">
+            <i class="fas fa-map-marker-alt" aria-hidden="true"></i> No 97, 2,
+            Bannerghatta Rd, opposite to D-Mart, Bohra Layout, Gottigere,
+            Bengaluru, Karnataka 560083
           </p>
-          <span itemprop="telephone"
-            >+91 8210283582 / 7564987167 / 9825944897</span
-          >
+          <p>
+            <i class="fas fa-phone" aria-hidden="true"></i>
+            <span itemprop="telephone">+91 9036818492</span>
+          </p>
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2023 Alfa Motors World. All rights reserved.</p>
-        <a href="www.pixelatenest.com" style="color: #a9a9a9"
+        <p>
+          &copy; <span itemprop="copyrightYear">2023</span>
+          <span itemprop="copyrightHolder">Alfa Motors World</span>.
+          <span data-translate="All rights reserved."
+            >All rights reserved.</span
+          >
+        </p>
+        <a
+          href="https://www.pixelatenest.com"
+          style="color: #a9a9a9"
+          aria-label="Website designed by Pixelate Nest"
           >Designed By Pixelate Nest</a
         >
       </div>
@@ -2259,24 +2420,78 @@
       });
     </script>
     <script>
+      // Lazy-load images and avoid CLS for dynamically injected car cards
+      (function () {
+        function safeDecode(img) {
+          if (!img) return;
+          if (img.loading !== "lazy") img.loading = "lazy";
+          if ("decode" in img) {
+            img.decode().catch(function () {});
+          }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+          // Decode hero/logo images eagerly to improve LCP but without blocking
+          const heroImgs = document.querySelectorAll(
+            ".inventory-hero img, .logo img"
+          );
+          heroImgs.forEach(function (img) {
+            if (!img.complete) {
+              img.addEventListener("load", function () {});
+            }
+            safeDecode(img);
+          });
+
+          // Set lazy loading for existing images in the car grid and brand logos
+          document
+            .querySelectorAll(".car-grid img, .brand-logos-container img")
+            .forEach(function (img) {
+              if (!img.hasAttribute("loading"))
+                img.setAttribute("loading", "lazy");
+              safeDecode(img);
+            });
+
+          // Observe dynamically added car cards (from AJAX) and set attributes to avoid CLS
+          const carGrid = document.querySelector(".car-grid");
+          if (carGrid && window.MutationObserver) {
+            const mo = new MutationObserver(function (mutations) {
+              mutations.forEach(function (m) {
+                m.addedNodes.forEach(function (node) {
+                  if (node.nodeType !== 1) return;
+                  if (node.matches && node.matches(".car-card")) {
+                    node.querySelectorAll("img").forEach(function (img) {
+                      if (!img.hasAttribute("loading"))
+                        img.setAttribute("loading", "lazy");
+                      safeDecode(img);
+                    });
+                  }
+                });
+              });
+            });
+            mo.observe(carGrid, { childList: true, subtree: true });
+          }
+        });
+      })();
+    </script>
+    <script>
       document.addEventListener("DOMContentLoaded", function () {
-  const toggleBtn = document.createElement("button");
-  toggleBtn.className = "mobile-menu-toggle";
-  toggleBtn.setAttribute('aria-label', 'Open menu');
-  toggleBtn.setAttribute('aria-expanded', 'false');
-  toggleBtn.setAttribute('aria-controls', 'mobileMenu');
-  toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
+        const toggleBtn = document.createElement("button");
+        toggleBtn.className = "mobile-menu-toggle";
+        toggleBtn.setAttribute("aria-label", "Open menu");
+        toggleBtn.setAttribute("aria-expanded", "false");
+        toggleBtn.setAttribute("aria-controls", "mobileMenu");
+        toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
 
         const navbar = document.querySelector(".navbar");
         navbar.appendChild(toggleBtn);
 
-  const mobileMenu = document.createElement("div");
-  mobileMenu.id = 'mobileMenu';
-  mobileMenu.className = "mobile-menu";
+        const mobileMenu = document.createElement("div");
+        mobileMenu.id = "mobileMenu";
+        mobileMenu.className = "mobile-menu";
         mobileMenu.innerHTML = `
       <button class="close-btn"><i class="fas fa-times"></i></button>
       <ul class="nav-links">
-        <li><a href="index.html" class="active" data-translate="Home">Home</a></li>
+        <li><a href="index.html"  data-translate="Home">Home</a></li>
         <li><a href="inventory.html" data-translate="Buy Car">Buy Car</a></li>
         <li><a href="sell.html" data-translate="Sell Your Car">Sell Your Car</a></li>
         <li><a href="about.html" data-translate="About Us">About Us</a></li>
@@ -2292,8 +2507,8 @@
 
         toggleBtn.addEventListener("click", function () {
           mobileMenu.classList.add("active");
-          toggleBtn.setAttribute('aria-expanded', 'true');
-          mobileMenu.setAttribute('aria-hidden', 'false');
+          toggleBtn.setAttribute("aria-expanded", "true");
+          mobileMenu.setAttribute("aria-hidden", "false");
         });
 
         mobileMenu
@@ -2315,9 +2530,10 @@
         }
       }
     </script>
+    <!-- Google tag (gtag.js) -->
     <script
       async
-      src="https://www.googletagmanager.com/gtag/js?id=G-ETL311CBE6"
+      src="https://www.googletagmanager.com/gtag/js?id=G-N2NFEWQNVB"
     ></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -2326,7 +2542,7 @@
       }
       gtag("js", new Date());
 
-      gtag("config", "G-ETL311CBE6");
+      gtag("config", "G-N2NFEWQNVB");
     </script>
     <!-- Review modal script -->
     <script src="/review.js"></script>

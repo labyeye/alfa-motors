@@ -159,7 +159,7 @@ function initializeMobileMenu() {
     </button>
     <ul class="nav-links">
       <li>
-        <a href="index.html" class="active" aria-current="page">
+        <a href="index.html"  aria-current="page">
           <i class="fas fa-home"></i> 
           <span data-translate="Home">Home</span>
         </a>
@@ -303,7 +303,50 @@ function initializeCarSlider() {
   const nextBtn = document.querySelector(".slider-nav.next");
 
   fetchFeaturedCars();
-  
+  // Adjust card widths after featured cars are rendered
+  function adjustVisibleCards() {
+    if (!CarSlider) return;
+    const gap = 20; // should match CSS gap
+    const containerWidth = CarSlider.clientWidth;
+
+    function getVisibleCount(width) {
+      if (width >= 1600) return 7;
+      if (width >= 1400) return 6;
+      if (width >= 1200) return 5;
+      if (width >= 992) return 4;
+      if (width >= 768) return 3;
+      if (width >= 480) return 2;
+      return 1;
+    }
+
+    const visibleCount = getVisibleCount(containerWidth);
+    const totalGaps = Math.max(0, visibleCount - 1) * gap;
+    const cardWidth = Math.floor((containerWidth - totalGaps) / visibleCount);
+
+    const cards = CarSlider.querySelectorAll('.Car-card');
+    cards.forEach(card => {
+      // set exact pixel width so the number of visible cards fits the container
+      card.style.flex = `0 0 ${cardWidth}px`;
+      card.style.maxWidth = `${cardWidth}px`;
+    });
+  }
+
+  // Listen for the custom event dispatched after cars are rendered
+  if (CarSlider) {
+    CarSlider.addEventListener('featuredCarsRendered', () => {
+      adjustVisibleCards();
+    });
+  }
+
+  // Also adjust on resize with debounce
+  let resizeTimeout = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      adjustVisibleCards();
+    }, 120);
+  });
+
   prevBtn.addEventListener("click", () => {
     CarSlider.scrollBy({ left: -300, behavior: "smooth" });
   });
@@ -437,6 +480,9 @@ function displayFeaturedCars(Cars) {
       );
     }
   });
+  // Notify slider that cards have been rendered so it can compute widths
+  const event = new Event('featuredCarsRendered');
+  CarSlider.dispatchEvent(event);
 }
 
 function showFeaturedCarsError() {
@@ -850,7 +896,7 @@ function initializeGoogleAnalytics() {
     dataLayer.push(arguments);
   }
   gtag("js", new Date());
-  gtag("config", "G-ETL311CBE6");
+  gtag("config", "G-N2NFEWQNVB");
 }
 
 // Initialize all functionality when DOM is loaded
@@ -867,7 +913,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Load Google Analytics script
   const gaScript = document.createElement("script");
   gaScript.async = true;
-  gaScript.src = "https://www.googletagmanager.com/gtag/js?id=G-ETL311CBE6";
+  gaScript.src = "https://www.googletagmanager.com/gtag/js?id=G-N2NFEWQNVB";
   document.head.appendChild(gaScript);
   
   initializeGoogleAnalytics();
@@ -876,95 +922,98 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function initializeStylesCarousel() {
   const styleContainer = document.querySelector('.styles-container');
-  const styleCards = document.querySelectorAll('.style-card');
-  
-  // Only proceed if the elements exist on the page
-  if (!styleContainer || styleCards.length === 0) return;
-
-  const prevBtn = document.querySelector('.style-nav.prev');
-  const nextBtn = document.querySelector('.style-nav.next');
-  const cardWidth = styleCards[0].offsetWidth + 15; // width + gap
-  let currentPosition = 0;
-  let autoSlideInterval;
-  const visibleCards = Math.min(7, Math.floor(window.innerWidth / cardWidth));
-  const containerWidth = visibleCards * cardWidth;
-  
-  // Set container width
   const containerWrapper = document.querySelector('.styles-container-wrapper');
-  if (containerWrapper) {
-    containerWrapper.style.maxWidth = `${containerWidth}px`;
+  if (!styleContainer) return;
+
+  // Prevent double initialization
+  if (styleContainer.dataset.carouselInitialized) return;
+  styleContainer.dataset.carouselInitialized = 'true';
+
+  // Helper to wait for images to load (resolve quickly if already loaded)
+  function waitForImages(root) {
+    const imgs = Array.from(root.querySelectorAll('img'));
+    const promises = imgs.map(img => {
+      if (img.complete) return Promise.resolve();
+      return new Promise((res) => img.addEventListener('load', res, { once: true }));
+    });
+    return Promise.all(promises);
   }
-  
-  // Clone cards for infinite loop
-  styleContainer.innerHTML += styleContainer.innerHTML;
-  
-  // Manual navigation
-  function navigate(direction) {
-    clearInterval(autoSlideInterval);
-    currentPosition += direction * cardWidth * visibleCards;
-    
-    // Smooth transition
-    styleContainer.style.transition = 'transform 0.5s ease-in-out';
-    styleContainer.style.transform = `translateX(${currentPosition}px)`;
-    
-    // Reset position for infinite loop
-    setTimeout(() => {
-      if (direction === 1 && currentPosition >= styleContainer.scrollWidth / 2) {
-        currentPosition = 0;
+
+  // Clone content once for seamless loop
+  const originalChildren = Array.from(styleContainer.children);
+  if (originalChildren.length === 0) return;
+  // Avoid duplicating multiple times
+  if (styleContainer.children.length === originalChildren.length) {
+    originalChildren.forEach(node => {
+      const clone = node.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
+      styleContainer.appendChild(clone);
+    });
+  }
+
+  let keyframeStyleEl = document.getElementById('styles-carousel-keyframes');
+  if (!keyframeStyleEl) {
+    keyframeStyleEl = document.createElement('style');
+    keyframeStyleEl.id = 'styles-carousel-keyframes';
+    document.head.appendChild(keyframeStyleEl);
+  }
+
+  let animationName = 'styles-scroll';
+  let animSpeed = 70; // px per second, tuneable
+
+  function setupAnimation() {
+    // Ensure layout has settled and images loaded
+    waitForImages(styleContainer).then(() => {
+      // Small timeout to allow any late layout
+      setTimeout(() => {
         styleContainer.style.transition = 'none';
-        styleContainer.style.transform = `translateX(${currentPosition}px)`;
-      }
-      if (direction === -1 && currentPosition <= -styleContainer.scrollWidth / 2) {
-        currentPosition = 0;
-        styleContainer.style.transition = 'none';
-        styleContainer.style.transform = `translateX(${currentPosition}px)`;
-      }
-      startAutoSlide();
-    }, 500);
+
+        // Calculate the width of the original set of children (not including clones)
+        const computedGap = parseFloat(getComputedStyle(styleContainer).gap) || 0;
+        const origCount = originalChildren.length;
+        let originalWidth = 0;
+        for (let i = 0; i < origCount; i++) {
+          const el = originalChildren[i];
+          originalWidth += Math.round(el.getBoundingClientRect().width);
+        }
+        if (origCount > 1) originalWidth += Math.round(computedGap * (origCount - 1));
+
+        const scrollDistance = Math.max(0, Math.round(originalWidth));
+        if (scrollDistance <= 0) return;
+
+        // duration in seconds -> distance(px) / speed(px per second)
+        const duration = Math.max(6, Math.round(scrollDistance / animSpeed));
+
+        // Create keyframes with exact pixel translation for smoothness
+        keyframeStyleEl.textContent = `@keyframes ${animationName} { from { transform: translateX(0); } to { transform: translateX(-${scrollDistance}px); } }`;
+
+        // Apply animation
+        styleContainer.style.willChange = 'transform';
+        styleContainer.style.animation = `${animationName} ${duration}s linear infinite`;
+        styleContainer.style.animationPlayState = 'running';
+      }, 80);
+    });
   }
-  
-  // Auto slide function
-  function startAutoSlide() {
-    autoSlideInterval = setInterval(() => {
-      currentPosition -= cardWidth;
-      styleContainer.style.transition = 'transform 0.5s ease-in-out';
-      styleContainer.style.transform = `translateX(${currentPosition}px)`;
-      
-      // Reset position for infinite loop
-      if (Math.abs(currentPosition) >= styleContainer.scrollWidth / 2) {
-        setTimeout(() => {
-          currentPosition = 0;
-          styleContainer.style.transition = 'none';
-          styleContainer.style.transform = `translateX(${currentPosition}px)`;
-        }, 500);
-      }
-    }, 1000);
-  }
-  
-  // Event listeners
-  if (prevBtn) {
-    prevBtn.addEventListener('click', () => navigate(-1));
-  }
-  
-  if (nextBtn) {
-    nextBtn.addEventListener('click', () => navigate(1));
-  }
-  
+
   // Pause on hover
-  styleContainer.addEventListener('mouseenter', () => clearInterval(autoSlideInterval));
-  styleContainer.addEventListener('mouseleave', startAutoSlide);
-  
-  // Start auto slide
-  startAutoSlide();
-  
-  // Responsive adjustments
-  window.addEventListener('resize', function() {
-    const newVisibleCards = Math.min(7, Math.floor(window.innerWidth / cardWidth));
-    const newContainerWidth = newVisibleCards * cardWidth;
-    if (containerWrapper) {
-      containerWrapper.style.maxWidth = `${newContainerWidth}px`;
-    }
+  styleContainer.addEventListener('mouseenter', () => {
+    styleContainer.style.animationPlayState = 'paused';
   });
+  styleContainer.addEventListener('mouseleave', () => {
+    styleContainer.style.animationPlayState = 'running';
+  });
+
+  // Recalculate on resize (debounced)
+  let resizeTimer = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      setupAnimation();
+    }, 150);
+  });
+
+  // Kick off
+  setupAnimation();
 }
 
 // Initialize when DOM is loaded
