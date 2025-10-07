@@ -19,12 +19,12 @@ body {
 
 .vehicle-main-section {
   width: 100%;
-  max-width: 1400px;
+  min-width: 1920px;
   margin: 24px auto;
   background-color: #ffffff;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   border-radius: 16px;
-  padding: 32px 24px;
+  padding: 92px 84px;
   display: block;
 }
 
@@ -50,9 +50,10 @@ body {
 }
 
 .vehicle-main-img {
+  /* Enforce a consistent visual size while allowing scaling on very small viewports */
   width: 100%;
-  height: auto;
-  max-height: 620px;
+  aspect-ratio: 5 / 3; /* Keep main image in a stable 5:3 ratio (width:height = 5:3). Using aspect-ratio
+  max-width: 100%; /* allows shrinking on small screens */
   object-fit: cover;
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
@@ -78,8 +79,9 @@ body {
 
 
 .vehicle-thumbnails img {
+  /* Keep thumbnails a uniform fixed size */
   width: 120px;
-  height: 110px;
+  height: 90px;
   object-fit: cover;
   border-radius: 8px;
   cursor: pointer;
@@ -356,6 +358,25 @@ body {
 
 .other-cars-row::-webkit-scrollbar-thumb:hover {
   background: #e55a00;
+}
+
+.vehicle-thumbnails,
+.mobile-thumbnails,
+.other-cars-row {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.vehicle-thumbnails::-webkit-scrollbar,
+.mobile-thumbnails::-webkit-scrollbar,
+.other-cars-row::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+  width: 0;
+  height: 0;
+}
+.vehicle-thumbnails:focus,
+.mobile-thumbnails:focus,
+.other-cars-row:focus {
+  outline: none;
 }
 
 .other-car-card {
@@ -636,14 +657,15 @@ body {
   }
 
   .vehicle-thumbnails img {
-    width: 52px;
-    height: 36px;
+  width: 120px; /* Keep thumbnails a uniform fixed size */
+  height: 90px;
   }
 
   .vehicle-main-img {
-    width: 100%;
-    height: auto;
-    max-height: 380px;
+  width: 100%;
+  aspect-ratio: 5 / 3;
+    max-height: 360px;
+    object-fit: cover;
   }
 
   .vehicle-title {
@@ -694,7 +716,10 @@ body {
   }
 
   .vehicle-main-img {
+  width: 100%;
+  aspect-ratio: 5 / 3;
     max-height: 260px;
+    object-fit: cover;
   }
 
   .vehicle-title {
@@ -802,8 +827,8 @@ body {
 /* Desktop: clear two-column layout using flex to keep image and details aligned */
 @media (min-width: 900px) {
   .vehicle-main-section {
-    max-width: 1400px;
-    margin: 24px auto;
+    max-width: 1920px;
+    margin: 84px auto;
     display: block;
     padding: 32px;
   }
@@ -825,8 +850,8 @@ body {
   }
 
   .vehicle-main-img {
-    width: 100%;
-    height: auto;
+  width: 100%;
+  aspect-ratio: 5 / 3;
     max-height: 720px;
     object-fit: cover;
     margin: 0;
