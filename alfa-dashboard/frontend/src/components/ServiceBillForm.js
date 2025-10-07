@@ -24,18 +24,20 @@ import {
   Bike,
   Search,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import logo from "../images/company.png";
 
 
 import AuthContext from "../context/AuthContext";
+import Sidebar from "./Sidebar";
 
 const ServiceBillForm = () => {
   const { user } = useContext(AuthContext);
   const [activeMenu, setActiveMenu] = useState("Create Service Bill");
   const [expandedMenus, setExpandedMenus] = useState({});
   const navigate = useNavigate();
+  const { id: editId } = useParams();
   const [isSaving, setIsSaving] = useState(false);
   const [availableCars, setAvailableCars] = useState([]);
   const [selectedCarId, setSelectedCarId] = useState("");
@@ -80,6 +82,52 @@ const ServiceBillForm = () => {
   useEffect(() => {
     fetchAvailableCars();
   }, []);
+
+  // If editId is present, fetch service bill and prefill form
+  useEffect(() => {
+    if (!editId) return;
+    (async function loadBill() {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await axios.get(`${API_BASE_URL}/service-bills/${editId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const bill = res.data.data || res.data;
+        if (bill) {
+          // Map server fields into formData shape
+          setFormData(prev => ({
+            ...prev,
+            customerName: bill.customerName || prev.customerName,
+            customerPhone: bill.customerPhone || prev.customerPhone,
+            customerAddress: bill.customerAddress || prev.customerAddress,
+            customerEmail: bill.customerEmail || prev.customerEmail,
+            vehicleType: bill.vehicleType || prev.vehicleType,
+            vehicleBrand: bill.vehicleBrand || prev.vehicleBrand,
+            vehicleModel: bill.vehicleModel || prev.vehicleModel,
+            chassisNumber: bill.chassisNumber || prev.chassisNumber,
+            engineNumber: bill.engineNumber || prev.engineNumber,
+            kmReading: bill.kmReading || prev.kmReading,
+            serviceDate: bill.serviceDate ? new Date(bill.serviceDate).toISOString().split('T')[0] : prev.serviceDate,
+            deliveryDate: bill.deliveryDate ? new Date(bill.deliveryDate).toISOString().split('T')[0] : prev.deliveryDate,
+            serviceType: bill.serviceType || prev.serviceType,
+            serviceItems: bill.serviceItems && bill.serviceItems.length ? bill.serviceItems : prev.serviceItems,
+            discount: bill.discount || prev.discount,
+            taxRate: bill.taxRate || prev.taxRate,
+            taxEnabled: bill.taxEnabled || prev.taxEnabled,
+            paymentMethod: bill.paymentMethod || prev.paymentMethod,
+            paymentStatus: bill.paymentStatus || prev.paymentStatus,
+            advancePaid: bill.advancePaid || prev.advancePaid,
+            issuesReported: bill.issuesReported || prev.issuesReported,
+            technicianNotes: bill.technicianNotes || prev.technicianNotes,
+            warrantyInfo: bill.warrantyInfo || prev.warrantyInfo,
+          }));
+        }
+      } catch (err) {
+        console.error('Failed to load service bill for edit', err);
+        alert('Failed to load service bill for edit.');
+      }
+    })();
+  }, [editId]);
 
   const fetchAvailableCars = async () => {
     try {
@@ -253,17 +301,21 @@ const ServiceBillForm = () => {
         user: user._id, // Assuming your AuthContext provides the user object with _id
       };
 
-      // First save the bill
-      const saveResponse = await axios.post(
-        `${API_BASE_URL}/service-bills`,
-        formDataWithUser, // Use the updated form data
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      // First save the bill (POST for create, PUT for edit)
+      let saveResponse;
+      if (editId) {
+        saveResponse = await axios.put(
+          `${API_BASE_URL}/service-bills/${editId}`,
+          formDataWithUser,
+          { headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } }
+        );
+      } else {
+        saveResponse = await axios.post(
+          `${API_BASE_URL}/service-bills`,
+          formDataWithUser,
+          { headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } }
+        );
+      }
 
       // Rest of your download logic remains the same...
       console.log("Save response:", saveResponse.data);
@@ -516,65 +568,6 @@ const ServiceBillForm = () => {
   // In the menuItems array (around line 250 in BuyLetterPDF.js)
   
 
-  const menuItems = [
-    {
-      name: "Dashboard",
-      icon: LayoutDashboard,
-      path: (userRole) => (userRole === "admin" ? "/admin" : "/staff"),
-    },
-    {
-      name: "RTO",
-      icon: Car,
-      submenu: [
-        { name: "RC Entry", path: "/rc/create" },
-        { name: "RC List", path: "/rc/list" },
-      ],
-    },
-    
-    {
-      name: "Car Management",
-      icon: CarFront,
-      submenu: [
-        { name: "Add Car Data", path: "/car/create" },
-        { name: "List Car Data", path: "/car/list" },
-      ],
-    },
-    
-    {
-      name: "Sell",
-      icon: TrendingUp,
-      submenu: [
-        { name: "Create Sell Letter", path: "/sell/create" },
-        { name: "Sell Letter History", path: "/sell/history" },
-      ],
-    },
-    {
-      name: "Gallery Management",
-      icon: Car,
-      path: "/gallery",
-    },
-    {
-      name: "Service",
-      icon: Wrench,
-      submenu: [
-        { name: "Create Service Bill", path: "/service/create" },
-        { name: "Service History", path: "/service/history" },
-      ],
-    },
-    {
-      name: "Staff",
-      icon: Users,
-      submenu: [
-        { name: "Create Staff ID", path: "/staff/create" },
-        { name: "Staff List", path: "/staff/list" },
-      ],
-    },
-    {
-      name: "Vehicle History",
-      icon: Bike,
-      path: "/bike-history",
-    },
-  ];
 
   const toggleMenu = (menuName) => {
     setExpandedMenus((prev) => ({
@@ -589,103 +582,32 @@ const ServiceBillForm = () => {
     navigate(actualPath);
   };
 
-  if (previewMode) {
-    return (
-      <div style={styles.formPreviewContainer}>
-        <div style={styles.formPreviewHeader}>
-          <button
-            onClick={() => setPreviewMode(false)}
-            style={styles.backButton}
-          >
-            <ArrowLeft style={styles.buttonIcon} /> Back to Edit
-          </button>
-          <div style={styles.previewActions}>
-            <button
-              onClick={generateServiceBillPDF}
-              style={styles.downloadButton}
-            >
-              <Download style={styles.buttonIcon} /> Download PDF
-            </button>
-          </div>
-        </div>
-        <div style={styles.pdfPreview}>
-          <p>PDF Preview would show here</p>
-        </div>
-      </div>
-    );
-  }
+  // Preview will show as a modal overlay when previewMode is true
 
   return (
     <div style={styles.container}>
-      {/* Sidebar */}
-      <div style={styles.sidebar}>
-        <div style={styles.sidebarHeader}>
-          <img
-            src={logo}
-            alt="logo"
-            style={{ width: "7.5rem", height: "7.5rem", color: "#7c3aed" }}
-          />
-          <p style={styles.sidebarSubtitle}>Welcome, Alfa Motor World</p>
-        </div>
-
-        <nav style={styles.nav}>
-          {menuItems.map((item) => (
-            <div key={item.name}>
-              <div
-                style={{
-                  ...styles.menuItem,
-                  ...(activeMenu === item.name ? styles.menuItemActive : {}),
-                }}
-                onClick={() => {
-                  if (item.submenu) {
-                    toggleMenu(item.name);
-                  } else {
-                    // Pass the path as-is (could be string or function)
-                    handleMenuClick(item.name, item.path);
-                  }
-                }}
-              >
-                <div style={styles.menuItemContent}>
-                  <item.icon size={20} style={styles.menuIcon} />
-                  <span style={styles.menuText}>{item.name}</span>
-                </div>
-                {item.submenu &&
-                  (expandedMenus[item.name] ? (
-                    <ChevronDown size={16} />
-                  ) : (
-                    <ChevronRight size={16} />
-                  ))}
+      {/* Preview Modal Overlay */}
+      {previewMode && (
+        <div style={styles.modalBackdrop} onClick={() => setPreviewMode(false)}>
+          <div style={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <div style={styles.formPreviewHeader}>
+              <button onClick={() => setPreviewMode(false)} style={styles.backButton}>
+                <ArrowLeft style={styles.buttonIcon} /> Close Preview
+              </button>
+              <div style={styles.previewActions}>
+                <button onClick={() => generateServiceBillPDF()} style={styles.downloadButton}>
+                  <Download style={styles.buttonIcon} /> Download PDF
+                </button>
               </div>
-
-              {item.submenu && expandedMenus[item.name] && (
-                <div style={styles.submenu}>
-                  {item.submenu.map((subItem) => (
-                    <div
-                      key={subItem.name}
-                      style={{
-                        ...styles.submenuItem,
-                        ...(activeMenu === subItem.name
-                          ? styles.submenuItemActive
-                          : {}),
-                      }}
-                      onClick={() =>
-                        handleMenuClick(subItem.name, subItem.path)
-                      }
-                    >
-                      {subItem.name}
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
-          ))}
-
-          <div style={styles.logoutButton} onClick={handleLogout}>
-            <LogOut size={20} style={styles.menuIcon} />
-            <span style={styles.menuText}>Logout</span>
+            <div style={styles.pdfPreview}>
+              <p>PDF Preview would show here</p>
+            </div>
           </div>
-        </nav>
-      </div>
+        </div>
+      )}
+      {/* Sidebar component */}
+      <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
 
       {/* Main Content */}
       <div style={styles.mainContent}>
@@ -1311,14 +1233,6 @@ const ServiceBillForm = () => {
               </button>
               <button
                 type="button"
-                onClick={saveServiceBill}
-                style={styles.saveButton}
-                disabled={isSaving}
-              >
-                {isSaving ? "Saving..." : "Save"}
-              </button>
-              <button
-                type="button"
                 onClick={handleSaveAndDownload}
                 style={styles.downloadButton}
               >
@@ -1581,6 +1495,46 @@ const styles = {
   },
   buttonIcon: {
     marginRight: "8px",
+  },
+  modalBackdrop: {
+    position: "fixed",
+    inset: 0,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 9999,
+  },
+  modalContent: {
+    width: "90%",
+    maxWidth: "900px",
+    maxHeight: "90vh",
+    overflow: "auto",
+    background: "#fff",
+    borderRadius: "12px",
+    padding: "20px",
+    boxShadow: "0 8px 32px rgba(0,0,0,0.2)",
+  },
+  formPreviewHeader: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "12px",
+  },
+  backButton: {
+    background: "#ef4444",
+    color: "#fff",
+    border: "none",
+    padding: "8px 12px",
+    borderRadius: "8px",
+    cursor: "pointer",
+  },
+  pdfPreview: {
+    minHeight: "60vh",
+    border: "1px dashed #e5e7eb",
+    borderRadius: "8px",
+    padding: "12px",
+    background: "#fff",
   },
   vehicleSelectionContainer: {
     backgroundColor: "#f8fafc",

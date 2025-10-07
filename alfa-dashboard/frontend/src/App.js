@@ -6,6 +6,8 @@ import AdminPage from "./pages/AdminPage";
 import StaffPage from "./pages/StaffPage";
 import SellLetterForm from "./components/SellLetterPDF";
 import SellLetterHistory from "./components/SellLetterHistory";
+import AdvancePaymentForm from "./components/AdvancePaymentForm";
+import AdvancePaymentHistory from "./components/AdvancePaymentHistory";
 import ServiceBillForm from "./components/ServiceBillForm";
 import BikeHistory from "./components/BikeHistory";
 import CreateStaff from "./components/CreateStaff";
@@ -18,6 +20,8 @@ import ListCar from "./components/ListCar";
 import EditCar from "./components/EditCar";
 import GalleryManagement from "./pages/GalleryManagement";
 import SellRequests from "./components/SellRequests";
+import Refurbishment from "./components/Refurbishment";
+import RefurbishmentHistory from "./components/RefurbishmentHistory";
 
 function App() {
   return (
@@ -101,6 +105,22 @@ function App() {
             }
           />
           <Route
+            path="/advance-payments/create"
+            element={
+              <PrivateRoute roles={["admin", "staff"]}>
+                <AdvancePaymentForm />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/advance-payments/history"
+            element={
+              <PrivateRoute roles={["admin", "staff"]}>
+                <AdvancePaymentHistory />
+              </PrivateRoute>
+            }
+          />
+          <Route
             path="/sell-requests"
             element={
               <PrivateRoute roles={["admin", "staff"]}>
@@ -127,6 +147,14 @@ function App() {
           />
           <Route
             path="/service/create"
+            element={
+              <PrivateRoute roles={["admin", "staff"]}>
+                <ServiceBillForm />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/service/edit/:id"
             element={
               <PrivateRoute roles={["admin", "staff"]}>
                 <ServiceBillForm />
@@ -162,6 +190,30 @@ function App() {
             element={
               <PrivateRoute roles={["admin", "staff"]}>
                 <ServiceHistory />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/refurbishment"
+            element={
+              <PrivateRoute roles={["admin", "staff"]}>
+                <Refurbishment />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/refurbishment/create"
+            element={
+              <PrivateRoute roles={["admin", "staff"]}>
+                <Refurbishment />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/refurbishment/history"
+            element={
+              <PrivateRoute roles={["admin", "staff"]}>
+                <RefurbishmentHistory />
               </PrivateRoute>
             }
           />

@@ -6,6 +6,8 @@ const SellLetterSchema = new mongoose.Schema({
   vehicleName: { type: String, required: true },
   vehicleModel: { type: String, required: true },
   vehicleColor: { type: String, required: true },
+  fuelType: { type: String },
+  year: { type: String },
   registrationNumber: { type: String, required: true },
   chassisNumber: { type: String, required: true },
   engineNumber: { type: String, required: true },
@@ -19,6 +21,8 @@ const SellLetterSchema = new mongoose.Schema({
   buyerPhone: { type: String, required: true },
   buyerPhone2: { type: String, required: true },
   buyerAadhar: { type: String, required: true },
+  idNumber: { type: String },
+  contactNo: { type: String },
   
   // Sale Details
   saleDate: { type: Date, required: true, default: Date.now },
@@ -37,6 +41,16 @@ const SellLetterSchema = new mongoose.Schema({
     note: { type: String },
 
   documentsVerified: { type: Boolean, default: true },
+  // Invoice / Particulars fields
+  invoiceNumber: { type: String },
+  saleValue: { type: Number },
+  commission: { type: Number },
+  rtoCharges: { type: Number },
+  otherCharges: { type: Number },
+  totalAmount: { type: Number },
+  advanceAmount: { type: Number },
+  balanceAmount: { type: Number },
+  declaration: { type: String },
   
   // Reference to user who created it
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }

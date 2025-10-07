@@ -26,8 +26,15 @@ import {
 import { useNavigate } from "react-router-dom";
 import logo from "../images/company.png";
 import logo1 from "../images/okmotorback.png";
-
+import Sidebar from "./Sidebar";
 import AuthContext from "../context/AuthContext";
+
+// API base (shared pattern across components)
+const API_BASE =
+  window.API_BASE ||
+  (window.location.hostname === "localhost"
+    ? "https://alfa-motors.onrender.com"
+    : "https://alfa-motors.onrender.com");
 
 const SellLetterForm = () => {
   const { user } = useContext(AuthContext);
@@ -39,12 +46,15 @@ const SellLetterForm = () => {
   const [previewLanguage, setPreviewLanguage] = useState("hindi");
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
+  const [cars, setCars] = useState([]);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     vehicleName: "",
     vehicleModel: "",
     vehicleColor: "",
+    fuelType: "",
+    year: "",
     registrationNumber: "",
     chassisNumber: "",
     engineNumber: "",
@@ -52,6 +62,8 @@ const SellLetterForm = () => {
     buyerName: "",
     buyerFatherName: "",
     buyerAddress: "",
+    idNumber: "",
+    contactNo: "",
     buyerPhone: "",
     buyerPhone2: "",
     buyerAadhar: "",
@@ -84,6 +96,16 @@ const SellLetterForm = () => {
     witnessPhone: "",
     documentsVerified: true,
     note: "",
+    // Invoice particulars
+    invoiceNumber: "",
+    saleValue: "",
+    commission: "",
+    rtoCharges: "",
+    otherCharges: "",
+    totalAmount: "",
+    advanceAmount: "",
+    balanceAmount: "",
+    declaration: "I/We hereby agreed to take the delivery of the above mentioned vehicle by paying the balance amount on/before...",
   });
   const [isSaving, setIsSaving] = useState(false);
   const handleChange = useCallback((e) => {
@@ -107,6 +129,46 @@ const SellLetterForm = () => {
 
       return newData;
     });
+  }, []);
+
+  const handleSelectCar = (e) => {
+    const carId = e.target.value;
+    if (!carId) return;
+    const selected = cars.find((c) => c._id === carId) || {};
+    // Map available fields from car to formData; use fallbacks where names differ
+    const chassis = selected.chassisNo || selected.chassisNumber || selected.chassis || selected.vin || "";
+    const engine = selected.engineNo || selected.engineNumber || selected.engine || "";
+    const reg = selected.registrationNumber || selected.registrationNo || selected.reg || selected.regNo || "";
+    const km = selected.kmDriven !== undefined && selected.kmDriven !== null ? String(Number(selected.kmDriven) * 100) : "";
+
+    setFormData((prev) => ({
+      ...prev,
+      vehicleName: selected.make || selected.brand || prev.vehicleName,
+      vehicleModel: selected.model || selected.variant || prev.vehicleModel,
+      vehicleColor: selected.color || prev.vehicleColor,
+      registrationNumber: reg || prev.registrationNumber,
+      chassisNumber: chassis || prev.chassisNumber,
+      engineNumber: engine || prev.engineNumber,
+      vehiclekm: km || prev.vehiclekm,
+    }));
+  };
+
+  // Fetch cars for the inventory selector
+  React.useEffect(() => {
+    const fetchCars = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get(`${API_BASE}/api/cars?available=true`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        // API may return data or data.data depending on convention
+        setCars(res.data?.data || res.data || []);
+      } catch (err) {
+        console.error("Failed to fetch cars for selector", err);
+        setCars([]);
+      }
+    };
+    fetchCars();
   }, []);
 
   
@@ -136,13 +198,16 @@ const SellLetterForm = () => {
     },
     
     {
-      name: "Sell",
-      icon: TrendingUp,
-      submenu: [
-        { name: "Create Sell Letter", path: "/sell/create" },
-        { name: "Sell Letter History", path: "/sell/history" },
-      ],
-    },
+          name: "Sell",
+          icon: TrendingUp,
+          submenu: [
+            { name: "Create Sell Letter", path: "/sell/create" },
+            { name: "Sell Letter History", path: "/sell/history" },
+            { name: "Sell Queries", path: "/sell-requests" },
+            { name: "Advance Payments", path: "/advance-payments/create" },
+            { name: "Payment History", path: "/advance-payments/history" },
+          ],
+        },
     {
       name: "Gallery Management",
       icon: Car,
@@ -154,6 +219,7 @@ const SellLetterForm = () => {
       submenu: [
         { name: "Create Service Bill", path: "/service/create" },
         { name: "Service History", path: "/service/history" },
+        { name: "Sell Queries", path: "/sell-requests" },
       ],
     },
     {
@@ -170,99 +236,188 @@ const SellLetterForm = () => {
       path: "/bike-history",
     },
   ];
+  // Generate a professional A4 PDF using pdf-lib, embedding logos and styled text
+  const generatePdfBytes = async (language = "hindi") => {
+    try {
+      // Create a PDF document
+      const pdfDoc = await PDFDocument.create();
+      const page = pdfDoc.addPage([595.28, 841.89]); // A4 in points
+
+      // Embed logos (png/jpg)
+      const logoBytes = await fetch(logo).then((r) => r.arrayBuffer()).catch(() => null);
+      const logo1Bytes = await fetch(logo1).then((r) => r.arrayBuffer()).catch(() => null);
+      let embeddedLogo, embeddedLogoBack;
+      if (logoBytes) embeddedLogo = await pdfDoc.embedPng(logoBytes);
+      if (logo1Bytes) embeddedLogoBack = await pdfDoc.embedPng(logo1Bytes);
+
+      const { width, height } = page.getSize();
+
+      // ---- Invoice-style layout to match provided image ----
+      const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+      const fontNormal = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const small = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
+
+      // Header: logo left, company center, invoice title and number/date/time right
+      const headerY = height - 40;
+      if (embeddedLogo) {
+        const logoW = 80;
+        const logoH = 50;
+        page.drawImage(embeddedLogo, { x: 40, y: headerY - logoH / 2 - 10, width: logoW, height: logoH });
+      }
+
+      // Company title centered
+      page.drawText("ALFA MOTOR WORLD", { x: width / 2 - 120, y: headerY - 6, size: 22, font, color: rgb(0.6, 0.06, 0.06) });
+      page.drawText("SALE INVOICE", { x: width / 2 - 40, y: headerY - 28, size: 12, font: fontNormal, color: rgb(0.06, 0.06, 0.06) });
+
+      // Invoice meta on right
+      const invoiceX = width - 160;
+      page.drawText(`No. ${formData.invoiceNumber || ""}`, { x: invoiceX, y: headerY, size: 10, font: font, color: rgb(0.8, 0.06, 0.06) });
+      page.drawText(`Date : ${formatDate(formData.todayDate || formData.saleDate)}`, { x: invoiceX, y: headerY - 16, size: 10, font: fontNormal, color: rgb(0.06, 0.06, 0.06) });
+      page.drawText(`Time : ${formatTime(formData.todayTime || formData.saleTime)}`, { x: invoiceX, y: headerY - 32, size: 10, font: fontNormal, color: rgb(0.06, 0.06, 0.06) });
+
+      // Address line under header
+      const addrY = headerY - 54;
+      page.drawText("# 97/2, Gottigere, Bannerghatta Main Road, Opp. D Mart, Bangalore - 560 083.", { x: 40, y: addrY, size: 9, font: fontNormal, color: rgb(0.06, 0.06, 0.06) });
+
+      // Customer lines: Name, Address, Id Number and Contact No
+      let y = addrY - 28;
+      const drawLinedField = (label, value) => {
+        page.drawText(`${label}`, { x: 40, y, size: 10, font: fontNormal, color: rgb(0.06, 0.06, 0.06) });
+        page.drawLine({ start: { x: 120, y: y - 2 }, end: { x: width - 40, y: y - 2 }, thickness: 0.4, color: rgb(0.7, 0.7, 0.7) });
+        page.drawText(String(value || ""), { x: 122, y, size: 10, font: fontNormal, color: rgb(0.06, 0.06, 0.06) });
+        y -= 18;
+      };
+
+      drawLinedField("Name : ", formData.buyerName);
+      drawLinedField("Address :", formData.buyerAddress);
+      drawLinedField("Id Number:", formData.idNumber);
+      drawLinedField("Contact No:", formData.contactNo || formData.buyerPhone);
+
+      // Vehicle spec table (Reg. No, Make & Model, Fuel, Year, Colour)
+      const tableY = y - 6;
+      const tableX = 40;
+      const tableW = width - 80;
+      const colWidths = [tableW * 0.18, tableW * 0.35, tableW * 0.12, tableW * 0.12, tableW * 0.23];
+
+      // Header row box
+      let cx = tableX;
+      page.drawRectangle({ x: tableX, y: tableY - 28, width: tableW, height: 28, color: rgb(0.95, 0.95, 0.95) });
+      // Draw column separators and labels
+      const headers = ["Reg. No.", "Make & Model", "Fuel", "Year", "Colour"];
+      for (let i = 0; i < headers.length; i++) {
+        page.drawText(headers[i], { x: cx + 4, y: tableY - 10, size: 9, font: fontNormal, color: rgb(0.06, 0.06, 0.06) });
+        cx += colWidths[i];
+        // vertical line
+        page.drawLine({ start: { x: cx, y: tableY - 28 }, end: { x: cx, y: tableY }, thickness: 0.4, color: rgb(0.8, 0.8, 0.8) });
+      }
+
+      // Value row
+      let vx = tableX;
+      const valueY = tableY - 46;
+      page.drawRectangle({ x: tableX, y: valueY - 2, width: tableW, height: 28, color: rgb(1, 1, 1) });
+      const values = [formData.registrationNumber, `${formData.vehicleName || ''} ${formData.vehicleModel || ''}`, formData.fuelType, formData.year, formData.vehicleColor];
+      for (let i = 0; i < values.length; i++) {
+        page.drawText(String(values[i] || ""), { x: vx + 4, y: valueY + 8, size: 9, font: fontNormal, color: rgb(0.06, 0.06, 0.06) });
+        vx += colWidths[i];
+        page.drawLine({ start: { x: vx, y: valueY - 2 }, end: { x: vx, y: valueY + 26 }, thickness: 0.4, color: rgb(0.9, 0.9, 0.9) });
+      }
+
+      // Chassis and Engine line
+      let ceY = valueY - 26;
+      page.drawText(`Chassis No : ${formData.chassisNumber || ''}`, { x: 40, y: ceY, size: 9, font: fontNormal, color: rgb(0.06, 0.06, 0.06) });
+      page.drawText(`Engine No : ${formData.engineNumber || ''}`, { x: width / 2 + 20, y: ceY, size: 9, font: fontNormal, color: rgb(0.06, 0.06, 0.06) });
+
+      // Particulars table (Sl.No, Particulars, Amount)
+      const pX = 40;
+      let pY = ceY - 28;
+      const pW = width - 80;
+      const pCols = [50, pW - 150, 100];
+
+      // Draw table header
+      page.drawRectangle({ x: pX, y: pY - 22, width: pW, height: 22, color: rgb(0.95, 0.95, 0.95) });
+      page.drawText("Sl.No.", { x: pX + 6, y: pY - 6, size: 9, font: fontNormal });
+      page.drawText("Particulars", { x: pX + 60, y: pY - 6, size: 9, font: fontNormal });
+  page.drawText("Amount (Rs.)", { x: pX + pW - 90, y: pY - 6, size: 9, font: fontNormal });
+
+      // Rows data
+      const rows = [
+  ["1", "Sale value", `Rs. ${formatRupee(formData.saleValue || formData.saleAmount || 0)}`],
+  ["2", "Commission", `Rs. ${formatRupee(formData.commission || 0)}`],
+  ["3", "RTO Charges", `Rs. ${formatRupee(formData.rtoCharges || 0)}`],
+  ["4", "Others", `Rs. ${formatRupee(formData.otherCharges || 0)}`],
+  ["", "Total", `Rs. ${formatRupee(formData.totalAmount || Number(formData.saleValue || formData.saleAmount || 0) + Number(formData.commission || 0) + Number(formData.rtoCharges || 0) + Number(formData.otherCharges || 0))}`],
+  ["", "Advance", `Rs. ${formatRupee(formData.advanceAmount || 0)}`],
+  ["", "Balance", `Rs. ${formatRupee(formData.balanceAmount || (Number(formData.totalAmount || 0) - Number(formData.advanceAmount || 0)))}`],
+      ];
+
+      pY -= 26;
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        page.drawRectangle({ x: pX, y: pY - 20, width: pW, height: 20, color: rgb(1, 1, 1) });
+        page.drawText(row[0], { x: pX + 8, y: pY - 6, size: 9, font: fontNormal });
+        page.drawText(row[1], { x: pX + 60, y: pY - 6, size: 9, font: fontNormal });
+        page.drawText(row[2], { x: pX + pW - 90, y: pY - 6, size: 9, font: fontNormal });
+        pY -= 22;
+      }
+
+      // Declaration box
+      const declY = pY - 8;
+      page.drawRectangle({ x: 40, y: declY - 70, width: width - 80, height: 70, color: rgb(0.98, 0.98, 0.98) });
+      page.drawText("Declaration:", { x: 46, y: declY - 12, size: 9, font: font, color: rgb(0.06,0.06,0.06) });
+      const declText = formData.declaration || "";
+      page.drawText(String(declText), { x: 46, y: declY - 28, size: 8.5, font: fontNormal, color: rgb(0.06,0.06,0.06) });
+
+      // Footer notes area
+      const notesY = declY - 90;
+      page.drawRectangle({ x: 40, y: notesY - 36, width: width - 80, height: 36, color: rgb(0.94, 0.94, 0.94) });
+      page.drawText("Kindly bring ID & Address Proof at the time of delivery. Note: Minimum 45 days period for documentation (RTO work). Vehicle is sold as is where condition no odometer guarantee. Car once sold will not be taken back or exchanged.", { x: 46, y: notesY - 20, size: 8, font: fontNormal, color: rgb(0.06,0.06,0.06) });
+
+      // Signature lines
+      const sigY = 60;
+      page.drawLine({ start: { x: 60, y: sigY + 20 }, end: { x: 200, y: sigY + 20 }, thickness: 0.6, color: rgb(0.1,0.1,0.1) });
+      page.drawText("*Authorised Signature", { x: 60, y: sigY + 6, size: 9, font: fontNormal });
+
+      page.drawLine({ start: { x: width / 2 - 60, y: sigY + 20 }, end: { x: width / 2 + 80, y: sigY + 20 }, thickness: 0.6, color: rgb(0.1,0.1,0.1) });
+      page.drawText("*Buyer's Signature", { x: width / 2 - 60, y: sigY + 6, size: 9, font: fontNormal });
+
+      page.drawLine({ start: { x: width - 220, y: sigY + 20 }, end: { x: width - 60, y: sigY + 20 }, thickness: 0.6, color: rgb(0.1,0.1,0.1) });
+      page.drawText("*Witness", { x: width - 200, y: sigY + 6, size: 9, font: fontNormal });
+
+      const pdfBytes = await pdfDoc.save();
+      return pdfBytes;
+    } catch (err) {
+      console.error("PDF generation failed:", err);
+      throw err;
+    }
+  };
+
   const handlePreview = async (language = "hindi") => {
     try {
       setIsSaving(true);
-      const templateUrl =
-        language === "hindi"
-          ? "/templates/sellletter.pdf"
-          : "/templates/englishsell.pdf";
-
-      const existingPdfBytes = await fetch(templateUrl).then((res) =>
-        res.arrayBuffer()
-      );
-      const pdfDoc = await PDFDocument.load(existingPdfBytes);
-      const invoicePage = pdfDoc.addPage([595, 842]);
-      await drawVehicleInvoice(invoicePage, pdfDoc);
-
-      const formattedData = {
-        ...formData,
-        buyerName1: formData.buyerName,
-        buyerName2: formData.buyerName,
-        saleAmount: formatRupee(formData.saleAmount) || "0",
-        amountInWords: formatIndianAmountInWords(formData.saleAmount),
-        vehiclekm: formatKm(formData.vehiclekm) || "0",
-        saleDate: formatDate(formData.saleDate),
-        saleTime: formatTime(formData.saleTime),
-        todayDate: formatDate(formData.todayDate || new Date()),
-        todayTime: formatTime(formData.todayTime || "12:00"),
-        previousDate: formatDate(
-          formData.previousDate || formData.todayDate || new Date()
-        ),
-        previousTime: formatTime(
-          formData.previousTime || formData.todayTime || "12:00"
-        ),
-      };
-      const saleAmountText = formattedData.saleAmount || "";
-
-      const saleAmountWidth =
-        saleAmountText.length * (englishFieldPositions.saleAmount.size / 2);
-      const amountInWordsX =
-        englishFieldPositions.saleAmount.x +
-        saleAmountWidth +
-        1 * (englishFieldPositions.saleAmount.size / 1);
-
-      pdfDoc.getPages()[0].drawText(formattedData.amountInWords, {
-        x: amountInWordsX,
-        y: 584,
-        size: englishFieldPositions.saleAmount.size,
-        color: rgb(0, 0, 0),
-      });
-      const positions =
-        language === "hindi" ? hindiFieldPositions : englishFieldPositions;
-
-      for (const [fieldName, position] of Object.entries(positions)) {
-        if (fieldName === "buyerPhone" && formattedData.buyerPhone) {
-          const combinedPhones = `${formattedData.buyerPhone}${
-            formattedData.buyerPhone2 ? ` , ${formattedData.buyerPhone2}` : ""
-          }`;
-          pdfDoc.getPages()[0].drawText(combinedPhones, {
-            x: position.x,
-            y: position.y,
-            size: position.size,
-            weight: "bold",
-            color: rgb(0, 0, 0),
-          });
-        } else if (fieldName !== "buyerPhone2" && formattedData[fieldName]) {
-          pdfDoc.getPages()[0].drawText(String(formattedData[fieldName]), {
-            x: position.x,
-            y: position.y,
-            size: position.size,
-            weight: "bold",
-            color: rgb(0, 0, 0),
-          });
-        }
-      }
-      const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes], { type: "application/pdf" });
+      const bytes = await generatePdfBytes(language);
+      const blob = new Blob([bytes], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
-
       setPreviewPdf(url);
+      setPreviewLanguage(language);
       setShowPreviewModal(true);
-    } catch (error) {
-      console.error("Error generating preview:", error);
-      alert("Failed to generate preview. Please try again.");
+    } catch (err) {
+      console.error("Preview error:", err);
+      alert("Failed to generate preview PDF");
     } finally {
       setIsSaving(false);
     }
   };
 
   const handlePreviewAndDownload = async (language) => {
-    setShowPreviewModal(false);
-    if (language === "hindi") {
-      await fillAndDownloadHindiPdf();
-    } else {
-      await fillAndDownloadEnglishPdf();
+    try {
+      setShowPreviewModal(false);
+      const bytes = await generatePdfBytes(language);
+      const blob = new Blob([bytes], { type: "application/pdf" });
+      const filename = `sellletter_${language}_${formData.registrationNumber || "document"}.pdf`;
+      saveAs(blob, filename);
+    } catch (err) {
+      console.error("Download error:", err);
+      alert("Failed to download PDF");
     }
   };
   const formatIndianAmountInWords = (amount) => {
@@ -435,7 +590,7 @@ const SellLetterForm = () => {
       }
 
       const response = await axios.post(
-        "https://alfa-motors.onrender.com/api/sell-letters",
+        `${API_BASE}/api/sell-letters`,
         formData,
         {
           headers: {
@@ -446,8 +601,29 @@ const SellLetterForm = () => {
       );
 
       if (response.data) {
+        const saved = response.data;
         alert("Sell letter saved successfully!");
-        return true;
+
+        // If an advance amount was entered, create an AdvancePayment record
+        try {
+          const adv = Number(formData.advanceAmount || 0);
+          if (adv && adv > 0) {
+            await axios.post(
+              `${API_BASE}/api/advance-payments`,
+              {
+                sellLetter: saved._id,
+                amount: adv,
+                paymentMethod: formData.paymentMethod || "cash",
+                note: "Advance recorded from Sell Letter",
+              },
+              { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+            );
+          }
+        } catch (err) {
+          console.warn("Advance payment creation failed:", err?.response?.data || err.message || err);
+        }
+
+        return saved;
       }
     } catch (error) {
       console.error("Error saving sell letter:", error);
@@ -483,7 +659,25 @@ const SellLetterForm = () => {
       );
 
       if (existingLetter.data && existingLetter.data.length > 0) {
-        setSavedLetterData(existingLetter.data[0]);
+        const found = existingLetter.data[0];
+        // If user entered an advance, create a payment linked to existing sell letter
+        if (Number(formData.advanceAmount || 0) > 0) {
+          try {
+            await axios.post(
+              `${API_BASE}/api/advance-payments`,
+              {
+                sellLetter: found._id,
+                amount: Number(formData.advanceAmount),
+                paymentMethod: formData.paymentMethod || "cash",
+                note: "Advance recorded from Sell Letter (existing)",
+              },
+              { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+            );
+          } catch (err) {
+            console.warn("Advance payment creation failed for existing letter:", err?.response?.data || err.message || err);
+          }
+        }
+        setSavedLetterData(found);
         setShowLanguageModal(true);
       } else {
         const savedLetter = await saveToDatabase();
@@ -509,473 +703,7 @@ const SellLetterForm = () => {
       setIsSaving(false);
     }
   };
-  const hindiFieldPositions = {
-    vehicleName: { x: 303, y: 696, size: 11 },
-    vehicleModel: { x: 39, y: 674, size: 11 },
-    vehicleColor: { x: 453, y: 696, size: 11 },
-    registrationNumber: { x: 296, y: 674, size: 11 },
-    chassisNumber: { x: 433, y: 674, size: 11 },
-    engineNumber: { x: 87, y: 652, size: 11 },
-    vehiclekm: { x: 308, y: 652, size: 11 },
-    buyerName: { x: 40, y: 629, size: 11 },
-    buyerFatherName: { x: 278, y: 629, size: 11 },
-    buyerAddress: { x: 65, y: 606, size: 11 },
-    buyerName1: { x: 102, y: 495, size: 11 },
-    buyerName2: { x: 102, y: 451, size: 11 },
-    saleDate: { x: 78, y: 584, size: 11 },
-    saleTime: { x: 180, y: 584, size: 11 },
-    saleAmount: { x: 273, y: 584, size: 11 },
-    todayDate: { x: 210, y: 562, size: 11 },
-    todayTime: { x: 324, y: 562, size: 11 },
-    previousDate: { x: 243, y: 517, size: 11 },
-    previousTime: { x: 363, y: 517, size: 11 },
-    buyerPhone: { x: 85, y: 240, size: 11 },
-    buyerPhone2: { x: 150, y: 240, size: 11 },
-    buyerAadhar: { x: 111, y: 222, size: 11 },
-    witnessName: { x: 70, y: 121, size: 11 },
-    witnessPhone: { x: 70, y: 105, size: 11 },
-    note: { x: 60, y: 33, size: 10 },
-  };
-
-  const englishFieldPositions = {
-    vehicleName: { x: 284, y: 680, size: 11 },
-    vehicleModel: { x: 93, y: 660, size: 11 },
-    vehicleColor: { x: 447, y: 680, size: 11 },
-    registrationNumber: { x: 392, y: 660, size: 11 },
-    chassisNumber: { x: 54, y: 640, size: 11 },
-    engineNumber: { x: 263, y: 640, size: 11 },
-    vehiclekm: { x: 455, y: 640, size: 11 },
-    buyerName: { x: 185 - 16, y: 619, size: 11 },
-    buyerFatherName: { x: 445 - 16, y: 619, size: 11 },
-    buyerAddress: { x: 123 - 16, y: 599, size: 11 },
-    buyerName1: { x: 120 - 16, y: 517, size: 11 },
-    buyerName2: { x: 286 - 16, y: 482, size: 11 },
-    saleDate: { x: 70 - 16, y: 578, size: 11 },
-    saleTime: { x: 181 - 16, y: 578, size: 11 },
-    saleAmount: { x: 285 - 16, y: 578, size: 11 },
-    todayDate: { x: 156 - 16, y: 557, size: 11 },
-    todayTime: { x: 291 - 16, y: 557, size: 11 },
-    previousDate: { x: 240 - 16, y: 538, size: 11 },
-    previousTime: { x: 340 - 16, y: 538, size: 11 },
-    buyerPhone: { x: 109, y: 282, size: 11 },
-    buyerPhone2: { x: 115, y: 282, size: 11 },
-    buyerAadhar: { x: 137, y: 263, size: 11 },
-    witnessName: { x: 105, y: 135, size: 11 },
-    witnessPhone: { x: 105, y: 116, size: 11 },
-    note: { x: 70, y: 35, size: 10 },
-  };
-
-  const drawVehicleInvoice = async (page, pdfDoc) => {
-    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-    const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-    const logoUrl = logo1;
-    const logoImageBytes = await fetch(logoUrl).then((res) =>
-      res.arrayBuffer()
-    );
-    const logoImage = await pdfDoc.embedPng(logoImageBytes);
-
-    page.drawRectangle({
-      x: 0,
-      y: 780,
-      width: 595,
-      height: 80,
-      color: rgb(0.047, 0.098, 0.196),
-    });
-
-    page.drawImage(logoImage, {
-      x: 50,
-      y: 744,
-      width: 160,
-      height: 130,
-    });
-
-    page.drawImage(logoImage, {
-      x: 180,
-      y: 430,
-      width: 260,
-      height: 220,
-      opacity: 0.3,
-    });
-    page.drawImage(logoImage, {
-      x: 150,
-      y: 200,
-      width: 330,
-      height: 260,
-      opacity: 0.3,
-    });
-
-    page.drawText("UDAYAM-BR-26-0028550", {
-      x: 330,
-      y: 805,
-      size: 18,
-      color: rgb(1, 1, 1),
-      font: font,
-    });
-    page.drawRectangle({
-      x: 0,
-      y: 750,
-      width: 595,
-      height: 30,
-      color: rgb(0.9, 0.9, 0.9),
-    });
-
-    page.drawText("VEHICLE SALE INVOICE", {
-      x: 200,
-      y: 758,
-      size: 18,
-      color: rgb(0.047, 0.098, 0.196),
-      font: boldFont,
-    });
-
-    const invoiceNumber = `INV-${new Date().getFullYear()}-${Math.floor(
-      Math.random() * 10000
-    )
-      .toString()
-      .padStart(4, "0")}`;
-
-    page.drawText(`Invoice Number: ${invoiceNumber}`, {
-      x: 50,
-      y: 720,
-      size: 10,
-      color: rgb(0.2, 0.2, 0.2),
-      font: font,
-    });
-
-    page.drawText(`Date: ${formatDate(formData.todayDate)}`, {
-      x: 385,
-      y: 720,
-      size: 10,
-      color: rgb(0.2, 0.2, 0.2),
-      font: font,
-    });
-    page.drawText(`Time: ${formatTime(formData.saleTime)}`, {
-      x: 470,
-      y: 720,
-      size: 10,
-      color: rgb(0.2, 0.2, 0.2),
-      font: font,
-    });
-    page.drawLine({
-      start: { x: 50, y: 710 },
-      end: { x: 545, y: 710 },
-      thickness: 1,
-      color: rgb(0.8, 0.8, 0.8),
-    });
-
-    page.drawText("CUSTOMER DETAILS", {
-      x: 50,
-      y: 690,
-      size: 12,
-      color: rgb(0.047, 0.098, 0.196),
-      font: boldFont,
-    });
-
-    page.drawText(`Name: ${formData.buyerName || "N/A"}`, {
-      x: 60,
-      y: 665,
-      size: 10,
-      color: rgb(0.2, 0.2, 0.2),
-      font: font,
-    });
-    const lineHeight2 = 12;
-
-    const address = formData.buyerAddress || "N/A";
-    const maxCharsPerLine = 38;
-    const label = "Address: ";
-    const labelWidth = 45;
-
-    const addressLines = [];
-    for (let i = 0; i < address.length; i += maxCharsPerLine) {
-      addressLines.push(address.substring(i, i + maxCharsPerLine));
-    }
-
-    addressLines.forEach((line, index) => {
-      const text = index === 0 ? `${label}${line}` : line;
-      const xPos = index === 0 ? 60 : 60 + labelWidth;
-
-      page.drawText(text, {
-        x: xPos,
-        y: 650 - index * lineHeight2,
-        size: 10,
-        color: rgb(0.2, 0.2, 0.2),
-        font: font,
-      });
-    });
-
-    page.drawText(`Phone: ${formData.buyerPhone || "N/A"}`, {
-      x: 350,
-      y: 665,
-      size: 10,
-      color: rgb(0.2, 0.2, 0.2),
-      font: font,
-    });
-    page.drawText(`, ${formData.buyerPhone2 || "N/A"}`, {
-      x: 440,
-      y: 665,
-      size: 10,
-      color: rgb(0.2, 0.2, 0.2),
-      font: font,
-    });
-
-    page.drawText(`Aadhar: ${formData.buyerAadhar || "N/A"}`, {
-      x: 350,
-      y: 650,
-      size: 10,
-      color: rgb(0.2, 0.2, 0.2),
-      font: font,
-    });
-
-    // Vehicle Information section
-    page.drawText("VEHICLE DETAILS", {
-      x: 50,
-      y: 620,
-      size: 12,
-      color: rgb(0.047, 0.098, 0.196),
-      font: boldFont,
-    });
-
-    // Vehicle details table header
-    page.drawRectangle({
-      x: 50,
-      y: 590,
-      width: 495,
-      height: 20,
-      color: rgb(0.9, 0.9, 0.9),
-    });
-
-    const vehicleHeaders = [
-      "Make",
-      "Model",
-      "Color",
-      "Reg No",
-      "Chassis",
-      "Engine",
-      "KM",
-    ];
-    const vehicleHeaderPositions = [60, 120, 180, 220, 280, 370, 460];
-
-    vehicleHeaders.forEach((header, index) => {
-      page.drawText(header, {
-        x: vehicleHeaderPositions[index],
-        y: 571,
-        size: 9,
-        color: rgb(0.2, 0.2, 0.2),
-        font: boldFont,
-      });
-    });
-    const lineHeight = 12;
-
-    // Vehicle details row
-    const vehicleValues = [
-      formData.vehicleName || "N/A",
-      formData.vehicleModel || "N/A",
-      formData.vehicleColor || "N/A",
-      formData.registrationNumber || "N/A",
-      formData.chassisNumber || "N/A",
-      formData.engineNumber || "N/A",
-      formData.vehiclekm ? `${formatKm(formData.vehiclekm)} km` : "N/A",
-    ];
-
-    const columnWidths = [60, 60, 40, 60, 80, 80, 40, 60];
-
-    vehicleValues.forEach((value, index) => {
-      const maxWidth = columnWidths[index];
-      const xPos = vehicleHeaderPositions[index];
-      let yPos = 550;
-
-      const lines = [];
-      let currentLine = "";
-
-      for (const word of value.split(" ")) {
-        const testLine = currentLine ? `${currentLine} ${word}` : word;
-        const testWidth = font.widthOfTextAtSize(testLine, 10);
-
-        if (testWidth <= maxWidth) {
-          currentLine = testLine;
-        } else {
-          if (currentLine) lines.push(currentLine);
-          currentLine = word;
-        }
-      }
-      if (currentLine) lines.push(currentLine);
-
-      // Draw each line
-      lines.forEach((line, lineIndex) => {
-        page.drawText(line, {
-          x: xPos,
-          y: yPos - lineIndex * lineHeight,
-          size: 8,
-          color: rgb(0.2, 0.2, 0.2),
-          font: font,
-        });
-      });
-    });
-
-    // Sale Information section
-    page.drawText("SALE INFORMATION", {
-      x: 50,
-      y: 505,
-      size: 12,
-      color: rgb(0.047, 0.098, 0.196),
-      font: boldFont,
-    });
-
-    page.drawText(`Sale Date: ${formatDate(formData.saleDate)}`, {
-      x: 60,
-      y: 485,
-      size: 10,
-      color: rgb(0.2, 0.2, 0.2),
-      font: font,
-    });
-
-    page.drawText(
-      `Sale Amount: Rs. ${formatRupee(formData.saleAmount) || "0"}`,
-      {
-        x: 200,
-        y: 485,
-        size: 10,
-        color: rgb(0.2, 0.2, 0.2),
-        font: font,
-      }
-    );
-
-    page.drawText(
-      `Payment: ${
-        formData.paymentMethod ? formData.paymentMethod.toUpperCase() : "CASH"
-      }`,
-      {
-        x: 350,
-        y: 485,
-        size: 10,
-        color: rgb(0.2, 0.2, 0.2),
-        font: font,
-      }
-    );
-    page.drawText(
-      `Amount in Words: ${
-        formatIndianAmountInWords(formData.saleAmount) || "N/A"
-      }`,
-      {
-        x: 60,
-        y: 465,
-        size: 10,
-        color: rgb(0.2, 0.2, 0.2),
-        font: font,
-      }
-    );
-
-    page.drawText(
-      `Condition: ${
-        formData.vehicleCondition === "running" ? "RUNNING" : "NOT RUNNING"
-      }`,
-      {
-        x: 60,
-        y: 596,
-        size: 10,
-        color: rgb(0.2, 0.2, 0.2),
-        font: font,
-      }
-    );
-    page.drawText("GUARRANTEE & WARRANTY CERTIFICATE", {
-      x: 130,
-      y: 430,
-      size: 17,
-      color: rgb(0.047, 0.098, 0.196),
-      fontWeight: "bold",
-      font: boldFont,
-    });
-
-    page.drawText("TERMS & CONDITIONS", {
-      x: 50,
-      y: 390,
-      size: 12,
-      color: rgb(0.047, 0.098, 0.196),
-      font: boldFont,
-    });
-
-    const terms = [
-      "1. No refunds after invoice billing, except for transfer issues reported within 15 days.",
-      "2. A 3-month guarantee is provided on the entire engine.",
-      "3. Engine warranty extends from 6 months to 1 year for performance defects.",
-      "4. Clutch plate is not covered under any guarantee or warranty.",
-      "5. Monthly servicing during the 3-month guarantee is mandatory.",
-      "6. First 3 services are free, with minimal charges for oil and parts (excluding engine).",
-      "7. Defects must be reported within 24 hours of purchase to avoid repair charges.",
-      "8. Delay in transfer beyond 15 days incurs Rs. 17/day penalty.",
-      "9. Customer signature confirms acceptance of all terms.",
-      `10. Alfa Motor World has recieved the money amount ${formatRupee(
-        formData.saleAmount
-      )} from ${formData.buyerName}.`,
-    ];
-
-    terms.forEach((term, index) => {
-      page.drawText(term, {
-        x: 60,
-        y: 370 - index * 15,
-        size: 10,
-        color: rgb(0.3, 0.3, 0.3),
-        font: font,
-      });
-    });
-
-    // Seller Signature
-    page.drawText("Seller Signature", {
-      x: 100,
-      y: 125,
-      size: 10,
-      color: rgb(0.4, 0.4, 0.4),
-      font: font,
-    });
-
-    page.drawLine({
-      start: { x: 60, y: 140 },
-      end: { x: 250, y: 140 },
-      thickness: 1,
-      color: rgb(0.6, 0.6, 0.6),
-    });
-
-    page.drawText("Authorized Signatory", {
-      x: 350,
-      y: 125,
-      size: 10,
-      color: rgb(0.4, 0.4, 0.4),
-      font: font,
-    });
-
-    page.drawLine({
-      start: { x: 310, y: 140 },
-      end: { x: 500, y: 140 },
-      thickness: 1,
-      color: rgb(0.6, 0.6, 0.6),
-    });
-
-    // Footer
-    page.drawLine({
-      start: { x: 50, y: 80 },
-      end: { x: 545, y: 80 },
-      thickness: 0.5,
-      color: rgb(0.8, 0.8, 0.8),
-    });
-
-    page.drawText("Thank you for your business!", {
-      x: 220,
-      y: 60,
-      size: 12,
-      color: rgb(0.047, 0.098, 0.196),
-      font: boldFont,
-    });
-
-    page.drawText(
-      "Alfa Motor World | Pillar num.53, Bailey Rd,  Raja Bazar,  Patna, Bihar 800014",
-      {
-        x: 160,
-        y: 40,
-        size: 8,
-        color: rgb(0.5, 0.5, 0.5),
-        font: font,
-      }
-    );
-  };
+    // NOTE: PDF drawing/positioning logic removed on purpose per new template decision.
   const handleInput = (e) => {
     const { name, value } = e.target;
     e.target.value = value.toUpperCase();
@@ -990,139 +718,7 @@ const SellLetterForm = () => {
     return `${day}/${month}/${year}`;
   };
 
-  const fillAndDownloadHindiPdf = async () => {
-    try {
-      const templateUrl = "/templates/sellletter.pdf";
-      const existingPdfBytes = await fetch(templateUrl).then((res) =>
-        res.arrayBuffer()
-      );
-      const pdfDoc = await PDFDocument.load(existingPdfBytes);
-      function formatTime(timeString) {
-        if (!timeString) return "";
-        return timeString.slice(0, 5);
-      }
-      const invoicePage = pdfDoc.addPage([595, 842]);
-      await drawVehicleInvoice(invoicePage, pdfDoc);
-
-      const formattedLetter = {
-        ...formData,
-        buyerName1: formData.buyerName,
-        buyerName2: formData.buyerName,
-        saleAmount: formatRupee(formData.saleAmount),
-        amountInWords: formatIndianAmountInWords(formData.saleAmount),
-        vehiclekm: formatKm(formData.vehiclekm),
-        saleDate: formatDate(formData.saleDate),
-        saleTime: formatTime(formData.saleTime),
-        todayDate: formatDate(formData.todayDate || new Date()),
-        todayTime: formatTime(formData.todayTime || "12:00"),
-        previousDate: formatDate(
-          formData.previousDate || formData.todayDate || new Date()
-        ),
-        previousTime: formatTime(
-          formData.previousTime || formData.todayTime || "12:00"
-        ),
-      };
-
-      for (const [fieldName, position] of Object.entries(hindiFieldPositions)) {
-        if (formattedLetter[fieldName]) {
-          pdfDoc.getPages()[0].drawText(String(formattedLetter[fieldName]), {
-            x: position.x,
-            y: position.y,
-            size: position.size,
-            color: rgb(0, 0, 0),
-          });
-        }
-      }
-
-      const pdfBytes = await pdfDoc.save();
-      saveAs(
-        new Blob([pdfBytes], { type: "application/pdf" }),
-        `vehicle_sale_agreement_hindi_${
-          formData.registrationNumber || "document"
-        }.pdf`
-      );
-    } catch (error) {
-      console.error("Error generating Hindi PDF:", error);
-      alert("Failed to generate Hindi PDF. Please try again.");
-    }
-  };
-
-  const fillAndDownloadEnglishPdf = async () => {
-    try {
-      const templateUrl = "/templates/englishsell.pdf";
-      const existingPdfBytes = await fetch(templateUrl).then((res) =>
-        res.arrayBuffer()
-      );
-      const pdfDoc = await PDFDocument.load(existingPdfBytes);
-      const logoUrl = logo1;
-
-      const firstPage = pdfDoc.getPages()[0];
-      // ✅ JUST BEFORE drawing the logo (logo1)
-
-      function formatTime(timeString) {
-        if (!timeString) return "";
-        return timeString.slice(0, 5);
-      }
-      const invoicePage = pdfDoc.addPage([595, 842]);
-      await drawVehicleInvoice(invoicePage, pdfDoc);
-
-      const formattedLetter = {
-        ...formData,
-        buyerName1: formData.buyerName,
-        buyerName2: formData.buyerName,
-        saleAmount: formData.saleAmount,
-        amountInWords: formatIndianAmountInWords(formData.saleAmount),
-        vehiclekm: formData.vehiclekm,
-        saleDate: formatDate(formData.saleDate),
-        saleTime: formatTime(formData.saleTime),
-        todayDate: formatDate(formData.todayDate || new Date()),
-        todayTime: formatTime(formData.todayTime || "12:00"),
-        previousDate: formatDate(
-          formData.previousDate || formData.todayDate || new Date()
-        ),
-        previousTime: formatTime(
-          formData.previousTime || formData.todayTime || "12:00"
-        ),
-      };
-
-      // Fill sell letter fields
-      for (const [fieldName, position] of Object.entries(
-        englishFieldPositions
-      )) {
-        if (fieldName === "buyerPhone" && formattedLetter.buyerPhone) {
-          const combinedPhones = `${formattedLetter.buyerPhone}${
-            formattedLetter.buyerPhone2
-              ? ` , ${formattedLetter.buyerPhone2}`
-              : ""
-          }`;
-          pdfDoc.getPages()[0].drawText(combinedPhones, {
-            x: position.x,
-            y: position.y,
-            size: position.size,
-            color: rgb(0, 0, 0),
-          });
-        } else if (fieldName !== "buyerPhone2" && formattedLetter[fieldName]) {
-          pdfDoc.getPages()[0].drawText(String(formattedLetter[fieldName]), {
-            x: position.x,
-            y: position.y,
-            size: position.size,
-            color: rgb(0, 0, 0),
-          });
-        }
-      }
-
-      const pdfBytes = await pdfDoc.save();
-      saveAs(
-        new Blob([pdfBytes], { type: "application/pdf" }),
-        `vehicle_sale_agreement_english_${
-          formData.registrationNumber || "document"
-        }.pdf`
-      );
-    } catch (error) {
-      console.error("Error generating English PDF:", error);
-      alert("Failed to generate English PDF. Please try again.");
-    }
-  };
+  // Removed old PDF-template fill functions. Preview/download now uses HTML preview.
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -1134,75 +730,8 @@ const SellLetterForm = () => {
 
   return (
     <div style={styles.container}>
-      {/* Sidebar */}
-      <div style={styles.sidebar}>
-        <div style={styles.sidebarHeader}>
-          <img
-            src={logo}
-            alt="logo"
-            style={{ width: "12.5rem", height: "7.5rem", color: "#7c3aed" }}
-          />
-          <p style={styles.sidebarSubtitle}>Welcome, Alfa Motor World</p>
-        </div>
-
-        <nav style={styles.nav}>
-          {menuItems.map((item) => (
-            <div key={item.name}>
-              <div
-                style={{
-                  ...styles.menuItem,
-                  ...(activeMenu === item.name ? styles.menuItemActive : {}),
-                }}
-                onClick={() => {
-                  if (item.submenu) {
-                    toggleMenu(item.name);
-                  } else {
-                    // Pass the path as-is (could be string or function)
-                    handleMenuClick(item.name, item.path);
-                  }
-                }}
-              >
-                <div style={styles.menuItemContent}>
-                  <item.icon size={20} style={styles.menuIcon} />
-                  <span style={styles.menuText}>{item.name}</span>
-                </div>
-                {item.submenu &&
-                  (expandedMenus[item.name] ? (
-                    <ChevronDown size={16} />
-                  ) : (
-                    <ChevronRight size={16} />
-                  ))}
-              </div>
-
-              {item.submenu && expandedMenus[item.name] && (
-                <div style={styles.submenu}>
-                  {item.submenu.map((subItem) => (
-                    <div
-                      key={subItem.name}
-                      style={{
-                        ...styles.submenuItem,
-                        ...(activeMenu === subItem.name
-                          ? styles.submenuItemActive
-                          : {}),
-                      }}
-                      onClick={() =>
-                        handleMenuClick(subItem.name, subItem.path)
-                      }
-                    >
-                      {subItem.name}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-
-          <div style={styles.logoutButton} onClick={handleLogout}>
-            <LogOut size={20} style={styles.menuIcon} />
-            <span style={styles.menuText}>Logout</span>
-          </div>
-        </nav>
-      </div>
+      {/* Sidebar component */}
+      <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
 
       {/* Main Content */}
       <div style={styles.mainContent}>
@@ -1220,6 +749,24 @@ const SellLetterForm = () => {
                 <Car style={styles.sectionIcon} /> Vehicle Information
               </h2>
               <div style={styles.formGrid}>
+                <div style={styles.formField}>
+                  <label style={styles.formLabel}>
+                    <Car style={styles.formIcon} />
+                    Select from Inventory (optional)
+                  </label>
+                  <select
+                    style={styles.formSelect}
+                    onChange={handleSelectCar}
+                    defaultValue=""
+                  >
+                    <option value="">-- Choose a car --</option>
+                    {cars.map((c) => (
+                      <option key={c._id} value={c._id}>
+                        {`${c.make || c.brand || ""} ${c.model || c.variant || ""} ${c.registrationNumber || c.registrationNo || ""}`}
+                      </option>
+                    ))}
+                  </select>
+                </div>
                 <div style={styles.formField}>
                   <label style={styles.formLabel}>
                     <Car style={styles.formIcon} />
@@ -1628,6 +1175,94 @@ const SellLetterForm = () => {
               </div>
             </div>
 
+            {/* Invoice / Particulars Section */}
+            <div style={styles.formSection}>
+              <h2 style={styles.sectionTitle}>
+                <FileText style={styles.sectionIcon} /> Invoice / Particulars
+              </h2>
+              <div style={styles.formGrid}>
+                <div style={styles.formField}>
+                  <label style={styles.formLabel}>Invoice No.</label>
+                  <input
+                    type="text"
+                    name="invoiceNumber"
+                    value={formData.invoiceNumber}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formField}>
+                  <label style={styles.formLabel}>Sale Value (₹)</label>
+                  <input
+                    type="text"
+                    name="saleValue"
+                    value={formData.saleValue}
+                    onChange={(e)=>{ const raw = e.target.value.replace(/[^0-9]/g,''); setFormData(prev=>({...prev, saleValue: raw})); }}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formField}>
+                  <label style={styles.formLabel}>Commission (₹)</label>
+                  <input
+                    type="text"
+                    name="commission"
+                    value={formData.commission}
+                    onChange={(e)=>{ const raw = e.target.value.replace(/[^0-9]/g,''); setFormData(prev=>({...prev, commission: raw})); }}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formField}>
+                  <label style={styles.formLabel}>RTO Charges (₹)</label>
+                  <input
+                    type="text"
+                    name="rtoCharges"
+                    value={formData.rtoCharges}
+                    onChange={(e)=>{ const raw = e.target.value.replace(/[^0-9]/g,''); setFormData(prev=>({...prev, rtoCharges: raw})); }}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formField}>
+                  <label style={styles.formLabel}>Other Charges (₹)</label>
+                  <input
+                    type="text"
+                    name="otherCharges"
+                    value={formData.otherCharges}
+                    onChange={(e)=>{ const raw = e.target.value.replace(/[^0-9]/g,''); setFormData(prev=>({...prev, otherCharges: raw})); }}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formField}>
+                  <label style={styles.formLabel}>Advance (₹)</label>
+                  <input
+                    type="text"
+                    name="advanceAmount"
+                    value={formData.advanceAmount}
+                    onChange={(e)=>{ const raw = e.target.value.replace(/[^0-9]/g,''); setFormData(prev=>({...prev, advanceAmount: raw})); }}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formField}>
+                  <label style={styles.formLabel}>Balance (₹)</label>
+                  <input
+                    type="text"
+                    name="balanceAmount"
+                    value={formData.balanceAmount}
+                    onChange={(e)=>{ const raw = e.target.value.replace(/[^0-9]/g,''); setFormData(prev=>({...prev, balanceAmount: raw})); }}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formField}>
+                  <label style={styles.formLabel}>Declaration</label>
+                  <textarea
+                    name="declaration"
+                    value={formData.declaration}
+                    onChange={handleChange}
+                    style={{...styles.formInput, height: '120px'}}
+                  />
+                </div>
+              </div>
+            </div>
+
             {/* Legal Terms Section - Updated */}
             <div style={styles.formSection}>
               <h2 style={styles.sectionTitle}>
@@ -1712,20 +1347,20 @@ const SellLetterForm = () => {
                 <button
                   style={styles.englishButton}
                   onClick={() => {
-                    fillAndDownloadEnglishPdf();
+                    handlePreviewAndDownload("english");
                     setShowLanguageModal(false);
                   }}
                 >
-                  English PDF
+                  Download Preview (English)
                 </button>
                 <button
                   style={styles.hindiButton}
                   onClick={() => {
-                    fillAndDownloadHindiPdf();
+                    handlePreviewAndDownload("hindi");
                     setShowLanguageModal(false);
                   }}
                 >
-                  Hindi PDF
+                  Download Preview (Hindi)
                 </button>
               </div>
               <button

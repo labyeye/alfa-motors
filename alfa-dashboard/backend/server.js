@@ -11,6 +11,8 @@ const sellRoutes = require('./routes/sellRoutes');
 const carRoutes = require('./routes/carRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const galleryRoutes = require('./routes/galleryRoutes');
+const refurbishmentRoutes = require('./routes/refurbishmentRoutes');
+const advancePaymentRoutes = require('./routes/advancePaymentRoutes');
 const path = require("path");
 const fs = require("fs");
 const { protect } = require('./middleware/auth');
@@ -88,6 +90,8 @@ app.use('/api/service-bills', serviceBillRoutes);
 app.use('/api/sell-requests', sellRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/gallery', galleryRoutes);
+app.use('/api/refurbishments', refurbishmentRoutes);
+app.use('/api/advance-payments', advancePaymentRoutes);
 
 const carImagesPath = path.join(__dirname, "utils/carimages");
 app.use(

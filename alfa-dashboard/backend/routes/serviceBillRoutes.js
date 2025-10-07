@@ -14,8 +14,9 @@ router
 router
   .route("/:id")
   .get(protect, serviceBillController.getServiceBill)
-  .put(admin, serviceBillController.updateServiceBill)
-  .delete(admin, serviceBillController.deleteServiceBill);
+  // allow owners or admin to update; controller will enforce authorization
+  .put(protect, serviceBillController.updateServiceBill)
+  .delete(protect, serviceBillController.deleteServiceBill);
 
 router
   .route("/:id/pdf")

@@ -27,26 +27,18 @@ exports.generateServiceBillPDF = async (serviceBill, returnBuffer = false) => {
 
     page.drawImage(logoImage, {
       x: 50,
-      y: 744,
-      width: 160,
-      height: 130,
+      y: 780,
+      width: 60,
+      height: 60,
     });
 
     // Watermark
     page.drawImage(logoImage, {
-      x: 180,
-      y: 430,
-      width: 260,
-      height: 220,
+      x: 150,
+      y: 300,
+      width: 300,
+      height: 300,
       opacity: 0.1,
-    });
-
-    page.drawText("UDAYAM-BR-26-0028550", {
-      x: 400,
-      y: 815,
-      size: 14,
-      color: rgb(0.8, 0.8, 0.8),
-      font: fontBold,
     });
 
     // Title Section
@@ -572,9 +564,9 @@ exports.generateServiceBillPDF = async (serviceBill, returnBuffer = false) => {
 
     // Company info
     page.drawText(
-      "Alfa Motor World | Pillar num.53, Bailey Rd,  Raja Bazar,  Patna, Bihar 800014",
+      "Alfa Motor World | No 97, 2, Bannerghatta Rd, opposite to D-Mart, Bohra Layout, Gottigere, Bengaluru, Karnataka 560083",
       {
-        x: 130,
+        x: 80,
         y: footerY - 50,
         size: 8,
         color: rgb(0.5, 0.5, 0.5),

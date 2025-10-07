@@ -30,6 +30,7 @@ import AuthContext from "../context/AuthContext";
 import { ShoppingCart, LayoutDashboard, TrendingUp } from "lucide-react";
 import * as XLSX from "xlsx";
 import { useMediaQuery } from "react-responsive";
+import Sidebar from "./Sidebar";
 const { Option } = Select;
 const { TextArea } = Input;
 
@@ -318,6 +319,7 @@ const RcListPage = () => {
       submenu: [
         { name: "Create Sell Letter", path: "/sell/create" },
         { name: "Sell Letter History", path: "/sell/history" },
+        { name: "Sell Queries", path: "/sell-requests" },
       ],
     },
     {
@@ -797,64 +799,7 @@ const RcListPage = () => {
 
   return (
     <div style={styles.container}>
-      <div style={styles.sidebar}>
-        <div style={styles.sidebarHeader}>
-          <p style={styles.sidebarSubtitle}>Welcome, {user?.name || "User"}</p>
-        </div>
-
-        <nav style={styles.nav}>
-          {menuItems.map((item) => (
-            <div key={item.name}>
-              <div
-                style={{
-                  ...styles.menuItem,
-                  ...(activeMenu === item.name ? styles.menuItemActive : {}),
-                }}
-                onClick={() => {
-                  if (item.submenu) {
-                    toggleMenu(item.name);
-                  } else {
-                    handleMenuClick(item.name, item.path);
-                  }
-                }}
-              >
-                <div style={styles.menuItemContent}>
-                  <item.icon size={20} style={styles.menuIcon} />
-                  <span style={styles.menuText}>{item.name}</span>
-                </div>
-                {item.submenu &&
-                  (expandedMenus[item.name] ? (
-                    <ChevronDown size={16} />
-                  ) : (
-                    <ChevronRight size={16} />
-                  ))}
-              </div>
-
-              {item.submenu && expandedMenus[item.name] && (
-                <div style={styles.submenu}>
-                  {item.submenu.map((subItem) => (
-                    <div
-                      key={subItem.name}
-                      style={styles.submenuItem}
-                      onClick={() =>
-                        handleMenuClick(subItem.name, subItem.path)
-                      }
-                    >
-                      {subItem.name}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-
-          <div style={styles.logoutButton} onClick={handleLogout}>
-            <LogOut size={20} style={styles.menuIcon} />
-            <span style={styles.menuText}>Logout</span>
-          </div>
-        </nav>
-      </div>
-
+      <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
       <div style={styles.mainContent}>
         <div style={styles.contentPadding}>
           <div style={styles.header}>

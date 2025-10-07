@@ -67,7 +67,14 @@ router.post(
 // Get all cars
 router.get("/", async (req, res) => {
   try {
-    const cars = await Car.find().populate("addedBy", "username");
+    // Support optional filtering: ?available=true or ?status=Available
+    const filter = {};
+    if (req.query.available === 'true') {
+      filter.status = 'Available';
+    } else if (req.query.status) {
+      filter.status = req.query.status;
+    }
+    const cars = await Car.find(filter).populate("addedBy", "username");
     res.status(200).json({
       success: true,
       data: cars,

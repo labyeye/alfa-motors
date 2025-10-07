@@ -241,65 +241,6 @@ const AdminPage = () => {
     maintainAspectRatio: false
   };
 
-  const menuItems = [
-    {
-      name: "Dashboard",
-      icon: LayoutDashboard,
-      path: (userRole) => (userRole === "admin" ? "/admin" : "/staff"),
-    },
-    {
-      name: "RTO",
-      icon: Car,
-      submenu: [
-        { name: "RC Entry", path: "/rc/create" },
-        { name: "RC List", path: "/rc/list" },
-      ],
-    },
-    
-    {
-      name: "Car Management",
-      icon: CarFront,
-      submenu: [
-        { name: "Add Car Data", path: "/car/create" },
-        { name: "List Car Data", path: "/car/list" },
-      ],
-    },
-    
-    {
-      name: "Sell",
-      icon: TrendingUp,
-      submenu: [
-        { name: "Create Sell Letter", path: "/sell/create" },
-        { name: "Sell Letter History", path: "/sell/history" },
-      ],
-    },
-    {
-      name: "Gallery Management",
-      icon: Car,
-      path: "/gallery",
-    },
-    {
-      name: "Service",
-      icon: Wrench,
-      submenu: [
-        { name: "Create Service Bill", path: "/service/create" },
-        { name: "Service History", path: "/service/history" },
-      ],
-    },
-    {
-      name: "Staff",
-      icon: Users,
-      submenu: [
-        { name: "Create Staff ID", path: "/staff/create" },
-        { name: "Staff List", path: "/staff/list" },
-      ],
-    },
-    {
-      name: "Vehicle History",
-      icon: Bike,
-      path: "/bike-history",
-    },
-  ];
 
   const DashboardCards = () => (
   <div style={styles.cardsGrid}>

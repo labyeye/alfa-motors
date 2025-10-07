@@ -13,14 +13,16 @@ import {
   Search,
   Download,
   Trash2,
+  Edit,
   CarFront,
-    Car,
-    Bike,
+  Car,
+  Bike,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import logo from "../images/company.png";
 
+import Sidebar from "./Sidebar";
 
 const ServiceHistory = () => {
   const { user } = useContext(AuthContext);
@@ -35,7 +37,11 @@ const ServiceHistory = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [showVehicleHistory, setShowVehicleHistory] = useState(false);
   const navigate = useNavigate();
-const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'https://alfa-motors.onrender.com' : 'https://alfa-motors.onrender.com');
+  const API_BASE =
+    window.API_BASE ||
+    (window.location.hostname === "localhost"
+      ? "https://alfa-motors.onrender.com"
+      : "https://alfa-motors.onrender.com");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,25 +61,13 @@ const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 
         setTotalPages(serviceResponse.data.totalPages || 1);
 
         // Fetch purchase history (if needed)
-        const purchaseResponse = await axios.get(
-          `${API_BASE}/api/buy-letters`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        setPurchaseHistory(purchaseResponse.data.data || purchaseResponse.data);
 
         // Fetch sell history (if needed)
-        const sellResponse = await axios.get(
-          `${API_BASE}/api/sell-letters`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const sellResponse = await axios.get(`${API_BASE}/api/sell-letters`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
         setSellHistory(sellResponse.data.data || sellResponse.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -145,7 +139,7 @@ const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this service bill?")) {
       try {
-  await axios.delete(`${API_BASE}/api/service-bills/${id}`, {
+        await axios.delete(`${API_BASE}/api/service-bills/${id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -164,68 +158,6 @@ const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 
     sessionStorage.clear();
     navigate("/login");
   };
-
-  
-
-  const menuItems = [
-    {
-      name: "Dashboard",
-      icon: LayoutDashboard,
-      path: (userRole) => (userRole === "admin" ? "/admin" : "/staff"),
-    },
-    {
-      name: "RTO",
-      icon: Car,
-      submenu: [
-        { name: "RC Entry", path: "/rc/create" },
-        { name: "RC List", path: "/rc/list" },
-      ],
-    },
-    
-    {
-      name: "Car Management",
-      icon: CarFront,
-      submenu: [
-        { name: "Add Car Data", path: "/car/create" },
-        { name: "List Car Data", path: "/car/list" },
-      ],
-    },
-    
-    {
-      name: "Sell",
-      icon: TrendingUp,
-      submenu: [
-        { name: "Create Sell Letter", path: "/sell/create" },
-        { name: "Sell Letter History", path: "/sell/history" },
-      ],
-    },
-    {
-      name: "Gallery Management",
-      icon: Car,
-      path: "/gallery",
-    },
-    {
-      name: "Service",
-      icon: Wrench,
-      submenu: [
-        { name: "Create Service Bill", path: "/service/create" },
-        { name: "Service History", path: "/service/history" },
-      ],
-    },
-    {
-      name: "Staff",
-      icon: Users,
-      submenu: [
-        { name: "Create Staff ID", path: "/staff/create" },
-        { name: "Staff List", path: "/staff/list" },
-      ],
-    },
-    {
-      name: "Vehicle History",
-      icon: Bike,
-      path: "/bike-history",
-    },
-  ];
 
   const toggleMenu = (menuName) => {
     setExpandedMenus((prev) => ({
@@ -253,62 +185,7 @@ const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 
           <p style={styles.sidebarSubtitle}>Welcome, Alfa Motor World</p>
         </div>
 
-        <nav style={styles.nav}>
-          {menuItems.map((item) => (
-            <div key={item.name}>
-              <div
-                style={{
-                  ...styles.menuItem,
-                  ...(activeMenu === item.name ? styles.menuItemActive : {}),
-                }}
-                onClick={() => {
-                  if (item.submenu) {
-                    toggleMenu(item.name);
-                  } else {
-                    handleMenuClick(item.name, item.path);
-                  }
-                }}
-              >
-                <div style={styles.menuItemContent}>
-                  <item.icon size={20} style={styles.menuIcon} />
-                  <span style={styles.menuText}>{item.name}</span>
-                </div>
-                {item.submenu &&
-                  (expandedMenus[item.name] ? (
-                    <ChevronDown size={16} />
-                  ) : (
-                    <ChevronRight size={16} />
-                  ))}
-              </div>
-
-              {item.submenu && expandedMenus[item.name] && (
-                <div style={styles.submenu}>
-                  {item.submenu.map((subItem) => (
-                    <div
-                      key={subItem.name}
-                      style={{
-                        ...styles.submenuItem,
-                        ...(activeMenu === subItem.name
-                          ? styles.submenuItemActive
-                          : {}),
-                      }}
-                      onClick={() =>
-                        handleMenuClick(subItem.name, subItem.path)
-                      }
-                    >
-                      {subItem.name}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-
-          <div style={styles.logoutButton} onClick={handleLogout}>
-            <LogOut size={20} style={styles.menuIcon} />
-            <span style={styles.menuText}>Logout</span>
-          </div>
-        </nav>
+        <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
       </div>
 
       {/* Main Content */}
@@ -350,8 +227,14 @@ const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 
           ) : showVehicleHistory ? (
             <>
               {/* 1. Purchase History Table - Always shown with heading */}
-              <div style={{ marginBottom: '32px' }}>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '16px' }}>
+              <div style={{ marginBottom: "32px" }}>
+                <h3
+                  style={{
+                    fontSize: "1.25rem",
+                    fontWeight: "600",
+                    marginBottom: "16px",
+                  }}
+                >
                   Purchase History
                 </h3>
                 {filteredData.purchase.length > 0 ? (
@@ -373,7 +256,9 @@ const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 
                             <td style={styles.tableCell}>
                               {item.vehicleBrand} {item.vehicleModel}
                             </td>
-                            <td style={styles.tableCell}>{item.registrationNumber}</td>
+                            <td style={styles.tableCell}>
+                              {item.registrationNumber}
+                            </td>
                             <td style={styles.tableCell}>
                               {new Date(item.purchaseDate).toLocaleDateString()}
                             </td>
@@ -386,13 +271,19 @@ const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 
                     </table>
                   </div>
                 ) : (
-                  <p style={{ color: '#64748b' }}>No purchase records found</p>
+                  <p style={{ color: "#64748b" }}>No purchase records found</p>
                 )}
               </div>
-          
+
               {/* 2. Sell History Table - Always shown with heading */}
-              <div style={{ marginBottom: '32px' }}>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '16px' }}>
+              <div style={{ marginBottom: "32px" }}>
+                <h3
+                  style={{
+                    fontSize: "1.25rem",
+                    fontWeight: "600",
+                    marginBottom: "16px",
+                  }}
+                >
                   Sell History
                 </h3>
                 {filteredData.sell.length > 0 ? (
@@ -414,7 +305,9 @@ const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 
                             <td style={styles.tableCell}>
                               {item.vehicleBrand} {item.vehicleModel}
                             </td>
-                            <td style={styles.tableCell}>{item.registrationNumber}</td>
+                            <td style={styles.tableCell}>
+                              {item.registrationNumber}
+                            </td>
                             <td style={styles.tableCell}>
                               {new Date(item.sellDate).toLocaleDateString()}
                             </td>
@@ -427,13 +320,19 @@ const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 
                     </table>
                   </div>
                 ) : (
-                  <p style={{ color: '#64748b' }}>No sell records found</p>
+                  <p style={{ color: "#64748b" }}>No sell records found</p>
                 )}
               </div>
-          
+
               {/* 3. Service History Table - Always shown with heading */}
-              <div style={{ marginBottom: '32px' }}>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '16px' }}>
+              <div style={{ marginBottom: "32px" }}>
+                <h3
+                  style={{
+                    fontSize: "1.25rem",
+                    fontWeight: "600",
+                    marginBottom: "16px",
+                  }}
+                >
                   Service History
                 </h3>
                 {filteredData.service.length > 0 ? (
@@ -453,11 +352,15 @@ const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 
                       <tbody>
                         {filteredData.service.map((bill) => (
                           <tr key={bill._id} style={styles.tableRow}>
-                            <td style={styles.tableCell}>{bill.customerName}</td>
+                            <td style={styles.tableCell}>
+                              {bill.customerName}
+                            </td>
                             <td style={styles.tableCell}>
                               {bill.vehicleBrand} {bill.vehicleModel}
                             </td>
-                            <td style={styles.tableCell}>{bill.registrationNumber}</td>
+                            <td style={styles.tableCell}>
+                              {bill.registrationNumber}
+                            </td>
                             <td style={styles.tableCell}>
                               ₹{bill.grandTotal?.toFixed(2) || 0}
                             </td>
@@ -486,13 +389,28 @@ const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 
                               >
                                 <Download size={16} />
                               </button>
-                              {user?.role === "admin" && (
+                              {/* Allow owners (creators) and admins to delete */}
+                              {(user?.role === "admin" ||
+                                user?._id === bill.user) && (
                                 <button
                                   onClick={() => handleDelete(bill._id)}
                                   style={styles.iconButton}
                                   title="Delete"
                                 >
                                   <Trash2 size={16} />
+                                </button>
+                              )}
+                              {/* Edit button - available to owners and admins */}
+                              {(user?.role === "admin" ||
+                                user?._id === bill.user) && (
+                                <button
+                                  onClick={() =>
+                                    navigate(`/service/edit/${bill._id}`)
+                                  }
+                                  style={styles.iconButton}
+                                  title="Edit"
+                                >
+                                  <Edit size={16} />
                                 </button>
                               )}
                             </td>
@@ -502,7 +420,7 @@ const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 
                     </table>
                   </div>
                 ) : (
-                  <p style={{ color: '#64748b' }}>No service records found</p>
+                  <p style={{ color: "#64748b" }}>No service records found</p>
                 )}
               </div>
             </>

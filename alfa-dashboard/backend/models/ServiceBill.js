@@ -16,7 +16,7 @@ const ServiceBillSchema = new mongoose.Schema({
   },
   vehicleBrand: { type: String, required: true },
   vehicleModel: { type: String, required: true },
-  registrationNumber: { type: String, required: true },
+  registrationNumber: { type: String },
   chassisNumber: { type: String },
   engineNumber: { type: String },
   kmReading: { type: Number, required: true },

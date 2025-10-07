@@ -89,6 +89,7 @@ const EditCar = () => {
       submenu: [
         { name: "Create Sell Letter", path: "/sell/create" },
         { name: "Sell Letter History", path: "/sell/history" },
+        { name: "Sell Queries", path: "/sell-requests" },
       ],
     },
     {

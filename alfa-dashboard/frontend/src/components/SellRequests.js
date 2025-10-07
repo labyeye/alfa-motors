@@ -13,6 +13,7 @@ import {
   Filter,
   Search,
   RefreshCw,
+  Trash,
   ExternalLink,
 } from "lucide-react";
 import AuthContext from "../context/AuthContext";
@@ -79,6 +80,30 @@ const SellRequests = () => {
     } catch (err) {
       console.error("Error updating status:", err);
       alert("Failed to update status. Please try again.");
+    }
+  };
+
+  const deleteRequest = async (id) => {
+    const ok = window.confirm('Are you sure you want to delete this sell request? This action cannot be undone.');
+    if (!ok) return;
+
+    try {
+      await axios.delete(`${API_BASE}/api/sell-requests/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      setRequests(prev => prev.filter(r => r._id !== id));
+      alert('Sell request deleted');
+      // If the modal is showing this request, close it
+      if (selectedRequest && selectedRequest._id === id) {
+        setShowModal(false);
+        setSelectedRequest(null);
+      }
+    } catch (err) {
+      console.error('Error deleting sell request:', err);
+      alert('Failed to delete request. Please try again.');
     }
   };
 
@@ -287,6 +312,12 @@ const SellRequests = () => {
                               <Eye size={14} />
                               View
                             </button>
+                            { (user?.isAdmin || user?.role === 'admin') && (
+                              <button style={styles.deleteButton} onClick={() => deleteRequest(request._id)}>
+                                <Trash size={14} />
+                                Delete
+                              </button>
+                            )}
                             {request.status === 'Pending' && (
                               <>
                                 <button style={styles.approveButton} onClick={() => updateStatus(request._id, 'Approved')}>
@@ -421,6 +452,15 @@ const SellRequests = () => {
                     Reject Request
                   </button>
                 </>
+              )}
+              { (user?.isAdmin || user?.role === 'admin') && (
+                <button
+                  style={styles.modalDeleteButton}
+                  onClick={() => { deleteRequest(selectedRequest._id); }}
+                >
+                  <Trash size={16} />
+                  Delete
+                </button>
               )}
               <button
                 style={styles.modalCloseButton}
@@ -564,7 +604,7 @@ const styles = {
     color: "#94a3b8",
   },
   searchInput: {
-    width: "100%",
+    width: "95%",
     padding: "12px 12px 12px 40px",
     border: "1px solid #d1d5db",
     borderRadius: "8px",
@@ -852,6 +892,31 @@ const styles = {
     padding: "10px 16px",
     backgroundColor: "#f3f4f6",
     color: "#374151",
+    border: "none",
+    borderRadius: "6px",
+    cursor: "pointer",
+    fontWeight: "500",
+  },
+  deleteButton: {
+    display: "flex",
+    alignItems: "center",
+    gap: "6px",
+    padding: "8px 12px",
+    backgroundColor: "#ef4444",
+    color: "white",
+    border: "none",
+    borderRadius: "6px",
+    fontSize: "0.875rem",
+    cursor: "pointer",
+    transition: "background-color 0.2s",
+  },
+  modalDeleteButton: {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    padding: "10px 16px",
+    backgroundColor: "#ef4444",
+    color: "white",
     border: "none",
     borderRadius: "6px",
     cursor: "pointer",

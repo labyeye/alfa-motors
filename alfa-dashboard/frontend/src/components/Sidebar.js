@@ -51,6 +51,8 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
         { name: "Create Sell Letter", path: "/sell/create" },
         { name: "Sell Letter History", path: "/sell/history" },
         { name: "Sell Queries", path: "/sell-requests" },
+        { name: "Advance Payments", path: "/advance-payments/create" },
+        { name: "Payment History", path: "/advance-payments/history" },
       ],
     },
     {
@@ -64,6 +66,14 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
       submenu: [
         { name: "Create Service Bill", path: "/service/create" },
         { name: "Service History", path: "/service/history" },
+      ],
+    },
+    {
+      name: "Refurbishment",
+      icon: CarFront,
+      submenu: [
+        { name: "Create Refurbishment", path: "/refurbishment/create" },
+        { name: "Refurbishment History", path: "/refurbishment/history" },
       ],
     },
     {
@@ -102,7 +112,11 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
   return (
     <div style={styles.sidebar}>
       <div style={styles.sidebarHeader}>
-        <img src={logo} alt="logo" style={{ width: "12.5rem", height: "7.5rem" }} />
+        <img
+          src={logo}
+          alt="logo"
+          style={{ width: "12.5rem", height: "12.5rem" }}
+        />
         <p style={styles.sidebarSubtitle}>Welcome, Alfa Motor World</p>
       </div>
 
@@ -123,7 +137,12 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
                 <item.icon size={20} style={styles.menuIcon} />
                 <span style={styles.menuText}>{item.name}</span>
               </div>
-              {item.submenu && (expandedMenus[item.name] ? <ChevronDown size={16} /> : <ChevronRight size={16} />)}
+              {item.submenu &&
+                (expandedMenus[item.name] ? (
+                  <ChevronDown size={16} />
+                ) : (
+                  <ChevronRight size={16} />
+                ))}
             </div>
 
             {item.submenu && expandedMenus[item.name] && (
