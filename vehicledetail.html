@@ -62,15 +62,17 @@
     />
   </head>
   <body>
-    <div class="hero-section">
-      <nav class="navbar">
-        <button class="mobile-menu-toggle" aria-label="Open menu">
-          <i class="fas fa-bars"></i>
-        </button>
+    <a class="skip-link" href="#maincontent">Skip to content</a>
+    <div class="hero-section" id="maincontent">
+      <header>
+        <nav class="navbar" aria-label="Main navigation">
+          <button class="mobile-menu-toggle" aria-label="Open menu" aria-controls="mobileMenu" aria-expanded="false">
+            <i class="fas fa-bars" aria-hidden="true"></i>
+          </button>
         <a href="index.html" class="logo-link">
           <div class="logo">
             <img
-              src="./assets/logo2.svg"
+              src="./assets/okmotor.png"
               class="logo-img"
               alt="Alfa Motors World Logo"
               itemprop="logo"
@@ -124,12 +126,13 @@
           <li><a href="about.html" data-translate="About Us">About Us</a></li>
           <li><a href="contact.html" data-translate="Contact">Contact</a></li>
         </ul>
-        <div class="login-btn">
-          <a href="/getquote.html">
-            <button data-translate="Get the Quote">Get the Quote</button>
-          </a>
-        </div>
-      </nav>
+          <div class="login-btn">
+            <a href="/getquote.html">
+              <button data-translate="Get the Quote">Get the Quote</button>
+            </a>
+          </div>
+        </nav>
+      </header>
       <div class="vehicle-main-section">
         <div class="vehicle-content-row">
           <div class="vehicle-image-block">
@@ -220,57 +223,7 @@
         <div class="other-cars-row" id="otherCarsRow"></div>
       </div>
     </div>
-    <div id="mobileMenu" class="mobile-menu" aria-hidden="true"></div>
     <script>
-      // Mobile Menu Functionality
-      (function () {
-        const mobileMenu = document.getElementById("mobileMenu");
-        const toggle = document.querySelector(".mobile-menu-toggle");
-        if (toggle) {
-          toggle.setAttribute('aria-controls', 'mobileMenu');
-          toggle.setAttribute('aria-expanded', 'false');
-        }
-
-        function buildMenu() {
-          if (!mobileMenu) return;
-          mobileMenu.innerHTML = `
-            <button class="close-btn" aria-label="Close menu">&times;</button>
-            <nav class="mobile-nav">
-              <a href="index.html">Home</a>
-              <a href="inventory.html">Buy Car</a>
-              <a href="sell.html">Sell Your Car</a>
-              <a href="about.html">About Us</a>
-              <a href="contact.html">Contact</a>
-              <a href="getquote.html">Get the Quote</a>
-            </nav>
-          `;
-          const close = mobileMenu.querySelector(".close-btn");
-          if (close)
-            close.addEventListener("click", () =>
-              mobileMenu.classList.remove("active")
-            );
-        }
-
-        function openMenu() {
-          buildMenu();
-          mobileMenu.classList.add("active");
-          mobileMenu.setAttribute("aria-hidden", "false");
-          if (toggle) toggle.setAttribute('aria-expanded', 'true');
-          document.body.style.overflow = "hidden";
-        }
-
-        function closeMenu() {
-          mobileMenu.classList.remove("active");
-          mobileMenu.setAttribute("aria-hidden", "true");
-          if (toggle) toggle.setAttribute('aria-expanded', 'false');
-          document.body.style.overflow = "";
-        }
-
-        if (toggle) toggle.addEventListener("click", openMenu);
-        mobileMenu.addEventListener("click", (e) => {
-          if (e.target === mobileMenu) closeMenu();
-        });
-      })();
 
       // Helper Functions
       function formatOwnership(owner) {
@@ -446,9 +399,9 @@
                   <img src="${imgSrc}" alt="${car.brand || car.make || ""} ${
                 car.model || ""
               }" class="other-car-img" />
-                  <div class="status-badge ${statusClass}">${
+                  <div class="status-badge ${statusClass}" data-translate="${
                 car.status || "Available"
-              }</div>
+              }">${car.status || "Available"}</div>
                 </div>
                 <div class="card-content">
                   <h3>${car.brand || car.make || "Unknown Brand"} ${
@@ -471,10 +424,10 @@
                       0
                     ).toLocaleString()}</div>
                     <div class="button-group">
-                      <button class="contact-btn" ${
+                      <button class="contact-btn" data-translate="Contact Seller" ${
                         car.status !== "Available" ? "disabled" : ""
                       }>Contact Seller</button>
-                      <button class="view-details-btn" ${
+                      <button class="view-details-btn" data-translate="View Details" ${
                         car.status !== "Available" ? "disabled" : ""
                       }>View Details</button>
                     </div>
@@ -508,6 +461,20 @@
 
             // Enable auto-scroll for other cars
             enableAutoSlider();
+            // Translate newly added dynamic content to preferred language
+            try {
+              const preferred = localStorage.getItem('preferredLanguage') || 'en';
+              if (preferred && typeof translatePage === 'function') {
+                // translate the section only to avoid re-running across whole page
+                const dynamicElems = otherCarsRow.querySelectorAll('[data-translate]');
+                dynamicElems.forEach(el => {
+                  const key = el.getAttribute('data-translate');
+                  if (translations && translations[preferred] && translations[preferred][key]) {
+                    el.textContent = translations[preferred][key];
+                  }
+                });
+              }
+            } catch (e) {}
           }
         });
 
@@ -648,5 +615,127 @@
         }, 500);
       })();
     </script>
+    <script>
+      function initializeMobileMenu() {
+  const toggleBtn = document.createElement("button");
+  toggleBtn.className = "mobile-menu-toggle";
+  toggleBtn.innerHTML = '<i class="fas fa-bars" aria-hidden="true"></i>';
+  toggleBtn.setAttribute("aria-label", "Toggle mobile menu");
+
+  const navbar = document.querySelector(".navbar");
+  navbar.appendChild(toggleBtn);
+
+  const mobileMenu = document.createElement("div");
+  mobileMenu.className = "mobile-menu";
+  mobileMenu.innerHTML = `
+    <button class="close-btn" aria-label="Close mobile menu">
+      <i class="fas fa-times" aria-hidden="true"></i>
+    </button>
+    <ul class="nav-links">
+      <li>
+        <a href="index.html"  aria-current="page">
+          <i class="fas fa-home"></i> 
+          <span data-translate="Home">Home</span>
+        </a>
+      </li>
+      <li>
+        <a href="inventory.html">
+          <i class="fas fa-motorcycle"></i> 
+          <span data-translate="Buy Car">Buy Car</span>
+        </a>
+      </li>
+      <li>
+        <a href="sell.html">
+          <i class="fas fa-dollar-sign"></i>
+          <span data-translate="Sell Your Car">Sell Your Car</span>
+        </a>
+      </li>
+      <li>
+        <a href="about.html">
+          <i class="fas fa-info-circle"></i>
+          <span data-translate="About Us">About Us</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" class="updates-link">
+          <i class="fas fa-bell"></i> 
+          <span data-translate="Updates">Updates</span>
+        </a>
+      </li>
+      <li>
+        <a href="contact.html">
+          <i class="fas fa-envelope"></i>
+          <span data-translate="Contact">Contact</span>
+        </a>
+      </li>
+    </ul>
+    <div class="login-btn">
+      <a href="/getquote.html">
+        <button aria-label="Get a quote for your Car" data-translate="Get the Quote">
+          Get the Quote
+        </button>
+      </a>
+    </div>
+  `;
+
+  document.body.appendChild(mobileMenu);
+
+  toggleBtn.addEventListener("click", function () {
+    mobileMenu.classList.add("active");
+    document.body.style.overflow = "hidden";
+  });
+
+  mobileMenu
+    .querySelector(".close-btn")
+    .addEventListener("click", function () {
+      mobileMenu.classList.remove("active");
+      document.body.style.overflow = "auto";
+    });
+}
+    </script>
+    <footer class="footer" itemscope itemtype="https://schema.org/WPFooter">
+      <div class="footer-content">
+        <div class="footer-section" itemscope itemtype="https://schema.org/Organization">
+          <div class="logo">
+            <img src="./assets/okmotor.png" alt="Alfa Motors World Logo" width="120" height="120" itemprop="logo" />
+          </div>
+          <p itemprop="description">India's most trusted marketplace for premium pre-owned Cars since 2018.</p>
+          <a href="#leave-review" class="footer-stars" role="button" title="Leave a review" aria-label="Leave a review">
+            <i class="fa-solid fa-star" style="color: #f59e0b; margin-right: 2px"></i>
+            <i class="fa-solid fa-star" style="color: #f59e0b; margin-right: 2px"></i>
+            <i class="fa-solid fa-star" style="color: #f59e0b; margin-right: 2px"></i>
+            <i class="fa-solid fa-star" style="color: #f59e0b; margin-right: 2px"></i>
+            <i class="fa-solid fa-star" style="color: #f59e0b"></i>
+          </a>
+          <div class="social-icons">
+            <a href="https://www.facebook.com/share/1Ao18FYX8e/" aria-label="Visit our Facebook page"><i class="fa-brands fa-facebook-f" style="color: #0400ff"></i></a>
+            <a href="https://www.instagram.com/Carbuilders41?igsh=ZDk5M3NxdmI1Ymhp" aria-label="Visit our Instagram profile"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" style="width: 20px"/></a>
+            <a href="https://wa.me/919036818492" aria-label="Chat with us on WhatsApp"><i class="fa-brands fa-whatsapp" style="color: #00a841"></i></a>
+            <a href="https://youtube.com/@Carbuilders-vo2nm?feature=shared" aria-label="Watch on Youtube"><i class="fa-brands fa-youtube" style="color: #fa0000"></i></a>
+          </div>
+        </div>
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="index.html" aria-label="Home page">Home</a></li>
+            <li><a href="inventory.html" aria-label="Browse our Car inventory">Buy Car</a></li>
+            <li><a href="sell.html" aria-label="Sell your Car">Sell Your Car</a></li>
+            <li><a href="about.html" aria-label="About Alfa Motors World">About Us</a></li>
+            <li><a href="contact.html" aria-label="Contact us">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-section" itemscope itemtype="https://schema.org/PostalAddress">
+          <h3>Contact Us</h3>
+          <p itemprop="streetAddress"><i class="fas fa-map-marker-alt" aria-hidden="true"></i> No 97, 2, Bannerghatta Rd, opposite to D-Mart, Bohra Layout, Gottigere, Bengaluru, Karnataka 560083</p>
+          <p><i class="fas fa-phone" aria-hidden="true"></i> <span itemprop="telephone">+91 9036818492</span></p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; <span itemprop="copyrightYear">2023</span> <span itemprop="copyrightHolder">Alfa Motors World</span>. All rights reserved.</p>
+        <a href="https://www.pixelatenest.com" style="color: #a9a9a9" aria-label="Website designed by Pixelate Nest">Designed By Pixelate Nest</a>
+      </div>
+    </footer>
+  <script src="/i18n.js"></script>
+  <script src="/vehicledetail.js"></script>
   </body>
 </html>

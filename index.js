@@ -2,61 +2,78 @@
 
 // Sticky Navbar Functionality
 function initializeStickyNavbar() {
-  const navbar = document.querySelector('.navbar');
-  
-  window.addEventListener('scroll', () => {
+  const navbar = document.querySelector(".navbar");
+
+  window.addEventListener("scroll", () => {
     if (window.scrollY > 100) {
-      navbar.classList.add('scrolled');
+      navbar.classList.add("scrolled");
     } else {
-      navbar.classList.remove('scrolled');
+      navbar.classList.remove("scrolled");
     }
   });
 }
 
 // Enhanced Search with Auto-complete
 function initializeSearchFeatures() {
-  const searchInput = document.getElementById('searchInput');
+  const searchInput = document.getElementById("searchInput");
   const suggestions = [
-    'BMW X5', 'Audi A4', 'Mercedes C-Class', 'Toyota Corolla', 'Honda Civic',
-    'BMW 3 Series', 'Audi Q5', 'Mercedes E-Class', 'Toyota Camry', 'Honda Accord',
-    'SUV', 'Sedan', 'Hatchback', 'Luxury Cars', 'Electric Cars'
+    "BMW X5",
+    "Audi A4",
+    "Mercedes C-Class",
+    "Toyota Corolla",
+    "Honda Civic",
+    "BMW 3 Series",
+    "Audi Q5",
+    "Mercedes E-Class",
+    "Toyota Camry",
+    "Honda Accord",
+    "SUV",
+    "Sedan",
+    "Hatchback",
+    "Luxury Cars",
+    "Electric Cars",
   ];
-  
+
   if (searchInput) {
     // Create suggestions dropdown
-    const suggestionsContainer = document.createElement('div');
-    suggestionsContainer.className = 'search-suggestions';
+    const suggestionsContainer = document.createElement("div");
+    suggestionsContainer.className = "search-suggestions";
     searchInput.parentNode.appendChild(suggestionsContainer);
-    
-    searchInput.addEventListener('input', (e) => {
+
+    searchInput.addEventListener("input", (e) => {
       const value = e.target.value.toLowerCase();
-      const filtered = suggestions.filter(suggestion => 
+      const filtered = suggestions.filter((suggestion) =>
         suggestion.toLowerCase().includes(value)
       );
-      
+
       if (value && filtered.length > 0) {
         suggestionsContainer.innerHTML = filtered
           .slice(0, 5)
-          .map(suggestion => `<div class="suggestion-item">${suggestion}</div>`)
-          .join('');
-        suggestionsContainer.style.display = 'block';
+          .map(
+            (suggestion) => `<div class="suggestion-item">${suggestion}</div>`
+          )
+          .join("");
+        suggestionsContainer.style.display = "block";
       } else {
-        suggestionsContainer.style.display = 'none';
+        suggestionsContainer.style.display = "none";
       }
     });
-    
+
     // Handle suggestion clicks
-    suggestionsContainer.addEventListener('click', (e) => {
-      if (e.target.classList.contains('suggestion-item')) {
+    suggestionsContainer.addEventListener("click", (e) => {
+      if (e.target.classList.contains("suggestion-item")) {
         searchInput.value = e.target.textContent;
-        suggestionsContainer.style.display = 'none';
+        suggestionsContainer.style.display = "none";
       }
     });
-    
+
     // Hide suggestions when clicking outside
-    document.addEventListener('click', (e) => {
-      if (!searchInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
-        suggestionsContainer.style.display = 'none';
+    document.addEventListener("click", (e) => {
+      if (
+        !searchInput.contains(e.target) &&
+        !suggestionsContainer.contains(e.target)
+      ) {
+        suggestionsContainer.style.display = "none";
       }
     });
   }
@@ -81,7 +98,7 @@ function initializeHeroSlider() {
     heroSlider.appendChild(slideDiv);
   });
   const backgroundImageDiv = document.querySelector(".background-image");
-  const heroSection = document.querySelector('.hero-section');
+  const heroSection = document.querySelector(".hero-section");
   if (backgroundImageDiv && backgroundImageDiv.parentNode) {
     backgroundImageDiv.parentNode.replaceChild(heroSlider, backgroundImageDiv);
   } else if (heroSection) {
@@ -91,7 +108,7 @@ function initializeHeroSlider() {
     // As a last resort append to body
     document.body.appendChild(heroSlider);
   }
-  
+
   const dotsContainer = document.createElement("div");
   dotsContainer.className = "slider-dots";
 
@@ -131,7 +148,7 @@ function initializeHeroSlider() {
   heroSlider.addEventListener("mouseleave", () => {
     slideInterval = setInterval(nextSlide, 5000);
   });
-  
+
   dots.forEach((dot) => {
     dot.addEventListener("click", () => {
       clearInterval(slideInterval);
@@ -160,37 +177,36 @@ function initializeMobileMenu() {
     <ul class="nav-links">
       <li>
         <a href="index.html"  aria-current="page">
-          <i class="fas fa-home"></i> 
           <span data-translate="Home">Home</span>
         </a>
       </li>
       <li>
         <a href="inventory.html">
-          <i class="fas fa-motorcycle"></i> 
-          <span data-translate="Buy Car">Buy Car</span>
+          <span data-translate="Vehicles for Sale">Vehicles for Sale</span>
         </a>
       </li>
       <li>
         <a href="sell.html">
-          <i class="fas fa-dollar-sign"></i>
-          <span data-translate="Sell Your Car">Sell Your Car</span>
+          <span data-translate="Sell Your Vehicle">Sell Your Vehicle</span>
+        </a>
+      </li>
+       <li>
+        <a href="happy-customers.html">
+          <span data-translate="Happy Customers">Happy Customers</span>
+        </a>
+      </li>
+       <li>
+        <a href="financing.html">
+          <span data-translate="Financing">Financing</span>
         </a>
       </li>
       <li>
         <a href="about.html">
-          <i class="fas fa-info-circle"></i>
           <span data-translate="About Us">About Us</span>
         </a>
       </li>
       <li>
-        <a href="#" class="updates-link">
-          <i class="fas fa-bell"></i> 
-          <span data-translate="Updates">Updates</span>
-        </a>
-      </li>
-      <li>
         <a href="contact.html">
-          <i class="fas fa-envelope"></i>
           <span data-translate="Contact">Contact</span>
         </a>
       </li>
@@ -204,27 +220,46 @@ function initializeMobileMenu() {
     </div>
   `;
 
-  document.body.appendChild(mobileMenu);
+  // Insert mobileMenu adjacent to navbar for consistent DOM structure
+  const navbarEl = document.querySelector(".navbar") || document.body;
+  if (navbarEl.parentNode)
+    navbarEl.parentNode.insertBefore(mobileMenu, navbarEl.nextSibling);
 
+  // Keep aria attributes in sync
+  toggleBtn.setAttribute("aria-controls", "mobileMenu");
+  toggleBtn.setAttribute("aria-expanded", "false");
+  mobileMenu.id = "mobileMenu";
+  mobileMenu.setAttribute("aria-hidden", "true");
+
+  // Toggle open/close with proper ARIA updates
   toggleBtn.addEventListener("click", function () {
-    mobileMenu.classList.add("active");
-    document.body.style.overflow = "hidden";
+    const isOpen = mobileMenu.classList.toggle("active");
+    mobileMenu.setAttribute("aria-hidden", (!isOpen).toString());
+    toggleBtn.setAttribute("aria-expanded", isOpen.toString());
+    document.body.style.overflow = isOpen ? "hidden" : "";
+    if (isOpen) {
+      // focus first focusable element inside menu
+      const first = mobileMenu.querySelector("a, button");
+      if (first) first.focus();
+    } else {
+      // return focus to toggle
+      toggleBtn.focus();
+    }
   });
 
-  mobileMenu
-    .querySelector(".close-btn")
-    .addEventListener("click", function () {
-      mobileMenu.classList.remove("active");
-      document.body.style.overflow = "auto";
-    });
+  mobileMenu.querySelector(".close-btn").addEventListener("click", function () {
+    mobileMenu.classList.remove("active");
+    mobileMenu.setAttribute("aria-hidden", "true");
+    toggleBtn.setAttribute("aria-expanded", "false");
+    document.body.style.overflow = "auto";
+    toggleBtn.focus();
+  });
 }
 
 // Lazy Loading Images
 function initializeLazyLoading() {
   if ("IntersectionObserver" in window) {
-    const lazyImages = [].slice.call(
-      document.querySelectorAll("img.lazy")
-    );
+    const lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
 
     let lazyImageObserver = new IntersectionObserver(function (
       entries,
@@ -323,8 +358,8 @@ function initializeCarSlider() {
     const totalGaps = Math.max(0, visibleCount - 1) * gap;
     const cardWidth = Math.floor((containerWidth - totalGaps) / visibleCount);
 
-    const cards = CarSlider.querySelectorAll('.Car-card');
-    cards.forEach(card => {
+    const cards = CarSlider.querySelectorAll(".Car-card");
+    cards.forEach((card) => {
       // set exact pixel width so the number of visible cards fits the container
       card.style.flex = `0 0 ${cardWidth}px`;
       card.style.maxWidth = `${cardWidth}px`;
@@ -333,14 +368,14 @@ function initializeCarSlider() {
 
   // Listen for the custom event dispatched after cars are rendered
   if (CarSlider) {
-    CarSlider.addEventListener('featuredCarsRendered', () => {
+    CarSlider.addEventListener("featuredCarsRendered", () => {
       adjustVisibleCards();
     });
   }
 
   // Also adjust on resize with debounce
   let resizeTimeout = null;
-  window.addEventListener('resize', () => {
+  window.addEventListener("resize", () => {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
       adjustVisibleCards();
@@ -354,7 +389,7 @@ function initializeCarSlider() {
   nextBtn.addEventListener("click", () => {
     CarSlider.scrollBy({ left: 300, behavior: "smooth" });
   });
-  
+
   CarSlider.addEventListener("scroll", () => {
     prevBtn.disabled = CarSlider.scrollLeft <= 10;
     nextBtn.disabled =
@@ -365,12 +400,12 @@ function initializeCarSlider() {
 
 function fetchFeaturedCars() {
   fetch("https://alfa-motors.onrender.com/api/Cars?limit=10")
-      .then((response) => response.json())
-      .then((payload) => displayFeaturedCars(payload))
-      .catch((error) => {
-        console.error("Error fetching featured Cars:", error);
-        showFeaturedCarsError();
-      });
+    .then((response) => response.json())
+    .then((payload) => displayFeaturedCars(payload))
+    .catch((error) => {
+      console.error("Error fetching featured Cars:", error);
+      showFeaturedCarsError();
+    });
 }
 
 function displayFeaturedCars(Cars) {
@@ -419,11 +454,12 @@ function displayFeaturedCars(Cars) {
     let imgSrc = "https://via.placeholder.com/300x200?text=No+Image";
     if (Array.isArray(Car.photos) && Car.photos.length > 0) {
       let filename = Car.photos[0];
-      if (filename.startsWith("carimages/")) filename = filename.replace("carimages/", "");
+      if (filename.startsWith("carimages/"))
+        filename = filename.replace("carimages/", "");
       if (filename.startsWith("assets/")) {
         imgSrc = filename;
       } else {
-  imgSrc = `https://alfa-motors.onrender.com/carimages/${filename}`;
+        imgSrc = `https://alfa-motors.onrender.com/carimages/${filename}`;
       }
     } else if (Car.imageUrl) {
       imgSrc = Car.imageUrl;
@@ -446,7 +482,9 @@ function displayFeaturedCars(Cars) {
           </div>
           <div class="detail-item">
             <i class="fas fa-user"></i>
-            <span title="${formatOwnership(Car.ownership || "1")}">${formatOwnership(Car.ownership || "1")}</span>
+            <span title="${formatOwnership(
+              Car.ownership || "1"
+            )}">${formatOwnership(Car.ownership || "1")}</span>
           </div>
           <div class="detail-item">
             <i class="fas fa-gas-pump"></i>
@@ -481,7 +519,7 @@ function displayFeaturedCars(Cars) {
     }
   });
   // Notify slider that cards have been rendered so it can compute widths
-  const event = new Event('featuredCarsRendered');
+  const event = new Event("featuredCarsRendered");
   CarSlider.dispatchEvent(event);
 }
 
@@ -511,18 +549,23 @@ const translations = {
     "Alfa Motors World | Premium Pre-Owned Motorcycles in India":
       "Alfa Motors World | Premium Pre-Owned Motorcycles in India",
     Home: "Home",
-    Updates: "Updates",
-    "Buy Car": "Buy Car",
-    "Sell Your Car": "Sell Your Car",
+    "Vehicles for Sale": "Vehicles for Sale",
+    "Sell Your Vehicle": "Sell Your Vehicle",
     "About Us": "About Us",
+    Financing: "Financing",
+    "Happy Customers": "Happy Customers",
     Contact: "Contact",
+    "Explore Vehicles": "Explore Vehicles",
+    "Sell Your Car": "Sell Your Car",
     "Get the Quote": "Get the Quote",
+    "View Details": "View Details",
     "Choose your preferred language": "Choose your preferred language",
     "Ride Into Freedom with the Car You've Always Wanted":
       "Ride Into Freedom with the Car You've Always Wanted",
     "Get Your": "Get Your",
-    "Dream Car": "Dream Car",
+    "Dream Car Today": "Dream Car Today",
     Car: "Car",
+    "Buy Car": "Buy Car",
     "Best Cars": "Best Cars",
     "Sell Car": "Sell Car",
     "Car Service": "Car Service",
@@ -532,6 +575,12 @@ const translations = {
     "Happy Customers": "Happy Customers",
     "Years Experience": "Years Experience",
     "Our Services": "Our Services",
+    "Get Your Car Evaluated": "Get Your Car Evaluated",
+    "Prepare Your Car for Sale" : "Prepare Your Car for Sale",
+    "Market Your Car Effectively" : "Market Your Car Effectively",
+    "Negotiate the Best Price" : "Negotiate the Best Price",
+    "Premium Pre-Owned Vehicles with Complete Transparency":
+      "Premium Pre-Owned Vehicles with Complete Transparency",
     "Find your perfect pre-owned Car from our certified collection with warranty.":
       "Find your perfect pre-owned Car from our certified collection with warranty.",
     Explore: "Explore",
@@ -569,8 +618,7 @@ const translations = {
       "Multi-purpose vehicle ideal for big families",
     "View MUVs": "View MUVs",
     Luxury: "Luxury",
-    "High-end premium segment vehicles":
-      "High-end premium segment vehicles",
+    "High-end premium segment vehicles": "High-end premium segment vehicles",
     "View Luxury Cars": "View Luxury Cars",
     "Featured Cars": "Featured Cars",
     "View All": "View All",
@@ -636,18 +684,29 @@ const translations = {
     "Alfa Motors World | Premium Pre-Owned Motorcycles in India":
       "ಅಲ್ಫಾ ಮೊಟರ್ಸ್ ವರ್ಲ್ಡ್ | ಭಾರತದಲ್ಲಿ ಪ್ರೀಮಿಯಂ ಸೆಕೆಂಡ್‌ಹ್ಯಾಂಡ್ ಕಾರುಗಳು",
     Home: "ಮನೆ",
-    Updates: "ನವೀಕರಣಗಳು",
-    "Buy Car": "ಕಾರ್ ಖರೀದಿ",
-    "Sell Your Car": "ನಿಮ್ಮ ಕಾರ್ ಮಾರಾಟ ಮಾಡಿ",
+    "Vehicles for Sale": "ವಾಹನಗಳು ಮಾರಾಟಕ್ಕೆ",
+    "Sell Your Vehicle": "ನಿಮ್ಮ ವಾಹನ ಮಾರಾಟ ಮಾಡಿ",
     "About Us": "ನಮ್ಮ ಬಗ್ಗೆ",
+    Financing: "ಫೈನಾನ್ಸಿಂಗ್",
+    "Happy Customers": "ಸಂತೋಷದ ಗ್ರಾಹಕರು",
     Contact: "ಸಂಪರ್ಕಿಸಿ",
+    "Explore Vehicles": "ವಾಹನಗಳನ್ನು ಅನ್ವೇಷಿಸಿ",
     "Get the Quote": "ಕೋಟ್ ಪಡೆಯಿರಿ",
+    "View Details": "ವಿವರ ನೋಡಿ",
+    "Contact Seller": "ಮಾರಾಟಗಾರರನ್ನು ಸಂಪರ್ಕಿಸಿ",
+    Available: "ಲಭ್ಯವಿದೆ",
+    "Sold Out": "ಮಾರಾಟವಾಗಿದೆ",
+    "Coming Soon": "ಶೀಘ್ರದಲ್ಲೇ ಬರುತ್ತದೆ",
     "Choose your preferred language": "ನಿಮಗೆ ಇಷ್ಟವಾದ ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ",
-    "Ride Into Freedom with the Car You've Always Wanted":
-      "ನೀವು ಯಾವಾಗಲೂ ಬಯಸುವ ಕಾರಿನೊಂದಿಗೆ ಸ್ವಾತಂತ್ರ್ಯದತ್ತ ಸವಾರಿ ಮಾಡಿ",
+    "Premium Pre-Owned Vehicles with Complete Transparency":
+      "ಪೂರ್ಣ ಪಾರದರ್ಶಕತೆಯೊಂದಿಗೆ ಪ್ರೀಮಿಯಂ ಸೆಕೆಂಡ್‌ಹ್ಯಾಂಡ್ ವಾಹನಗಳು",
+    "Ride Into Freedom with the Vehicle You've Always Wanted":
+      "ನೀವು ಯಾವಾಗಲೂ ಬಯಸುವ ವಾಹನದೊಂದಿಗೆ ಸ್ವಾತಂತ್ರ್ಯದತ್ತ ಸವಾರಿ ಮಾಡಿ",
     "Get Your": "ನಿಮ್ಮ",
-    "Dream Car": "ಕನಸಿನ ಕಾರ್",
+    "Dream Car Today": "ಕನಸಿನ ಕಾರ್ ಇಂದು",
     Car: "ಕಾರ್",
+    "Buy Cars": "ಕಾರ್‌ಗಳನ್ನು ಖರೀದಿಸಿ",
+    "Sell Your Car": "ನಿಮ್ಮ ಕಾರ್ ಮಾರಾಟ ಮಾಡಿ",
     "Best Cars": "ಉತ್ತಮ ಕಾರ್‌ಗಳು",
     "Sell Car": "ಕಾರ್ ಮಾರಾಟ ಮಾಡಿ",
     "Car Service": "ಕಾರ್ ಸರ್ವೀಸ್",
@@ -668,14 +727,17 @@ const translations = {
     "Book Service": "ಸರ್ವೀಸ್ ಬುಕ್ ಮಾಡಿ",
     "Estimate your Car's value instantly based on model, year and condition.":
       "ಮಾಡೆಲ್, ವರ್ಷ ಮತ್ತು ಸ್ಥಿತಿಯನ್ನು ಆಧರಿಸಿ ನಿಮ್ಮ ಕಾರ್ ಮೌಲ್ಯವನ್ನು ತಕ್ಷಣ ಲೆಕ್ಕ ಹಾಕಿ.",
+    "Get Your Car Evaluated": "ನಿಮ್ಮ ಕಾರ್ ಮೌಲ್ಯಮಾಪನ ಮಾಡಿಸಿ",
+    "Prepare Your Car for Sale": "ನಿಮ್ಮ ಕಾರ್ ಮಾರಾಟಕ್ಕೆ ತಯಾರಿಸಿ",
+    "Market Your Car Effectively": "ನಿಮ್ಮ ಕಾರ್ ಅನ್ನು ಪರಿಣಾಮಕಾರಿಯಾಗಿ ಮಾರುಕಟ್ಟೆ ಮಾಡಿ",
+    "Negotiate the Best Price": "ಉತ್ತಮ ಬೆಲೆಗೆ ಒಪ್ಪಂದ ಮಾಡಿ",
     "Calculate Now": "ಈಗ ಲೆಕ್ಕ ಹಾಕಿ",
     "Choose Your Style": "ನಿಮ್ಮ ಸ್ಟೈಲ್ ಆಯ್ಕೆಮಾಡಿ",
     Hatchback: "ಹ್ಯಾಚ್‌ಬ್ಯಾಕ್",
     "Compact, good for city driving": "ಸಿಟಿ ಓಟಕ್ಕೆ ಸೂಕ್ತವಾದ ಚಿಕ್ಕ ಕಾರು",
     "View Hatchbacks": "ಹ್ಯಾಚ್‌ಬ್ಯಾಕ್‌ಗಳು ನೋಡಿ",
     Sedan: "ಸೆಡಾನ್",
-    "Comfortable for families, longer body":
-      "ಕೂಟುಂಭದವರಿಗೆ ಕಂಫರ್ಟಾಬಲ್ ಕಾರು",
+    "Comfortable for families, longer body": "ಕೂಟುಂಭದವರಿಗೆ ಕಂಫರ್ಟಾಬಲ್ ಕಾರು",
     "View Sedans": "ಸೆಡಾನ್‌ಗಳು ನೋಡಿ",
     SUV: "ಎಸ್ಯೂವಿ",
     "Spacious and powerful for all terrains":
@@ -694,8 +756,7 @@ const translations = {
       "ಹೆಚ್ಚು ಜನ ಇದ್ದ ಮನೆಗಳಿಗೆ ಸೂಕ್ತ ಕಾರು",
     "View MUVs": "ಎಂಯುವಿಗಳು ನೋಡಿ",
     Luxury: "ಲಕ್ಸುರಿ ಕಾರು",
-    "High-end premium segment vehicles":
-      "ಪ್ರೀಮಿಯಂ ಕ್ಲಾಸ್‌ನ ಲಕ್ಸುರಿ ಕಾರುಗಳು",
+    "High-end premium segment vehicles": "ಪ್ರೀಮಿಯಂ ಕ್ಲಾಸ್‌ನ ಲಕ್ಸುರಿ ಕಾರುಗಳು",
     "View Luxury Cars": "ಲಕ್ಸುರಿ ಕಾರುಗಳು ನೋಡಿ",
     Electric: "ಎಲೆಕ್ಟ್ರಿಕ್ ಕಾರು",
     "Eco-friendly and battery powered": "ಪರಿಸರ ಸ್ನೇಹಿ ಬ್ಯಾಟರಿ ಕಾರು",
@@ -769,7 +830,7 @@ function translatePage(language) {
   } else {
     document.body.classList.remove("kannada-font");
   }
-  
+
   const elements = document.querySelectorAll("[data-translate]");
   elements.forEach((element) => {
     const key = element.getAttribute("data-translate");
@@ -777,7 +838,7 @@ function translatePage(language) {
       element.textContent = translations[language][key];
     }
   });
-  
+
   const mobileMenu = document.querySelector(".mobile-menu");
   if (mobileMenu) {
     const mobileElements = mobileMenu.querySelectorAll("[data-translate]");
@@ -788,7 +849,7 @@ function translatePage(language) {
       }
     });
   }
-  
+
   const CarCards = document.querySelectorAll(".Car-card");
   if (language === "hi") {
     CarCards.forEach((card) => {
@@ -825,7 +886,7 @@ function translatePage(language) {
       }
     });
   }
-  
+
   const emiElements = document.querySelectorAll(".emi");
   emiElements.forEach((element) => {
     if (language === "hi") {
@@ -834,7 +895,7 @@ function translatePage(language) {
       element.textContent = element.textContent.replace("ईएमआई:", "EMI:");
     }
   });
-  
+
   const brandCards = document.querySelectorAll(".make-card h3");
   brandCards.forEach((brand) => {
     const key = brand.textContent.trim();
@@ -842,7 +903,23 @@ function translatePage(language) {
       brand.textContent = translations[language][key];
     }
   });
-  
+  try {
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+    const nodesToUpdate = [];
+    while (walker.nextNode()) {
+      const node = walker.currentNode;
+      const text = node.nodeValue && node.nodeValue.trim();
+      if (text && translations[language] && translations[language][text]) {
+        nodesToUpdate.push({ node, key: text });
+      }
+    }
+    nodesToUpdate.forEach(({ node, key }) => {
+      node.nodeValue = node.nodeValue.replace(key, translations[language][key]);
+    });
+  } catch (e) {
+    // ignore any unexpected walker issues
+  }
+
   document.getElementById("languagePopup").style.display = "none";
   localStorage.setItem("preferredLanguage", language);
 }
@@ -860,11 +937,11 @@ function initializeTranslation() {
   });
 
   // Close modal when clicking outside the popup content
-  const languagePopup = document.getElementById('languagePopup');
+  const languagePopup = document.getElementById("languagePopup");
   if (languagePopup) {
-    languagePopup.addEventListener('click', function (e) {
+    languagePopup.addEventListener("click", function (e) {
       if (e.target === languagePopup) {
-        languagePopup.style.display = 'none';
+        languagePopup.style.display = "none";
       }
     });
   }
@@ -874,10 +951,9 @@ function initializeTranslation() {
     if (mobileMenu) {
       const links = mobileMenu.querySelectorAll("a");
       links[0].setAttribute("data-translate", "Home");
-      links[1].setAttribute("data-translate", "Buy Car");
-      links[2].setAttribute("data-translate", "Sell Your Car");
+      links[1].setAttribute("data-translate", "Vehicles for Sale");
+      links[2].setAttribute("data-translate", "Sell Your Vehicle");
       links[3].setAttribute("data-translate", "About Us");
-      links[4].setAttribute("data-translate", "Updates");
       links[5].setAttribute("data-translate", "Contact");
 
       const button = mobileMenu.querySelector(".login-btn button");
@@ -909,32 +985,34 @@ document.addEventListener("DOMContentLoaded", function () {
   initializeStatsObserver();
   initializeCarSlider();
   initializeTranslation();
-  
+
   // Load Google Analytics script
   const gaScript = document.createElement("script");
   gaScript.async = true;
   gaScript.src = "https://www.googletagmanager.com/gtag/js?id=G-N2NFEWQNVB";
   document.head.appendChild(gaScript);
-  
+
   initializeGoogleAnalytics();
 });
 // styles-carousel.js
 
 function initializeStylesCarousel() {
-  const styleContainer = document.querySelector('.styles-container');
-  const containerWrapper = document.querySelector('.styles-container-wrapper');
+  const styleContainer = document.querySelector(".styles-container");
+  const containerWrapper = document.querySelector(".styles-container-wrapper");
   if (!styleContainer) return;
 
   // Prevent double initialization
   if (styleContainer.dataset.carouselInitialized) return;
-  styleContainer.dataset.carouselInitialized = 'true';
+  styleContainer.dataset.carouselInitialized = "true";
 
   // Helper to wait for images to load (resolve quickly if already loaded)
   function waitForImages(root) {
-    const imgs = Array.from(root.querySelectorAll('img'));
-    const promises = imgs.map(img => {
+    const imgs = Array.from(root.querySelectorAll("img"));
+    const promises = imgs.map((img) => {
       if (img.complete) return Promise.resolve();
-      return new Promise((res) => img.addEventListener('load', res, { once: true }));
+      return new Promise((res) =>
+        img.addEventListener("load", res, { once: true })
+      );
     });
     return Promise.all(promises);
   }
@@ -944,21 +1022,21 @@ function initializeStylesCarousel() {
   if (originalChildren.length === 0) return;
   // Avoid duplicating multiple times
   if (styleContainer.children.length === originalChildren.length) {
-    originalChildren.forEach(node => {
+    originalChildren.forEach((node) => {
       const clone = node.cloneNode(true);
-      clone.setAttribute('aria-hidden', 'true');
+      clone.setAttribute("aria-hidden", "true");
       styleContainer.appendChild(clone);
     });
   }
 
-  let keyframeStyleEl = document.getElementById('styles-carousel-keyframes');
+  let keyframeStyleEl = document.getElementById("styles-carousel-keyframes");
   if (!keyframeStyleEl) {
-    keyframeStyleEl = document.createElement('style');
-    keyframeStyleEl.id = 'styles-carousel-keyframes';
+    keyframeStyleEl = document.createElement("style");
+    keyframeStyleEl.id = "styles-carousel-keyframes";
     document.head.appendChild(keyframeStyleEl);
   }
 
-  let animationName = 'styles-scroll';
+  let animationName = "styles-scroll";
   let animSpeed = 70; // px per second, tuneable
 
   function setupAnimation() {
@@ -966,17 +1044,19 @@ function initializeStylesCarousel() {
     waitForImages(styleContainer).then(() => {
       // Small timeout to allow any late layout
       setTimeout(() => {
-        styleContainer.style.transition = 'none';
+        styleContainer.style.transition = "none";
 
         // Calculate the width of the original set of children (not including clones)
-        const computedGap = parseFloat(getComputedStyle(styleContainer).gap) || 0;
+        const computedGap =
+          parseFloat(getComputedStyle(styleContainer).gap) || 0;
         const origCount = originalChildren.length;
         let originalWidth = 0;
         for (let i = 0; i < origCount; i++) {
           const el = originalChildren[i];
           originalWidth += Math.round(el.getBoundingClientRect().width);
         }
-        if (origCount > 1) originalWidth += Math.round(computedGap * (origCount - 1));
+        if (origCount > 1)
+          originalWidth += Math.round(computedGap * (origCount - 1));
 
         const scrollDistance = Math.max(0, Math.round(originalWidth));
         if (scrollDistance <= 0) return;
@@ -988,24 +1068,24 @@ function initializeStylesCarousel() {
         keyframeStyleEl.textContent = `@keyframes ${animationName} { from { transform: translateX(0); } to { transform: translateX(-${scrollDistance}px); } }`;
 
         // Apply animation
-        styleContainer.style.willChange = 'transform';
+        styleContainer.style.willChange = "transform";
         styleContainer.style.animation = `${animationName} ${duration}s linear infinite`;
-        styleContainer.style.animationPlayState = 'running';
+        styleContainer.style.animationPlayState = "running";
       }, 80);
     });
   }
 
   // Pause on hover
-  styleContainer.addEventListener('mouseenter', () => {
-    styleContainer.style.animationPlayState = 'paused';
+  styleContainer.addEventListener("mouseenter", () => {
+    styleContainer.style.animationPlayState = "paused";
   });
-  styleContainer.addEventListener('mouseleave', () => {
-    styleContainer.style.animationPlayState = 'running';
+  styleContainer.addEventListener("mouseleave", () => {
+    styleContainer.style.animationPlayState = "running";
   });
 
   // Recalculate on resize (debounced)
   let resizeTimer = null;
-  window.addEventListener('resize', () => {
+  window.addEventListener("resize", () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
       setupAnimation();
@@ -1017,4 +1097,4 @@ function initializeStylesCarousel() {
 }
 
 // Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', initializeStylesCarousel);
+document.addEventListener("DOMContentLoaded", initializeStylesCarousel);

@@ -1,6 +1,6 @@
 :root {
-  --primary-color: #0D1B2A;
-  --secondary-color: #C0C0C0;
+  --primary-color: #0d1b2a;
+  --secondary-color: #c0c0c0;
   --text-color: #000000;
   /* darkened accent to improve contrast against white text (WCAG) */
   --accent-red: #b71c1c;
@@ -29,7 +29,7 @@
   color: white;
   z-index: 9999;
   border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* Make all images responsive and avoid layout shift */
@@ -41,7 +41,7 @@ img {
 
 /* Logo sizing to avoid CLS and preserve layout */
 .logo-img {
-  width: 160px;
+  width: 190px;
   height: auto;
   display: block;
 }
@@ -66,8 +66,13 @@ img {
 
 /* Make search input stretch on small screens */
 @media (max-width: 600px) {
-  .search-container { width: 100%; }
-  .search-input { width: 100%; box-sizing: border-box; }
+  .search-container {
+    width: 100%;
+  }
+  .search-input {
+    width: 100%;
+    box-sizing: border-box;
+  }
 }
 
 .floating-buttons {
@@ -173,7 +178,7 @@ img {
 }
 
 .featured-Cars-section .section-header h2 {
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-size: 2.5rem;
   font-weight: 700;
   color: var(--primary-color);
@@ -181,7 +186,7 @@ img {
 }
 
 .featured-Cars-section .view-all {
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-weight: 600;
   color: var(--accent-red);
   text-decoration: none;
@@ -275,14 +280,13 @@ img {
   background: white;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+
   transition: all 0.3s ease;
   border: 1px solid #eee;
 }
 
 .Car-slider .Car-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
 .Car-slider .Car-card img {
@@ -448,8 +452,31 @@ img {
 }
 
 @media (max-width: 480px) {
+  /* Make each card occupy the full viewport width on small screens
+     so sliding shows one complete card at a time instead of halves. */
+  .Car-slider {
+    gap: 12px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch; /* smooth momentum scrolling on iOS */
+  }
+
   .Car-slider .Car-card {
-    flex: 0 0 85%;
+    flex: 0 0 100%;
+    min-width: 100%;
+    max-width: 100%;
+    scroll-snap-align: start;
+    box-sizing: border-box;
+  }
+
+  /* Reduce outer padding so cards align with viewport edges */
+  .Car-slider-container {
+    padding: 0 12px;
+  }
+
+  /* Hide the circular nav buttons on very small screens to avoid
+     overlapping the card and to encourage swipe navigation. */
+  .slider-nav {
+    display: none;
   }
 
   .section-header {
@@ -479,7 +506,7 @@ img {
   border-radius: 50px;
   border: none;
   font-size: 16px;
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
   background-color: white;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
@@ -543,7 +570,7 @@ img {
   padding: 12px 20px;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
   color: var(--text-color);
 }
 
@@ -580,7 +607,7 @@ img {
 }
 
 .hero-slide::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -713,7 +740,6 @@ body {
   color: white;
   text-decoration: none;
   font-family: "Sansation", sans-serif;
-  font-weight: 700;
   font-size: 18px;
   transition: color 0.3s;
   padding: 5px 0;
@@ -785,7 +811,7 @@ body {
 }
 
 .mega-menu-column h3 {
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-weight: 600;
   color: var(--primary-color);
   margin-bottom: 15px;
@@ -824,7 +850,7 @@ body {
 }
 
 .login-btn button {
-  background-color: var(--secondary-color);
+  background-color: #1a426b;
   color: white;
   border: 1px solid var(--primary-color);
   border-radius: 25px;
@@ -879,7 +905,7 @@ body {
   gap: 10px;
   padding: 16px 32px;
   border-radius: 50px;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-weight: 600;
   font-size: 16px;
   text-decoration: none;
@@ -934,7 +960,7 @@ body {
 }
 
 .hero-content h1 {
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-size: 4rem;
   font-weight: 700;
   margin: 0 0 2rem 0;
@@ -961,7 +987,7 @@ body {
 
 .hero-line.highlight {
   color: var(--primary-color);
-  background: linear-gradient(188deg, #ff967e 0%, #ff6b4a 100%);
+  background: linear-gradient(188deg, white 60%, var(--primary-color) 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -1007,7 +1033,7 @@ body {
     /* Reduced from 9rem */
     font-weight: 700;
     margin-top: -10px;
-    background: linear-gradient(188deg, var(--primary-color) 0%, #ff6b4a 100%);
+    background: linear-gradient(188deg, white 60%, var(--primary-color) 100%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -1301,7 +1327,6 @@ h2 {
   margin: auto;
 }
 
-
 .step-image-2 img {
   width: 100%;
   height: 100%;
@@ -1342,7 +1367,7 @@ h2 {
 }
 
 .sell-card {
-  background: #F8F8F8;
+  background: #f8f8f8;
   color: #222;
   width: 30px;
   height: 390px;
@@ -1386,17 +1411,24 @@ h2 {
   bottom: 12px;
   font-size: 88px;
   font-weight: 800;
-  color: rgba(0,0,0,0.06);
+  color: rgba(0, 0, 0, 0.06);
   pointer-events: none;
 }
 
 @media (max-width: 1000px) {
-  .sell-card { width: 48%; }
+  .sell-card {
+    width: 48%;
+  }
 }
 
 @media (max-width: 600px) {
-  .sell-card { width: 100%; }
-  .sell-card .number-overlay { font-size: 64px; right: 14px; }
+  .sell-card {
+    width: 100%;
+  }
+  .sell-card .number-overlay {
+    font-size: 64px;
+    right: 14px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -1610,7 +1642,7 @@ h2 {
   height: 100%;
   background: radial-gradient(
     circle at 20% 50%,
-    rgba(163, 41, 25, 0.1) 0%,
+    var(--primary-color) -80%,
     transparent 50%
   );
   z-index: 0;
@@ -1738,14 +1770,12 @@ h2 {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
 }
 
 .style-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
 .style-card img {
@@ -1811,7 +1841,40 @@ h2 {
 }
 
 .styles-container-wrapper {
-  overflow: hidden; /* hide the scroll during animation */
+  /* On desktop we may hide overflow for animation; on smaller screens
+     allow horizontal scrolling so users can swipe the style cards. */
+  overflow: hidden;
+}
+
+/* Make the styles section swipeable on touch devices */
+@media (max-width: 900px) {
+  .styles-container-wrapper {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch; /* momentum on iOS */
+  }
+
+  .styles-container {
+    scroll-snap-type: x mandatory;
+    gap: 14px;
+  }
+
+  .style-card {
+    flex: 0 0 auto;
+    min-width: 72%; /* make cards large but allow peeking of next card */
+    max-width: 72%;
+    scroll-snap-align: start;
+    box-sizing: border-box;
+  }
+
+  /* Hide scrollbars visually but keep scrolling functionality */
+  .styles-container-wrapper::-webkit-scrollbar {
+    display: none;
+  }
+  .styles-container-wrapper {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 
 .style-card {
@@ -1821,17 +1884,11 @@ h2 {
   border-radius: 15px;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .style-card:hover {
   transform: translateY(-10px) scale(1.03);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .style-card img {
@@ -2056,7 +2113,7 @@ h2 {
   height: 100%;
   background: radial-gradient(
     circle at 20% 50%,
-    #0E1B2A -100%,
+    #0e1b2a -100%,
     transparent 50%
   );
   z-index: 0;
@@ -2596,7 +2653,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .footer {
-  background: var(--primary-color) ;
+  background: var(--primary-color);
   color: white;
   padding: 60px 5% 20px;
 }
@@ -2728,7 +2785,7 @@ input[type="range"]::-webkit-slider-thumb {
   width: 80%;
   max-width: 300px;
   height: 100%;
-  background-color: var(--secondary-color);
+  background-color: var(--primary-color);
   z-index: 1000;
   transition: right 0.3s ease;
   padding: 20px;
@@ -2821,7 +2878,6 @@ input[type="range"]::-webkit-slider-thumb {
   }
 
   .search-button {
-    
     top: 32px;
   }
 
@@ -2854,7 +2910,8 @@ input[type="range"]::-webkit-slider-thumb {
   }
 
   .hero-line.highlight {
-    font-size: 2.8rem;
+    font-size: 3.8rem;
+    margin-top: 70px;
   }
 
   .hero-line.subtitle {
@@ -2862,15 +2919,15 @@ input[type="range"]::-webkit-slider-thumb {
   }
 
   .search-input {
-    width: 90%;
+    width: 100%;
     font-size: 14px;
   }
 
   .search-button {
     width: 30px;
     height: 30px;
-    right: 21%;
-    top: 24px;
+    right: 5%;
+    top: 26px;
   }
 }
 

@@ -39,7 +39,7 @@
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
     <meta name="theme-color" content="#ffffff" />
     <link rel="icon" href="/favicon.ico" />
-    <link rel="icon" type="image/svg+xml" href="/assets/logo2.svg" />
+    <link rel="icon" type="image/svg+xml" href="/assets/okmotor.png" />
 
     <meta property="og:type" content="website" />
     <meta
@@ -241,7 +241,7 @@
         <a href="index.html" class="logo-link">
           <div class="logo">
             <img
-              src="./assets/logo2.svg"
+              src="./assets/okmotor.png"
               class="logo-img"
               alt="Alfa Motors World Logo"
               itemprop="logo"
@@ -286,7 +286,11 @@
               >Sell Your Vehicle</a
             >
           </li>
-          <li><a href="happy-customers.html">Happy Customers</a></li>
+          <li>
+            <a href="happy-customers.html" data-translate="Happy Customers"
+              >Happy Customers</a
+            >
+          </li>
           <li><a href="#" data-translate="Financing">Financing</a></li>
           <li><a href="about.html" data-translate="About Us">About Us</a></li>
           <li><a href="contact.html" data-translate="Contact">Contact</a></li>
@@ -862,7 +866,7 @@
                 </div>
                 <div class="brand-logo" data-brand="McLaren">
                   <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/e/ed/McLaren_Automotive_logo.svg"
+                    src="https://upload.wikimedia.org/wikipedia/commons/e/ed/McLaren_Automotive_okmotor.png"
                     alt="McLaren"
                   />
                 </div>
@@ -910,7 +914,7 @@
         >
           <div class="logo">
             <img
-              src="./assets/logo2.svg"
+              src="./assets/okmotor.png"
               alt="Alfa Motors World Logo"
               width="120"
               height="120"
@@ -1309,6 +1313,24 @@
             carGrid.appendChild(carCard);
           });
 
+          // Translate dynamic content in the car grid according to stored preference
+          try {
+            const preferred = localStorage.getItem("preferredLanguage") || "en";
+            if (preferred && typeof translatePage === "function") {
+              const dynamicElems = carGrid.querySelectorAll("[data-translate]");
+              dynamicElems.forEach((el) => {
+                const key = el.getAttribute("data-translate");
+                if (
+                  translations &&
+                  translations[preferred] &&
+                  translations[preferred][key]
+                ) {
+                  el.textContent = translations[preferred][key];
+                }
+              });
+            }
+          } catch (e) {}
+
           initImageSliders();
           addCarCardClickListeners();
         }
@@ -1391,11 +1413,11 @@
           carCard.dataset.CarData = JSON.stringify(car);
 
           carCard.innerHTML = `
-    <div class="image-container">
-      ${imageHTML}
-      <div class="status-badge ${statusClass}">${
+  <div class="image-container">
+  ${imageHTML}
+  <div class="status-badge ${statusClass}" data-translate="${
             car.status || "Available"
-          }</div>
+          }">${car.status || "Available"}</div>
     </div>
     <div class="card-content">
       <h3>${car.make || "Unknown Brand"} ${car.model || "Unknown Model"}</h3>
@@ -1424,12 +1446,12 @@
         <div class="price">₹${(car.sellingPrice || 0).toLocaleString()}</div>
         
         <div class="button-group">
-          <button class="contact-btn" ${
+          <button class="contact-btn" data-translate="Contact Seller" ${
             car.status !== "Available" ? "disabled" : ""
           }>
             Contact Seller
           </button>
-          <button class="view-details-btn" ${
+          <button class="view-details-btn" data-translate="View Details" ${
             car.status !== "Available" ? "disabled" : ""
           }>
             View Details
@@ -2493,7 +2515,7 @@
       <ul class="nav-links">
         <li><a href="index.html"  data-translate="Home">Home</a></li>
         <li><a href="inventory.html" data-translate="Buy Car">Buy Car</a></li>
-        <li><a href="sell.html" data-translate="Sell Your Car">Sell Your Car</a></li>
+        <li><a href="sell.html" data-translate="Sell Your Vehicle">Sell Your Vehicle</a></li>
         <li><a href="about.html" data-translate="About Us">About Us</a></li>
                   <li><a href="#" data-translate="Updates">Updates</a></li>
           <li><a href="contact.html" data-translate="Contact">Contact</a></li>
@@ -2546,6 +2568,8 @@
     </script>
     <!-- Review modal script -->
     <script src="/review.js"></script>
+    <script src="/i18n.js"></script>
+    <script src="/inventory.js"></script>
     <div
       class="Car-popup-overlay"
       style="
