@@ -22,8 +22,8 @@ import logo from "../images/company.png";
 
 const API_BASE = (function() {
   const host = window.location.hostname;
-  if (host === 'localhost' || host.startsWith('127.')) return 'https://alfa-motors.onrender.com';
-  return 'https://alfa-motors.onrender.com';
+  if (host === 'localhost' || host.startsWith('127.')) return 'https://alfa-motors-5yfh.vercel.app';
+  return 'https://alfa-motors-5yfh.vercel.app';
 })();
 
 const EditCar = () => {

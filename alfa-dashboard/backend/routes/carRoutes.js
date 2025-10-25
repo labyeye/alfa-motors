@@ -4,8 +4,12 @@ const router = express.Router();
 const Car = require("../models/Car");
 const Gallery = require("../models/Gallery");
 const { protect } = require("../middleware/auth");
-const upload = require("../utils/fileUpload");
+const upload = require("../utils/fileUploadCloudinary");
+const cloudinary = require("../config/cloudinary");
 const path = require('path');
+
+// Helper to check if we're in production
+const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL;
 
 // API endpoint for adding a car (for React frontend)
 router.post(
@@ -14,8 +18,12 @@ router.post(
   upload.array("photos", 12),
   async (req, res) => {
     try {
-      // Get uploaded photo file paths (store relative path for frontend)
-  const photoPaths = req.files ? req.files.map((file) => file.filename) : [];
+      // Get uploaded photo file paths or URLs
+      // In production (Cloudinary), file.path contains the URL
+      // In development, file.filename contains the filename
+      const photoPaths = req.files ? req.files.map((file) => {
+        return isProduction ? file.path : file.filename;
+      }) : [];
 
       const carData = {
         make: req.body.brand,
@@ -118,25 +126,47 @@ router.delete('/:id/photo', protect, async (req, res) => {
     if (car.addedBy.toString() !== req.user._id.toString()) {
       return res.status(401).json({ success: false, error: 'Not authorized' });
     }
-    // Accept filename from request body or query string
-    let filename = req.body && req.body.filename ? req.body.filename : (req.query && req.query.filename ? req.query.filename : null);
-    if (!filename) {
-      return res.status(400).json({ success: false, error: 'Filename required' });
+    // Accept filename/URL from request body or query string
+    let photoIdentifier = req.body && req.body.filename ? req.body.filename : (req.query && req.query.filename ? req.query.filename : null);
+    if (!photoIdentifier) {
+      return res.status(400).json({ success: false, error: 'Photo identifier required' });
     }
+
     // Remove from DB
-    car.photos = car.photos.filter((img) => img !== filename && img !== `carimages/${filename}`);
-    await car.save();
-    // Remove file from disk
-    const fs = require('fs');
-    const path = require('path');
-    const filePath = path.join(__dirname, '../utils/carimages/', filename.replace('carimages/', ''));
-    fs.unlink(filePath, (err) => {
-      // Ignore error if file not found
+    car.photos = car.photos.filter((img) => {
+      return img !== photoIdentifier && 
+             img !== `carimages/${photoIdentifier}` &&
+             !img.includes(photoIdentifier);
     });
+    await car.save();
+
+    // Delete file from storage
+    if (isProduction) {
+      // Cloudinary deletion
+      try {
+        // Extract public_id from Cloudinary URL
+        if (photoIdentifier.includes('cloudinary.com')) {
+          const urlParts = photoIdentifier.split('/');
+          const publicIdWithExt = urlParts.slice(urlParts.indexOf('alfa-motors')).join('/');
+          const publicId = publicIdWithExt.replace(/\.[^/.]+$/, ''); // Remove extension
+          await cloudinary.uploader.destroy(publicId);
+        }
+      } catch (cloudErr) {
+        console.error('Error deleting from Cloudinary:', cloudErr);
+      }
+    } else {
+      // Local file deletion
+      const fs = require('fs');
+      const filePath = path.join(__dirname, '../utils/carimages/', photoIdentifier.replace('carimages/', ''));
+      fs.unlink(filePath, (err) => {
+        // Ignore error if file not found
+      });
+    }
+
     res.json({ success: true, message: 'Photo deleted' });
   } catch (err) {
-  console.error('Error deleting photo:', err);
-  res.status(500).json({ success: false, error: 'Server error' });
+    console.error('Error deleting photo:', err);
+    res.status(500).json({ success: false, error: 'Server error' });
   }
 });
 // Delete all photos for a car
@@ -150,27 +180,43 @@ router.delete('/:id/photos', protect, async (req, res) => {
       return res.status(401).json({ success: false, error: 'Not authorized' });
     }
 
-    const fs = require('fs');
-    const path = require('path');
     const images = Array.isArray(car.photos) ? car.photos.slice() : [];
 
-    // Remove files from disk (attempt, ignore missing)
-    images.forEach((img) => {
-      try {
-        const filename = img.split('/').pop();
-        const filePath = path.join(__dirname, '../utils/carimages/', filename.replace('carimages/', ''));
-        fs.unlink(filePath, (err) => {
-          // ignore error
-        });
-      } catch (e) {
-        // ignore
+    // Delete files from storage
+    if (isProduction) {
+      // Cloudinary deletion
+      for (const img of images) {
+        try {
+          if (img.includes('cloudinary.com')) {
+            const urlParts = img.split('/');
+            const publicIdWithExt = urlParts.slice(urlParts.indexOf('alfa-motors')).join('/');
+            const publicId = publicIdWithExt.replace(/\.[^/.]+$/, '');
+            await cloudinary.uploader.destroy(publicId);
+          }
+        } catch (cloudErr) {
+          console.error('Error deleting from Cloudinary:', cloudErr);
+        }
       }
-    });
+    } else {
+      // Local file deletion
+      const fs = require('fs');
+      images.forEach((img) => {
+        try {
+          const filename = img.split('/').pop();
+          const filePath = path.join(__dirname, '../utils/carimages/', filename.replace('carimages/', ''));
+          fs.unlink(filePath, (err) => {
+            // ignore error
+          });
+        } catch (e) {
+          // ignore
+        }
+      });
+    }
 
-  // Clear photos array in DB. Use direct update to bypass the schema validator
-  await Car.findByIdAndUpdate(req.params.id, { $set: { photos: [] } }, { new: true });
+    // Clear photos array in DB
+    await Car.findByIdAndUpdate(req.params.id, { $set: { photos: [] } }, { new: true });
 
-  res.json({ success: true, message: 'All photos deleted' });
+    res.json({ success: true, message: 'All photos deleted' });
   } catch (err) {
     console.error('Error deleting all photos:', err);
     res.status(500).json({ success: false, error: 'Server error' });
@@ -245,7 +291,9 @@ router.put(
   upload.array("photos", 12),
   async (req, res) => {
     try {
-      const photoPaths = req.files ? req.files.map((file) => file.filename) : [];
+      const photoPaths = req.files ? req.files.map((file) => {
+        return isProduction ? file.path : file.filename;
+      }) : [];
       
       if (photoPaths.length === 0) {
         return res.status(400).json({ success: false, error: "No photos provided" });
@@ -295,13 +343,14 @@ router.post(
         return res.status(404).json({ success: false, error: "Car not found" });
       }
       
-      car.photos.push(req.file.filename);
+      const photoPath = isProduction ? req.file.path : req.file.filename;
+      car.photos.push(photoPath);
       await car.save();
       
       res.status(200).json({
         success: true,
         data: car,
-        newPhoto: req.file.filename
+        newPhoto: photoPath
       });
     } catch (err) {
       console.error("Error adding photo:", err);
@@ -365,9 +414,10 @@ router.post('/:id/sold-photo', protect, upload.single('photo'), async (req, res)
     if (!car) return res.status(404).json({ success: false, error: 'Car not found' });
     if (car.addedBy.toString() !== req.user._id.toString()) return res.status(401).json({ success: false, error: 'Not authorized' });
 
+    const photoPath = isProduction ? req.file.path : req.file.filename;
     car.sold = car.sold || {};
     car.sold.customerPhotos = car.sold.customerPhotos || [];
-    car.sold.customerPhotos.push(req.file.filename);
+    car.sold.customerPhotos.push(photoPath);
     await car.save();
 
     // Also create a Gallery document so uploads via this legacy endpoint
@@ -375,7 +425,7 @@ router.post('/:id/sold-photo', protect, upload.single('photo'), async (req, res)
     try {
       const galleryItem = new Gallery({
         car: car._id,
-        filename: req.file.filename,
+        filename: photoPath,
         caption: req.body.caption || '',
         testimonial: req.body.testimonial || '',
         uploadedBy: req.user._id,
@@ -386,7 +436,7 @@ router.post('/:id/sold-photo', protect, upload.single('photo'), async (req, res)
       // non-fatal: continue returning success for the car update
     }
 
-    res.json({ success: true, data: car, newPhoto: req.file.filename });
+    res.json({ success: true, data: car, newPhoto: photoPath });
   } catch (err) {
     console.error('Error adding sold photo:', err);
     res.status(500).json({ success: false, error: 'Server error' });

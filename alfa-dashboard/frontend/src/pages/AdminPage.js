@@ -23,7 +23,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 import logo from '../images/company.png';
 import Sidebar from "../components/Sidebar";
 import AuthContext from "../context/AuthContext";
-const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'https://alfa-motors.onrender.com' : 'https://alfa-motors.onrender.com');
+const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'https://alfa-motors-5yfh.vercel.app' : 'https://alfa-motors-5yfh.vercel.app');
 
 // Register ChartJS components
 ChartJS.register(

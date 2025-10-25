@@ -288,7 +288,7 @@ const RcListPage = () => {
     },
   };
   const API_BASE_URL =
-    process.env.REACT_APP_API_BASE_URL || "https://alfa-motors.onrender.com";
+    process.env.REACT_APP_API_BASE_URL || "https://alfa-motors-5yfh.vercel.app";
 
   const menuItems = [
     {

@@ -1,22 +1,22 @@
-require('dotenv').config();
-const express = require('express');
-const connectDB = require('./config/db');
-const authRoutes = require('./routes/authRoutes');
-const userRoutes = require('./routes/userRoutes');
-const sellLetterRoutes = require('./routes/selLetter');
-const dashboardRoutes = require('./routes/dashboard');
-const serviceBillRoutes = require('./routes/serviceBillRoutes');
+require("dotenv").config();
+const express = require("express");
+const connectDB = require("./config/db");
+const authRoutes = require("./routes/authRoutes");
+const userRoutes = require("./routes/userRoutes");
+const sellLetterRoutes = require("./routes/selLetter");
+const dashboardRoutes = require("./routes/dashboard");
+const serviceBillRoutes = require("./routes/serviceBillRoutes");
 const rcRoutes = require("./routes/rcRoutes");
-const sellRoutes = require('./routes/sellRoutes');
-const carRoutes = require('./routes/carRoutes');
-const reviewRoutes = require('./routes/reviewRoutes');
-const galleryRoutes = require('./routes/galleryRoutes');
-const refurbishmentRoutes = require('./routes/refurbishmentRoutes');
-const advancePaymentRoutes = require('./routes/advancePaymentRoutes');
+const sellRoutes = require("./routes/sellRoutes");
+const carRoutes = require("./routes/carRoutes");
+const reviewRoutes = require("./routes/reviewRoutes");
+const galleryRoutes = require("./routes/galleryRoutes");
+const refurbishmentRoutes = require("./routes/refurbishmentRoutes");
+const advancePaymentRoutes = require("./routes/advancePaymentRoutes");
 const path = require("path");
 const fs = require("fs");
-const { protect } = require('./middleware/auth');
-const cors = require('cors');
+const { protect } = require("./middleware/auth");
+const cors = require("cors");
 
 const app = express();
 
@@ -26,79 +26,77 @@ connectDB();
 
 // CORS configuration
 const corsOptions = {
-  origin: [
-    'http://127.0.0.1:5500',
-    'http://localhost:3000', 
-    'https://www.alfamotorworld.com',
-    'https://alfa-motors-o5cm.vercel.app',
-  'https://alfa-motors.onrender.com',
-    'http://localhost:5500',
-    'http://127.0.0.1:3000'
-  ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, or file://)
+    if (!origin) return callback(null, true);
+    
+    const allowedOrigins = [
+      "http://127.0.0.1:5502",
+      "http://127.0.0.1:5500",
+      "http://127.0.0.1:3000",
+      "http://localhost:3000",
+      "http://localhost:5500",
+      "http://localhost:5501",
+      "http://localhost:5502",
+      "https://www.alfamotorworld.com",
+      "https://alfa-motors-o5cm.vercel.app",
+      "https://alfa-motors-5yfh.vercel.app",
+    ];
+    
+    // Allow any localhost or 127.0.0.1 origin
+    if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+      return callback(null, true);
+    }
+    
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 };
 
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
 // Enable pre-flight for all routes
-app.options('*', cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 // Apply CORS middleware
 app.use(cors(corsOptions));
 
-// Additional CORS headers middleware
-app.use((req, res, next) => {
-  const origin = req.get('origin');
-  if (corsOptions.origin.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  
-  // Handle preflight requests
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
-  next();
-});
-
 // Serve public directory for sell request uploads
-app.use('/public', express.static(path.join(__dirname, 'public'), {
-  setHeaders: (res, filePath) => {
-    // Set CORS headers for image files
-    const origin = res.req.get('origin');
-    if (corsOptions.origin.includes(origin)) {
-      res.setHeader('Access-Control-Allow-Origin', origin);
-      if (corsOptions.credentials) {
-        res.setHeader('Access-Control-Allow-Credentials', 'true');
-      }
-    }
-  }
-}));
+app.use(
+  "/public",
+  express.static(path.join(__dirname, "public"))
+);
 
-app.use('/api/auth', authRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api/rc", rcRoutes);
-app.use('/api/cars', carRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/sell-letters', sellLetterRoutes);
-app.use('/api/dashboard', dashboardRoutes);
-app.use('/api/service-bills', serviceBillRoutes);
-app.use('/api/sell-requests', sellRoutes);
-app.use('/api/reviews', reviewRoutes);
-app.use('/api/gallery', galleryRoutes);
-app.use('/api/refurbishments', refurbishmentRoutes);
-app.use('/api/advance-payments', advancePaymentRoutes);
+app.use("/api/cars", carRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/sell-letters", sellLetterRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/service-bills", serviceBillRoutes);
+app.use("/api/sell-requests", sellRoutes);
+app.use("/api/reviews", reviewRoutes);
+app.use("/api/gallery", galleryRoutes);
+app.use("/api/refurbishments", refurbishmentRoutes);
+app.use("/api/advance-payments", advancePaymentRoutes);
 
 const carImagesPath = path.join(__dirname, "utils/carimages");
 app.use(
   "/carimages",
   (req, res, next) => {
     const origin = req.get("origin");
-    if (Array.isArray(corsOptions.origin) && origin && corsOptions.origin.includes(origin)) {
+    if (
+      Array.isArray(corsOptions.origin) &&
+      origin &&
+      corsOptions.origin.includes(origin)
+    ) {
       res.setHeader("Access-Control-Allow-Origin", origin);
       if (corsOptions.credentials) {
         res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -110,7 +108,8 @@ app.use(
       const fullPath = path.join(carImagesPath, requestedPath);
       if (!fs.existsSync(fullPath)) {
         // 1x1 transparent PNG
-        const placeholderBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=";
+        const placeholderBase64 =
+          "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=";
         const placeholderBuffer = Buffer.from(placeholderBase64, "base64");
         res.setHeader("Content-Type", "image/png");
         return res.status(200).send(placeholderBuffer);
@@ -127,7 +126,10 @@ app.use(
       // Ensure PDFs are served with the correct MIME and disposition
       if (filePath.endsWith(".pdf")) {
         res.setHeader("Content-Type", "application/pdf");
-        res.setHeader("Content-Disposition", "inline; filename=" + path.basename(filePath));
+        res.setHeader(
+          "Content-Disposition",
+          "inline; filename=" + path.basename(filePath)
+        );
       }
     },
   })
@@ -139,7 +141,11 @@ app.use(
   "/utils/uploads",
   (req, res, next) => {
     const origin = req.get("origin");
-    if (Array.isArray(corsOptions.origin) && origin && corsOptions.origin.includes(origin)) {
+    if (
+      Array.isArray(corsOptions.origin) &&
+      origin &&
+      corsOptions.origin.includes(origin)
+    ) {
       res.setHeader("Access-Control-Allow-Origin", origin);
       if (corsOptions.credentials) {
         res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -152,7 +158,10 @@ app.use(
     setHeaders: (res, filePath) => {
       if (filePath.endsWith(".pdf")) {
         res.setHeader("Content-Type", "application/pdf");
-        res.setHeader("Content-Disposition", "inline; filename=" + path.basename(filePath));
+        res.setHeader(
+          "Content-Disposition",
+          "inline; filename=" + path.basename(filePath)
+        );
       }
     },
   })
@@ -164,7 +173,11 @@ app.use(
   "/uploads",
   (req, res, next) => {
     const origin = req.get("origin");
-    if (Array.isArray(corsOptions.origin) && origin && corsOptions.origin.includes(origin)) {
+    if (
+      Array.isArray(corsOptions.origin) &&
+      origin &&
+      corsOptions.origin.includes(origin)
+    ) {
       res.setHeader("Access-Control-Allow-Origin", origin);
       if (corsOptions.credentials) {
         res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -177,12 +190,14 @@ app.use(
     setHeaders: (res, filePath) => {
       if (filePath.endsWith(".pdf")) {
         res.setHeader("Content-Type", "application/pdf");
-        res.setHeader("Content-Disposition", "inline; filename=" + path.basename(filePath));
+        res.setHeader(
+          "Content-Disposition",
+          "inline; filename=" + path.basename(filePath)
+        );
       }
     },
   })
 );
-
 
 const PORT = process.env.PORT || 2500;
 

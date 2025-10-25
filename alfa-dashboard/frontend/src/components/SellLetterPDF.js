@@ -33,8 +33,8 @@ import AuthContext from "../context/AuthContext";
 const API_BASE =
   window.API_BASE ||
   (window.location.hostname === "localhost"
-    ? "https://alfa-motors.onrender.com"
-    : "https://alfa-motors.onrender.com");
+    ? "https://alfa-motors-5yfh.vercel.app"
+    : "https://alfa-motors-5yfh.vercel.app");
 
 const SellLetterForm = () => {
   const { user } = useContext(AuthContext);
@@ -650,7 +650,7 @@ const SellLetterForm = () => {
       setIsSaving(true);
 
       const existingLetter = await axios.get(
-        `https://alfa-motors.onrender.com/api/sell-letters/by-registration?registrationNumber=${formData.registrationNumber}`,
+        `https://alfa-motors-5yfh.vercel.app/api/sell-letters/by-registration?registrationNumber=${formData.registrationNumber}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,

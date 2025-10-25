@@ -40,8 +40,8 @@ const ServiceHistory = () => {
   const API_BASE =
     window.API_BASE ||
     (window.location.hostname === "localhost"
-      ? "https://alfa-motors.onrender.com"
-      : "https://alfa-motors.onrender.com");
+      ? "https://alfa-motors-5yfh.vercel.app"
+      : "https://alfa-motors-5yfh.vercel.app");
 
   useEffect(() => {
     const fetchData = async () => {

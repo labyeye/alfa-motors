@@ -72,7 +72,7 @@ Replace line 197 in EditCar.js:
 
 **From:**
 ```javascript
-await axios.put(`https://alfa-motors.onrender.com/api/cars/${id}`, formData, {
+await axios.put(`https://alfa-motors-5yfh.vercel.app/api/cars/${id}`, formData, {
 ```
 
 **To:**
@@ -81,7 +81,7 @@ await axios.put(`https://alfa-motors.onrender.com/api/cars/${id}`, formData, {
 const hasImages = carData.photos && carData.photos.length > 0 && typeof carData.photos[0] !== 'string';
 const endpoint = hasImages ? `/api/cars/${id}/photos` : `/api/cars/${id}`;
 
-await axios.put(`https://alfa-motors.onrender.com${endpoint}`, formData, {
+await axios.put(`https://alfa-motors-5yfh.vercel.app${endpoint}`, formData, {
 ```
 
 ## Benefits

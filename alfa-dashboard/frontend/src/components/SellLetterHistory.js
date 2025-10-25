@@ -244,7 +244,7 @@ const SellLetterHistory = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `https://alfa-motors.onrender.com/api/sell-letters/my-letters?page=${currentPage}`,
+          `https://alfa-motors-5yfh.vercel.app/api/sell-letters/my-letters?page=${currentPage}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -750,7 +750,7 @@ const SellLetterHistory = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this sell letter?")) {
       try {
-        await axios.delete(`https://alfa-motors.onrender.com/api/sell-letters/${id}`, {
+        await axios.delete(`https://alfa-motors-5yfh.vercel.app/api/sell-letters/${id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -775,7 +775,7 @@ const SellLetterHistory = () => {
   const handleSaveEdit = async (updatedLetter) => {
     try {
       const response = await axios.put(
-        `https://alfa-motors.onrender.com/api/sell-letters/${updatedLetter._id}`,
+        `https://alfa-motors-5yfh.vercel.app/api/sell-letters/${updatedLetter._id}`,
         updatedLetter,
         {
           headers: {

@@ -19,7 +19,7 @@ import {
 import AuthContext from "../context/AuthContext";
 import Sidebar from "./Sidebar";
 
-const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'https://alfa-motors.onrender.com' : 'https://alfa-motors.onrender.com');
+const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'https://alfa-motors-5yfh.vercel.app' : 'https://alfa-motors-5yfh.vercel.app');
 
 const SellRequests = () => {
   const { user } = useContext(AuthContext);

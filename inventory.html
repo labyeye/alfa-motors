@@ -25,7 +25,7 @@
     />
     <link
       rel="preconnect"
-      href="https://alfa-motors.onrender.com"
+      href="https://alfa-motors-5yfh.vercel.app"
       crossorigin
     />
     <link
@@ -866,7 +866,7 @@
                 </div>
                 <div class="brand-logo" data-brand="McLaren">
                   <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/e/ed/McLaren_Automotive_okmotor.png"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSO_tLzaDh5AOxieWcPp2a5RyzYoCKRlil0rg&s"
                     alt="McLaren"
                   />
                 </div>
@@ -1171,6 +1171,33 @@
     </script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
+        // API Configuration - update this for production
+        const API_BASE_URL = window.location.hostname === 'localhost' 
+          ? 'https://alfa-motors-5yfh.vercel.app' 
+          : 'https://alfa-motors-5yfh.vercel.app'; // Replace with your Vercel backend URL
+
+        // Helper function to get the correct image URL
+        function getImageUrl(imagePath) {
+          if (!imagePath) return 'assets/placeholder.png';
+          
+          // If it's already a full URL (Cloudinary or other CDN), use it as-is
+          if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+            return imagePath;
+          }
+          
+          // For local filenames, construct the full URL
+          const filename = imagePath.startsWith('carimages/') 
+            ? imagePath.replace('carimages/', '') 
+            : imagePath;
+          
+          // Check if it's a local asset
+          if (filename.startsWith('assets/')) {
+            return filename;
+          }
+          
+          return `${API_BASE_URL}/carimages/${filename}`;
+        }
+
         let allCars = [];
         let currentFilters = {
           brand: null,
@@ -1186,8 +1213,13 @@
         let currentSort = "default"; // Declare this ONCE at the top level
 
         function loadCars() {
-          fetch("https://alfa-motors.onrender.com/api/cars")
-            .then((response) => response.json())
+          fetch(`${API_BASE_URL}/api/cars`)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+              }
+              return response.json();
+            })
             .then((data) => {
               console.log("Loaded cars data:", data); // Inspect the data structure
               if (data.success && Array.isArray(data.data)) {
@@ -1196,7 +1228,13 @@
                   brand: car.make?.trim(), // Ensure brand is trimmed
                 }));
                 applyAllFilters();
+              } else {
+                showErrorMessage("No cars found or invalid data format");
               }
+            })
+            .catch((error) => {
+              console.error("Error loading cars:", error);
+              showErrorMessage(`Failed to load cars: ${error.message}`);
             });
         }
 
@@ -1359,11 +1397,6 @@
           // Create image slider if multiple images exist
           let imageHTML = "";
           if (Array.isArray(car.photos) && car.photos.length > 0) {
-            // Helper to strip 'carimages/' prefix if present
-            const getPhotoFilename = (img) =>
-              img.startsWith("carimages/")
-                ? img.replace("carimages/", "")
-                : img;
             if (car.photos.length > 1) {
               // Multiple images - create slider
               imageHTML = `
@@ -1372,10 +1405,9 @@
             ${car.photos
               .map(
                 (img) => `
-              <img src="https://alfa-motors.onrender.com/carimages/${getPhotoFilename(
-                img
-              )}" 
-                   alt="${car.make || car.make || ""} ${car.model || ""}">
+              <img src="${getImageUrl(img)}" 
+                   alt="${car.make || car.brand || ""} ${car.model || ""}"
+                   onerror="this.onerror=null;this.src='assets/placeholder.png'">
             `
               )
               .join("")}
@@ -1396,12 +1428,9 @@
             } else {
               // Single image
               imageHTML = `
-  <img src="https://alfa-motors.onrender.com/carimages/${getPhotoFilename(
-    car.photos[0]
-  )}" 
-    alt="${car.make || car.make || ""} ${
-                car.model || ""
-              }" onerror="this.onerror=null;this.src='assets/placeholder.png'">
+  <img src="${getImageUrl(car.photos[0])}" 
+    alt="${car.make || car.brand || ""} ${car.model || ""}" 
+    onerror="this.onerror=null;this.src='assets/placeholder.png'">
   `;
             }
           } else {
@@ -1532,16 +1561,10 @@
             car.photos && car.photos.length > 0
               ? car.photos
               : ["assets/owner.png"];
-          function normalizeImagePath(img) {
-            let filename = img;
-            if (filename.startsWith("carimages/"))
-              filename = filename.replace("carimages/", "");
-            if (filename.startsWith("assets/")) return filename;
-            return `https://alfa-motors.onrender.com/carimages/${filename}`;
-          }
+
           function showImage(idx) {
             currentIndex = idx;
-            mainImg.src = normalizeImagePath(images[idx]);
+            mainImg.src = getImageUrl(images[idx]);
             mainImg.alt = `${car.make} ${car.model} ${idx + 1}`;
             Array.from(thumbnailsContainer.children).forEach((thumb, i) => {
               thumb.style.border = i === idx ? "2px solid #3b82f6" : "none";
@@ -1549,7 +1572,7 @@
           }
           images.forEach((img, idx) => {
             const thumb = document.createElement("img");
-            thumb.src = normalizeImagePath(img);
+            thumb.src = getImageUrl(img);
             thumb.alt = `${car.make} ${car.model} ${idx + 1}`;
             thumb.style.width = "60px";
             thumb.style.height = "40px";

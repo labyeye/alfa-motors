@@ -224,6 +224,32 @@
       </div>
     </div>
     <script>
+      // API Configuration
+      const API_BASE_URL = window.location.hostname === 'localhost' 
+        ? 'https://alfa-motors-5yfh.vercel.app' 
+        : 'https://alfa-motors-5yfh.vercel.app'; // Replace with your Vercel backend URL
+
+      // Helper function to get the correct image URL
+      function getImageUrl(imagePath) {
+        if (!imagePath) return 'assets/placeholder.png';
+        
+        // If it's already a full URL (Cloudinary or other CDN), use it as-is
+        if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+          return imagePath;
+        }
+        
+        // For local filenames, construct the full URL
+        const filename = imagePath.startsWith('carimages/') 
+          ? imagePath.replace('carimages/', '') 
+          : imagePath;
+        
+        // Check if it's a local asset
+        if (filename.startsWith('assets/')) {
+          return filename;
+        }
+        
+        return `${API_BASE_URL}/carimages/${filename}`;
+      }
 
       // Helper Functions
       function formatOwnership(owner) {
@@ -235,11 +261,7 @@
       }
 
       function normalizeImagePath(img) {
-        let filename = img;
-        if (filename.startsWith("carimages/"))
-          filename = filename.replace("carimages/", "");
-        if (filename.startsWith("assets/")) return filename;
-        return `https://alfa-motors.onrender.com/carimages/${filename}`;
+        return getImageUrl(img);
       }
 
       function getCarDataFromQuery() {
@@ -301,13 +323,6 @@
         const mainImg = document.getElementById("mainVehicleImg");
         const thumbnails = document.getElementById("vehicleThumbnails");
         thumbnails.innerHTML = "";
-        function normalizeImagePath(img) {
-          let filename = img;
-          if (filename.startsWith("carimages/"))
-            filename = filename.replace("carimages/", "");
-          if (filename.startsWith("assets/")) return filename;
-          return `https://alfa-motors.onrender.com/carimages/${filename}`;
-        }
 
         // Mobile Image Layout
         if (window.innerWidth <= 900) {
@@ -363,7 +378,7 @@
         }
       }
       // Fetch other cars from backend and show in slider
-      fetch("https://alfa-motors.onrender.com/api/cars")
+      fetch(`${API_BASE_URL}/api/cars`)
         .then((response) => response.json())
         .then((data) => {
           if (data.success && Array.isArray(data.data)) {
@@ -378,7 +393,7 @@
                 car.photos && car.photos.length > 0
                   ? car.photos[0].startsWith("assets/")
                     ? car.photos[0]
-                    : `https://alfa-motors.onrender.com/carimages/${car.photos[0]}`
+                    : `https://alfa-motors-5yfh.vercel.app/carimages/${car.photos[0]}`
                   : "assets/owner.png";
 
               const statusClass =
