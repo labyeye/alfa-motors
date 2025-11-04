@@ -9,7 +9,7 @@
     />
     <meta
       name="keywords"
-      content="used cars India, pre-owned motorcycles, certified pre-owned cars, buy used cars, sell car online, second hand cars, Alfa Motors"
+      content="best second hand cars in bangalore, second hand car in bangalore, used cars bangalore, second hand cars karnataka, pre-owned cars Bangalore, buy second hand car Bangalore, used car dealer Bangalore, used cars India, pre-owned motorcycles, certified pre-owned cars, Alfa Motors"
     />
     <meta name="author" content="Alfa Motors World" />
     <meta
@@ -31,6 +31,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+    <!-- Preconnect to backend to warm up connections -->
+    <link
+      rel="preconnect"
+      href="https://alfa-motors-o5cm.vercel.app"
+      crossorigin
+    />
+    <link
+      rel="preconnect"
+      href="https://alfa-motors-5yfh.vercel.app"
+      crossorigin
+    />
     <!-- Link to sitemap for crawlers -->
     <link
       rel="sitemap"
@@ -125,33 +136,84 @@
         "priceRange": "₹50,000 - ₹25,00,000"
       }
     </script>
-    <!-- Accessibility helper: ensure every <img> has an alt attribute -->
+    <!-- Prefetch inventory page into sessionStorage for faster navigation from home -->
     <script>
       (function () {
-        function populateAlts() {
-          document.querySelectorAll("img:not([alt])").forEach(function (img) {
+        try {
+          if (typeof window !== "undefined" && window.sessionStorage) {
+            // Fetch the inventory page in the background and store HTML
+            fetch("inventory.html", { credentials: "same-origin" })
+              .then(function (res) {
+                return res.text();
+              })
+              .then(function (html) {
+                try {
+                  sessionStorage.setItem("prefetchedInventory", html);
+                } catch (e) {}
+              })
+              .catch(function () {});
+
+            // Warm up a couple of important images to make the inventory appear fast
+            [
+              "/assets/images/homepage/stylepages/4.webp",
+              "/assets/images/homepage/stylepages/6.webp",
+            ].forEach(function (src) {
+              try {
+                var i = new Image();
+                i.src = src;
+              } catch (e) {}
+            });
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <!-- Accessibility & performance helper: ensure images have alt, lazy loading and async decoding -->
+    <script>
+      (function () {
+        function enhanceImages() {
+          document.querySelectorAll("img").forEach(function (img) {
             try {
               var src = img.getAttribute("src") || "";
-              if (
+              var isDecor =
                 /logo|icon|decor|sprite|background|arrow|dot|star|placeholder/i.test(
                   src
-                )
-              ) {
-                img.setAttribute("alt", ""); // decorative
+                ) ||
+                img.classList.contains("logo-img") ||
+                img.getAttribute("itemprop") === "logo";
+              // alt
+              if (!img.hasAttribute("alt")) {
+                if (isDecor) img.setAttribute("alt", "");
+                else {
+                  var name =
+                    src.split("/").pop().split("?")[0].split(".")[0] || "image";
+                  name = name.replace(/[-_]+/g, " ").replace(/\d+/g, "").trim();
+                  img.setAttribute("alt", name || "image");
+                }
+              }
+              // loading & decoding
+              if (!isDecor) {
+                if (!img.hasAttribute("loading"))
+                  img.setAttribute("loading", "lazy");
+                if (!img.hasAttribute("decoding"))
+                  img.setAttribute("decoding", "async");
               } else {
-                var name =
-                  src.split("/").pop().split("?")[0].split(".")[0] || "image";
-                name = name.replace(/[-_]+/g, " ").replace(/\d+/g, "").trim();
-                img.setAttribute("alt", name || "image");
+                if (!img.hasAttribute("decoding"))
+                  img.setAttribute("decoding", "sync");
               }
             } catch (e) {}
           });
         }
         if (document.readyState === "loading")
-          document.addEventListener("DOMContentLoaded", populateAlts);
-        else populateAlts();
+          document.addEventListener("DOMContentLoaded", enhanceImages);
+        else enhanceImages();
       })();
     </script>
+    <link
+      rel="sitemap"
+      type="application/xml"
+      title="Sitemap"
+      href="/sitemap.xml"
+    />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -273,7 +335,11 @@
               >Sell Your Vehicle</a
             >
           </li>
-          <li><a href="happy-customers.html" data-translate="Happy Customers">Happy Customers</a></li>
+          <li>
+            <a href="happy-customers.html" data-translate="Happy Customers"
+              >Happy Customers</a
+            >
+          </li>
           <li><a href="#" data-translate="Financing">Financing</a></li>
           <li><a href="about.html" data-translate="About Us">About Us</a></li>
           <li><a href="contact.html" data-translate="Contact">Contact</a></li>
@@ -298,8 +364,8 @@
           >
           <span
             class="hero-line subtitle"
-            data-translate="Premium Pre-Owned Vehicles with Complete Transparency"
-            >Premium Pre-Owned Vehicles with Complete Transparency</span
+            data-translate="Best Second hand car in Bengaluru"
+            >Best Second hand car in Bengaluru</span
           >
         </h1>
 
@@ -1409,10 +1475,10 @@
           </div>
           <p
             itemprop="description"
-            data-translate="India's most trusted marketplace for premium pre-owned Cars since 2018."
+            data-translate="The best second-hand car showroom in Bangalore for luxury and premium cars."
           >
-            India's most trusted marketplace for premium pre-owned Cars since
-            2018.
+            The best second-hand car showroom in Bangalore for luxury and
+            premium cars.
           </p>
           <a
             href="#leave-review"

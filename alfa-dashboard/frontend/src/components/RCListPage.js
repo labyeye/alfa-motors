@@ -4,15 +4,7 @@ import {
   Edit,
   Trash2,
   Search,
-  ChevronDown,
-  ChevronRight,
   Download,
-  CarFront,
-  Car,
-  Bike,
-  Users,
-  Wrench,
-  LogOut,
 } from "lucide-react";
 import {
   Input,
@@ -27,7 +19,6 @@ import {
   Checkbox,
 } from "antd";
 import AuthContext from "../context/AuthContext";
-import { ShoppingCart, LayoutDashboard, TrendingUp } from "lucide-react";
 import * as XLSX from "xlsx";
 import { useMediaQuery } from "react-responsive";
 import Sidebar from "./Sidebar";
@@ -35,7 +26,6 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 const RcListPage = () => {
-  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const isMobile = useMediaQuery({ maxWidth: 768 });
   const isTablet = useMediaQuery({ minWidth: 769, maxWidth: 1024 });
@@ -97,32 +87,7 @@ const RcListPage = () => {
       justifyContent: isMobile ? "center" : "flex-start",
       flexDirection: isMobile ? "column" : "column",
     },
-    menuItem: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: isMobile ? "center" : "space-between",
-      padding: isMobile ? "8px 12px" : isTablet ? "10px 16px" : "12px 24px",
-      cursor: "pointer",
-      color: "#e2e8f0",
-      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-      borderRadius: isMobile ? "6px" : "0",
-      margin: isMobile ? "0 4px" : "0",
-      minWidth: isMobile ? "100px" : "auto",
-      fontSize: isMobile ? "0.875rem" : "1rem",
-    },
-    menuItemActive: {
-      backgroundColor: isMobile ? "#475569" : "#334155",
-      borderRight: isMobile ? "none" : "3px solid #3b82f6",
-      borderBottom: isMobile ? "3px solid #3b82f6" : "none",
-      color: "#ffffff",
-    },
-    menuItemContent: {
-      display: "flex",
-      alignItems: "center",
-      flexDirection: isMobile ? "column" : "row",
-      gap: isMobile ? "2px" : "0",
-      textAlign: isMobile ? "center" : "left",
-    },
+    
     menuIcon: {
       marginRight: isMobile ? "0" : "12px",
       marginBottom: isMobile ? "2px" : "0",
@@ -290,65 +255,6 @@ const RcListPage = () => {
   const API_BASE_URL =
     process.env.REACT_APP_API_BASE_URL || "https://alfa-motors-5yfh.vercel.app";
 
-  const menuItems = [
-    {
-      name: "Dashboard",
-      icon: LayoutDashboard,
-      path: (userRole) => (userRole === "admin" ? "/admin" : "/staff"),
-    },
-    {
-      name: "RTO",
-      icon: Car,
-      submenu: [
-        { name: "RC Entry", path: "/rc/create" },
-        { name: "RC List", path: "/rc/list" },
-      ],
-    },
-    {
-      name: "Car Management",
-      icon: CarFront,
-      submenu: [
-        { name: "Add Car Data", path: "/car/create" },
-        { name: "List Car Data", path: "/car/list" },
-        { name: "Edit Car Data", path: "/car/edit" },
-      ],
-    },
-    {
-      name: "Sell",
-      icon: TrendingUp,
-      submenu: [
-        { name: "Create Sell Letter", path: "/sell/create" },
-        { name: "Sell Letter History", path: "/sell/history" },
-        { name: "Sell Queries", path: "/sell-requests" },
-      ],
-    },
-    {
-      name: "Service",
-      icon: Wrench,
-      submenu: [
-        { name: "Create Service Bill", path: "/service/create" },
-        { name: "Service History", path: "/service/history" },
-      ],
-    },
-    ...(user?.role !== "staff"
-      ? [
-          {
-            name: "Staff",
-            icon: Users,
-            submenu: [
-              { name: "Create Staff ID", path: "/staff/create" },
-              { name: "Staff List", path: "/staff/list" },
-            ],
-          },
-        ]
-      : []),
-    {
-      name: "Vehicle History",
-      icon: Bike,
-      path: "/bike-history",
-    },
-  ];
-
   useEffect(() => {
     const fetchRcEntries = async () => {
       try {
@@ -376,10 +282,6 @@ const RcListPage = () => {
     fetchRcEntries();
   }, [API_BASE_URL]);
 
-  const handleMenuClick = (menuName, path) => {
-    setActiveMenu(menuName);
-    navigate(path);
-  };
   const handleStatusFilterChange = (filterName, value) => {
     setStatusFilters((prev) => ({
       ...prev,
@@ -416,22 +318,6 @@ const RcListPage = () => {
 
     XLSX.writeFile(wb, filename);
   };
-
-  const toggleMenu = (menuName) => {
-    setExpandedMenus((prev) => ({
-      ...prev,
-      [menuName]: !prev[menuName],
-    }));
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("authToken");
-    sessionStorage.clear();
-    navigate("/login");
-  };
-
   const filteredEntries = rcEntries.filter((entry) => {
     const searchLower = searchText.toLowerCase();
     const matchesSearch =
@@ -787,7 +673,7 @@ const RcListPage = () => {
             <Form.Item name="rtoFeesPaid" valuePropName="checked">
               <Checkbox>RTO Fees Paid</Checkbox>
             </Form.Item>
-            
+
             <Form.Item name="returnedToDealer" valuePropName="checked">
               <Checkbox>Returned To Dealer</Checkbox>
             </Form.Item>

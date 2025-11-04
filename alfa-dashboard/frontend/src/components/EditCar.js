@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
@@ -20,10 +20,11 @@ import {
 import AuthContext from "../context/AuthContext";
 import logo from "../images/company.png";
 
-const API_BASE = (function() {
+const API_BASE = (function () {
   const host = window.location.hostname;
-  if (host === 'localhost' || host.startsWith('127.')) return 'https://alfa-motors-5yfh.vercel.app';
-  return 'https://alfa-motors-5yfh.vercel.app';
+  if (host === "localhost" || host.startsWith("127."))
+    return "https://alfa-motors-5yfh.vercel.app";
+  return "https://alfa-motors-5yfh.vercel.app";
 })();
 
 const EditCar = () => {
@@ -52,7 +53,7 @@ const EditCar = () => {
     sellingPrice: "",
     photos: [],
     status: "Available",
-    sold: {}
+    sold: {},
   });
 
   const menuItems = [
@@ -124,33 +125,38 @@ const EditCar = () => {
           },
         });
 
-        const car = response.data && response.data.data ? response.data.data : response.data;
-        
+        const car =
+          response.data && response.data.data
+            ? response.data.data
+            : response.data;
+
         setCarData({
-          make: car.make || '',
-          model: car.model || '',
-          variant: car.variant || '',
-          fuelType: car.fuelType || 'Petrol',
-          modelYear: car.modelYear || '',
-          registrationYear: car.registrationYear || '',
-          color: car.color || '',
-          chassisNo: car.chassisNo || '',
-          engineNo: car.engineNo || '',
-          kmDriven: car.kmDriven || '',
-          ownership: car.ownership || '1st Owner',
-          daysOld: car.daysOld || '',
-          buyingPrice: car.buyingPrice || '',
-          quotingPrice: car.quotingPrice || '',
-          sellingPrice: car.sellingPrice || '',
+          make: car.make || "",
+          model: car.model || "",
+          variant: car.variant || "",
+          fuelType: car.fuelType || "Petrol",
+          modelYear: car.modelYear || "",
+          registrationYear: car.registrationYear || "",
+          color: car.color || "",
+          chassisNo: car.chassisNo || "",
+          engineNo: car.engineNo || "",
+          kmDriven: car.kmDriven || "",
+          ownership: car.ownership || "1st Owner",
+          daysOld: car.daysOld || "",
+          buyingPrice: car.buyingPrice || "",
+          quotingPrice: car.quotingPrice || "",
+          sellingPrice: car.sellingPrice || "",
           photos: car.photos || [],
-          status: car.status || 'Available',
-          sold: car.sold || {}
+          status: car.status || "Available",
+          sold: car.sold || {},
         });
-        
+
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching car data:", error);
-        alert("Failed to load car data. Please check your connection and try again.");
+        alert(
+          "Failed to load car data. Please check your connection and try again."
+        );
         navigate("/car/list");
       }
     };
@@ -181,41 +187,47 @@ const EditCar = () => {
 
   const handleFileUpload = async (files) => {
     if (files.length === 0) return;
-    
+
     // Validate file count
     if (files.length > 12) {
-      alert('Please select maximum 12 images at once.');
+      alert("Please select maximum 12 images at once.");
       return;
     }
-    
+
     // Validate file types
-    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-    const invalidFiles = files.filter(file => !validTypes.includes(file.type));
+    const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+    const invalidFiles = files.filter(
+      (file) => !validTypes.includes(file.type)
+    );
     if (invalidFiles.length > 0) {
-      alert('Please select only image files (JPEG, JPG, PNG, WEBP).');
+      alert("Please select only image files (JPEG, JPG, PNG, WEBP).");
       return;
     }
-    
+
     try {
       // Show loading state
       const uploadingPhotos = files.map((_, index) => `uploading-${index}`);
-      setCarData(prev => ({ ...prev, photos: uploadingPhotos }));
-      
+      setCarData((prev) => ({ ...prev, photos: uploadingPhotos }));
+
       const formData = new FormData();
-      
+
       // Add replace flag to replace all existing photos
-      formData.append('replacePhotos', 'true');
-      
+      formData.append("replacePhotos", "true");
+
       for (let file of files) {
-        formData.append('photos', file);
+        formData.append("photos", file);
       }
 
-      const response = await axios.put(`${API_BASE}/api/cars/${id}/photos`, formData, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.put(
+        `${API_BASE}/api/cars/${id}/photos`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       // Refresh car data after upload
       const updatedResponse = await axios.get(`${API_BASE}/api/cars/${id}`, {
@@ -223,54 +235,59 @@ const EditCar = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      
-      const car = updatedResponse.data && updatedResponse.data.data ? updatedResponse.data.data : updatedResponse.data;
-      setCarData(prev => ({ ...prev, photos: car.photos || [] }));
-      
+
+      const car =
+        updatedResponse.data && updatedResponse.data.data
+          ? updatedResponse.data.data
+          : updatedResponse.data;
+      setCarData((prev) => ({ ...prev, photos: car.photos || [] }));
+
       alert(`${files.length} photos uploaded successfully!`);
     } catch (error) {
-      console.error('Error uploading photos:', error);
-      setCarData(prev => ({ ...prev, photos: [] })); // Reset on error
-      alert('Failed to upload photos. Please try again.');
+      console.error("Error uploading photos:", error);
+      setCarData((prev) => ({ ...prev, photos: [] })); // Reset on error
+      alert("Failed to upload photos. Please try again.");
     }
   };
-  
+
   const handleDeletePhoto = async (photoToDelete) => {
     try {
       // Extract just the filename from the path
-      const filename = photoToDelete.replace('carimages/', '').replace(`${API_BASE}/carimages/`, '');
-      
+      const filename = photoToDelete
+        .replace("carimages/", "")
+        .replace(`${API_BASE}/carimages/`, "");
+
       await axios.delete(`${API_BASE}/api/cars/${id}/photo`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        data: { filename: filename }
+        data: { filename: filename },
       });
-      
+
       // Remove from local state
-      setCarData(prev => ({
+      setCarData((prev) => ({
         ...prev,
-        photos: prev.photos.filter(photo => photo !== photoToDelete)
+        photos: prev.photos.filter((photo) => photo !== photoToDelete),
       }));
-      
-      alert('Photo deleted successfully!');
+
+      alert("Photo deleted successfully!");
     } catch (error) {
-      console.error('Error deleting photo:', error);
-      alert('Failed to delete photo. Please try again.');
+      console.error("Error deleting photo:", error);
+      alert("Failed to delete photo. Please try again.");
     }
   };
 
   const buildImageUrl = (file) => {
-    if (!file) return '/assets/placeholder.png';
-    if (file.startsWith('http') || file.startsWith('/')) return file;
-    const filename = file.replace('carimages/', '');
+    if (!file) return "/assets/placeholder.png";
+    if (file.startsWith("http") || file.startsWith("/")) return file;
+    const filename = file.replace("carimages/", "");
     return `${API_BASE}/carimages/${filename}`;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSaving(true);
-    
+
     try {
       const updateData = {
         brand: carData.make,
@@ -330,11 +347,7 @@ const EditCar = () => {
       {/* Sidebar */}
       <div style={styles.sidebar}>
         <div style={styles.sidebarHeader}>
-          <img
-            src={logo}
-            alt="Alfa Motors Logo"
-            style={styles.logoImage}
-          />
+          <img src={logo} alt="Alfa Motors Logo" style={styles.logoImage} />
           <p style={styles.sidebarSubtitle}>Welcome, Alfa Motor World</p>
         </div>
 
@@ -413,7 +426,7 @@ const EditCar = () => {
                 <Car size={24} style={styles.sectionIcon} />
                 <h2 style={styles.sectionTitle}>Basic Information</h2>
               </div>
-              
+
               <div style={styles.inputGrid}>
                 <div style={styles.inputGroup}>
                   <label style={styles.label}>Make *</label>
@@ -427,7 +440,7 @@ const EditCar = () => {
                     required
                   />
                 </div>
-                
+
                 <div style={styles.inputGroup}>
                   <label style={styles.label}>Model *</label>
                   <input
@@ -440,7 +453,7 @@ const EditCar = () => {
                     required
                   />
                 </div>
-                
+
                 <div style={styles.inputGroup}>
                   <label style={styles.label}>Variant</label>
                   <input
@@ -452,7 +465,7 @@ const EditCar = () => {
                     placeholder="Enter variant"
                   />
                 </div>
-                
+
                 <div style={styles.inputGroup}>
                   <label style={styles.label}>Fuel Type *</label>
                   <select
@@ -469,7 +482,7 @@ const EditCar = () => {
                     <option value="Hybrid">Hybrid</option>
                   </select>
                 </div>
-                
+
                 <div style={styles.inputGroup}>
                   <label style={styles.label}>Model Year *</label>
                   <input
@@ -484,7 +497,7 @@ const EditCar = () => {
                     required
                   />
                 </div>
-                
+
                 <div style={styles.inputGroup}>
                   <label style={styles.label}>Registration Year *</label>
                   <input
@@ -499,7 +512,7 @@ const EditCar = () => {
                     required
                   />
                 </div>
-                
+
                 <div style={styles.inputGroup}>
                   <label style={styles.label}>Color</label>
                   <input
@@ -511,7 +524,7 @@ const EditCar = () => {
                     placeholder="Enter color"
                   />
                 </div>
-                
+
                 <div style={styles.inputGroup}>
                   <label style={styles.label}>Ownership *</label>
                   <select
@@ -527,7 +540,7 @@ const EditCar = () => {
                     <option value="4th Owner or more">4th Owner or more</option>
                   </select>
                 </div>
-                
+
                 <div style={styles.inputGroup}>
                   <label style={styles.label}>KM Driven</label>
                   <input
@@ -549,7 +562,7 @@ const EditCar = () => {
                 <CarFront size={24} style={styles.sectionIcon} />
                 <h2 style={styles.sectionTitle}>Vehicle Details</h2>
               </div>
-              
+
               <div style={styles.inputGrid}>
                 <div style={styles.inputGroup}>
                   <label style={styles.label}>Chassis Number</label>
@@ -562,7 +575,7 @@ const EditCar = () => {
                     placeholder="Enter chassis number"
                   />
                 </div>
-                
+
                 <div style={styles.inputGroup}>
                   <label style={styles.label}>Engine Number</label>
                   <input
@@ -574,7 +587,7 @@ const EditCar = () => {
                     placeholder="Enter engine number"
                   />
                 </div>
-                
+
                 <div style={styles.inputGroup}>
                   <label style={styles.label}>Days Old</label>
                   <input
@@ -587,7 +600,7 @@ const EditCar = () => {
                     min="0"
                   />
                 </div>
-                
+
                 <div style={styles.inputGroup}>
                   <label style={styles.label}>Status</label>
                   <select
@@ -610,7 +623,7 @@ const EditCar = () => {
                 <TrendingUp size={24} style={styles.sectionIcon} />
                 <h2 style={styles.sectionTitle}>Pricing Information</h2>
               </div>
-              
+
               <div style={styles.inputGrid}>
                 <div style={styles.inputGroup}>
                   <label style={styles.label}>Buying Price (₹)</label>
@@ -624,7 +637,7 @@ const EditCar = () => {
                     min="0"
                   />
                 </div>
-                
+
                 <div style={styles.inputGroup}>
                   <label style={styles.label}>Quoting Price (₹)</label>
                   <input
@@ -637,7 +650,7 @@ const EditCar = () => {
                     min="0"
                   />
                 </div>
-                
+
                 <div style={styles.inputGroup}>
                   <label style={styles.label}>Selling Price (₹)</label>
                   <input
@@ -659,7 +672,7 @@ const EditCar = () => {
                 <Camera size={24} style={styles.sectionIcon} />
                 <h2 style={styles.sectionTitle}>Vehicle Photos</h2>
               </div>
-              
+
               <div style={styles.photoSection}>
                 <div style={styles.uploadArea}>
                   <Upload size={48} style={styles.uploadIcon} />
@@ -677,7 +690,7 @@ const EditCar = () => {
                     onChange={(e) => {
                       if (e.target.files.length > 0) {
                         handleFileUpload(Array.from(e.target.files));
-                        e.target.value = ''; // Reset input
+                        e.target.value = ""; // Reset input
                       }
                     }}
                     style={styles.fileInput}
@@ -692,39 +705,48 @@ const EditCar = () => {
                   <div style={styles.photoGrid}>
                     {carData.photos.map((photo, index) => {
                       // Show loading placeholder for uploading photos
-                      if (typeof photo === 'string' && photo.startsWith('uploading-')) {
+                      if (
+                        typeof photo === "string" &&
+                        photo.startsWith("uploading-")
+                      ) {
                         return (
                           <div key={index} style={styles.photoCard}>
                             <div style={styles.uploadingPlaceholder}>
                               <div style={styles.uploadingSpinner}></div>
-                              <span style={styles.uploadingText}>Uploading...</span>
+                              <span style={styles.uploadingText}>
+                                Uploading...
+                              </span>
                             </div>
                           </div>
                         );
                       }
-                      
+
                       return (
-                      <div key={index} style={styles.photoCard}>
-                        <img
-                          src={buildImageUrl(photo)}
-                          alt={`Vehicle ${index + 1}`}
-                          style={styles.photoImage}
-                          onError={(e) => {
-                            e.currentTarget.src = '/assets/placeholder.png';
-                          }}
-                        />
-                        <button
-                          type="button"
-                          style={styles.deletePhotoButton}
-                          onClick={() => {
-                            if (window.confirm('Delete this photo from server? This cannot be undone.')) {
-                              handleDeletePhoto(photo);
-                            }
-                          }}
-                        >
-                          <X size={16} />
-                        </button>
-                      </div>
+                        <div key={index} style={styles.photoCard}>
+                          <img
+                            src={buildImageUrl(photo)}
+                            alt={`Vehicle ${index + 1}`}
+                            style={styles.photoImage}
+                            onError={(e) => {
+                              e.currentTarget.src = "/assets/placeholder.png";
+                            }}
+                          />
+                          <button
+                            type="button"
+                            style={styles.deletePhotoButton}
+                            onClick={() => {
+                              if (
+                                window.confirm(
+                                  "Delete this photo from server? This cannot be undone."
+                                )
+                              ) {
+                                handleDeletePhoto(photo);
+                              }
+                            }}
+                          >
+                            <X size={16} />
+                          </button>
+                        </div>
                       );
                     })}
                   </div>
@@ -738,7 +760,7 @@ const EditCar = () => {
                 type="submit"
                 style={{
                   ...styles.submitButton,
-                  ...(isSaving ? styles.submitButtonDisabled : {})
+                  ...(isSaving ? styles.submitButtonDisabled : {}),
                 }}
                 disabled={isSaving}
               >
@@ -755,7 +777,7 @@ const EditCar = () => {
 
 // Add CSS animation for spinners
 const styleSheet = document.styleSheets[0];
-if (styleSheet && !document.querySelector('#spinner-keyframes')) {
+if (styleSheet && !document.querySelector("#spinner-keyframes")) {
   const keyframes = `
     @keyframes spin {
       0% { transform: rotate(0deg); }
@@ -763,8 +785,8 @@ if (styleSheet && !document.querySelector('#spinner-keyframes')) {
     }
   `;
   styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
-  const style = document.createElement('style');
-  style.id = 'spinner-keyframes';
+  const style = document.createElement("style");
+  style.id = "spinner-keyframes";
   document.head.appendChild(style);
 }
 
@@ -775,7 +797,7 @@ const styles = {
     backgroundColor: "#f8fafc",
     fontFamily: "'Inter', sans-serif",
   },
-  
+
   // Loading Styles
   loadingContainer: {
     display: "flex",
@@ -799,7 +821,7 @@ const styles = {
     color: "#6b7280",
     fontWeight: "500",
   },
-  
+
   // Sidebar Styles
   sidebar: {
     width: "280px",
@@ -888,7 +910,7 @@ const styles = {
       backgroundColor: "#7f1d1d20",
     },
   },
-  
+
   // Main Content Styles
   mainContent: {
     flex: 1,
@@ -916,7 +938,7 @@ const styles = {
     color: "#64748b",
     margin: 0,
   },
-  
+
   // Form Styles
   form: {
     display: "flex",
@@ -927,7 +949,8 @@ const styles = {
     backgroundColor: "#ffffff",
     borderRadius: "16px",
     padding: "32px",
-    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+    boxShadow:
+      "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
     border: "1px solid #e5e7eb",
   },
   sectionHeader: {
@@ -948,7 +971,7 @@ const styles = {
     color: "#1e293b",
     margin: 0,
   },
-  
+
   // Input Styles
   inputGrid: {
     display: "grid",
@@ -985,7 +1008,7 @@ const styles = {
     transition: "all 0.2s ease",
     fontFamily: "inherit",
   },
-  
+
   // Photo Section Styles
   photoSection: {
     display: "flex",
@@ -1099,7 +1122,7 @@ const styles = {
     fontSize: "0.75rem",
     fontWeight: "500",
   },
-  
+
   // Submit Section Styles
   submitSection: {
     display: "flex",

@@ -5,12 +5,15 @@
     <meta charset="utf-8" />
   <title>Sell Your Car | Alfa Motors World</title>
     <meta name="description" content="Sell your car with Alfa Motors World — fast inspections, instant valuation, and pickup. Trusted service with transparent pricing and paperwork support." />
-    <meta name="robots" content="index, follow" />
+  <meta name="keywords" content="sell car Bangalore, best second hand cars in bangalore, second hand car in bangalore, sell your car karnataka, used car valuation Bangalore" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
     <link rel="canonical" href="https://www.alfamotorworld.com/sell.html" />
     <link rel="alternate" href="https://www.alfamotorworld.com/sell.html" hreflang="en" />
     <link rel="alternate" href="https://www.alfamotorworld.com/sell.html" hreflang="hi" />
   <link rel="preconnect" href="https://alfa-motors-5yfh.vercel.app" crossorigin />
     <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+    <link rel="preconnect" href="https://alfa-motors-o5cm.vercel.app" crossorigin />
     <meta name="theme-color" content="#ffffff" />
 
     <meta property="og:type" content="website" />
@@ -370,10 +373,9 @@
           </div>
           <p
             itemprop="description"
-            data-translate="India's most trusted marketplace for premium pre-owned Cars since 2018."
+            data-translate="The best second-hand car showroom in Bangalore for luxury and premium cars."
           >
-            India's most trusted marketplace for premium pre-owned Cars since
-            2018.
+            The best second-hand car showroom in Bangalore for luxury and premium cars.
           </p>
           <a
               href="#leave-review"
@@ -650,20 +652,54 @@
         const mobileMenu = document.createElement("div");
         mobileMenu.className = "mobile-menu";
         mobileMenu.innerHTML = `
-          <button class="close-btn"><i class="fas fa-times"></i></button>
-          <ul class="nav-links">
-            <li><a href="index.html" >Home</a></li>
-            <li><a href="inventory.html">Buy Car</a></li>
-            <li><a href="sell.html">Sell Your Car</a></li>
-            <li><a href="about.html">About Us</a></li>
-            <li><a href="#" data-translate="Updates">Updates</a></li>
-            <li><a href="contact.html" data-translate="Contact">Contact</a></li>
-          </ul>
-          <div class="login-btn">
-            <button>Get the Quote</button>
-          </div>
-        `;
-
+    <button class="close-btn" aria-label="Close mobile menu">
+      <i class="fas fa-times" aria-hidden="true"></i>
+    </button>
+    <ul class="nav-links">
+      <li>
+        <a href="index.html"  aria-current="page">
+          <span data-translate="Home">Home</span>
+        </a>
+      </li>
+      <li>
+        <a href="inventory.html">
+          <span data-translate="Vehicles for Sale">Vehicles for Sale</span>
+        </a>
+      </li>
+      <li>
+        <a href="sell.html">
+          <span data-translate="Sell Your Vehicle">Sell Your Vehicle</span>
+        </a>
+      </li>
+       <li>
+        <a href="happy-customers.html">
+          <span data-translate="Happy Customers">Happy Customers</span>
+        </a>
+      </li>
+       <li>
+        <a href="finance.html">
+          <span data-translate="Financing">Financing</span>
+        </a>
+      </li>
+      <li>
+        <a href="about.html">
+          <span data-translate="About Us">About Us</span>
+        </a>
+      </li>
+      <li>
+        <a href="contact.html">
+          <span data-translate="Contact">Contact</span>
+        </a>
+      </li>
+    </ul>
+    <div class="login-btn">
+      <a href="/getquote.html">
+        <button aria-label="Get a quote for your Car" data-translate="Get the Quote">
+          Get the Quote
+        </button>
+      </a>
+    </div>
+  `;
         document.body.appendChild(mobileMenu);
 
         toggleBtn.addEventListener("click", function () {

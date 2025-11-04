@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -310,11 +310,13 @@ const styles = {
     fontWeight: "700",
     color: "#1e293b",
     margin: 0,
+    textAlign: "center",
   },
   pageSubtitle: {
     fontSize: "1rem",
     color: "#64748b",
     margin: "8px 0 0 0",
+    textAlign: "center",
   },
   addButton: {
     display: "flex",

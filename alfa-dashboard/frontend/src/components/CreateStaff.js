@@ -5,25 +5,14 @@ import {
   User,
   Mail,
   Lock,
-  ChevronDown,
-  ChevronRight,
-  LayoutDashboard,
-  TrendingUp,
-  Wrench,
   Users,
-  Bike,
-  CarFront,
-  Car,
-  LogOut,
 } from "lucide-react";
 import AuthContext from "../context/AuthContext";
-import logo from '../images/company.png';
 import Sidebar from "./Sidebar";
 const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'https://alfa-motors-5yfh.vercel.app' : 'https://alfa-motors-5yfh.vercel.app');
 
 const CreateStaff = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { user } = useContext(AuthContext);
 
   const [formData, setFormData] = useState({
@@ -311,11 +300,13 @@ const styles = {
     fontWeight: "700",
     color: "#1e293b",
     margin: 0,
+    textAlign: "center",
   },
   pageSubtitle: {
     fontSize: "1rem",
     color: "#64748b",
     margin: "8px 0 0 0",
+    textAlign: "center",
   },
   form: {
     backgroundColor: "#ffffff",

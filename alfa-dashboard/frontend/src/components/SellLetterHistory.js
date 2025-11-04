@@ -1,26 +1,8 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import {
-  LayoutDashboard,
-  TrendingUp,
-  Wrench,
-  Users,
-  LogOut,
-  ChevronDown,
-  ChevronRight,
-  FileText,
-  Search,
-  Download,
-  Edit,
-  Trash2,
-  X,
-  Bike,
-  CarFront,
-  Car,
-} from "lucide-react";
+import { FileText, Search, Download, Edit, Trash2, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
-import logo from "../images/company.png";
 import logo1 from "../images/okmotorback.png";
 
 import AuthContext from "../context/AuthContext";
@@ -750,11 +732,14 @@ const SellLetterHistory = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this sell letter?")) {
       try {
-        await axios.delete(`https://alfa-motors-5yfh.vercel.app/api/sell-letters/${id}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        await axios.delete(
+          `https://alfa-motors-5yfh.vercel.app/api/sell-letters/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         setSellLetters(sellLetters.filter((letter) => letter._id !== id));
       } catch (error) {
         console.error("Error deleting sell letter:", error);
@@ -765,13 +750,7 @@ const SellLetterHistory = () => {
   const handleEdit = (letter) => {
     setEditingLetter(letter);
   };
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("authToken");
-    sessionStorage.clear();
-    navigate("/login");
-  };
+
   const handleSaveEdit = async (updatedLetter) => {
     try {
       const response = await axios.put(
@@ -792,21 +771,6 @@ const SellLetterHistory = () => {
     } catch (error) {
       console.error("Error updating sell letter:", error);
     }
-  };
-  
-
-  const toggleMenu = (menuName) => {
-    setExpandedMenus((prev) => ({
-      ...prev,
-      [menuName]: !prev[menuName],
-    }));
-  };
-
-  const handleMenuClick = (menuName, path) => {
-    setActiveMenu(menuName);
-    // Handle both string paths and function paths
-    const actualPath = typeof path === "function" ? path(user?.role) : path;
-    navigate(actualPath);
   };
 
   return (
@@ -1231,11 +1195,13 @@ const styles = {
     fontWeight: "700",
     color: "#1e293b",
     margin: 0,
+    textAlign: "center",
   },
   pageSubtitle: {
     fontSize: "1rem",
     color: "#64748b",
     margin: "8px 0 0 0",
+    textAlign: "center",
   },
   searchContainer: {
     display: "flex",

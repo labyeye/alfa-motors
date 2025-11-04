@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import { PDFDocument } from "pdf-lib";
 import { saveAs } from "file-saver";
 import {
@@ -9,25 +9,15 @@ import {
   Calendar,
   IndianRupee,
   AlertCircle,
-  LayoutDashboard,
   ShoppingCart,
-  TrendingUp,
   Wrench,
-  Users,
-  LogOut,
-  ChevronDown,
-  ChevronRight,
   Plus,
   Trash,
   Car,
-  CarFront,
-  Bike,
   Search,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import logo from "../images/company.png";
-
 
 import AuthContext from "../context/AuthContext";
 import Sidebar from "./Sidebar";
@@ -55,12 +45,12 @@ const ServiceBillForm = () => {
     customerPhone: "",
     customerAddress: "",
     customerEmail: "",
-  vehicleType: "car",
-  vehicleBrand: "",
-  vehicleModel: "",
-  chassisNumber: "",
-  engineNumber: "",
-  kmReading: "",
+    vehicleType: "car",
+    vehicleBrand: "",
+    vehicleModel: "",
+    chassisNumber: "",
+    engineNumber: "",
+    kmReading: "",
     serviceDate: new Date().toISOString().split("T")[0],
     deliveryDate: new Date(Date.now() + 86400000).toISOString().split("T")[0], // Tomorrow's date
     serviceType: "regular",
@@ -88,14 +78,14 @@ const ServiceBillForm = () => {
     if (!editId) return;
     (async function loadBill() {
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem("token");
         const res = await axios.get(`${API_BASE_URL}/service-bills/${editId}`, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         });
         const bill = res.data.data || res.data;
         if (bill) {
           // Map server fields into formData shape
-          setFormData(prev => ({
+          setFormData((prev) => ({
             ...prev,
             customerName: bill.customerName || prev.customerName,
             customerPhone: bill.customerPhone || prev.customerPhone,
@@ -107,10 +97,17 @@ const ServiceBillForm = () => {
             chassisNumber: bill.chassisNumber || prev.chassisNumber,
             engineNumber: bill.engineNumber || prev.engineNumber,
             kmReading: bill.kmReading || prev.kmReading,
-            serviceDate: bill.serviceDate ? new Date(bill.serviceDate).toISOString().split('T')[0] : prev.serviceDate,
-            deliveryDate: bill.deliveryDate ? new Date(bill.deliveryDate).toISOString().split('T')[0] : prev.deliveryDate,
+            serviceDate: bill.serviceDate
+              ? new Date(bill.serviceDate).toISOString().split("T")[0]
+              : prev.serviceDate,
+            deliveryDate: bill.deliveryDate
+              ? new Date(bill.deliveryDate).toISOString().split("T")[0]
+              : prev.deliveryDate,
             serviceType: bill.serviceType || prev.serviceType,
-            serviceItems: bill.serviceItems && bill.serviceItems.length ? bill.serviceItems : prev.serviceItems,
+            serviceItems:
+              bill.serviceItems && bill.serviceItems.length
+                ? bill.serviceItems
+                : prev.serviceItems,
             discount: bill.discount || prev.discount,
             taxRate: bill.taxRate || prev.taxRate,
             taxEnabled: bill.taxEnabled || prev.taxEnabled,
@@ -123,8 +120,8 @@ const ServiceBillForm = () => {
           }));
         }
       } catch (err) {
-        console.error('Failed to load service bill for edit', err);
-        alert('Failed to load service bill for edit.');
+        console.error("Failed to load service bill for edit", err);
+        alert("Failed to load service bill for edit.");
       }
     })();
   }, [editId]);
@@ -139,11 +136,13 @@ const ServiceBillForm = () => {
         },
       });
       const cars = response.data.data || [];
-      console.debug('Fetched cars:', cars);
+      console.debug("Fetched cars:", cars);
       setAvailableCars(cars);
     } catch (error) {
       console.error("Error fetching cars:", error);
-      alert("Failed to load vehicle data. You can still enter details manually.");
+      alert(
+        "Failed to load vehicle data. You can still enter details manually."
+      );
     } finally {
       setIsLoadingCars(false);
     }
@@ -152,17 +151,32 @@ const ServiceBillForm = () => {
   const handleVehicleSelection = (carId) => {
     setSelectedCarId(carId);
     if (carId) {
-      const selectedCar = availableCars.find(car => car._id === carId);
+      const selectedCar = availableCars.find((car) => car._id === carId);
       if (selectedCar) {
-        console.debug('Selected car for autofill:', selectedCar);
+        console.debug("Selected car for autofill:", selectedCar);
         // Fallbacks for different possible field names
-        const chassis = selectedCar.chassisNo || selectedCar.chassisNumber || selectedCar.chassis || selectedCar.vin || selectedCar.chassisNumberRaw || "";
-        const engine = selectedCar.engineNo || selectedCar.engineNumber || selectedCar.engine || "";
-        const km = typeof selectedCar.kmDriven !== 'undefined' && selectedCar.kmDriven !== null
-          ? selectedCar.kmDriven
-          : (selectedCar.mileage || selectedCar.km || selectedCar.km_reading || "");
+        const chassis =
+          selectedCar.chassisNo ||
+          selectedCar.chassisNumber ||
+          selectedCar.chassis ||
+          selectedCar.vin ||
+          selectedCar.chassisNumberRaw ||
+          "";
+        const engine =
+          selectedCar.engineNo ||
+          selectedCar.engineNumber ||
+          selectedCar.engine ||
+          "";
+        const km =
+          typeof selectedCar.kmDriven !== "undefined" &&
+          selectedCar.kmDriven !== null
+            ? selectedCar.kmDriven
+            : selectedCar.mileage ||
+              selectedCar.km ||
+              selectedCar.km_reading ||
+              "";
 
-        setFormData(prev => ({
+        setFormData((prev) => ({
           ...prev,
           vehicleType: "car",
           vehicleBrand: selectedCar.make || "",
@@ -174,7 +188,7 @@ const ServiceBillForm = () => {
       }
     } else {
       // Clear fields if no vehicle selected
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         vehicleType: "car",
         vehicleBrand: "",
@@ -257,35 +271,6 @@ const ServiceBillForm = () => {
     setFormData(newData);
   };
 
-  const saveServiceBill = async () => {
-    try {
-      setIsSaving(true);
-      const token = localStorage.getItem("token");
-      const response = await axios.post(
-        `${API_BASE_URL}/service-bills`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      alert("Service bill saved successfully!");
-      return response.data;
-    } catch (error) {
-      console.error("Error saving service bill:", error);
-      alert(
-        `Failed to save service bill: ${
-          error.response?.data?.message || error.message
-        }`
-      );
-      throw error;
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
   const handleSaveAndDownload = async () => {
     try {
       setIsSaving(true);
@@ -307,13 +292,23 @@ const ServiceBillForm = () => {
         saveResponse = await axios.put(
           `${API_BASE_URL}/service-bills/${editId}`,
           formDataWithUser,
-          { headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } }
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
         );
       } else {
         saveResponse = await axios.post(
           `${API_BASE_URL}/service-bills`,
           formDataWithUser,
-          { headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } }
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
         );
       }
 
@@ -557,32 +552,6 @@ const ServiceBillForm = () => {
     e.target.value = value.toUpperCase();
     handleChange(e);
   };
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("authToken");
-    sessionStorage.clear();
-    navigate("/login");
-  };
-
-  // In the menuItems array (around line 250 in BuyLetterPDF.js)
-  
-
-
-  const toggleMenu = (menuName) => {
-    setExpandedMenus((prev) => ({
-      ...prev,
-      [menuName]: !prev[menuName],
-    }));
-  };
-
-  const handleMenuClick = (menuName, path) => {
-    setActiveMenu(menuName);
-    const actualPath = typeof path === "function" ? path(user?.role) : path;
-    navigate(actualPath);
-  };
-
-  // Preview will show as a modal overlay when previewMode is true
 
   return (
     <div style={styles.container}>
@@ -591,11 +560,17 @@ const ServiceBillForm = () => {
         <div style={styles.modalBackdrop} onClick={() => setPreviewMode(false)}>
           <div style={styles.modalContent} onClick={(e) => e.stopPropagation()}>
             <div style={styles.formPreviewHeader}>
-              <button onClick={() => setPreviewMode(false)} style={styles.backButton}>
+              <button
+                onClick={() => setPreviewMode(false)}
+                style={styles.backButton}
+              >
                 <ArrowLeft style={styles.buttonIcon} /> Close Preview
               </button>
               <div style={styles.previewActions}>
-                <button onClick={() => generateServiceBillPDF()} style={styles.downloadButton}>
+                <button
+                  onClick={() => generateServiceBillPDF()}
+                  style={styles.downloadButton}
+                >
                   <Download style={styles.buttonIcon} /> Download PDF
                 </button>
               </div>
@@ -697,7 +672,7 @@ const ServiceBillForm = () => {
               <h2 style={styles.sectionTitle}>
                 <Car style={styles.sectionIcon} /> Vehicle Information
               </h2>
-              
+
               {/* Vehicle Selection from Inventory */}
               <div style={styles.vehicleSelectionContainer}>
                 <div style={styles.formField}>
@@ -712,7 +687,9 @@ const ServiceBillForm = () => {
                     disabled={isLoadingCars}
                   >
                     <option value="">
-                      {isLoadingCars ? "Loading vehicles..." : "Select a vehicle or enter manually"}
+                      {isLoadingCars
+                        ? "Loading vehicles..."
+                        : "Select a vehicle or enter manually"}
                     </option>
                     {availableCars.map((car) => (
                       <option key={car._id} value={car._id}>
@@ -1357,11 +1334,13 @@ const styles = {
     fontWeight: "700",
     color: "#1e293b",
     margin: 0,
+    textAlign: "center",
   },
   pageSubtitle: {
     fontSize: "1rem",
     color: "#64748b",
     margin: "8px 0 0 0",
+    textAlign: "center",
   },
   form: {
     backgroundColor: "#ffffff",

@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import {
@@ -13,6 +14,7 @@ import {
   Camera,
   CarFront,
   Car,
+  Menu,
 } from "lucide-react";
 import logo from "../images/company.png";
 
@@ -20,6 +22,8 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [expandedMenus, setExpandedMenus] = useState({});
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const menuItems = [
     {
@@ -99,6 +103,8 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
     if (setActiveMenu) setActiveMenu(menuName);
     const actualPath = typeof path === "function" ? path(user?.role) : path;
     if (actualPath) navigate(actualPath);
+    // if on mobile, close sidebar after navigation
+    if (isMobile) setMobileOpen(false);
   };
 
   const handleLogout = () => {
@@ -107,66 +113,105 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
     localStorage.removeItem("authToken");
     sessionStorage.clear();
     navigate("/login");
+    if (isMobile) setMobileOpen(false);
+  };
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    const onChange = (e) => {
+      setIsMobile(e.matches);
+      if (!e.matches) setMobileOpen(false);
+    };
+    // set initial
+    setIsMobile(mq.matches);
+    mq.addListener(onChange);
+    return () => mq.removeListener(onChange);
+  }, []);
+
+  const sidebarStyle = {
+    ...styles.sidebar,
+    ...(isMobile ? styles.sidebarMobile : {}),
+    ...(isMobile && !mobileOpen ? styles.sidebarHidden : {}),
   };
 
   return (
-    <div style={styles.sidebar}>
-      <div style={styles.sidebarHeader}>
-        <img
-          src={logo}
-          alt="logo"
-          style={{ width: "12.5rem", height: "12.5rem" }}
-        />
-        <p style={styles.sidebarSubtitle}>Welcome, Alfa Motor World</p>
-      </div>
+    <>
+      {/* Hamburger button visible on mobile */}
+      {isMobile && (
+        <button
+          aria-label={mobileOpen ? "Close menu" : "Open menu"}
+          style={styles.hamburgerButton}
+          onClick={() => setMobileOpen((v) => !v)}
+        >
+          <Menu size={20} />
+        </button>
+      )}
 
-      <nav style={styles.nav}>
-        {menuItems.map((item) => (
-          <div key={item.name}>
-            <div
-              style={{
-                ...styles.menuItem,
-                ...(activeMenu === item.name ? styles.menuItemActive : {}),
-              }}
-              onClick={() => {
-                if (item.submenu) toggleMenu(item.name);
-                else handleMenuClick(item.name, item.path);
-              }}
-            >
-              <div style={styles.menuItemContent}>
-                <item.icon size={20} style={styles.menuIcon} />
-                <span style={styles.menuText}>{item.name}</span>
-              </div>
-              {item.submenu &&
-                (expandedMenus[item.name] ? (
-                  <ChevronDown size={16} />
-                ) : (
-                  <ChevronRight size={16} />
-                ))}
-            </div>
+      {/* overlay when mobile menu open */}
+      {isMobile && mobileOpen && (
+        <div style={styles.overlay} onClick={() => setMobileOpen(false)} />
+      )}
 
-            {item.submenu && expandedMenus[item.name] && (
-              <div style={styles.submenu}>
-                {item.submenu.map((subItem) => (
-                  <div
-                    key={subItem.name}
-                    style={styles.submenuItem}
-                    onClick={() => handleMenuClick(subItem.name, subItem.path)}
-                  >
-                    {subItem.name}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
-
-        <div style={styles.logoutButton} onClick={handleLogout}>
-          <LogOut size={20} style={styles.menuIcon} />
-          <span style={styles.menuText}>Logout</span>
+      <div style={sidebarStyle}>
+        <div style={styles.sidebarHeader}>
+          <img
+            src={logo}
+            alt="logo"
+            style={{ width: "12.5rem", height: "12.5rem" }}
+          />
+          <p style={styles.sidebarSubtitle}>Welcome, Alfa Motor World</p>
         </div>
-      </nav>
-    </div>
+
+        <nav style={styles.nav}>
+          {menuItems.map((item) => (
+            <div key={item.name}>
+              <div
+                style={{
+                  ...styles.menuItem,
+                  ...(activeMenu === item.name ? styles.menuItemActive : {}),
+                }}
+                onClick={() => {
+                  if (item.submenu) toggleMenu(item.name);
+                  else handleMenuClick(item.name, item.path);
+                }}
+              >
+                <div style={styles.menuItemContent}>
+                  <item.icon size={20} style={styles.menuIcon} />
+                  <span style={styles.menuText}>{item.name}</span>
+                </div>
+                {item.submenu &&
+                  (expandedMenus[item.name] ? (
+                    <ChevronDown size={16} />
+                  ) : (
+                    <ChevronRight size={16} />
+                  ))}
+              </div>
+
+              {item.submenu && expandedMenus[item.name] && (
+                <div style={styles.submenu}>
+                  {item.submenu.map((subItem) => (
+                    <div
+                      key={subItem.name}
+                      style={styles.submenuItem}
+                      onClick={() =>
+                        handleMenuClick(subItem.name, subItem.path)
+                      }
+                    >
+                      {subItem.name}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+
+          <div style={styles.logoutButton} onClick={handleLogout}>
+            <LogOut size={20} style={styles.menuIcon} />
+            <span style={styles.menuText}>Logout</span>
+          </div>
+        </nav>
+      </div>
+    </>
   );
 };
 
@@ -195,7 +240,7 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: "12px 24px",
+    padding: "14px 24px",
     cursor: "pointer",
     color: "#e2e8f0",
   },
@@ -204,15 +249,16 @@ const styles = {
     borderRight: "3px solid #3b82f6",
     color: "#ffffff",
   },
-  menuItemContent: { display: "flex", alignItems: "center" },
-  menuIcon: { marginRight: "12px", color: "#94a3b8" },
+  menuItemContent: { display: "flex", alignItems: "center", gap: 12 },
+  menuIcon: { marginRight: "14px", color: "#94a3b8" },
   menuText: { fontSize: "0.9375rem", fontWeight: "500" },
   submenu: { backgroundColor: "#1a2536" },
   submenuItem: {
-    padding: "10px 24px 10px 64px",
+    padding: "12px 24px 12px 64px",
     cursor: "pointer",
     color: "#cbd5e1",
     fontSize: "0.875rem",
+    borderBottom: "1px solid rgba(255,255,255,0.02)",
   },
   logoutButton: {
     display: "flex",
@@ -222,6 +268,44 @@ const styles = {
     color: "#f87171",
     marginTop: "16px",
     borderTop: "1px solid #334155",
+  },
+  /* mobile-specific styles */
+  hamburgerButton: {
+    position: "fixed",
+    top: 12,
+    left: 12,
+    zIndex: 1003,
+    backgroundColor: "#0f172a",
+    border: "1px solid rgba(255,255,255,0.06)",
+    color: "#ffffff",
+    width: 44,
+    height: 44,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 8,
+    padding: 8,
+    cursor: "pointer",
+    boxShadow: "0 6px 18px rgba(2,6,23,0.35)",
+  },
+  overlay: {
+    position: "fixed",
+    inset: 0,
+    backgroundColor: "rgba(0,0,0,0.4)",
+    zIndex: 1001,
+  },
+  sidebarMobile: {
+    position: "fixed",
+    left: 0,
+    top: 0,
+    height: "100vh",
+    zIndex: 1002,
+    width: "240px",
+    transform: "translateX(0)",
+    transition: "transform 0.28s ease",
+  },
+  sidebarHidden: {
+    transform: "translateX(-100%)",
   },
 };
 

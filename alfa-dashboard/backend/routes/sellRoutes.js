@@ -102,4 +102,34 @@ router.get('/:id', protect, async (req, res) => {
   }
 });
 
+// Delete a sell request and its uploaded images
+router.delete('/:id', protect, async (req, res) => {
+  try {
+    const request = await SellRequest.findById(req.params.id);
+    if (!request) {
+      return res.status(404).json({ error: 'Sell request not found' });
+    }
+
+    // Remove associated image files from public/uploads if they exist
+    if (Array.isArray(request.images) && request.images.length > 0) {
+      for (const filename of request.images) {
+        try {
+          const filePath = path.join(uploadsDir, filename);
+          if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+          }
+        } catch (err) {
+          console.error('Failed to remove image file:', filename, err);
+        }
+      }
+    }
+
+    await SellRequest.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Sell request deleted' });
+  } catch (err) {
+    console.error('Error deleting sell request:', err);
+    res.status(500).json({ error: 'Failed to delete sell request' });
+  }
+});
+
 module.exports = router;

@@ -1,97 +1,29 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import AuthContext from "../context/AuthContext";
-import {
-  LayoutDashboard,
-  TrendingUp,
-  Wrench,
-  Users,
-  LogOut,
-  ChevronDown,
-  ChevronRight,
-  Bike,
-  CarFront,
-  Car,
-  Edit,
-  Trash2,
-} from "lucide-react";
-import logo from "../images/company.png";
+import { Edit, Trash2 } from "lucide-react";
 import Sidebar from "./Sidebar";
 
 const ListCar = () => {
-  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeMenu, setActiveMenu] = useState("List Car Data");
-  const [expandedMenus, setExpandedMenus] = useState({});
-
-  const menuItems = [
-    {
-      name: "Dashboard",
-      icon: LayoutDashboard,
-      path: (userRole) => (userRole === "admin" ? "/admin" : "/staff"),
-    },
-    {
-      name: "RTO",
-      icon: Car,
-      submenu: [
-        { name: "RC Entry", path: "/rc/create" },
-        { name: "RC List", path: "/rc/list" },
-      ],
-    },
-    {
-      name: "Car Management",
-      icon: CarFront,
-      submenu: [
-        { name: "Add Car Data", path: "/car/create" },
-        { name: "List Car Data", path: "/car/list" },
-        { name: "Edit Car Data", path: "/car/edit" },
-      ],
-    },
-    {
-      name: "Sell",
-      icon: TrendingUp,
-      submenu: [
-        { name: "Create Sell Letter", path: "/sell/create" },
-        { name: "Sell Letter History", path: "/sell/history" },
-        { name: "Sell Queries", path: "/sell-requests" },
-      ],
-    },
-    {
-      name: "Service",
-      icon: Wrench,
-      submenu: [
-        { name: "Create Service Bill", path: "/service/create" },
-        { name: "Service History", path: "/service/history" },
-      ],
-    },
-    {
-      name: "Staff",
-      icon: Users,
-      submenu: [
-        { name: "Create Staff ID", path: "/staff/create" },
-        { name: "Staff List", path: "/staff/list" },
-      ],
-    },
-    {
-      name: "Vehicle History",
-      icon: Bike,
-      path: "/bike-history",
-    },
-  ];
 
   useEffect(() => {
     const fetchCars = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("https://alfa-motors-5yfh.vercel.app/api/cars", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(
+          "https://alfa-motors-5yfh.vercel.app/api/cars",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         setCars(response.data.data);
         setLoading(false);
       } catch (err) {
@@ -103,27 +35,6 @@ const ListCar = () => {
     fetchCars();
   }, []);
 
-  const toggleMenu = (menuName) => {
-    setExpandedMenus((prev) => ({
-      ...prev,
-      [menuName]: !prev[menuName],
-    }));
-  };
-
-  const handleMenuClick = (menuName, path) => {
-    setActiveMenu(menuName);
-    const actualPath = typeof path === "function" ? path(user?.role) : path;
-    navigate(actualPath);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("authToken");
-    sessionStorage.clear();
-    navigate("/login");
-  };
-
   const handleEdit = (carId) => {
     navigate(`/car/edit/${carId}`);
   };
@@ -132,11 +43,14 @@ const ListCar = () => {
     if (window.confirm("Are you sure you want to delete this car?")) {
       try {
         const token = localStorage.getItem("token");
-        await axios.delete(`https://alfa-motors-5yfh.vercel.app/api/cars/${carId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await axios.delete(
+          `https://alfa-motors-5yfh.vercel.app/api/cars/${carId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         setCars(cars.filter((car) => car._id !== carId));
       } catch (err) {
         setError(err.response?.data?.message || "Failed to delete car");
@@ -191,19 +105,22 @@ const ListCar = () => {
                       </td>
                       <td style={styles.td}>
                         ₹
-                        {car.buyingPrice !== undefined && car.buyingPrice !== null
+                        {car.buyingPrice !== undefined &&
+                        car.buyingPrice !== null
                           ? Number(car.buyingPrice).toLocaleString()
                           : "-"}
                       </td>
                       <td style={styles.td}>
                         ₹
-                        {car.quotingPrice !== undefined && car.quotingPrice !== null
+                        {car.quotingPrice !== undefined &&
+                        car.quotingPrice !== null
                           ? Number(car.quotingPrice).toLocaleString()
                           : "-"}
                       </td>
                       <td style={styles.td}>
                         ₹
-                        {car.sellingPrice !== undefined && car.sellingPrice !== null
+                        {car.sellingPrice !== undefined &&
+                        car.sellingPrice !== null
                           ? Number(car.sellingPrice).toLocaleString()
                           : "-"}
                       </td>
@@ -358,11 +275,13 @@ const styles = {
     fontWeight: "700",
     color: "#1e293b",
     margin: 0,
+    textAlign: "center",
   },
   pageSubtitle: {
     fontSize: "1rem",
     color: "#64748b",
     margin: "8px 0 0 0",
+    textAlign: "center",
   },
   loading: {
     padding: "20px",

@@ -1,8 +1,8 @@
 :root {
-  --primary-color: #0D1B2A;
-  --secondary-color: #C0C0C0;
+  --primary-color: #0d1b2a;
+  --secondary-color: #c0c0c0;
   --text-color: #000000;
-  --accent-red: #E63946;
+  --accent-red: #e63946;
   --light-gray: #a9a9a9;
   --dark-gray: #464646;
   --white: #ffffff;
@@ -18,13 +18,13 @@
 }
 
 .gallery-hero::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 100;
-  background: url('./assets/images/hero-pattern.png') repeat;
+  background: url("./assets/images/hero-pattern.png") repeat;
   opacity: 0.1;
   z-index: 1;
 }
@@ -50,7 +50,7 @@
   font-weight: 700;
   color: var(--white);
   margin-bottom: 20px;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .hero-description {
@@ -135,7 +135,11 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.8) 100%);
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
   opacity: 0;
   transition: all 0.3s ease;
   display: flex;
@@ -169,7 +173,7 @@
 }
 
 .customer-name::before {
-  content: '👤';
+  content: "👤";
   margin-right: 8px;
 }
 
@@ -229,19 +233,20 @@
     column-count: 2;
     column-gap: 15px;
   }
-  
+
   .hero-title {
     font-size: 2.5rem;
   }
-  
+
   .hero-description {
     font-size: 1rem;
   }
-  
+
   .section-title {
     font-size: 2rem;
+    text-align: center;
   }
-  
+
   .gallery-section {
     padding: 60px 0;
   }
@@ -251,11 +256,12 @@
   .masonry-gallery {
     column-count: 1;
   }
-  
+
   .hero-title {
     font-size: 2rem;
+    text-align: center;
   }
-  
+
   .container {
     padding: 0 15px;
   }

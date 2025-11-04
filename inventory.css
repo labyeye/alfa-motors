@@ -114,32 +114,6 @@
   color: black;
 }
 
-.mobile-menu-toggle {
-  display: none;
-  background: transparent;
-  border: none;
-  font-size: 1.3rem;
-  color: #1e293b;
-  cursor: pointer;
-}
-
-.mobile-menu {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 90%;
-  max-width: 360px;
-  height: 100vh;
-  background: #fff;
-  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.12);
-  transform: translateX(100%);
-  transition: transform 240ms ease-in-out;
-  z-index: 20000;
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-}
-
 .mobile-menu.active {
   transform: translateX(0);
 }

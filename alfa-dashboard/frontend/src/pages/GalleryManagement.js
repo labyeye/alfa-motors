@@ -1,35 +1,17 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import {
-  LayoutDashboard,
-  Car,
-  CarFront,
-  Bike,
-  TrendingUp,
-  Wrench,
-  Users,
-  LogOut,
-  ChevronDown,
-  ChevronRight,
-  Camera,
-  Edit,
-  Trash2,
-  Plus,
-  ExternalLink,
-} from "lucide-react";
+import { Camera, Edit, Plus, ExternalLink } from "lucide-react";
 import AuthContext from "../context/AuthContext";
-import logo from "../images/company.png";
 import Sidebar from "../components/Sidebar";
 
 const API_BASE =
   window.API_BASE ||
   (window.location.hostname === "localhost"
-  ? "https://alfa-motors-5yfh.vercel.app"
-  : "https://alfa-motors-5yfh.vercel.app");
+    ? "https://alfa-motors-5yfh.vercel.app"
+    : "https://alfa-motors-5yfh.vercel.app");
 
 const GalleryManagement = () => {
-  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = useState("Gallery Management");
   const [expandedMenus, setExpandedMenus] = useState({});
@@ -37,72 +19,12 @@ const GalleryManagement = () => {
   const [uploadingIds, setUploadingIds] = useState([]);
   const [allCars, setAllCars] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   // Gallery items and edit UI state
   const [galleryItems, setGalleryItems] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editCaption, setEditCaption] = useState("");
   const [editTestimonial, setEditTestimonial] = useState("");
-
-  const menuItems = [
-    {
-      name: "Dashboard",
-      icon: LayoutDashboard,
-      path: (userRole) => (userRole === "admin" ? "/admin" : "/staff"),
-    },
-    {
-      name: "RTO",
-      icon: Car,
-      submenu: [
-        { name: "RC Entry", path: "/rc/create" },
-        { name: "RC List", path: "/rc/list" },
-      ],
-    },
-    {
-      name: "Car Management",
-      icon: CarFront,
-      submenu: [
-        { name: "Add Car Data", path: "/car/create" },
-        { name: "List Car Data", path: "/car/list" },
-        { name: "Edit Car Data", path: "/car/edit" },
-      ],
-    },
-    {
-      name: "Gallery Management",
-      icon: Camera,
-      path: "/gallery",
-    },
-    {
-      name: "Sell",
-      icon: TrendingUp,
-      submenu: [
-        { name: "Create Sell Letter", path: "/sell/create" },
-        { name: "Sell Letter History", path: "/sell/history" },
-        { name: "Sell Queries", path: "/sell-requests" },
-      ],
-    },
-    {
-      name: "Service",
-      icon: Wrench,
-      submenu: [
-        { name: "Create Service Bill", path: "/service/create" },
-        { name: "Service History", path: "/service/history" },
-      ],
-    },
-    {
-      name: "Staff",
-      icon: Users,
-      submenu: [
-        { name: "Create Staff ID", path: "/staff/create" },
-        { name: "Staff List", path: "/staff/list" },
-      ],
-    },
-    {
-      name: "Vehicle History",
-      icon: Bike,
-      path: "/bike-history",
-    },
-  ];
 
   useEffect(() => {
     fetchData();
@@ -110,7 +32,11 @@ const GalleryManagement = () => {
 
   // Debug effect to monitor galleryItems state changes
   useEffect(() => {
-    console.log('Gallery items state changed:', galleryItems.length, galleryItems);
+    console.log(
+      "Gallery items state changed:",
+      galleryItems.length,
+      galleryItems
+    );
   }, [galleryItems]);
 
   const fetchData = async () => {
@@ -118,25 +44,28 @@ const GalleryManagement = () => {
       setLoading(true);
 
       // Fetch sold cars for gallery
-      
 
       // Fetch gallery items
-      console.log('Fetching gallery items...');
+      console.log("Fetching gallery items...");
       const galleryResp = await axios.get(`${API_BASE}/api/gallery`);
       const galleryItemsData = galleryResp.data.data || [];
-      console.log('Gallery items fetched:', galleryItemsData.length, galleryItemsData);
+      console.log(
+        "Gallery items fetched:",
+        galleryItemsData.length,
+        galleryItemsData
+      );
       setGalleryItems(galleryItemsData);
 
       // Fetch all cars to manage which ones appear in gallery
-      console.log('Fetching all cars...');
+      console.log("Fetching all cars...");
       const allResponse = await axios.get(`${API_BASE}/api/cars`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       const allCarsData = allResponse.data.data || [];
-      console.log('All cars fetched:', allCarsData.length);
+      console.log("All cars fetched:", allCarsData.length);
       setAllCars(allCarsData);
-      
-      console.log('Data fetch completed successfully');
+
+      console.log("Data fetch completed successfully");
     } catch (error) {
       console.error("Error fetching data:", error);
       console.error("Error details:", error.response?.data);
@@ -149,115 +78,77 @@ const GalleryManagement = () => {
     }
   };
 
-  const handleAddSoldPhoto = async (carId, file) => {
-    if (!file) return;
-    setUploadingIds((prev) => [...prev, carId]);
-    const fd = new FormData();
-    fd.append("photo", file);
-    fd.append("carId", carId);
-
-    try {
-      // Try the new gallery endpoint first
-      const res = await axios.post(`${API_BASE}/api/gallery`, fd, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      const galleryItem = res.data?.data;
-      // Also update soldCars state by adding the filename to sold.customerPhotos for immediate UI reflection
-      if (galleryItem && galleryItem.filename) {
-        setSoldCars((prev) =>
-          prev.map((c) =>
-            c._id === carId
-              ? {
-                  ...c,
-                  sold: {
-                    ...(c.sold || {}),
-                    customerPhotos: [
-                      ...((c.sold && c.sold.customerPhotos) || []),
-                      galleryItem.filename,
-                    ],
-                  },
-                }
-              : c
-          )
-        );
-      }
-      alert("Customer photo uploaded to gallery");
-    } catch (err) {
-      console.warn(
-        "Gallery upload failed, falling back to car sold-photo:",
-        err?.response?.status
-      );
-      try {
-        // Fallback to existing endpoint for backward compatibility
-        const res2 = await axios.post(
-          `${API_BASE}/api/cars/${carId}/sold-photo`,
-          fd,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-        const updatedSold = res2.data?.data?.sold;
-        setSoldCars((prev) =>
-          prev.map((c) => (c._id === carId ? { ...c, sold: updatedSold } : c))
-        );
-        alert("Customer photo uploaded");
-      } catch (err2) {
-        console.error("Upload failed:", err2);
-        alert(err2.response?.data?.error || "Failed to upload photo");
-      }
-    } finally {
-      setUploadingIds((prev) => prev.filter((id) => id !== carId));
-    }
-  };
-
   const handleAddSoldPhotos = async (carId, files) => {
     if (!files || files.length === 0) return;
-    
-    setUploadingIds(prev => [...prev, carId]);
+
+    setUploadingIds((prev) => [...prev, carId]);
     const fileArray = Array.from(files);
     const totalFiles = fileArray.length;
     let successCount = 0;
     let failCount = 0;
-    
+
     // Show initial progress
     alert(`Starting upload of ${totalFiles} photo(s) for this car...`);
-    
+
     // Upload files one by one
     for (let i = 0; i < fileArray.length; i++) {
       const file = fileArray[i];
       const fd = new FormData();
-      fd.append('photo', file);
-      fd.append('carId', carId);
+      fd.append("photo", file);
+      fd.append("carId", carId);
 
       try {
         // Try the new gallery endpoint first
         const res = await axios.post(`${API_BASE}/api/gallery`, fd, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}`, 'Content-Type': 'multipart/form-data' }
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data",
+          },
         });
 
         const galleryItem = res.data?.data;
         // Also update soldCars state by adding the filename to sold.customerPhotos for immediate UI reflection
         if (galleryItem && galleryItem.filename) {
-          setSoldCars(prev => prev.map(c => c._id === carId ? { ...c, sold: { ...(c.sold || {}), customerPhotos: [...((c.sold && c.sold.customerPhotos) || []), galleryItem.filename] } } : c));
-          setGalleryItems(prev => [galleryItem, ...prev]);
+          setSoldCars((prev) =>
+            prev.map((c) =>
+              c._id === carId
+                ? {
+                    ...c,
+                    sold: {
+                      ...(c.sold || {}),
+                      customerPhotos: [
+                        ...((c.sold && c.sold.customerPhotos) || []),
+                        galleryItem.filename,
+                      ],
+                    },
+                  }
+                : c
+            )
+          );
+          setGalleryItems((prev) => [galleryItem, ...prev]);
         }
         successCount++;
       } catch (err) {
-        console.warn('Gallery upload failed, trying fallback:', err?.response?.status);
+        console.warn(
+          "Gallery upload failed, trying fallback:",
+          err?.response?.status
+        );
         try {
           // Fallback to existing endpoint for backward compatibility
-          const res2 = await axios.post(`${API_BASE}/api/cars/${carId}/sold-photo`, fd, {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}`, 'Content-Type': 'multipart/form-data' }
-          });
+          const res2 = await axios.post(
+            `${API_BASE}/api/cars/${carId}/sold-photo`,
+            fd,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
           const updatedSold = res2.data?.data?.sold;
-          setSoldCars(prev => prev.map(c => c._id === carId ? { ...c, sold: updatedSold } : c));
+          setSoldCars((prev) =>
+            prev.map((c) => (c._id === carId ? { ...c, sold: updatedSold } : c))
+          );
           successCount++;
         } catch (err2) {
           console.error(`Upload failed for file ${i + 1}:`, err2);
@@ -265,17 +156,19 @@ const GalleryManagement = () => {
         }
       }
     }
-    
+
     // Show final result
     if (successCount === totalFiles) {
       alert(`All ${totalFiles} photo(s) uploaded successfully for this car!`);
     } else if (successCount > 0) {
-      alert(`${successCount} of ${totalFiles} photo(s) uploaded successfully. ${failCount} failed.`);
+      alert(
+        `${successCount} of ${totalFiles} photo(s) uploaded successfully. ${failCount} failed.`
+      );
     } else {
       alert(`Failed to upload all ${totalFiles} photo(s). Please try again.`);
     }
-    
-    setUploadingIds(prev => prev.filter(id => id !== carId));
+
+    setUploadingIds((prev) => prev.filter((id) => id !== carId));
   };
 
   // Edit handlers
@@ -346,28 +239,31 @@ const GalleryManagement = () => {
 
   const handleDirectUpload = async (files) => {
     if (!files || files.length === 0) return;
-    
+
     const fileArray = Array.from(files);
     const totalFiles = fileArray.length;
     let successCount = 0;
     let failCount = 0;
-    
+
     // Show initial progress
     alert(`Starting upload of ${totalFiles} photo(s)...`);
-    
+
     // Upload files one by one
     for (let i = 0; i < fileArray.length; i++) {
       const file = fileArray[i];
       const fd = new FormData();
-      fd.append('photo', file);
-      
+      fd.append("photo", file);
+
       try {
         const res = await axios.post(`${API_BASE}/api/gallery`, fd, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}`, 'Content-Type': 'multipart/form-data' }
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data",
+          },
         });
         const galleryItem = res.data?.data;
         if (galleryItem) {
-          setGalleryItems(prev => [galleryItem, ...prev]);
+          setGalleryItems((prev) => [galleryItem, ...prev]);
           successCount++;
         }
       } catch (err) {
@@ -375,36 +271,17 @@ const GalleryManagement = () => {
         failCount++;
       }
     }
-    
+
     // Show final result
     if (successCount === totalFiles) {
       alert(`All ${totalFiles} photo(s) uploaded successfully!`);
     } else if (successCount > 0) {
-      alert(`${successCount} of ${totalFiles} photo(s) uploaded successfully. ${failCount} failed.`);
+      alert(
+        `${successCount} of ${totalFiles} photo(s) uploaded successfully. ${failCount} failed.`
+      );
     } else {
       alert(`Failed to upload all ${totalFiles} photo(s). Please try again.`);
     }
-  };
-
-  const toggleMenu = (menuName) => {
-    setExpandedMenus((prev) => ({
-      ...prev,
-      [menuName]: !prev[menuName],
-    }));
-  };
-
-  const handleMenuClick = (menuName, path) => {
-    setActiveMenu(menuName);
-    const actualPath = typeof path === "function" ? path(user?.role) : path;
-    navigate(actualPath);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("authToken");
-    sessionStorage.clear();
-    navigate("/login");
   };
 
   const buildImageUrl = (file) => {
@@ -436,43 +313,58 @@ const GalleryManagement = () => {
               Manage happy customer gallery and sold car testimonials
             </p>
             <div style={styles.actionButtons}>
-              <a 
-                href="/happy-customers.html" 
-                target="_blank" 
+              <a
+                href="/happy-customers.html"
+                target="_blank"
                 style={styles.viewGalleryButton}
               >
                 <ExternalLink size={16} />
                 View Public Gallery
               </a>
-                <button
-                  style={{
-                    ...styles.viewGalleryButton,
-                    backgroundColor: '#ef4444',
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                  onClick={async () => {
-                    if (!window.confirm('Delete ALL gallery images and testimonials? This cannot be undone.')) return;
-                    try {
-                      const resp = await axios.delete(`${API_BASE}/api/gallery`, {
-                        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-                      });
-                      if (resp.data && resp.data.success) {
-                        setGalleryItems([]);
-                        // Refresh soldCars to remove references
-                        fetchData();
-                        alert(`Deleted ${resp.data.deletedCount || 0} gallery files`);
-                      } else {
-                        alert('Failed to delete all gallery items');
-                      }
-                    } catch (err) {
-                      console.error('Delete all failed', err);
-                      alert(err.response?.data?.message || err.response?.data?.error || 'Failed to delete all gallery items');
+              <button
+                style={{
+                  ...styles.viewGalleryButton,
+                  backgroundColor: "#ef4444",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+                onClick={async () => {
+                  if (
+                    !window.confirm(
+                      "Delete ALL gallery images and testimonials? This cannot be undone."
+                    )
+                  )
+                    return;
+                  try {
+                    const resp = await axios.delete(`${API_BASE}/api/gallery`, {
+                      headers: {
+                        Authorization: `Bearer ${localStorage.getItem(
+                          "token"
+                        )}`,
+                      },
+                    });
+                    if (resp.data && resp.data.success) {
+                      setGalleryItems([]);
+                      // Refresh soldCars to remove references
+                      fetchData();
+                      alert(
+                        `Deleted ${resp.data.deletedCount || 0} gallery files`
+                      );
+                    } else {
+                      alert("Failed to delete all gallery items");
                     }
-                  }}
-                >
-                  Delete All
-                </button>
+                  } catch (err) {
+                    console.error("Delete all failed", err);
+                    alert(
+                      err.response?.data?.message ||
+                        err.response?.data?.error ||
+                        "Failed to delete all gallery items"
+                    );
+                  }
+                }}
+              >
+                Delete All
+              </button>
             </div>
           </div>
 
@@ -483,13 +375,16 @@ const GalleryManagement = () => {
             </div>
             <div style={styles.statCard}>
               <h3 style={styles.statNumber}>
-                {soldCars.filter(car => car.sold?.testimonial).length}
+                {soldCars.filter((car) => car.sold?.testimonial).length}
               </h3>
               <p style={styles.statLabel}>With Testimonials</p>
             </div>
             <div style={styles.statCard}>
               <h3 style={styles.statNumber}>
-                {soldCars.filter(car => car.sold?.customerPhotos?.length > 0).length}
+                {
+                  soldCars.filter((car) => car.sold?.customerPhotos?.length > 0)
+                    .length
+                }
               </h3>
               <p style={styles.statLabel}>With Customer Photos</p>
             </div>
@@ -497,25 +392,51 @@ const GalleryManagement = () => {
 
           {/* Upload Section */}
           <div style={{ marginBottom: 24 }}>
-            <h2 style={{ margin: '0 0 12px 0' }}>Upload New Photo</h2>
-            <div style={{ padding: 16, backgroundColor: '#f8fafc', borderRadius: 8, border: '2px dashed #cbd5e1' }}>
-              <label style={{ display: 'block', textAlign: 'center', cursor: 'pointer' }}>
+            <h2 style={{ margin: "0 0 12px 0" }}>Upload New Photo</h2>
+            <div
+              style={{
+                padding: 16,
+                backgroundColor: "#f8fafc",
+                borderRadius: 8,
+                border: "2px dashed #cbd5e1",
+              }}
+            >
+              <label
+                style={{
+                  display: "block",
+                  textAlign: "center",
+                  cursor: "pointer",
+                }}
+              >
                 <input
                   type="file"
                   accept="image/*"
                   multiple
-                  style={{ display: 'none' }}
+                  style={{ display: "none" }}
                   onChange={(e) => {
                     if (e.target.files && e.target.files.length > 0) {
                       handleDirectUpload(e.target.files);
                     }
-                    e.target.value = '';
+                    e.target.value = "";
                   }}
                 />
                 <div style={{ padding: 20 }}>
-                  <Camera size={48} style={{ color: '#94a3b8', marginBottom: 16 }} />
-                  <p style={{ margin: 0, color: '#64748b', fontWeight: 500 }}>Click to upload photos to gallery</p>
-                  <p style={{ margin: '4px 0 0 0', color: '#94a3b8', fontSize: '0.875rem' }}>Select multiple JPG, PNG, WEBP files up to 5MB each</p>
+                  <Camera
+                    size={48}
+                    style={{ color: "#94a3b8", marginBottom: 16 }}
+                  />
+                  <p style={{ margin: 0, color: "#64748b", fontWeight: 500 }}>
+                    Click to upload photos to gallery
+                  </p>
+                  <p
+                    style={{
+                      margin: "4px 0 0 0",
+                      color: "#94a3b8",
+                      fontSize: "0.875rem",
+                    }}
+                  >
+                    Select multiple JPG, PNG, WEBP files up to 5MB each
+                  </p>
                 </div>
               </label>
             </div>
@@ -634,8 +555,6 @@ const GalleryManagement = () => {
               </div>
             )}
           </div>
-
-          
 
           <div style={styles.section}>
             <h2 style={styles.sectionTitle}>Happy Customer Gallery</h2>
@@ -845,11 +764,13 @@ const styles = {
     fontWeight: "700",
     color: "#1e293b",
     margin: 0,
+    textAlign: "center",
   },
   pageSubtitle: {
     fontSize: "1rem",
     color: "#64748b",
     margin: "8px 0 0 0",
+    textAlign: "center",
   },
   actionButtons: {
     display: "flex",
@@ -1042,11 +963,13 @@ const styles = {
     fontWeight: "700",
     color: "#1e293b",
     margin: 0,
+    textAlign: "center",
   },
   pageSubtitle: {
     fontSize: "1rem",
     color: "#64748b",
     margin: "8px 0 0 0",
+    textAlign: "center",
   },
   actionButtons: {
     display: "flex",

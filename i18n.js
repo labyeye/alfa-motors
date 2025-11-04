@@ -156,7 +156,7 @@
       "I agree to the terms and conditions and privacy policy*": "ನಾನು ನಿಯಮಗಳು ಮತ್ತು ಗೌಪ್ಯತಾ ನಿಯಮಾವಳಿಯನ್ನು ಒಪ್ಪುತ್ತೇನೆ*",
 
       // Footer / misc
-      "India's most trusted marketplace for premium pre-owned Cars since 2018.": "2018ರಿಂದ ಭಾರತದ ಅತ್ಯಂತ ವಿಶ್ವಾಸಾರ್ಹ ಪ್ರೀಮಿಯಂ ಪೂರ್ವ-ಮಾಲೀಕ ಕಾರು ಮಾರುಕಟ್ಟೆ.",
+      "The best second-hand car showroom in Bangalore for luxury and premium cars.": "ಬೆಂಗಳೂರುದಲ್ಲಿ ಐಷಾರಾಮಿ ಮತ್ತು ಪ್ರೀಮಿಯಂ ಕಾರುಗಳ ಉತ್ತಮ ಎರಡನೇ ಕೈ ಶೋರೂಮ್.",
       "All rights reserved.": "ಎಲ್ಲಾ ಹಕ್ಕುಗಳು ಸಂರಕ್ಷಿಸಲಾಗಿದೆ.",
       "What Our Riders Say": "ನಮ್ಮ ಸವಾರಿ ತಿಳಿಸುವವರು ಏನು ಹೇಳುತ್ತಾರೆ",
       "BROWSE INVENTORY": "ಇನ್‌ವೆಂಟರಿ ಬ್ರೌಸ್ ಮಾಡಿ",
@@ -262,6 +262,118 @@
       if (lang !== 'en') document.body.classList.add('hindi-font');
     } catch (e) {}
   }
+
+  // Page-specific translation helper. This is used by the runtime to translate
+  // pages that don't use data-translate attributes. It stores original text in
+  // data attributes so English can be restored when switching back.
+  try {
+    window.translatePage = function (lang) {
+      try {
+        if (!lang) lang = getPreferred() || 'en';
+        const page = (location.pathname || '').split('/').pop() || 'index.html';
+
+        // Finance page translations
+        if (page === 'finance.html') {
+          // helper to set text and preserve original
+          function setText(sel, txt) {
+            const el = document.querySelector(sel);
+            if (!el) return;
+            if (!el.dataset.origText) el.dataset.origText = el.textContent;
+            el.textContent = txt;
+          }
+
+          function setHTML(sel, html) {
+            const el = document.querySelector(sel);
+            if (!el) return;
+            if (!el.dataset.origHtml) el.dataset.origHtml = el.innerHTML;
+            el.innerHTML = html;
+          }
+
+          function setAlt(img, alt) {
+            if (!img) return;
+            if (!img.dataset.origAlt) img.dataset.origAlt = img.getAttribute('alt') || '';
+            img.setAttribute('alt', alt);
+          }
+
+          if (lang === 'ka') {
+            setText('.finance-hero h1', 'ಫೈನಾನ್ಸಿಂಗ್ ಸುಲಭವಾಗಿದೆ');
+            setText('.finance-hero p', 'ನಾವು ವಿಶ್ವಾಸಾರ್ಹ ಬ್ಯಾಂಕುಗಳು ಮತ್ತು NBFCಗಳೊಂದಿಗೆ ಕೆಲಸಮಾಡಿ, ಬೆಂಗಳೂರು ಮತ್ತು ಕರ್ನಾಟಕದಲ್ಲಿ ಪೂರ್ವ-ಮಾಲೀಕ ಕಾರುಗಳಿಗಾಗಿ ವೇಗವಾದ ಅನುಮತಿ, ಸ್ಪರ್ಧಾತ್ಮಕ EMI ಮತ್ತು ಕನಿಷ್ಠ ದಾಖಲೆಕಾರ್ಯವನ್ನು ಒದಗಿಸುತ್ತೇವೆ.');
+            setText('.process h2', 'ಫೈನಾನ್ಸಿಂಗ್ ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ');
+
+            // Steps - use DOM traversal because description divs don't have a class
+            for (let i = 1; i <= 5; i++) {
+              const stepSel = '.process .step:nth-of-type(' + i + ')';
+              const stepEl = document.querySelector(stepSel);
+              if (!stepEl) continue;
+              const strong = stepEl.querySelector('strong');
+              const desc = strong && strong.parentElement ? strong.parentElement.querySelector('div') : null;
+              if (i === 1) {
+                if (strong) { if (!strong.dataset.origText) strong.dataset.origText = strong.textContent; strong.textContent = 'ವಾಹನನ್ನು ಆರಿಸಿ'; }
+                if (desc) { if (!desc.dataset.origText) desc.dataset.origText = desc.textContent; desc.textContent = 'ನಿಮ್ಮ ಇಚ್ಛಿತ ಪೂರ್ವ-ಮಾಲೀಕ ಕಾರನ್ನು ನಮ್ಮ ಇನ್‌ವೆಂಟರಿಯಿಂದ ಆಯ್ಕೆಮಾಡಿ.'; }
+              }
+              if (i === 2) {
+                if (strong) { if (!strong.dataset.origText) strong.dataset.origText = strong.textContent; strong.textContent = 'ಕೊಟ್ ಪಡೆಯಿರಿ'; }
+                if (desc) { if (!desc.dataset.origText) desc.dataset.origText = desc.textContent; desc.textContent = 'ಕೊಟ್ ಟೂಲನ್ನು ಬಳಸಿ ಅಥವಾ ಇನ್ವಾಯ್ಸ್ ಮತ್ತು ಸಾಲದ ಅಂದಾಜಿಗಾಗಿ ನಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸಿ.'; }
+              }
+              if (i === 3) {
+                if (strong) { if (!strong.dataset.origText) strong.dataset.origText = strong.textContent; strong.textContent = 'ದಾಖಲೆಗಳನ್ನು ಅಪ್ಲೋಡ್ ಮಾಡಿ'; }
+                if (desc) { if (!desc.dataset.origText) desc.dataset.origText = desc.textContent; desc.textContent = 'KYC, ಆದಾಯದ ಪ್ರಮಾಣ ಮತ್ತು ವಾಹನದ ದಾಖಲೆಗಳನ್ನು ಸಾಲದಾತರಿಗೆ ಸಲ್ಲಿಸಿ.'; }
+              }
+              if (i === 4) {
+                if (strong) { if (!strong.dataset.origText) strong.dataset.origText = strong.textContent; strong.textContent = 'ಸಾಲ ಮಂಜೂರು'; }
+                if (desc) { if (!desc.dataset.origText) desc.dataset.origText = desc.textContent; desc.textContent = 'ಸಾಮಾನ್ಯವಾಗಿ 24-48 ಗಂಟೆಗಳಲ್ಲಿ ಪಾಲುದಾರ ಸಾಲದಾರರಿಂದ ತ್ವರಿತ ಕ್ರೆಡಿಟ್ ನಿರ್ಧಾರ.'; }
+              }
+              if (i === 5) {
+                if (strong) { if (!strong.dataset.origText) strong.dataset.origText = strong.textContent; strong.textContent = 'ಡಿಸ್ಬರ್ಸಲ್ ಮತ್ತು ವಿತರಣೆ'; }
+                if (desc) { if (!desc.dataset.origText) desc.dataset.origText = desc.textContent; desc.textContent = 'ಸಾಲವು ವಿತರಿಸಲ್ಪಟ್ಟಾಗ, ವಾಹನದ ವರ್ಗಾವಣೆ ಮಾಡಿ ಮತ್ತು ನಿಮಗೆ ವಿತರಿಸಲಾಗುತ್ತದೆ.'; }
+              }
+            }
+
+            // partners alt texts (generate per-index Kannada labels)
+            document.querySelectorAll('.partners .partner img').forEach(function (img, idx) {
+              const alt = 'ಭಾಗೀದಾರ ' + (idx + 1) + ' ಲೋಗೋ';
+              setAlt(img, alt);
+            });
+
+            // small CTA / note
+            const note = document.querySelector('.process p');
+            if (note) {
+              if (!note.dataset.origText) note.dataset.origText = note.textContent;
+              note.textContent = 'ವೈಯಕ್ತಿಕ EMI ಯೋಜನೆಗಳಿಗಾಗಿ, ನಮ್ಮ ಶೋರೂಮ್‌ಗೆ preferred ವಾಹನ ID ಅನ್ನು ತಂದುಕೊಳ್ಳಿ ಅಥವಾ ನಮ್ಮ ಫೈನಾನ್ಸ್ ಪಾಲುದಾರರಿಂದ ಕರೆ ವಿನಂತಿ ಮಾಡಿ.';
+            }
+          } else {
+            // restore original English texts if stored (steps need traversal too)
+            try {
+              const hdr = document.querySelector('.finance-hero h1'); if (hdr && hdr.dataset && hdr.dataset.origText) hdr.textContent = hdr.dataset.origText;
+              const p = document.querySelector('.finance-hero p'); if (p && p.dataset && p.dataset.origText) p.textContent = p.dataset.origText;
+              const ph2 = document.querySelector('.process h2'); if (ph2 && ph2.dataset && ph2.dataset.origText) ph2.textContent = ph2.dataset.origText;
+            } catch (e) {}
+            for (let i = 1; i <= 5; i++) {
+              try {
+                const stepEl = document.querySelector('.process .step:nth-of-type(' + i + ')');
+                if (!stepEl) continue;
+                const strong = stepEl.querySelector('strong');
+                const desc = strong && strong.parentElement ? strong.parentElement.querySelector('div') : null;
+                if (strong && strong.dataset && strong.dataset.origText) strong.textContent = strong.dataset.origText;
+                if (desc && desc.dataset && desc.dataset.origText) desc.textContent = desc.dataset.origText;
+              } catch (e) {}
+            }
+
+            // restore partner alts
+            document.querySelectorAll('.partners .partner img').forEach(function (img) {
+              try {
+                if (img && img.dataset && img.dataset.origAlt !== undefined) img.setAttribute('alt', img.dataset.origAlt);
+              } catch (e) {}
+            });
+
+            // restore note
+            const note = document.querySelector('.process p');
+            if (note && note.dataset && note.dataset.origText) note.textContent = note.dataset.origText;
+          }
+        }
+      } catch (e) {}
+    };
+  } catch (e) {}
 
   window.i18n = {
     getPreferred: getPreferred,

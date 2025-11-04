@@ -1,27 +1,13 @@
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  FileText,
-  ChevronLeft,
   Save,
   Upload,
   Download,
   Check,
   X,
-  LayoutDashboard,
-  TrendingUp,
-  Wrench,
-  Users,
-  LogOut,
-  CarFront,
-  ChevronDown,
-  ChevronRight,
-  Car,
-  Bike,
 } from "lucide-react";
-import useMediaQuery from "react-responsive";
 import AuthContext from "../context/AuthContext";
-import logo from "../images/company.png";
 import Sidebar from "./Sidebar";
 
 const RcEntryPage = () => {
@@ -51,8 +37,6 @@ const RcEntryPage = () => {
   });
   const { user } = useContext(AuthContext);
   const [activeMenu, setActiveMenu] = useState("RC Entry");
-  const [expandedMenus, setExpandedMenus] = useState({});
-  
 
   useEffect(() => {
     // Check if we're editing an existing RC entry
@@ -64,25 +48,7 @@ const RcEntryPage = () => {
       fetchRcEntry(id);
     }
   }, []);
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("authToken");
-    sessionStorage.clear();
-    navigate("/login");
-  };
-
-  const toggleMenu = (menuName) => {
-    setExpandedMenus((prev) => ({
-      ...prev,
-      [menuName]: !prev[menuName],
-    }));
-  };
-  const handleMenuClick = (menuName, path) => {
-    setActiveMenu(menuName);
-    const actualPath = typeof path === "function" ? path(user?.role) : path;
-    navigate(actualPath);
-  };
+  
 
   const fetchRcEntry = async (id) => {
     try {

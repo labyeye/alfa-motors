@@ -2,24 +2,14 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import {
-  LayoutDashboard,
-  TrendingUp,
   Wrench,
-  Users,
-  LogOut,
-  ChevronDown,
-  ChevronRight,
   FileText,
   Search,
-  Bike,
-  Car,
-  CarFront,
   ArrowUpRight,
   ArrowDownLeft,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
-import logo from '../images/company.png';
 import Sidebar from "./Sidebar";
 const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'https://alfa-motors-5yfh.vercel.app' : 'https://alfa-motors-5yfh.vercel.app');
 
@@ -429,11 +419,13 @@ const styles = {
     fontWeight: "700",
     color: "#1e293b",
     margin: 0,
+    textAlign: "center",
   },
   pageSubtitle: {
     fontSize: "1rem",
     color: "#64748b",
     margin: "8px 0 0 0",
+    textAlign: "center",
   },
   searchContainer: {
     display: "flex",

@@ -1,25 +1,24 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import {
   Check,
   X,
   Eye,
-  Phone,
-  Mail,
-  Calendar,
-  IndianRupee,
   Car,
   Filter,
   Search,
   RefreshCw,
   Trash,
-  ExternalLink,
 } from "lucide-react";
 import AuthContext from "../context/AuthContext";
 import Sidebar from "./Sidebar";
 
-const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'https://alfa-motors-5yfh.vercel.app' : 'https://alfa-motors-5yfh.vercel.app');
+const API_BASE =
+  window.API_BASE ||
+  (window.location.hostname === "localhost"
+    ? "https://alfa-motors-5yfh.vercel.app"
+    : "https://alfa-motors-5yfh.vercel.app");
 
 const SellRequests = () => {
   const { user } = useContext(AuthContext);
@@ -42,8 +41,8 @@ const SellRequests = () => {
       setLoading(true);
       const response = await axios.get(`${API_BASE}/api/sell-requests`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       });
       setRequests(response.data || []);
       setError(null);
@@ -51,7 +50,7 @@ const SellRequests = () => {
       console.error("Error fetching sell requests:", err);
       setError("Failed to load sell requests");
       if (err.response?.status === 401) {
-        navigate('/login');
+        navigate("/login");
       }
     } finally {
       setLoading(false);
@@ -65,17 +64,19 @@ const SellRequests = () => {
         { status },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-          }
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
       );
-      
-      setRequests(requests.map(request => 
-        request._id === id ? response.data : request
-      ));
-      
+
+      setRequests(
+        requests.map((request) =>
+          request._id === id ? response.data : request
+        )
+      );
+
       // Show success message
-      const statusMsg = status === 'Approved' ? 'approved' : 'rejected';
+      const statusMsg = status === "Approved" ? "approved" : "rejected";
       alert(`Request ${statusMsg} successfully!`);
     } catch (err) {
       console.error("Error updating status:", err);
@@ -84,26 +85,28 @@ const SellRequests = () => {
   };
 
   const deleteRequest = async (id) => {
-    const ok = window.confirm('Are you sure you want to delete this sell request? This action cannot be undone.');
+    const ok = window.confirm(
+      "Are you sure you want to delete this sell request? This action cannot be undone."
+    );
     if (!ok) return;
 
     try {
       await axios.delete(`${API_BASE}/api/sell-requests/${id}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       });
 
-      setRequests(prev => prev.filter(r => r._id !== id));
-      alert('Sell request deleted');
+      setRequests((prev) => prev.filter((r) => r._id !== id));
+      alert("Sell request deleted");
       // If the modal is showing this request, close it
       if (selectedRequest && selectedRequest._id === id) {
         setShowModal(false);
         setSelectedRequest(null);
       }
     } catch (err) {
-      console.error('Error deleting sell request:', err);
-      alert('Failed to delete request. Please try again.');
+      console.error("Error deleting sell request:", err);
+      alert("Failed to delete request. Please try again.");
     }
   };
 
@@ -115,29 +118,33 @@ const SellRequests = () => {
   const buildImageUrl = (imagePath) => {
     if (!imagePath) return "/assets/placeholder.png";
     if (imagePath.startsWith("http")) return imagePath;
-    // files are stored under backend/public/uploads, served at /public/uploads
-    return `${API_BASE}/public/uploads/${imagePath}`;
+    return `${API_BASE}/uploads/${imagePath}`;
   };
 
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
-      case 'pending': return '#f59e0b';
-      case 'approved': return '#10b981';
-      case 'rejected': return '#ef4444';
-      default: return '#6b7280';
+      case "pending":
+        return "#f59e0b";
+      case "approved":
+        return "#10b981";
+      case "rejected":
+        return "#ef4444";
+      default:
+        return "#6b7280";
     }
   };
 
-  const filteredRequests = requests.filter(request => {
-    const matchesSearch = 
+  const filteredRequests = requests.filter((request) => {
+    const matchesSearch =
       request.brand?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       request.model?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       request.sellerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       request.sellerPhone?.includes(searchTerm);
-    
-    const matchesStatus = statusFilter === "all" || 
+
+    const matchesStatus =
+      statusFilter === "all" ||
       request.status?.toLowerCase() === statusFilter.toLowerCase();
-    
+
     return matchesSearch && matchesStatus;
   });
 
@@ -175,7 +182,7 @@ const SellRequests = () => {
   return (
     <div style={styles.container}>
       <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
-      
+
       <div style={styles.mainContent}>
         <div style={styles.contentPadding}>
           {/* Header */}
@@ -186,10 +193,6 @@ const SellRequests = () => {
                 Manage customer vehicle sell requests and inquiries
               </p>
             </div>
-            <button style={styles.refreshButton} onClick={fetchSellRequests}>
-              <RefreshCw size={16} />
-              Refresh
-            </button>
           </div>
 
           {/* Stats */}
@@ -199,20 +202,20 @@ const SellRequests = () => {
               <p style={styles.statLabel}>Total Requests</p>
             </div>
             <div style={styles.statCard}>
-              <h3 style={{...styles.statNumber, color: '#f59e0b'}}>
-                {requests.filter(r => r.status === 'Pending').length}
+              <h3 style={{ ...styles.statNumber, color: "#f59e0b" }}>
+                {requests.filter((r) => r.status === "Pending").length}
               </h3>
               <p style={styles.statLabel}>Pending</p>
             </div>
             <div style={styles.statCard}>
-              <h3 style={{...styles.statNumber, color: '#10b981'}}>
-                {requests.filter(r => r.status === 'Approved').length}
+              <h3 style={{ ...styles.statNumber, color: "#10b981" }}>
+                {requests.filter((r) => r.status === "Approved").length}
               </h3>
               <p style={styles.statLabel}>Approved</p>
             </div>
             <div style={styles.statCard}>
-              <h3 style={{...styles.statNumber, color: '#ef4444'}}>
-                {requests.filter(r => r.status === 'Rejected').length}
+              <h3 style={{ ...styles.statNumber, color: "#ef4444" }}>
+                {requests.filter((r) => r.status === "Rejected").length}
               </h3>
               <p style={styles.statLabel}>Rejected</p>
             </div>
@@ -249,16 +252,23 @@ const SellRequests = () => {
           <div style={styles.section}>
             {filteredRequests.length === 0 ? (
               <div style={styles.emptyState}>
-                <Car size={48} style={{ color: "#94a3b8", marginBottom: "16px" }} />
+                <Car
+                  size={48}
+                  style={{ color: "#94a3b8", marginBottom: "16px" }}
+                />
                 <h3 style={{ color: "#64748b", margin: "0 0 8px 0" }}>
-                  {requests.length === 0 ? "No sell requests yet" : "No requests match your filters"}
+                  {requests.length === 0
+                    ? "No sell requests yet"
+                    : "No requests match your filters"}
                 </h3>
                 <p style={{ color: "#94a3b8", margin: 0 }}>
-                  {requests.length === 0 ? "Customer sell requests will appear here" : "Try adjusting your search or filter criteria"}
+                  {requests.length === 0
+                    ? "Customer sell requests will appear here"
+                    : "Try adjusting your search or filter criteria"}
                 </p>
               </div>
             ) : (
-              <div style={{ overflowX: 'auto' }}>
+              <div style={{ overflowX: "auto" }}>
                 <table style={styles.table}>
                   <thead>
                     <tr>
@@ -280,51 +290,93 @@ const SellRequests = () => {
                         <td style={styles.tableCell}>{idx + 1}</td>
                         <td style={styles.tableCell}>
                           {request.images && request.images.length > 0 ? (
-                            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                            <div
+                              style={{
+                                display: "flex",
+                                gap: 8,
+                                alignItems: "center",
+                              }}
+                            >
                               <img
                                 src={buildImageUrl(request.images[0])}
                                 alt={`${request.brand} ${request.model}`}
                                 style={styles.vehicleImage}
-                                onClick={() => window.open(buildImageUrl(request.images[0]), '_blank')}
+                                onClick={() =>
+                                  window.open(
+                                    buildImageUrl(request.images[0]),
+                                    "_blank"
+                                  )
+                                }
                               />
                               {request.images.length > 1 && (
-                                <div style={styles.moreImages}>+{request.images.length - 1}</div>
+                                <div style={styles.moreImages}>
+                                  +{request.images.length - 1}
+                                </div>
                               )}
                             </div>
                           ) : (
-                            <img src="/assets/placeholder.png" style={styles.vehicleImage} alt="placeholder" />
+                            <img
+                              src="/assets/placeholder.png"
+                              style={styles.vehicleImage}
+                              alt="placeholder"
+                            />
                           )}
                         </td>
-                        <td style={styles.tableCell}>{request.brand} {request.model}</td>
+                        <td style={styles.tableCell}>
+                          {request.brand} {request.model}
+                        </td>
                         <td style={styles.tableCell}>{request.year}</td>
                         <td style={styles.tableCell}>{request.sellerName}</td>
                         <td style={styles.tableCell}>{request.sellerPhone}</td>
                         <td style={styles.tableCell}>{request.sellerEmail}</td>
-                        <td style={styles.tableCell}>₹{request.expectedPrice?.toLocaleString()}</td>
                         <td style={styles.tableCell}>
-                          <span style={{...styles.statusBadge, backgroundColor: getStatusColor(request.status)}}>
-                            {request.status || 'Pending'}
+                          ₹{request.expectedPrice?.toLocaleString()}
+                        </td>
+                        <td style={styles.tableCell}>
+                          <span
+                            style={{
+                              ...styles.statusBadge,
+                              backgroundColor: getStatusColor(request.status),
+                            }}
+                          >
+                            {request.status || "Pending"}
                           </span>
                         </td>
                         <td style={styles.tableCell}>
-                          <div style={{ display: 'flex', gap: 8 }}>
-                            <button style={styles.viewButton} onClick={() => viewRequest(request)}>
+                          <div style={{ display: "flex", gap: 8 }}>
+                            <button
+                              style={styles.viewButton}
+                              onClick={() => viewRequest(request)}
+                            >
                               <Eye size={14} />
                               View
                             </button>
-                            { (user?.isAdmin || user?.role === 'admin') && (
-                              <button style={styles.deleteButton} onClick={() => deleteRequest(request._id)}>
+                            {(user?.isAdmin || user?.role === "admin") && (
+                              <button
+                                style={styles.deleteButton}
+                                onClick={() => deleteRequest(request._id)}
+                              >
                                 <Trash size={14} />
                                 Delete
                               </button>
                             )}
-                            {request.status === 'Pending' && (
+                            {request.status === "Pending" && (
                               <>
-                                <button style={styles.approveButton} onClick={() => updateStatus(request._id, 'Approved')}>
+                                <button
+                                  style={styles.approveButton}
+                                  onClick={() =>
+                                    updateStatus(request._id, "Approved")
+                                  }
+                                >
                                   <Check size={14} />
                                   Approve
                                 </button>
-                                <button style={styles.rejectButton} onClick={() => updateStatus(request._id, 'Rejected')}>
+                                <button
+                                  style={styles.rejectButton}
+                                  onClick={() =>
+                                    updateStatus(request._id, "Rejected")
+                                  }
+                                >
                                   <X size={14} />
                                   Reject
                                 </button>
@@ -348,7 +400,8 @@ const SellRequests = () => {
           <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
             <div style={styles.modalHeader}>
               <h2 style={styles.modalTitle}>
-                {selectedRequest.brand} {selectedRequest.model} ({selectedRequest.year})
+                {selectedRequest.brand} {selectedRequest.model} (
+                {selectedRequest.year})
               </h2>
               <button
                 style={styles.closeButton}
@@ -357,7 +410,7 @@ const SellRequests = () => {
                 <X size={20} />
               </button>
             </div>
-            
+
             <div style={styles.modalContent}>
               {/* Images */}
               {selectedRequest.images && selectedRequest.images.length > 0 && (
@@ -370,13 +423,15 @@ const SellRequests = () => {
                         src={buildImageUrl(image)}
                         alt={`${selectedRequest.brand} ${selectedRequest.model}`}
                         style={styles.modalImage}
-                        onClick={() => window.open(buildImageUrl(image), '_blank')}
+                        onClick={() =>
+                          window.open(buildImageUrl(image), "_blank")
+                        }
                       />
                     ))}
                   </div>
                 </div>
               )}
-              
+
               {/* Details */}
               <div style={styles.modalDetailsGrid}>
                 <div>
@@ -395,10 +450,12 @@ const SellRequests = () => {
                   </div>
                   <div style={styles.detailItem}>
                     <span style={styles.detailLabel}>Expected Price:</span>
-                    <span>₹{selectedRequest.expectedPrice?.toLocaleString()}</span>
+                    <span>
+                      ₹{selectedRequest.expectedPrice?.toLocaleString()}
+                    </span>
                   </div>
                 </div>
-                
+
                 <div>
                   <h3 style={styles.modalSectionTitle}>Seller Information</h3>
                   <div style={styles.detailItem}>
@@ -415,26 +472,26 @@ const SellRequests = () => {
                   </div>
                   <div style={styles.detailItem}>
                     <span style={styles.detailLabel}>Status:</span>
-                    <span 
+                    <span
                       style={{
                         ...styles.statusBadgeSmall,
                         backgroundColor: getStatusColor(selectedRequest.status),
                       }}
                     >
-                      {selectedRequest.status || 'Pending'}
+                      {selectedRequest.status || "Pending"}
                     </span>
                   </div>
                 </div>
               </div>
             </div>
-            
+
             <div style={styles.modalActions}>
-              {selectedRequest.status === 'Pending' && (
+              {selectedRequest.status === "Pending" && (
                 <>
                   <button
                     style={styles.modalApproveButton}
                     onClick={() => {
-                      updateStatus(selectedRequest._id, 'Approved');
+                      updateStatus(selectedRequest._id, "Approved");
                       setShowModal(false);
                     }}
                   >
@@ -444,7 +501,7 @@ const SellRequests = () => {
                   <button
                     style={styles.modalRejectButton}
                     onClick={() => {
-                      updateStatus(selectedRequest._id, 'Rejected');
+                      updateStatus(selectedRequest._id, "Rejected");
                       setShowModal(false);
                     }}
                   >
@@ -453,10 +510,12 @@ const SellRequests = () => {
                   </button>
                 </>
               )}
-              { (user?.isAdmin || user?.role === 'admin') && (
+              {(user?.isAdmin || user?.role === "admin") && (
                 <button
                   style={styles.modalDeleteButton}
-                  onClick={() => { deleteRequest(selectedRequest._id); }}
+                  onClick={() => {
+                    deleteRequest(selectedRequest._id);
+                  }}
                 >
                   <Trash size={16} />
                   Delete
@@ -541,11 +600,13 @@ const styles = {
     fontWeight: "700",
     color: "#1e293b",
     margin: 0,
+    textAlign: "center",
   },
   pageSubtitle: {
     fontSize: "1rem",
     color: "#64748b",
     margin: "8px 0 0 0",
+    textAlign: "center",
   },
   refreshButton: {
     display: "flex",
@@ -604,7 +665,7 @@ const styles = {
     color: "#94a3b8",
   },
   searchInput: {
-    width: "95%",
+    width: "85%",
     padding: "12px 12px 12px 40px",
     border: "1px solid #d1d5db",
     borderRadius: "8px",
@@ -924,25 +985,25 @@ const styles = {
   },
   /* Table styles */
   table: {
-    width: '100%',
-    borderCollapse: 'collapse',
+    width: "100%",
+    borderCollapse: "collapse",
   },
   tableHeader: {
-    textAlign: 'left',
-    padding: '12px',
-    fontSize: '0.875rem',
-    color: '#475569',
-    borderBottom: '2px solid #e6edf3',
-    backgroundColor: '#fbfdff'
+    textAlign: "left",
+    padding: "12px",
+    fontSize: "0.875rem",
+    color: "#475569",
+    borderBottom: "2px solid #e6edf3",
+    backgroundColor: "#fbfdff",
   },
   tableRow: {
-    borderBottom: '1px solid #eef2f7'
+    borderBottom: "1px solid #eef2f7",
   },
   tableCell: {
-    padding: '12px',
-    verticalAlign: 'middle',
-    fontSize: '0.9rem',
-    color: '#334155'
+    padding: "12px",
+    verticalAlign: "middle",
+    fontSize: "0.9rem",
+    color: "#334155",
   },
 };
 

@@ -450,19 +450,37 @@ function displayFeaturedCars(Cars) {
       isDisabled = true;
     }
 
-    // Use car.photos[0] if available, normalize like inventory.html
+    // Use car.photos[0] if available, normalize same as inventory.html
     let imgSrc = "https://via.placeholder.com/300x200?text=No+Image";
     if (Array.isArray(Car.photos) && Car.photos.length > 0) {
-      let filename = Car.photos[0];
-      if (filename.startsWith("carimages/"))
-        filename = filename.replace("carimages/", "");
-      if (filename.startsWith("assets/")) {
+      let filename = Car.photos[0] || "";
+
+      // If it's already a full URL (Cloudinary or other CDN), use it as-is
+      if (filename.startsWith("http://") || filename.startsWith("https://")) {
         imgSrc = filename;
       } else {
-        imgSrc = `https://alfa-motors-5yfh.vercel.app/carimages/${filename}`;
+        if (filename.startsWith("carimages/"))
+          filename = filename.replace("carimages/", "");
+
+        // Local assets (bundled) can be used directly
+        if (filename.startsWith("assets/")) {
+          imgSrc = filename;
+        } else if (filename) {
+          // Fall back to backend-hosted carimages
+          imgSrc = `https://alfa-motors-5yfh.vercel.app/carimages/${filename}`;
+        }
       }
     } else if (Car.imageUrl) {
-      imgSrc = Car.imageUrl;
+      // If imageUrl is a full URL, use as-is; otherwise assume backend path
+      if (
+        typeof Car.imageUrl === "string" &&
+        (Car.imageUrl.startsWith("http://") ||
+          Car.imageUrl.startsWith("https://"))
+      ) {
+        imgSrc = Car.imageUrl;
+      } else if (Car.imageUrl) {
+        imgSrc = `https://alfa-motors-5yfh.vercel.app/carimages/${Car.imageUrl}`;
+      }
     }
 
     CarCard.innerHTML = `
@@ -576,11 +594,11 @@ const translations = {
     "Years Experience": "Years Experience",
     "Our Services": "Our Services",
     "Get Your Car Evaluated": "Get Your Car Evaluated",
-    "Prepare Your Car for Sale" : "Prepare Your Car for Sale",
-    "Market Your Car Effectively" : "Market Your Car Effectively",
-    "Negotiate the Best Price" : "Negotiate the Best Price",
-    "Premium Pre-Owned Vehicles with Complete Transparency":
-      "Premium Pre-Owned Vehicles with Complete Transparency",
+    "Prepare Your Car for Sale": "Prepare Your Car for Sale",
+    "Market Your Car Effectively": "Market Your Car Effectively",
+    "Negotiate the Best Price": "Negotiate the Best Price",
+    "Best Second hand car in Bengaluru":
+      "Best Second hand car in Bengaluru",
     "Find your perfect pre-owned Car from our certified collection with warranty.":
       "Find your perfect pre-owned Car from our certified collection with warranty.",
     Explore: "Explore",
@@ -673,8 +691,8 @@ const translations = {
       "Excellent customer service and the Car quality is outstanding. The warranty coverage gave me peace of mind. Worth every rupee I spent!",
     "I sold my old Car through them and got ₹15,000 more than other dealers offered. The process was smooth and payment was instant. Highly recommended!":
       "I sold my old Car through them and got ₹15,000 more than other dealers offered. The process was smooth and payment was instant. Highly recommended!",
-    "India's most trusted marketplace for premium pre-owned Cars since 2018.":
-      "India's most trusted marketplace for premium pre-owned Cars since 2018.",
+    "The best second-hand car showroom in Bangalore for luxury and premium cars.":
+      "The best second-hand car showroom in Bangalore for luxury and premium cars.",
     "Quick Links": "Quick Links",
     "Contact Us": "Contact Us",
     "All rights reserved.": "All rights reserved.",
@@ -698,8 +716,8 @@ const translations = {
     "Sold Out": "ಮಾರಾಟವಾಗಿದೆ",
     "Coming Soon": "ಶೀಘ್ರದಲ್ಲೇ ಬರುತ್ತದೆ",
     "Choose your preferred language": "ನಿಮಗೆ ಇಷ್ಟವಾದ ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ",
-    "Premium Pre-Owned Vehicles with Complete Transparency":
-      "ಪೂರ್ಣ ಪಾರದರ್ಶಕತೆಯೊಂದಿಗೆ ಪ್ರೀಮಿಯಂ ಸೆಕೆಂಡ್‌ಹ್ಯಾಂಡ್ ವಾಹನಗಳು",
+    "Best Second hand car in Bengaluru":
+      "ಬೆಂಗಳೂರುದಲ್ಲಿ ಉತ್ತಮ ಸೆಕೆಂಡ್‌ಹ್ಯಾಂಡ್ ಕಾರುಗಳು",
     "Ride Into Freedom with the Vehicle You've Always Wanted":
       "ನೀವು ಯಾವಾಗಲೂ ಬಯಸುವ ವಾಹನದೊಂದಿಗೆ ಸ್ವಾತಂತ್ರ್ಯದತ್ತ ಸವಾರಿ ಮಾಡಿ",
     "Get Your": "ನಿಮ್ಮ",
@@ -729,7 +747,8 @@ const translations = {
       "ಮಾಡೆಲ್, ವರ್ಷ ಮತ್ತು ಸ್ಥಿತಿಯನ್ನು ಆಧರಿಸಿ ನಿಮ್ಮ ಕಾರ್ ಮೌಲ್ಯವನ್ನು ತಕ್ಷಣ ಲೆಕ್ಕ ಹಾಕಿ.",
     "Get Your Car Evaluated": "ನಿಮ್ಮ ಕಾರ್ ಮೌಲ್ಯಮಾಪನ ಮಾಡಿಸಿ",
     "Prepare Your Car for Sale": "ನಿಮ್ಮ ಕಾರ್ ಮಾರಾಟಕ್ಕೆ ತಯಾರಿಸಿ",
-    "Market Your Car Effectively": "ನಿಮ್ಮ ಕಾರ್ ಅನ್ನು ಪರಿಣಾಮಕಾರಿಯಾಗಿ ಮಾರುಕಟ್ಟೆ ಮಾಡಿ",
+    "Market Your Car Effectively":
+      "ನಿಮ್ಮ ಕಾರ್ ಅನ್ನು ಪರಿಣಾಮಕಾರಿಯಾಗಿ ಮಾರುಕಟ್ಟೆ ಮಾಡಿ",
     "Negotiate the Best Price": "ಉತ್ತಮ ಬೆಲೆಗೆ ಒಪ್ಪಂದ ಮಾಡಿ",
     "Calculate Now": "ಈಗ ಲೆಕ್ಕ ಹಾಕಿ",
     "Choose Your Style": "ನಿಮ್ಮ ಸ್ಟೈಲ್ ಆಯ್ಕೆಮಾಡಿ",
@@ -815,8 +834,8 @@ const translations = {
       "ಗ್ರಾಹಕ ಸೇವೆ ತುಮ್ಮ ಚೆನ್ನಾಗಿದೆ ಮತ್ತು ಕಾರ್‌ನ ಗುಣಮಟ್ಟ ಕೂಡಾ ಎಕ್ಸ್‌ಲೆಂಟ್. ವಾರೆಂಟಿ ಒಳಗೊಂಡಿರೋದು ನನಗೆ ಶಾಂತಿ ಕೊಟ್ಟಿತು. ನಾನು ಹಾಕಿದ ಹಣ ಸಾರ್ಥಕವಾಯ್ತು!",
     "I sold my old Car through them and got ₹15,000 more than other dealers offered. The process was smooth and payment was instant. Highly recommended!":
       "ನಾನು ನನ್ನ ಹಳೆಯ ಕಾರ್‌ ಇವರು ಮೂಲಕ ಮಾರಾಟ ಮಾಡ್ದೆ. ಬೇರೆ ಡೀಲರ್‌ಗಿಂತ ₹15,000 ಹೆಚ್ಚಾಗಿ ದೊರಕಿತು. ಪ್ರಕ್ರಿಯೆ ಸ್ಮೂತ್ ಆಗಿತ್ತು ಮತ್ತು ಪಾವತಿ ತಕ್ಷಣ. ಖಂಡಿತಾ ಶಿಫಾರಸು ಮಾಡ್ತೀನಿ!",
-    "India's most trusted marketplace for premium pre-owned Cars since 2018.":
-      "2018 ರಿಂದ ಭಾರತದ ಅತ್ಯಂತ ನಂಬಿಕೆ ಇರುವ ಪ್ರೀಮಿಯಂ ಸೆಕೆಂಡ್‌ಹ್ಯಾಂಡ್ ಕಾರ್ ಮಾರ್ಕೆಟ್‌ಪ್ಲೇಸ್.",
+    "The best second-hand car showroom in Bangalore for luxury and premium cars.":
+      "ಬೆಂಗಳೂರುದಲ್ಲಿ ಐಷಾರಾಮಿ ಮತ್ತು ಪ್ರೀಮಿಯಂ ಕಾರುಗಳ ಉತ್ತಮ ಎರಡನೇ ಕೈ ಶೋರೂಮ್.",
     "Quick Links": "ತ್ವರಿತ ಲಿಂಕ್‌ಗಳು",
     "Contact Us": "ನಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸಿ",
     "All rights reserved.": "ಎಲ್ಲಾ ಹಕ್ಕುಗಳು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ.",
@@ -904,7 +923,12 @@ function translatePage(language) {
     }
   });
   try {
-    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+    const walker = document.createTreeWalker(
+      document.body,
+      NodeFilter.SHOW_TEXT,
+      null,
+      false
+    );
     const nodesToUpdate = [];
     while (walker.nextNode()) {
       const node = walker.currentNode;

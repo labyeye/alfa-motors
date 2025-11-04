@@ -1,21 +1,8 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import AuthContext from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../css/AddcarForm.css";
-import {
-  LayoutDashboard,
-  TrendingUp,
-  Wrench,
-  Users,
-  LogOut,
-  ChevronDown,
-  ChevronRight,
-  Bike,
-  CarFront,
-  Car,
-} from "lucide-react";
-import logo from "../images/company.png";
 import Sidebar from "./Sidebar";
 
 const AddcarForm = () => {
@@ -43,37 +30,12 @@ const AddcarForm = () => {
     status: "Available",
   });
   const [activeMenu, setActiveMenu] = useState("Add Car Data");
-  const [expandedMenus, setExpandedMenus] = useState({});
+
   const API_BASE =
     window.API_BASE ||
     (window.location.hostname === "localhost"
       ? "https://alfa-motors-5yfh.vercel.app"
       : "https://alfa-motors-5yfh.vercel.app");
-
-  
-
-
-  const toggleMenu = (menuName) => {
-    setExpandedMenus((prev) => ({
-      ...prev,
-      [menuName]: !prev[menuName],
-    }));
-  };
-
-  const handleMenuClick = (menuName, path) => {
-    setActiveMenu(menuName);
-    const actualPath = typeof path === "function" ? path(user?.role) : path;
-    navigate(actualPath);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("authToken");
-    sessionStorage.clear();
-    navigate("/login");
-  };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -189,7 +151,7 @@ const AddcarForm = () => {
                       name="make"
                       className="form-control"
                       required
-                      value={formData.brand}
+                      value={formData.make}
                       onChange={handleChange}
                       placeholder="Enter car make (e.g., Toyota, Honda)"
                     />
@@ -582,12 +544,15 @@ const styles = {
     fontWeight: "700",
     color: "#1e293b",
     margin: 0,
+    textAlign: "center",
   },
   pageSubtitle: {
     fontSize: "1rem",
     color: "#64748b",
     margin: "8px 0 0 0",
+    textAlign: "center",
   },
+  
 };
 
 export default AddcarForm;

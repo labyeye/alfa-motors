@@ -1,29 +1,36 @@
 import { useState, useEffect, useContext } from "react";
 import {
-  LayoutDashboard,
   ShoppingCart,
   TrendingUp,
   Wrench,
   Users,
-  LogOut,
-  ChevronDown,
-  ChevronRight,
   FileText,
   Target,
   RefreshCw,
-    Car,
-    Bike,
-    PenTool,
-    CarFront,
-
+  Car,
+  Bike,
+  PenTool,
+  CarFront,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Bar, Pie } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
-import logo from '../images/company.png';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from "chart.js";
 import Sidebar from "../components/Sidebar";
 import AuthContext from "../context/AuthContext";
-const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'https://alfa-motors-5yfh.vercel.app' : 'https://alfa-motors-5yfh.vercel.app');
+const API_BASE =
+  window.API_BASE ||
+  (window.location.hostname === "localhost"
+    ? "https://alfa-motors-5yfh.vercel.app"
+    : "https://alfa-motors-5yfh.vercel.app");
 
 // Register ChartJS components
 ChartJS.register(
@@ -41,30 +48,30 @@ const AdminPage = () => {
   const [activeMenu, setActiveMenu] = useState("Dashboard");
   const [expandedMenus, setExpandedMenus] = useState({});
   const [dashboardData, setDashboardData] = useState({
-  totalBuyLetters: 0,
-  totalSellLetters: 0,
-  totalBuyValue: 0,
-  totalSellValue: 0,
-  profit: 0,
-  ownerName: user?.name || "",
-  recentTransactions: {
-    buy: [],
-    sell: [],
-    service: []
-  },
-  monthlyData: [],
-  carStats: {
-    totalCars: 0,
-    soldCars: 0,
-    availableCars: 0,
-    totalRCs: 0,
-    rcTransferred: 0,
-    rcFeeDone: 0,
-    rcFeeReturned: 0,
-    rcAvailableToTransfer: 0,
-    rcFeeToBeTaken: 0
-  }
-});
+    totalBuyLetters: 0,
+    totalSellLetters: 0,
+    totalBuyValue: 0,
+    totalSellValue: 0,
+    profit: 0,
+    ownerName: user?.name || "",
+    recentTransactions: {
+      buy: [],
+      sell: [],
+      service: [],
+    },
+    monthlyData: [],
+    carStats: {
+      totalCars: 0,
+      soldCars: 0,
+      availableCars: 0,
+      totalRCs: 0,
+      rcTransferred: 0,
+      rcFeeDone: 0,
+      rcFeeReturned: 0,
+      rcAvailableToTransfer: 0,
+      rcFeeToBeTaken: 0,
+    },
+  });
   const [loading, setLoading] = useState(true);
   const [isOwnerView, setIsOwnerView] = useState(false);
   const [error, setError] = useState(null);
@@ -77,54 +84,57 @@ const AdminPage = () => {
   }, [activeMenu, isOwnerView]);
 
   const fetchDashboardData = async () => {
-  try {
-    setLoading(true);
-    setError(null);
-    const endpoint = isOwnerView
-      ? `${API_BASE}/api/dashboard/owner`
-      : `${API_BASE}/api/dashboard`;
+    try {
+      setLoading(true);
+      setError(null);
+      const endpoint = isOwnerView
+        ? `${API_BASE}/api/dashboard/owner`
+        : `${API_BASE}/api/dashboard`;
 
-    const response = await fetch(endpoint, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-      },
-    });
+      const response = await fetch(endpoint, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(
-        errorData.error || 
-        `HTTP error! status: ${response.status} - ${response.statusText}`
-      );
-    }
-
-    const data = await response.json();
-    
-    // Ensure carStats exists with all required fields
-    const completeData = {
-      ...data.data,
-      carStats: {
-        totalCars: data.data.carStats?.totalCars || 0,
-        soldCars: data.data.carStats?.soldCars || 0,
-        availableCars: data.data.carStats?.availableCars || 0,
-        totalRCs: data.data.carStats?.totalRCs || 0,
-        rcTransferred: data.data.carStats?.rcTransferred || 0,
-        rcFeeDone: data.data.carStats?.rcFeeDone || 0,
-        rcFeeReturned: data.data.carStats?.rcFeeReturned || 0,
-        rcAvailableToTransfer: data.data.carStats?.rcAvailableToTransfer || 0,
-        rcFeeToBeTaken: data.data.carStats?.rcFeeToBeTaken || 0
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          errorData.error ||
+            `HTTP error! status: ${response.status} - ${response.statusText}`
+        );
       }
-    };
-    
-    setDashboardData(completeData);
-  } catch (error) {
-    console.error("Error fetching dashboard data:", error);
-    setError(error.message || "Failed to load dashboard data. Please try again later.");
-  } finally {
-    setLoading(false);
-  }
-};
+
+      const data = await response.json();
+
+      // Ensure carStats exists with all required fields
+      const completeData = {
+        ...data.data,
+        carStats: {
+          totalCars: data.data.carStats?.totalCars || 0,
+          soldCars: data.data.carStats?.soldCars || 0,
+          availableCars: data.data.carStats?.availableCars || 0,
+          totalRCs: data.data.carStats?.totalRCs || 0,
+          rcTransferred: data.data.carStats?.rcTransferred || 0,
+          rcFeeDone: data.data.carStats?.rcFeeDone || 0,
+          rcFeeReturned: data.data.carStats?.rcFeeReturned || 0,
+          rcAvailableToTransfer: data.data.carStats?.rcAvailableToTransfer || 0,
+          rcFeeToBeTaken: data.data.carStats?.rcFeeToBeTaken || 0,
+        },
+      };
+
+      setDashboardData(completeData);
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+      setError(
+        error.message ||
+          "Failed to load dashboard data. Please try again later."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const formatCurrency = (amount) => {
     if (isNaN(amount)) return "₹0";
@@ -136,81 +146,52 @@ const AdminPage = () => {
     }).format(amount);
   };
 
-
   const toggleOwnerView = () => {
     setIsOwnerView(!isOwnerView);
   };
 
-  const toggleMenu = (menuName) => {
-    setExpandedMenus((prev) => ({
-      ...prev,
-      [menuName]: !prev[menuName],
-    }));
-  };
-
-  const handleMenuClick = (menuName, path) => {
-    setActiveMenu(menuName);
-    const actualPath = typeof path === 'function' ? path(user?.role) : path;
-    navigate(actualPath);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("authToken");
-    sessionStorage.clear();
-    navigate("/login");
-  };
-
   // Chart data configuration
   const monthlyChartData = {
-    labels: dashboardData.monthlyData?.map(item => item.month) || [],
+    labels: dashboardData.monthlyData?.map((item) => item.month) || [],
     datasets: [
       {
-        label: 'Buy Letters',
-        data: dashboardData.monthlyData?.map(item => item.buy) || [],
-        backgroundColor: '#3b82f6',
+        label: "Buy Letters",
+        data: dashboardData.monthlyData?.map((item) => item.buy) || [],
+        backgroundColor: "#3b82f6",
       },
       {
-        label: 'Sell Letters',
-        data: dashboardData.monthlyData?.map(item => item.sell) || [],
-        backgroundColor: '#10b981',
-      }
+        label: "Sell Letters",
+        data: dashboardData.monthlyData?.map((item) => item.sell) || [],
+        backgroundColor: "#10b981",
+      },
     ],
   };
 
   const profitChartData = {
-    labels: dashboardData.monthlyData?.map(item => item.month) || [],
+    labels: dashboardData.monthlyData?.map((item) => item.month) || [],
     datasets: [
       {
-        label: 'Profit',
-        data: dashboardData.monthlyData?.map(item => item.profit) || [],
-        backgroundColor: dashboardData.monthlyData?.map(item => 
-          item.profit >= 0 ? '#10b981' : '#ef4444'
-        ) || [],
-      }
+        label: "Profit",
+        data: dashboardData.monthlyData?.map((item) => item.profit) || [],
+        backgroundColor:
+          dashboardData.monthlyData?.map((item) =>
+            item.profit >= 0 ? "#10b981" : "#ef4444"
+          ) || [],
+      },
     ],
   };
 
   const transactionTypeData = {
-    labels: ['Buy', 'Sell', 'Service'],
+    labels: ["Buy", "Sell", "Service"],
     datasets: [
       {
         data: [
           dashboardData.totalBuyLetters || 0,
           dashboardData.totalSellLetters || 0,
-          dashboardData.recentTransactions?.service?.length || 0
+          dashboardData.recentTransactions?.service?.length || 0,
         ],
-        backgroundColor: [
-          '#3b82f6',
-          '#10b981',
-          '#f59e0b'
-        ],
-        borderColor: [
-          '#2563eb',
-          '#059669',
-          '#d97706'
-        ],
+        backgroundColor: ["#3b82f6", "#10b981", "#f59e0b"],
+        borderColor: ["#2563eb", "#059669", "#d97706"],
         borderWidth: 1,
       },
     ],
@@ -220,206 +201,256 @@ const AdminPage = () => {
     responsive: true,
     plugins: {
       legend: {
-        position: 'top',
+        position: "top",
       },
     },
     scales: {
       y: {
-        beginAtZero: true
-      }
+        beginAtZero: true,
+      },
     },
-    maintainAspectRatio: false
+    maintainAspectRatio: false,
   };
 
   const pieOptions = {
     responsive: true,
     plugins: {
       legend: {
-        position: 'right',
+        position: "right",
       },
     },
-    maintainAspectRatio: false
+    maintainAspectRatio: false,
   };
 
-
   const DashboardCards = () => (
-  <div style={styles.cardsGrid}>
-    {loading ? (
-      Array(8)
-        .fill()
-        .map((_, index) => (
-          <div
-            key={index}
-            style={{
-              ...styles.card,
-              borderLeft: `4px solid ${
-                ["#3b82f6", "#10b981", "#8b5cf6", "#f59e0b", "#ef4444", "#f97316", "#8b5cf6", "#14b8a6"][index]
-              }`,
-              opacity: 0.7,
-            }}
-          >
-            <div style={styles.cardContent}>
-              <div>
-                <p style={styles.cardLabel}>Loading...</p>
-                <p style={styles.cardValue}>-</p>
-              </div>
-              <div
-                style={{
-                  ...styles.cardIcon,
-                  backgroundColor: [
-                    "#dbeafe", "#d1fae5", "#ede9fe", "#fef3c7", "#fee2e2", "#ffedd5", "#ede9fe", "#ccfbf1"
-                  ][index],
-                }}
-              >
-                {
+    <div style={styles.cardsGrid}>
+      {loading ? (
+        Array(8)
+          .fill()
+          .map((_, index) => (
+            <div
+              key={index}
+              style={{
+                ...styles.card,
+                borderLeft: `4px solid ${
                   [
-                    <FileText size={32} color="#2563eb" />,
-                    <TrendingUp size={32} color="#059669" />,
-                    <ShoppingCart size={32} color="#7c3aed" />,
-                    <Target size={32} color="#d97706" />,
-                    <Car size={32} color="#dc2626" />,
-                    <CarFront size={32} color="#ea580c" />,
-                    <PenTool size={32} color="#7c3aed" />,
-                    <Bike size={32} color="#0d9488" />,
+                    "#3b82f6",
+                    "#10b981",
+                    "#8b5cf6",
+                    "#f59e0b",
+                    "#ef4444",
+                    "#f97316",
+                    "#8b5cf6",
+                    "#14b8a6",
                   ][index]
-                }
+                }`,
+                opacity: 0.7,
+              }}
+            >
+              <div style={styles.cardContent}>
+                <div>
+                  <p style={styles.cardLabel}>Loading...</p>
+                  <p style={styles.cardValue}>-</p>
+                </div>
+                <div
+                  style={{
+                    ...styles.cardIcon,
+                    backgroundColor: [
+                      "#dbeafe",
+                      "#d1fae5",
+                      "#ede9fe",
+                      "#fef3c7",
+                      "#fee2e2",
+                      "#ffedd5",
+                      "#ede9fe",
+                      "#ccfbf1",
+                    ][index],
+                  }}
+                >
+                  {
+                    [
+                      <FileText size={32} color="#2563eb" />,
+                      <TrendingUp size={32} color="#059669" />,
+                      <ShoppingCart size={32} color="#7c3aed" />,
+                      <Target size={32} color="#d97706" />,
+                      <Car size={32} color="#dc2626" />,
+                      <CarFront size={32} color="#ea580c" />,
+                      <PenTool size={32} color="#7c3aed" />,
+                      <Bike size={32} color="#0d9488" />,
+                    ][index]
+                  }
+                </div>
               </div>
             </div>
-          </div>
-        ))
-    ) : error ? (
-      <div style={{ ...styles.card, gridColumn: '1 / -1', textAlign: 'center', padding: '20px' }}>
-        <p style={{ color: '#ef4444' }}>{error}</p>
-        <button 
-          onClick={fetchDashboardData}
+          ))
+      ) : error ? (
+        <div
           style={{
-            backgroundColor: '#3b82f6',
-            color: 'white',
-            border: 'none',
-            padding: '8px 16px',
-            borderRadius: '4px',
-            marginTop: '10px',
-            cursor: 'pointer'
+            ...styles.card,
+            gridColumn: "1 / -1",
+            textAlign: "center",
+            padding: "20px",
           }}
         >
-          Retry
-        </button>
-      </div>
-    ) : (
-      <>
-        {/* Existing cards */}
-        <div style={{ ...styles.card, borderLeft: "4px solid #3b82f6" }}>
-          <div style={styles.cardContent}>
-            <div>
-              <p style={styles.cardLabel}>Total Cars</p>
-              <p style={styles.cardValue}>{dashboardData.carStats.totalCars}</p>
-            </div>
-            <div style={{ ...styles.cardIcon, backgroundColor: "#dbeafe" }}>
-              <Car size={32} color="#2563eb" />
+          <p style={{ color: "#ef4444" }}>{error}</p>
+          <button
+            onClick={fetchDashboardData}
+            style={{
+              backgroundColor: "#3b82f6",
+              color: "white",
+              border: "none",
+              padding: "8px 16px",
+              borderRadius: "4px",
+              marginTop: "10px",
+              cursor: "pointer",
+            }}
+          >
+            Retry
+          </button>
+        </div>
+      ) : (
+        <>
+          {/* Existing cards */}
+          <div style={{ ...styles.card, borderLeft: "4px solid #3b82f6" }}>
+            <div style={styles.cardContent}>
+              <div>
+                <p style={styles.cardLabel}>Total Cars</p>
+                <p style={styles.cardValue}>
+                  {dashboardData.carStats.totalCars}
+                </p>
+              </div>
+              <div style={{ ...styles.cardIcon, backgroundColor: "#dbeafe" }}>
+                <Car size={32} color="#2563eb" />
+              </div>
             </div>
           </div>
-        </div>
 
-        <div style={{ ...styles.card, borderLeft: "4px solid #10b981" }}>
-          <div style={styles.cardContent}>
-            <div>
-              <p style={styles.cardLabel}>Sold Cars</p>
-              <p style={styles.cardValue}>{dashboardData.carStats.soldCars}</p>
-            </div>
-            <div style={{ ...styles.cardIcon, backgroundColor: "#d1fae5" }}>
-              <CarFront size={32} color="#059669" />
+          <div style={{ ...styles.card, borderLeft: "4px solid #10b981" }}>
+            <div style={styles.cardContent}>
+              <div>
+                <p style={styles.cardLabel}>Sold Cars</p>
+                <p style={styles.cardValue}>
+                  {dashboardData.carStats.soldCars}
+                </p>
+              </div>
+              <div style={{ ...styles.cardIcon, backgroundColor: "#d1fae5" }}>
+                <CarFront size={32} color="#059669" />
+              </div>
             </div>
           </div>
-        </div>
 
-        <div style={{ ...styles.card, borderLeft: "4px solid #8b5cf6" }}>
-          <div style={styles.cardContent}>
-            <div>
-              <p style={styles.cardLabel}>Available Cars</p>
-              <p style={styles.cardValue}>{dashboardData.carStats.availableCars}</p>
-            </div>
-            <div style={{ ...styles.cardIcon, backgroundColor: "#ede9fe" }}>
-              <Car size={32} color="#7c3aed" />
+          <div style={{ ...styles.card, borderLeft: "4px solid #8b5cf6" }}>
+            <div style={styles.cardContent}>
+              <div>
+                <p style={styles.cardLabel}>Available Cars</p>
+                <p style={styles.cardValue}>
+                  {dashboardData.carStats.availableCars}
+                </p>
+              </div>
+              <div style={{ ...styles.cardIcon, backgroundColor: "#ede9fe" }}>
+                <Car size={32} color="#7c3aed" />
+              </div>
             </div>
           </div>
-        </div>
 
-        <div style={{ ...styles.card, borderLeft: "4px solid #f59e0b" }}>
-          <div style={styles.cardContent}>
-            <div>
-              <p style={styles.cardLabel}>Total RCs</p>
-              <p style={styles.cardValue}>{dashboardData.carStats.totalRCs}</p>
-            </div>
-            <div style={{ ...styles.cardIcon, backgroundColor: "#fef3c7" }}>
-              <FileText size={32} color="#d97706" />
+          <div style={{ ...styles.card, borderLeft: "4px solid #f59e0b" }}>
+            <div style={styles.cardContent}>
+              <div>
+                <p style={styles.cardLabel}>Total RCs</p>
+                <p style={styles.cardValue}>
+                  {dashboardData.carStats.totalRCs}
+                </p>
+              </div>
+              <div style={{ ...styles.cardIcon, backgroundColor: "#fef3c7" }}>
+                <FileText size={32} color="#d97706" />
+              </div>
             </div>
           </div>
-        </div>
 
-        <div style={{ ...styles.card, borderLeft: "4px solid #ef4444" }}>
-          <div style={styles.cardContent}>
-            <div>
-              <p style={styles.cardLabel}>RCs Transferred</p>
-              <p style={styles.cardValue}>{dashboardData.carStats.rcTransferred}</p>
-            </div>
-            <div style={{ ...styles.cardIcon, backgroundColor: "#fee2e2" }}>
-              <PenTool size={32} color="#dc2626" />
+          <div style={{ ...styles.card, borderLeft: "4px solid #ef4444" }}>
+            <div style={styles.cardContent}>
+              <div>
+                <p style={styles.cardLabel}>RCs Transferred</p>
+                <p style={styles.cardValue}>
+                  {dashboardData.carStats.rcTransferred}
+                </p>
+              </div>
+              <div style={{ ...styles.cardIcon, backgroundColor: "#fee2e2" }}>
+                <PenTool size={32} color="#dc2626" />
+              </div>
             </div>
           </div>
-        </div>
 
-        <div style={{ ...styles.card, borderLeft: "4px solid #f97316" }}>
-          <div style={styles.cardContent}>
-            <div>
-              <p style={styles.cardLabel}>RC Fee Done</p>
-              <p style={styles.cardValue}>{dashboardData.carStats.rcFeeDone}</p>
-            </div>
-            <div style={{ ...styles.cardIcon, backgroundColor: "#ffedd5" }}>
-              <FileText size={32} color="#ea580c" />
+          <div style={{ ...styles.card, borderLeft: "4px solid #f97316" }}>
+            <div style={styles.cardContent}>
+              <div>
+                <p style={styles.cardLabel}>RC Fee Done</p>
+                <p style={styles.cardValue}>
+                  {dashboardData.carStats.rcFeeDone}
+                </p>
+              </div>
+              <div style={{ ...styles.cardIcon, backgroundColor: "#ffedd5" }}>
+                <FileText size={32} color="#ea580c" />
+              </div>
             </div>
           </div>
-        </div>
 
-        <div style={{ ...styles.card, borderLeft: "4px solid #8b5cf6" }}>
-          <div style={styles.cardContent}>
-            <div>
-              <p style={styles.cardLabel}>RCs Available to Transfer</p>
-              <p style={styles.cardValue}>{dashboardData.carStats.rcAvailableToTransfer}</p>
-            </div>
-            <div style={{ ...styles.cardIcon, backgroundColor: "#ede9fe" }}>
-              <PenTool size={32} color="#7c3aed" />
+          <div style={{ ...styles.card, borderLeft: "4px solid #8b5cf6" }}>
+            <div style={styles.cardContent}>
+              <div>
+                <p style={styles.cardLabel}>RCs Available to Transfer</p>
+                <p style={styles.cardValue}>
+                  {dashboardData.carStats.rcAvailableToTransfer}
+                </p>
+              </div>
+              <div style={{ ...styles.cardIcon, backgroundColor: "#ede9fe" }}>
+                <PenTool size={32} color="#7c3aed" />
+              </div>
             </div>
           </div>
-        </div>
 
-        <div style={{ ...styles.card, borderLeft: "4px solid #14b8a6" }}>
-          <div style={styles.cardContent}>
-            <div>
-              <p style={styles.cardLabel}>RC Fee to be Taken</p>
-              <p style={styles.cardValue}>{dashboardData.carStats.rcFeeToBeTaken}</p>
-            </div>
-            <div style={{ ...styles.cardIcon, backgroundColor: "#ccfbf1" }}>
-              <FileText size={32} color="#0d9488" />
+          <div style={{ ...styles.card, borderLeft: "4px solid #14b8a6" }}>
+            <div style={styles.cardContent}>
+              <div>
+                <p style={styles.cardLabel}>RC Fee to be Taken</p>
+                <p style={styles.cardValue}>
+                  {dashboardData.carStats.rcFeeToBeTaken}
+                </p>
+              </div>
+              <div style={{ ...styles.cardIcon, backgroundColor: "#ccfbf1" }}>
+                <FileText size={32} color="#0d9488" />
+              </div>
             </div>
           </div>
-        </div>
-      </>
-    )}
-  </div>
-);
+        </>
+      )}
+    </div>
+  );
 
   const ChartsSection = () => {
     if (loading) {
       return (
         <div style={styles.chartsContainer}>
-          {Array(3).fill().map((_, index) => (
-            <div key={index} style={styles.chartCard}>
-              <h3 style={styles.chartTitle}>Loading...</h3>
-              <div style={{ ...styles.chartWrapper, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <RefreshCw size={24} style={{ animation: 'spin 1s linear infinite' }} />
+          {Array(3)
+            .fill()
+            .map((_, index) => (
+              <div key={index} style={styles.chartCard}>
+                <h3 style={styles.chartTitle}>Loading...</h3>
+                <div
+                  style={{
+                    ...styles.chartWrapper,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <RefreshCw
+                    size={24}
+                    style={{ animation: "spin 1s linear infinite" }}
+                  />
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       );
     }
@@ -427,8 +458,14 @@ const AdminPage = () => {
     if (error) {
       return (
         <div style={styles.chartsContainer}>
-          <div style={{ ...styles.chartCard, gridColumn: '1 / -1', textAlign: 'center' }}>
-            <p style={{ color: '#ef4444' }}>{error}</p>
+          <div
+            style={{
+              ...styles.chartCard,
+              gridColumn: "1 / -1",
+              textAlign: "center",
+            }}
+          >
+            <p style={{ color: "#ef4444" }}>{error}</p>
           </div>
         </div>
       );
@@ -442,22 +479,38 @@ const AdminPage = () => {
             {dashboardData.monthlyData?.length > 0 ? (
               <Bar data={monthlyChartData} options={chartOptions} />
             ) : (
-              <p style={{ textAlign: 'center', color: '#6b7280', padding: '20px' }}>No transaction data available</p>
+              <p
+                style={{
+                  textAlign: "center",
+                  color: "#6b7280",
+                  padding: "20px",
+                }}
+              >
+                No transaction data available
+              </p>
             )}
           </div>
         </div>
-        
+
         <div style={styles.chartCard}>
           <h3 style={styles.chartTitle}>Monthly Profit</h3>
           <div style={styles.chartWrapper}>
             {dashboardData.monthlyData?.length > 0 ? (
               <Bar data={profitChartData} options={chartOptions} />
             ) : (
-              <p style={{ textAlign: 'center', color: '#6b7280', padding: '20px' }}>No profit data available</p>
+              <p
+                style={{
+                  textAlign: "center",
+                  color: "#6b7280",
+                  padding: "20px",
+                }}
+              >
+                No profit data available
+              </p>
             )}
           </div>
         </div>
-        
+
         <div style={styles.chartCard}>
           <h3 style={styles.chartTitle}>Transaction Types</h3>
           <div style={styles.chartWrapper}>
@@ -467,7 +520,6 @@ const AdminPage = () => {
       </div>
     );
   };
-
 
   return (
     <div style={styles.container}>
@@ -497,48 +549,6 @@ const AdminPage = () => {
                   )}
                 </p>
               </div>
-              <div
-                style={{ display: "flex", gap: "16px", alignItems: "center" }}
-              >
-                <button
-                  onClick={toggleOwnerView}
-                  style={{
-                    backgroundColor: isOwnerView ? "#10b981" : "#3b82f6",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "6px",
-                    padding: "8px 16px",
-                    cursor: "pointer",
-                    transition: "background-color 0.2s",
-                    ":hover": {
-                      backgroundColor: isOwnerView ? "#059669" : "#2563eb",
-                    },
-                  }}
-                >
-                  {isOwnerView ? "Business View" : "Owner View"}
-                </button>
-                <button
-                  onClick={fetchDashboardData}
-                  style={{
-                    backgroundColor: "#f59e0b",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "6px",
-                    padding: "8px 16px",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    cursor: "pointer",
-                    transition: "background-color 0.2s",
-                    ":hover": {
-                      backgroundColor: "#d97706",
-                    },
-                  }}
-                >
-                  <RefreshCw size={16} />
-                  Refresh
-                </button>
-              </div>
             </div>
           </div>
 
@@ -551,7 +561,6 @@ const AdminPage = () => {
                 <div style={styles.quickActionsCard}>
                   <h3 style={styles.quickActionsTitle}>Quick Actions</h3>
                   <div style={styles.quickActionsGrid}>
-                    
                     <button
                       style={{
                         ...styles.quickActionButton,
@@ -597,7 +606,9 @@ const AdminPage = () => {
                         style={styles.quickActionIcon}
                       />
                       <p style={styles.quickActionTitle}>Add Staff</p>
-                      <p style={styles.quickActionSubtitle}>Register new staff</p>
+                      <p style={styles.quickActionSubtitle}>
+                        Register new staff
+                      </p>
                     </button>
                   </div>
                 </div>
@@ -731,19 +742,21 @@ const styles = {
     fontWeight: "bold",
     color: "#1f2937",
     margin: 0,
+    textAlign: "center",
   },
   pageSubtitle: {
     color: "#6b7280",
     marginTop: "8px",
     margin: "8px 0 0 0",
+    textAlign: "center",
   },
-  
+
   cardsGrid: {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-  gap: "24px",
-  marginBottom: "32px",
-},
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+    gap: "24px",
+    marginBottom: "32px",
+  },
   card: {
     backgroundColor: "#ffffff",
     borderRadius: "12px",

@@ -6,12 +6,14 @@
   <meta charset="utf-8" />
   <title>About Us | Alfa Motors World</title>
   <meta name="description" content="About Alfa Motors World — trusted pre-owned car & motorcycle dealership offering inspected vehicles, warranty and transparent pricing. Learn about our journey and values." />
-  <meta name="robots" content="index, follow" />
+  <meta name="keywords" content="best second hand cars in bangalore, second hand car in bangalore, used cars bangalore, second hand cars karnataka, pre-owned cars Bangalore, Alfa Motors, used cars India" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
   <link rel="canonical" href="https://www.alfamotorworld.com/about.html" />
   <link rel="alternate" href="https://www.alfamotorworld.com/about.html" hreflang="en" />
   <link rel="alternate" href="https://www.alfamotorworld.com/about.html" hreflang="hi" />
   <link rel="preconnect" href="https://alfa-motors-5yfh.vercel.app" crossorigin />
   <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+  <link rel="preconnect" href="https://alfa-motors-o5cm.vercel.app" crossorigin />
   <meta name="theme-color" content="#ffffff" />
 
   <meta property="og:type" content="website" />
@@ -35,26 +37,35 @@
     ]
   }
   </script>
-  <!-- Accessibility helper: ensure every <img> has an alt attribute -->
+  <!-- Accessibility & performance helper: ensure images have alt, lazy loading and async decoding -->
   <script>
     (function(){
-      function populateAlts(){
-        document.querySelectorAll('img:not([alt])').forEach(function(img){
+      function enhanceImages(){
+        document.querySelectorAll('img').forEach(function(img){
           try{
             var src = img.getAttribute('src') || '';
-            if(/logo|icon|decor|sprite|background|arrow|dot|star|placeholder/i.test(src)){
-              img.setAttribute('alt','');
+            var isDecor = /logo|icon|decor|sprite|background|arrow|dot|star|placeholder/i.test(src) || img.classList.contains('logo-img') || img.getAttribute('itemprop') === 'logo';
+            if(!img.hasAttribute('alt')){
+              if(isDecor) img.setAttribute('alt','');
+              else{
+                var name = src.split('/').pop().split('?')[0].split('.')[0] || 'image';
+                name = name.replace(/[-_]+/g,' ').replace(/\d+/g,'').trim();
+                img.setAttribute('alt', name || 'image');
+              }
+            }
+            if(!isDecor){
+              if(!img.hasAttribute('loading')) img.setAttribute('loading','lazy');
+              if(!img.hasAttribute('decoding')) img.setAttribute('decoding','async');
             } else {
-              var name = src.split('/').pop().split('?')[0].split('.')[0] || 'image';
-              name = name.replace(/[-_]+/g,' ').replace(/\d+/g,'').trim();
-              img.setAttribute('alt', name || 'image');
+              if(!img.hasAttribute('decoding')) img.setAttribute('decoding','sync');
             }
           }catch(e){}
         });
       }
-      if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', populateAlts); else populateAlts();
+      if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', enhanceImages); else enhanceImages();
     })();
   </script>
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
   <link rel="stylesheet" href="global.css" />
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="about.css" />
@@ -144,7 +155,7 @@
       <div class="section-container">
         <div class="owner-message">
           <div class="owner-image">
-            <img src="./assets/own.jpg" alt="Owner Photo" />
+            <img src="./assets/owner.webp" alt="Owner Photo" />
             <div class="owner-signature">
               <p data-translate="Founder & CEO">Founder & CEO</p>
             </div>
@@ -269,10 +280,9 @@
           </div>
           <p
             itemprop="description"
-            data-translate="India's most trusted marketplace for premium pre-owned Cars since 2018."
+            data-translate="The best second-hand car showroom in Bangalore for luxury and premium cars."
           >
-            India's most trusted marketplace for premium pre-owned Cars since
-            2018.
+            The best second-hand car showroom in Bangalore for luxury and premium cars.
           </p>
           <a
               href="#leave-review"
@@ -446,7 +456,7 @@
           "12+": "12+",
           "1500+": "1500+",
           "98%": "98%",
-          "India's most trusted marketplace for premium pre-owned Cars since 2018.": "India's most trusted marketplace for premium pre-owned Cars since 2018.",
+          "The best second-hand car showroom in Bangalore for luxury and premium cars.": "The best second-hand car showroom in Bangalore for luxury and premium cars.",
         },
         hi: {
           "Home": "होम",
@@ -492,7 +502,7 @@
           "12+": "12+",
           "1500+": "1500+",
           "98%": "98%",
-          "India's most trusted marketplace for premium pre-owned Cars since 2018.": "आज हमारे बाइक सवारी का भविष्य आपको लाने के लिए।",
+          "The best second-hand car showroom in Bangalore for luxury and premium cars.": "आज हमारे बाइक सवारी का भविष्य आपको लाने के लिए।",
         }
       };
 
@@ -587,19 +597,54 @@
       const mobileMenu = document.createElement("div");
       mobileMenu.className = "mobile-menu";
       mobileMenu.innerHTML = `
-      <button class="close-btn"><i class="fas fa-times"></i></button>
-      <ul class="nav-links">
-        <li><a href="index.html"  data-translate="Home">Home</a></li>
-        <li><a href="inventory.html" data-translate="Buy Car">Buy Car</a></li>
-        <li><a href="sell.html" data-translate="Sell Your Car">Sell Your Car</a></li>
-        <li><a href="about.html
-                  <li><a href="#" data-translate="Updates">Updates</a></li>
-          <li><a href="contact.html" data-translate="Contact">Contact</a></li>
-      </ul>
-      <div class="login-btn">
-        <button data-translate="Get the Quote">Get the Quote</button>
-      </div>
-    `;
+    <button class="close-btn" aria-label="Close mobile menu">
+      <i class="fas fa-times" aria-hidden="true"></i>
+    </button>
+    <ul class="nav-links">
+      <li>
+        <a href="index.html"  aria-current="page">
+          <span data-translate="Home">Home</span>
+        </a>
+      </li>
+      <li>
+        <a href="inventory.html">
+          <span data-translate="Vehicles for Sale">Vehicles for Sale</span>
+        </a>
+      </li>
+      <li>
+        <a href="sell.html">
+          <span data-translate="Sell Your Vehicle">Sell Your Vehicle</span>
+        </a>
+      </li>
+       <li>
+        <a href="happy-customers.html">
+          <span data-translate="Happy Customers">Happy Customers</span>
+        </a>
+      </li>
+       <li>
+        <a href="finance.html">
+          <span data-translate="Financing">Financing</span>
+        </a>
+      </li>
+      <li>
+        <a href="about.html">
+          <span data-translate="About Us">About Us</span>
+        </a>
+      </li>
+      <li>
+        <a href="contact.html">
+          <span data-translate="Contact">Contact</span>
+        </a>
+      </li>
+    </ul>
+    <div class="login-btn">
+      <a href="/getquote.html">
+        <button aria-label="Get a quote for your Car" data-translate="Get the Quote">
+          Get the Quote
+        </button>
+      </a>
+    </div>
+  `;
 
       document.body.appendChild(mobileMenu);
 

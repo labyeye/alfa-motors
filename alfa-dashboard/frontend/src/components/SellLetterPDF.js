@@ -15,9 +15,6 @@ import {
   Wrench,
   Users,
   AlertCircle,
-  LogOut,
-  ChevronDown,
-  ChevronRight,
   Bike,
   CarFront,
   Car,
@@ -105,7 +102,8 @@ const SellLetterForm = () => {
     totalAmount: "",
     advanceAmount: "",
     balanceAmount: "",
-    declaration: "I/We hereby agreed to take the delivery of the above mentioned vehicle by paying the balance amount on/before...",
+    declaration:
+      "I/We hereby agreed to take the delivery of the above mentioned vehicle by paying the balance amount on/before...",
   });
   const [isSaving, setIsSaving] = useState(false);
   const handleChange = useCallback((e) => {
@@ -136,10 +134,24 @@ const SellLetterForm = () => {
     if (!carId) return;
     const selected = cars.find((c) => c._id === carId) || {};
     // Map available fields from car to formData; use fallbacks where names differ
-    const chassis = selected.chassisNo || selected.chassisNumber || selected.chassis || selected.vin || "";
-    const engine = selected.engineNo || selected.engineNumber || selected.engine || "";
-    const reg = selected.registrationNumber || selected.registrationNo || selected.reg || selected.regNo || "";
-    const km = selected.kmDriven !== undefined && selected.kmDriven !== null ? String(Number(selected.kmDriven) * 100) : "";
+    const chassis =
+      selected.chassisNo ||
+      selected.chassisNumber ||
+      selected.chassis ||
+      selected.vin ||
+      "";
+    const engine =
+      selected.engineNo || selected.engineNumber || selected.engine || "";
+    const reg =
+      selected.registrationNumber ||
+      selected.registrationNo ||
+      selected.reg ||
+      selected.regNo ||
+      "";
+    const km =
+      selected.kmDriven !== undefined && selected.kmDriven !== null
+        ? String(Number(selected.kmDriven) * 100)
+        : "";
 
     setFormData((prev) => ({
       ...prev,
@@ -171,8 +183,6 @@ const SellLetterForm = () => {
     fetchCars();
   }, []);
 
-  
-
   const menuItems = [
     {
       name: "Dashboard",
@@ -187,7 +197,7 @@ const SellLetterForm = () => {
         { name: "RC List", path: "/rc/list" },
       ],
     },
-    
+
     {
       name: "Car Management",
       icon: CarFront,
@@ -196,18 +206,18 @@ const SellLetterForm = () => {
         { name: "List Car Data", path: "/car/list" },
       ],
     },
-    
+
     {
-          name: "Sell",
-          icon: TrendingUp,
-          submenu: [
-            { name: "Create Sell Letter", path: "/sell/create" },
-            { name: "Sell Letter History", path: "/sell/history" },
-            { name: "Sell Queries", path: "/sell-requests" },
-            { name: "Advance Payments", path: "/advance-payments/create" },
-            { name: "Payment History", path: "/advance-payments/history" },
-          ],
-        },
+      name: "Sell",
+      icon: TrendingUp,
+      submenu: [
+        { name: "Create Sell Letter", path: "/sell/create" },
+        { name: "Sell Letter History", path: "/sell/history" },
+        { name: "Sell Queries", path: "/sell-requests" },
+        { name: "Advance Payments", path: "/advance-payments/create" },
+        { name: "Payment History", path: "/advance-payments/history" },
+      ],
+    },
     {
       name: "Gallery Management",
       icon: Car,
@@ -244,8 +254,12 @@ const SellLetterForm = () => {
       const page = pdfDoc.addPage([595.28, 841.89]); // A4 in points
 
       // Embed logos (png/jpg)
-      const logoBytes = await fetch(logo).then((r) => r.arrayBuffer()).catch(() => null);
-      const logo1Bytes = await fetch(logo1).then((r) => r.arrayBuffer()).catch(() => null);
+      const logoBytes = await fetch(logo)
+        .then((r) => r.arrayBuffer())
+        .catch(() => null);
+      const logo1Bytes = await fetch(logo1)
+        .then((r) => r.arrayBuffer())
+        .catch(() => null);
       let embeddedLogo, embeddedLogoBack;
       if (logoBytes) embeddedLogo = await pdfDoc.embedPng(logoBytes);
       if (logo1Bytes) embeddedLogoBack = await pdfDoc.embedPng(logo1Bytes);
@@ -262,29 +276,96 @@ const SellLetterForm = () => {
       if (embeddedLogo) {
         const logoW = 80;
         const logoH = 50;
-        page.drawImage(embeddedLogo, { x: 40, y: headerY - logoH / 2 - 10, width: logoW, height: logoH });
+        page.drawImage(embeddedLogo, {
+          x: 40,
+          y: headerY - logoH / 2 - 10,
+          width: logoW,
+          height: logoH,
+        });
       }
 
       // Company title centered
-      page.drawText("ALFA MOTOR WORLD", { x: width / 2 - 120, y: headerY - 6, size: 22, font, color: rgb(0.6, 0.06, 0.06) });
-      page.drawText("SALE INVOICE", { x: width / 2 - 40, y: headerY - 28, size: 12, font: fontNormal, color: rgb(0.06, 0.06, 0.06) });
+      page.drawText("ALFA MOTOR WORLD", {
+        x: width / 2 - 120,
+        y: headerY - 6,
+        size: 22,
+        font,
+        color: rgb(0.6, 0.06, 0.06),
+      });
+      page.drawText("SALE INVOICE", {
+        x: width / 2 - 40,
+        y: headerY - 28,
+        size: 12,
+        font: fontNormal,
+        color: rgb(0.06, 0.06, 0.06),
+      });
 
       // Invoice meta on right
       const invoiceX = width - 160;
-      page.drawText(`No. ${formData.invoiceNumber || ""}`, { x: invoiceX, y: headerY, size: 10, font: font, color: rgb(0.8, 0.06, 0.06) });
-      page.drawText(`Date : ${formatDate(formData.todayDate || formData.saleDate)}`, { x: invoiceX, y: headerY - 16, size: 10, font: fontNormal, color: rgb(0.06, 0.06, 0.06) });
-      page.drawText(`Time : ${formatTime(formData.todayTime || formData.saleTime)}`, { x: invoiceX, y: headerY - 32, size: 10, font: fontNormal, color: rgb(0.06, 0.06, 0.06) });
+      page.drawText(`No. ${formData.invoiceNumber || ""}`, {
+        x: invoiceX,
+        y: headerY,
+        size: 10,
+        font: font,
+        color: rgb(0.8, 0.06, 0.06),
+      });
+      page.drawText(
+        `Date : ${formatDate(formData.todayDate || formData.saleDate)}`,
+        {
+          x: invoiceX,
+          y: headerY - 16,
+          size: 10,
+          font: fontNormal,
+          color: rgb(0.06, 0.06, 0.06),
+        }
+      );
+      page.drawText(
+        `Time : ${formatTime(formData.todayTime || formData.saleTime)}`,
+        {
+          x: invoiceX,
+          y: headerY - 32,
+          size: 10,
+          font: fontNormal,
+          color: rgb(0.06, 0.06, 0.06),
+        }
+      );
 
       // Address line under header
       const addrY = headerY - 54;
-      page.drawText("# 97/2, Gottigere, Bannerghatta Main Road, Opp. D Mart, Bangalore - 560 083.", { x: 40, y: addrY, size: 9, font: fontNormal, color: rgb(0.06, 0.06, 0.06) });
+      page.drawText(
+        "# 97/2, Gottigere, Bannerghatta Main Road, Opp. D Mart, Bangalore - 560 083.",
+        {
+          x: 40,
+          y: addrY,
+          size: 9,
+          font: fontNormal,
+          color: rgb(0.06, 0.06, 0.06),
+        }
+      );
 
       // Customer lines: Name, Address, Id Number and Contact No
       let y = addrY - 28;
       const drawLinedField = (label, value) => {
-        page.drawText(`${label}`, { x: 40, y, size: 10, font: fontNormal, color: rgb(0.06, 0.06, 0.06) });
-        page.drawLine({ start: { x: 120, y: y - 2 }, end: { x: width - 40, y: y - 2 }, thickness: 0.4, color: rgb(0.7, 0.7, 0.7) });
-        page.drawText(String(value || ""), { x: 122, y, size: 10, font: fontNormal, color: rgb(0.06, 0.06, 0.06) });
+        page.drawText(`${label}`, {
+          x: 40,
+          y,
+          size: 10,
+          font: fontNormal,
+          color: rgb(0.06, 0.06, 0.06),
+        });
+        page.drawLine({
+          start: { x: 120, y: y - 2 },
+          end: { x: width - 40, y: y - 2 },
+          thickness: 0.4,
+          color: rgb(0.7, 0.7, 0.7),
+        });
+        page.drawText(String(value || ""), {
+          x: 122,
+          y,
+          size: 10,
+          font: fontNormal,
+          color: rgb(0.06, 0.06, 0.06),
+        });
         y -= 18;
       };
 
@@ -297,35 +378,93 @@ const SellLetterForm = () => {
       const tableY = y - 6;
       const tableX = 40;
       const tableW = width - 80;
-      const colWidths = [tableW * 0.18, tableW * 0.35, tableW * 0.12, tableW * 0.12, tableW * 0.23];
+      const colWidths = [
+        tableW * 0.18,
+        tableW * 0.35,
+        tableW * 0.12,
+        tableW * 0.12,
+        tableW * 0.23,
+      ];
 
       // Header row box
       let cx = tableX;
-      page.drawRectangle({ x: tableX, y: tableY - 28, width: tableW, height: 28, color: rgb(0.95, 0.95, 0.95) });
+      page.drawRectangle({
+        x: tableX,
+        y: tableY - 28,
+        width: tableW,
+        height: 28,
+        color: rgb(0.95, 0.95, 0.95),
+      });
       // Draw column separators and labels
       const headers = ["Reg. No.", "Make & Model", "Fuel", "Year", "Colour"];
       for (let i = 0; i < headers.length; i++) {
-        page.drawText(headers[i], { x: cx + 4, y: tableY - 10, size: 9, font: fontNormal, color: rgb(0.06, 0.06, 0.06) });
+        page.drawText(headers[i], {
+          x: cx + 4,
+          y: tableY - 10,
+          size: 9,
+          font: fontNormal,
+          color: rgb(0.06, 0.06, 0.06),
+        });
         cx += colWidths[i];
         // vertical line
-        page.drawLine({ start: { x: cx, y: tableY - 28 }, end: { x: cx, y: tableY }, thickness: 0.4, color: rgb(0.8, 0.8, 0.8) });
+        page.drawLine({
+          start: { x: cx, y: tableY - 28 },
+          end: { x: cx, y: tableY },
+          thickness: 0.4,
+          color: rgb(0.8, 0.8, 0.8),
+        });
       }
 
       // Value row
       let vx = tableX;
       const valueY = tableY - 46;
-      page.drawRectangle({ x: tableX, y: valueY - 2, width: tableW, height: 28, color: rgb(1, 1, 1) });
-      const values = [formData.registrationNumber, `${formData.vehicleName || ''} ${formData.vehicleModel || ''}`, formData.fuelType, formData.year, formData.vehicleColor];
+      page.drawRectangle({
+        x: tableX,
+        y: valueY - 2,
+        width: tableW,
+        height: 28,
+        color: rgb(1, 1, 1),
+      });
+      const values = [
+        formData.registrationNumber,
+        `${formData.vehicleName || ""} ${formData.vehicleModel || ""}`,
+        formData.fuelType,
+        formData.year,
+        formData.vehicleColor,
+      ];
       for (let i = 0; i < values.length; i++) {
-        page.drawText(String(values[i] || ""), { x: vx + 4, y: valueY + 8, size: 9, font: fontNormal, color: rgb(0.06, 0.06, 0.06) });
+        page.drawText(String(values[i] || ""), {
+          x: vx + 4,
+          y: valueY + 8,
+          size: 9,
+          font: fontNormal,
+          color: rgb(0.06, 0.06, 0.06),
+        });
         vx += colWidths[i];
-        page.drawLine({ start: { x: vx, y: valueY - 2 }, end: { x: vx, y: valueY + 26 }, thickness: 0.4, color: rgb(0.9, 0.9, 0.9) });
+        page.drawLine({
+          start: { x: vx, y: valueY - 2 },
+          end: { x: vx, y: valueY + 26 },
+          thickness: 0.4,
+          color: rgb(0.9, 0.9, 0.9),
+        });
       }
 
       // Chassis and Engine line
       let ceY = valueY - 26;
-      page.drawText(`Chassis No : ${formData.chassisNumber || ''}`, { x: 40, y: ceY, size: 9, font: fontNormal, color: rgb(0.06, 0.06, 0.06) });
-      page.drawText(`Engine No : ${formData.engineNumber || ''}`, { x: width / 2 + 20, y: ceY, size: 9, font: fontNormal, color: rgb(0.06, 0.06, 0.06) });
+      page.drawText(`Chassis No : ${formData.chassisNumber || ""}`, {
+        x: 40,
+        y: ceY,
+        size: 9,
+        font: fontNormal,
+        color: rgb(0.06, 0.06, 0.06),
+      });
+      page.drawText(`Engine No : ${formData.engineNumber || ""}`, {
+        x: width / 2 + 20,
+        y: ceY,
+        size: 9,
+        font: fontNormal,
+        color: rgb(0.06, 0.06, 0.06),
+      });
 
       // Particulars table (Sl.No, Particulars, Amount)
       const pX = 40;
@@ -334,54 +473,181 @@ const SellLetterForm = () => {
       const pCols = [50, pW - 150, 100];
 
       // Draw table header
-      page.drawRectangle({ x: pX, y: pY - 22, width: pW, height: 22, color: rgb(0.95, 0.95, 0.95) });
-      page.drawText("Sl.No.", { x: pX + 6, y: pY - 6, size: 9, font: fontNormal });
-      page.drawText("Particulars", { x: pX + 60, y: pY - 6, size: 9, font: fontNormal });
-  page.drawText("Amount (Rs.)", { x: pX + pW - 90, y: pY - 6, size: 9, font: fontNormal });
+      page.drawRectangle({
+        x: pX,
+        y: pY - 22,
+        width: pW,
+        height: 22,
+        color: rgb(0.95, 0.95, 0.95),
+      });
+      page.drawText("Sl.No.", {
+        x: pX + 6,
+        y: pY - 6,
+        size: 9,
+        font: fontNormal,
+      });
+      page.drawText("Particulars", {
+        x: pX + 60,
+        y: pY - 6,
+        size: 9,
+        font: fontNormal,
+      });
+      page.drawText("Amount (Rs.)", {
+        x: pX + pW - 90,
+        y: pY - 6,
+        size: 9,
+        font: fontNormal,
+      });
 
       // Rows data
       const rows = [
-  ["1", "Sale value", `Rs. ${formatRupee(formData.saleValue || formData.saleAmount || 0)}`],
-  ["2", "Commission", `Rs. ${formatRupee(formData.commission || 0)}`],
-  ["3", "RTO Charges", `Rs. ${formatRupee(formData.rtoCharges || 0)}`],
-  ["4", "Others", `Rs. ${formatRupee(formData.otherCharges || 0)}`],
-  ["", "Total", `Rs. ${formatRupee(formData.totalAmount || Number(formData.saleValue || formData.saleAmount || 0) + Number(formData.commission || 0) + Number(formData.rtoCharges || 0) + Number(formData.otherCharges || 0))}`],
-  ["", "Advance", `Rs. ${formatRupee(formData.advanceAmount || 0)}`],
-  ["", "Balance", `Rs. ${formatRupee(formData.balanceAmount || (Number(formData.totalAmount || 0) - Number(formData.advanceAmount || 0)))}`],
+        [
+          "1",
+          "Sale value",
+          `Rs. ${formatRupee(formData.saleValue || formData.saleAmount || 0)}`,
+        ],
+        ["2", "Commission", `Rs. ${formatRupee(formData.commission || 0)}`],
+        ["3", "RTO Charges", `Rs. ${formatRupee(formData.rtoCharges || 0)}`],
+        ["4", "Others", `Rs. ${formatRupee(formData.otherCharges || 0)}`],
+        [
+          "",
+          "Total",
+          `Rs. ${formatRupee(
+            formData.totalAmount ||
+              Number(formData.saleValue || formData.saleAmount || 0) +
+                Number(formData.commission || 0) +
+                Number(formData.rtoCharges || 0) +
+                Number(formData.otherCharges || 0)
+          )}`,
+        ],
+        ["", "Advance", `Rs. ${formatRupee(formData.advanceAmount || 0)}`],
+        [
+          "",
+          "Balance",
+          `Rs. ${formatRupee(
+            formData.balanceAmount ||
+              Number(formData.totalAmount || 0) -
+                Number(formData.advanceAmount || 0)
+          )}`,
+        ],
       ];
 
       pY -= 26;
       for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
-        page.drawRectangle({ x: pX, y: pY - 20, width: pW, height: 20, color: rgb(1, 1, 1) });
-        page.drawText(row[0], { x: pX + 8, y: pY - 6, size: 9, font: fontNormal });
-        page.drawText(row[1], { x: pX + 60, y: pY - 6, size: 9, font: fontNormal });
-        page.drawText(row[2], { x: pX + pW - 90, y: pY - 6, size: 9, font: fontNormal });
+        page.drawRectangle({
+          x: pX,
+          y: pY - 20,
+          width: pW,
+          height: 20,
+          color: rgb(1, 1, 1),
+        });
+        page.drawText(row[0], {
+          x: pX + 8,
+          y: pY - 6,
+          size: 9,
+          font: fontNormal,
+        });
+        page.drawText(row[1], {
+          x: pX + 60,
+          y: pY - 6,
+          size: 9,
+          font: fontNormal,
+        });
+        page.drawText(row[2], {
+          x: pX + pW - 90,
+          y: pY - 6,
+          size: 9,
+          font: fontNormal,
+        });
         pY -= 22;
       }
 
       // Declaration box
       const declY = pY - 8;
-      page.drawRectangle({ x: 40, y: declY - 70, width: width - 80, height: 70, color: rgb(0.98, 0.98, 0.98) });
-      page.drawText("Declaration:", { x: 46, y: declY - 12, size: 9, font: font, color: rgb(0.06,0.06,0.06) });
+      page.drawRectangle({
+        x: 40,
+        y: declY - 70,
+        width: width - 80,
+        height: 70,
+        color: rgb(0.98, 0.98, 0.98),
+      });
+      page.drawText("Declaration:", {
+        x: 46,
+        y: declY - 12,
+        size: 9,
+        font: font,
+        color: rgb(0.06, 0.06, 0.06),
+      });
       const declText = formData.declaration || "";
-      page.drawText(String(declText), { x: 46, y: declY - 28, size: 8.5, font: fontNormal, color: rgb(0.06,0.06,0.06) });
+      page.drawText(String(declText), {
+        x: 46,
+        y: declY - 28,
+        size: 8.5,
+        font: fontNormal,
+        color: rgb(0.06, 0.06, 0.06),
+      });
 
       // Footer notes area
       const notesY = declY - 90;
-      page.drawRectangle({ x: 40, y: notesY - 36, width: width - 80, height: 36, color: rgb(0.94, 0.94, 0.94) });
-      page.drawText("Kindly bring ID & Address Proof at the time of delivery. Note: Minimum 45 days period for documentation (RTO work). Vehicle is sold as is where condition no odometer guarantee. Car once sold will not be taken back or exchanged.", { x: 46, y: notesY - 20, size: 8, font: fontNormal, color: rgb(0.06,0.06,0.06) });
+      page.drawRectangle({
+        x: 40,
+        y: notesY - 36,
+        width: width - 80,
+        height: 36,
+        color: rgb(0.94, 0.94, 0.94),
+      });
+      page.drawText(
+        "Kindly bring ID & Address Proof at the time of delivery. Note: Minimum 45 days period for documentation (RTO work). Vehicle is sold as is where condition no odometer guarantee. Car once sold will not be taken back or exchanged.",
+        {
+          x: 46,
+          y: notesY - 20,
+          size: 8,
+          font: fontNormal,
+          color: rgb(0.06, 0.06, 0.06),
+        }
+      );
 
       // Signature lines
       const sigY = 60;
-      page.drawLine({ start: { x: 60, y: sigY + 20 }, end: { x: 200, y: sigY + 20 }, thickness: 0.6, color: rgb(0.1,0.1,0.1) });
-      page.drawText("*Authorised Signature", { x: 60, y: sigY + 6, size: 9, font: fontNormal });
+      page.drawLine({
+        start: { x: 60, y: sigY + 20 },
+        end: { x: 200, y: sigY + 20 },
+        thickness: 0.6,
+        color: rgb(0.1, 0.1, 0.1),
+      });
+      page.drawText("*Authorised Signature", {
+        x: 60,
+        y: sigY + 6,
+        size: 9,
+        font: fontNormal,
+      });
 
-      page.drawLine({ start: { x: width / 2 - 60, y: sigY + 20 }, end: { x: width / 2 + 80, y: sigY + 20 }, thickness: 0.6, color: rgb(0.1,0.1,0.1) });
-      page.drawText("*Buyer's Signature", { x: width / 2 - 60, y: sigY + 6, size: 9, font: fontNormal });
+      page.drawLine({
+        start: { x: width / 2 - 60, y: sigY + 20 },
+        end: { x: width / 2 + 80, y: sigY + 20 },
+        thickness: 0.6,
+        color: rgb(0.1, 0.1, 0.1),
+      });
+      page.drawText("*Buyer's Signature", {
+        x: width / 2 - 60,
+        y: sigY + 6,
+        size: 9,
+        font: fontNormal,
+      });
 
-      page.drawLine({ start: { x: width - 220, y: sigY + 20 }, end: { x: width - 60, y: sigY + 20 }, thickness: 0.6, color: rgb(0.1,0.1,0.1) });
-      page.drawText("*Witness", { x: width - 200, y: sigY + 6, size: 9, font: fontNormal });
+      page.drawLine({
+        start: { x: width - 220, y: sigY + 20 },
+        end: { x: width - 60, y: sigY + 20 },
+        thickness: 0.6,
+        color: rgb(0.1, 0.1, 0.1),
+      });
+      page.drawText("*Witness", {
+        x: width - 200,
+        y: sigY + 6,
+        size: 9,
+        font: fontNormal,
+      });
 
       const pdfBytes = await pdfDoc.save();
       return pdfBytes;
@@ -413,7 +679,9 @@ const SellLetterForm = () => {
       setShowPreviewModal(false);
       const bytes = await generatePdfBytes(language);
       const blob = new Blob([bytes], { type: "application/pdf" });
-      const filename = `sellletter_${language}_${formData.registrationNumber || "document"}.pdf`;
+      const filename = `sellletter_${language}_${
+        formData.registrationNumber || "document"
+      }.pdf`;
       saveAs(blob, filename);
     } catch (err) {
       console.error("Download error:", err);
@@ -616,11 +884,18 @@ const SellLetterForm = () => {
                 paymentMethod: formData.paymentMethod || "cash",
                 note: "Advance recorded from Sell Letter",
               },
-              { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+              {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+              }
             );
           }
         } catch (err) {
-          console.warn("Advance payment creation failed:", err?.response?.data || err.message || err);
+          console.warn(
+            "Advance payment creation failed:",
+            err?.response?.data || err.message || err
+          );
         }
 
         return saved;
@@ -671,10 +946,17 @@ const SellLetterForm = () => {
                 paymentMethod: formData.paymentMethod || "cash",
                 note: "Advance recorded from Sell Letter (existing)",
               },
-              { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+              {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+              }
             );
           } catch (err) {
-            console.warn("Advance payment creation failed for existing letter:", err?.response?.data || err.message || err);
+            console.warn(
+              "Advance payment creation failed for existing letter:",
+              err?.response?.data || err.message || err
+            );
           }
         }
         setSavedLetterData(found);
@@ -703,7 +985,7 @@ const SellLetterForm = () => {
       setIsSaving(false);
     }
   };
-    // NOTE: PDF drawing/positioning logic removed on purpose per new template decision.
+  // NOTE: PDF drawing/positioning logic removed on purpose per new template decision.
   const handleInput = (e) => {
     const { name, value } = e.target;
     e.target.value = value.toUpperCase();
@@ -762,7 +1044,9 @@ const SellLetterForm = () => {
                     <option value="">-- Choose a car --</option>
                     {cars.map((c) => (
                       <option key={c._id} value={c._id}>
-                        {`${c.make || c.brand || ""} ${c.model || c.variant || ""} ${c.registrationNumber || c.registrationNo || ""}`}
+                        {`${c.make || c.brand || ""} ${
+                          c.model || c.variant || ""
+                        } ${c.registrationNumber || c.registrationNo || ""}`}
                       </option>
                     ))}
                   </select>
@@ -770,7 +1054,7 @@ const SellLetterForm = () => {
                 <div style={styles.formField}>
                   <label style={styles.formLabel}>
                     <Car style={styles.formIcon} />
-                    Vehicle Brand || वाहन का ब्रांड
+                    Vehicle Brand
                   </label>
                   <input
                     type="text"
@@ -786,7 +1070,7 @@ const SellLetterForm = () => {
                 <div style={styles.formField}>
                   <label style={styles.formLabel}>
                     <Car style={styles.formIcon} />
-                    Vehicle Model || वाहन का मॉडल
+                    Vehicle Model
                   </label>
                   <input
                     type="text"
@@ -802,7 +1086,7 @@ const SellLetterForm = () => {
                 <div style={styles.formField}>
                   <label style={styles.formLabel}>
                     <Car style={styles.formIcon} />
-                    Vehicle Color || वाहन का रंग
+                    Vehicle Color
                   </label>
                   <input
                     type="text"
@@ -818,7 +1102,7 @@ const SellLetterForm = () => {
                 <div style={styles.formField}>
                   <label style={styles.formLabel}>
                     <Car style={styles.formIcon} />
-                    Registration Number || रजिस्ट्रेशन नंबर
+                    Registration Number
                   </label>
                   <input
                     type="text"
@@ -834,7 +1118,7 @@ const SellLetterForm = () => {
                 <div style={styles.formField}>
                   <label style={styles.formLabel}>
                     <Car style={styles.formIcon} />
-                    Chassis Number || चासिस नंबर
+                    Chassis Number
                   </label>
                   <input
                     type="text"
@@ -850,7 +1134,7 @@ const SellLetterForm = () => {
                 <div style={styles.formField}>
                   <label style={styles.formLabel}>
                     <Car style={styles.formIcon} />
-                    Engine Number || इंजन नंबर
+                    Engine Number
                   </label>
                   <input
                     type="text"
@@ -865,7 +1149,7 @@ const SellLetterForm = () => {
                 <div style={styles.formField}>
                   <label style={styles.formLabel}>
                     <Car style={styles.formIcon} />
-                    Vehicle KM || वाहन किलोमीटर
+                    Vehicle KM
                   </label>
                   <input
                     type="text"
@@ -892,7 +1176,7 @@ const SellLetterForm = () => {
                 <div style={styles.formField}>
                   <label style={styles.formLabel}>
                     <Car style={styles.formIcon} />
-                    Vehicle Condition || वाहन की स्थिति
+                    Vehicle Condition
                   </label>
                   <select
                     name="vehicleCondition"
@@ -917,7 +1201,7 @@ const SellLetterForm = () => {
                 <div style={styles.formField}>
                   <label style={styles.formLabel}>
                     <User style={styles.formIcon} />
-                    Buyer Name || खरीददार का नाम
+                    Buyer Name
                   </label>
                   <input
                     type="text"
@@ -933,7 +1217,7 @@ const SellLetterForm = () => {
                 <div style={styles.formField}>
                   <label style={styles.formLabel}>
                     <User style={styles.formIcon} />
-                    Buyer Father's Name || खरीददार के पिता का नाम
+                    Buyer Father's Name
                   </label>
                   <input
                     type="text"
@@ -949,7 +1233,7 @@ const SellLetterForm = () => {
                 <div style={styles.formField}>
                   <label style={styles.formLabel}>
                     <User style={styles.formIcon} />
-                    Buyer Address || खरीददार का पता
+                    Buyer Address
                   </label>
                   <input
                     type="text"
@@ -965,7 +1249,7 @@ const SellLetterForm = () => {
                 <div style={styles.formField}>
                   <label style={styles.formLabel}>
                     <User style={styles.formIcon} />
-                    Buyer Phone || खरीददार का फोन नंबर
+                    Buyer Phone
                   </label>
                   <input
                     type="text"
@@ -987,7 +1271,7 @@ const SellLetterForm = () => {
                 <div style={styles.formField}>
                   <label style={styles.formLabel}>
                     <User style={styles.formIcon} />
-                    Buyer Alternate Phone || खरीददार का वैकल्पिक फोन नंबर
+                    Buyer Alternate Phone
                   </label>
                   <input
                     type="text"
@@ -1009,7 +1293,7 @@ const SellLetterForm = () => {
                 <div style={styles.formField}>
                   <label style={styles.formLabel}>
                     <User style={styles.formIcon} />
-                    Buyer Aadhar || खरीददार का आधार नंबर
+                    Buyer Aadhar
                   </label>
                   <input
                     type="text"
@@ -1032,7 +1316,7 @@ const SellLetterForm = () => {
                 <div style={styles.formField}>
                   <label style={styles.formLabel}>
                     <User style={styles.formIcon} />
-                    Witness Name || गवाह का नाम
+                    Witness Name
                   </label>
                   <input
                     type="text"
@@ -1047,7 +1331,7 @@ const SellLetterForm = () => {
                 <div style={styles.formField}>
                   <label style={styles.formLabel}>
                     <User style={styles.formIcon} />
-                    Witness Phone || गवाह का फोन नंबर
+                    Witness Phone
                   </label>
                   <input
                     type="text"
@@ -1077,7 +1361,7 @@ const SellLetterForm = () => {
                 <div style={styles.formField}>
                   <label style={styles.formLabel}>
                     <Calendar style={styles.formIcon} />
-                    Sale Date || बिक्री की तिथि
+                    Sale Date
                   </label>
                   <input
                     type="date"
@@ -1091,7 +1375,7 @@ const SellLetterForm = () => {
                 <div style={styles.formField}>
                   <label style={styles.formLabel}>
                     <Clock style={styles.formIcon} />
-                    Sale Time || बिक्री का समय
+                    Sale Time
                   </label>
                   <input
                     type="time"
@@ -1105,7 +1389,7 @@ const SellLetterForm = () => {
                 <div style={styles.formField}>
                   <label style={styles.formLabel}>
                     <IndianRupee style={styles.formIcon} />
-                    Sale Amount (₹) || बिक्री की राशि (₹)
+                    Sale Amount (₹)
                   </label>
                   <input
                     type="text"
@@ -1131,7 +1415,7 @@ const SellLetterForm = () => {
                 <div style={styles.formField}>
                   <label style={styles.formLabel}>
                     <IndianRupee style={styles.formIcon} />
-                    Payment Method || भुगतान की विधि
+                    Payment Method
                   </label>
                   <select
                     name="paymentMethod"
@@ -1149,7 +1433,7 @@ const SellLetterForm = () => {
                 <div style={styles.formField}>
                   <label style={styles.formLabel}>
                     <Calendar style={styles.formIcon} />
-                    Today's Date || आज की तिथि
+                    Today's Date
                   </label>
                   <input
                     type="date"
@@ -1162,7 +1446,7 @@ const SellLetterForm = () => {
                 <div style={styles.formField}>
                   <label style={styles.formLabel}>
                     <Clock style={styles.formIcon} />
-                    Today's Time || आज का समय
+                    Today's Time
                   </label>
                   <input
                     type="time"
@@ -1197,7 +1481,10 @@ const SellLetterForm = () => {
                     type="text"
                     name="saleValue"
                     value={formData.saleValue}
-                    onChange={(e)=>{ const raw = e.target.value.replace(/[^0-9]/g,''); setFormData(prev=>({...prev, saleValue: raw})); }}
+                    onChange={(e) => {
+                      const raw = e.target.value.replace(/[^0-9]/g, "");
+                      setFormData((prev) => ({ ...prev, saleValue: raw }));
+                    }}
                     style={styles.formInput}
                   />
                 </div>
@@ -1207,7 +1494,10 @@ const SellLetterForm = () => {
                     type="text"
                     name="commission"
                     value={formData.commission}
-                    onChange={(e)=>{ const raw = e.target.value.replace(/[^0-9]/g,''); setFormData(prev=>({...prev, commission: raw})); }}
+                    onChange={(e) => {
+                      const raw = e.target.value.replace(/[^0-9]/g, "");
+                      setFormData((prev) => ({ ...prev, commission: raw }));
+                    }}
                     style={styles.formInput}
                   />
                 </div>
@@ -1217,7 +1507,10 @@ const SellLetterForm = () => {
                     type="text"
                     name="rtoCharges"
                     value={formData.rtoCharges}
-                    onChange={(e)=>{ const raw = e.target.value.replace(/[^0-9]/g,''); setFormData(prev=>({...prev, rtoCharges: raw})); }}
+                    onChange={(e) => {
+                      const raw = e.target.value.replace(/[^0-9]/g, "");
+                      setFormData((prev) => ({ ...prev, rtoCharges: raw }));
+                    }}
                     style={styles.formInput}
                   />
                 </div>
@@ -1227,7 +1520,10 @@ const SellLetterForm = () => {
                     type="text"
                     name="otherCharges"
                     value={formData.otherCharges}
-                    onChange={(e)=>{ const raw = e.target.value.replace(/[^0-9]/g,''); setFormData(prev=>({...prev, otherCharges: raw})); }}
+                    onChange={(e) => {
+                      const raw = e.target.value.replace(/[^0-9]/g, "");
+                      setFormData((prev) => ({ ...prev, otherCharges: raw }));
+                    }}
                     style={styles.formInput}
                   />
                 </div>
@@ -1237,7 +1533,10 @@ const SellLetterForm = () => {
                     type="text"
                     name="advanceAmount"
                     value={formData.advanceAmount}
-                    onChange={(e)=>{ const raw = e.target.value.replace(/[^0-9]/g,''); setFormData(prev=>({...prev, advanceAmount: raw})); }}
+                    onChange={(e) => {
+                      const raw = e.target.value.replace(/[^0-9]/g, "");
+                      setFormData((prev) => ({ ...prev, advanceAmount: raw }));
+                    }}
                     style={styles.formInput}
                   />
                 </div>
@@ -1247,7 +1546,10 @@ const SellLetterForm = () => {
                     type="text"
                     name="balanceAmount"
                     value={formData.balanceAmount}
-                    onChange={(e)=>{ const raw = e.target.value.replace(/[^0-9]/g,''); setFormData(prev=>({...prev, balanceAmount: raw})); }}
+                    onChange={(e) => {
+                      const raw = e.target.value.replace(/[^0-9]/g, "");
+                      setFormData((prev) => ({ ...prev, balanceAmount: raw }));
+                    }}
                     style={styles.formInput}
                   />
                 </div>
@@ -1257,7 +1559,7 @@ const SellLetterForm = () => {
                     name="declaration"
                     value={formData.declaration}
                     onChange={handleChange}
-                    style={{...styles.formInput, height: '120px'}}
+                    style={{ ...styles.formInput, height: "120px" }}
                   />
                 </div>
               </div>
@@ -1553,11 +1855,13 @@ const styles = {
     fontWeight: "700",
     color: "#1e293b",
     margin: 0,
+    textAlign: "center",
   },
   pageSubtitle: {
     fontSize: "1rem",
     color: "#64748b",
     margin: "8px 0 0 0",
+    textAlign: "center",
   },
   modalOverlay: {
     position: "fixed",
@@ -1685,7 +1989,7 @@ const styles = {
     color: "#64748b",
   },
   formInput: {
-    width: "90%",
+    width: "83%",
     padding: "10px 12px",
     border: "1px solid #cbd5e1",
     borderRadius: "8px",

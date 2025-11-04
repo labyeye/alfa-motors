@@ -3,13 +3,15 @@
 <head>
   <title>Happy Customers — Alfa Motor World</title>
   <meta name="description" content="See our happy customers who sold their cars through Alfa Motor World. Browse our gallery of satisfied customers and their testimonials." />
+  <meta name="keywords" content="best second hand cars in bangalore, second hand car in bangalore, used cars bangalore, customer testimonials, pre-owned cars Bangalore" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta charset="utf-8" />
   <link rel="canonical" href="https://www.alfamotorworld.com/happy-customers.html" />
   <link rel="alternate" href="https://www.alfamotorworld.com/happy-customers.html" hreflang="en" />
   <link rel="alternate" href="https://www.alfamotorworld.com/happy-customers.html" hreflang="hi" />
-  <meta name="robots" content="index, follow" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
   <meta name="theme-color" content="#ffffff" />
+  <link rel="preconnect" href="https://alfa-motors-o5cm.vercel.app" crossorigin />
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Happy Customers — Alfa Motor World" />
@@ -30,26 +32,35 @@
     "name": "Happy Customers — Alfa Motor World"
   }
   </script>
-  <!-- Accessibility helper: ensure every <img> has an alt attribute -->
+  <!-- Accessibility & performance helper: ensure images have alt, lazy loading and async decoding -->
   <script>
     (function(){
-      function populateAlts(){
-        document.querySelectorAll('img:not([alt])').forEach(function(img){
+      function enhanceImages(){
+        document.querySelectorAll('img').forEach(function(img){
           try{
             var src = img.getAttribute('src') || '';
-            if(/logo|icon|decor|sprite|background|arrow|dot|star|placeholder/i.test(src)){
-              img.setAttribute('alt','');
+            var isDecor = /logo|icon|decor|sprite|background|arrow|dot|star|placeholder/i.test(src) || img.classList.contains('logo-img') || img.getAttribute('itemprop') === 'logo';
+            if(!img.hasAttribute('alt')){
+              if(isDecor) img.setAttribute('alt','');
+              else{
+                var name = src.split('/').pop().split('?')[0].split('.')[0] || 'image';
+                name = name.replace(/[-_]+/g,' ').replace(/\d+/g,'').trim();
+                img.setAttribute('alt', name || 'image');
+              }
+            }
+            if(!isDecor){
+              if(!img.hasAttribute('loading')) img.setAttribute('loading','lazy');
+              if(!img.hasAttribute('decoding')) img.setAttribute('decoding','async');
             } else {
-              var name = src.split('/').pop().split('?')[0].split('.')[0] || 'image';
-              name = name.replace(/[-_]+/g,' ').replace(/\d+/g,'').trim();
-              img.setAttribute('alt', name || 'image');
+              if(!img.hasAttribute('decoding')) img.setAttribute('decoding','sync');
             }
           }catch(e){}
         });
       }
-      if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', populateAlts); else populateAlts();
+      if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', enhanceImages); else enhanceImages();
     })();
   </script>
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
   <link rel="stylesheet" href="./global.css" />
   <link rel="stylesheet" href="./style.css" />
   <link rel="stylesheet" href="./happy-customers.css" />
@@ -144,17 +155,42 @@
         const items = json.data || [];
         if (items.length === 0) return gallery.innerHTML = '<p>No gallery photos yet. Upload some photos in Gallery Management!</p>';
 
-        gallery.innerHTML = items.map((item, index) => {
-          const thumbUrl = `${API_BASE}/carimages/${item.filename}`;
-          
-          return `
+        function getImageUrl(imagePath) {
+          if (!imagePath) return './assets/placeholder.png';
+
+          // If it's already a full URL (Cloudinary or other CDN), use it as-is
+          if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+            return imagePath;
+          }
+
+          // If it's an absolute path on the site (starts with '/'), use as-is
+          if (imagePath.startsWith('/')) return imagePath;
+
+          // Strip any leading carimages/ prefix
+          const filename = imagePath.startsWith('carimages/')
+            ? imagePath.replace('carimages/', '')
+            : imagePath;
+
+          // Local bundled assets
+          if (filename.startsWith('assets/')) return filename;
+
+          // Fallback to backend-hosted carimages
+          return `${API_BASE}/carimages/${filename}`;
+        }
+
+        gallery.innerHTML = items
+          .map((item, index) => {
+            const thumbUrl = getImageUrl(item.filename || item.url || '');
+
+            return `
             <article class="gallery-card" data-aos="fade-up" data-aos-delay="${(index % 4) * 100}">
               <div class="card-image-container">
                 <img src="${thumbUrl}" alt="Gallery photo" loading="lazy" onerror="this.src='./assets/placeholder.png'" />
               </div>
             </article>
           `;
-        }).join('');
+          })
+          .join('');
       } catch (err) {
         console.error(err);
         loading.textContent = 'Failed to load gallery.';
@@ -163,8 +199,86 @@
 
     fetchGallery();
   </script>
+
+  <script>
+    // Mobile menu wiring (copied from other pages)
+    document.addEventListener("DOMContentLoaded", function () {
+      const toggleBtn = document.createElement("button");
+      toggleBtn.className = "mobile-menu-toggle";
+      toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
+
+      const navbar = document.querySelector(".navbar");
+      if (navbar) navbar.appendChild(toggleBtn);
+
+      const mobileMenu = document.createElement("div");
+      mobileMenu.className = "mobile-menu";
+      mobileMenu.innerHTML = `
+    <button class="close-btn" aria-label="Close mobile menu">
+      <i class="fas fa-times" aria-hidden="true"></i>
+    </button>
+    <ul class="nav-links">
+      <li>
+        <a href="index.html"  aria-current="page">
+          <span data-translate="Home">Home</span>
+        </a>
+      </li>
+      <li>
+        <a href="inventory.html">
+          <span data-translate="Vehicles for Sale">Vehicles for Sale</span>
+        </a>
+      </li>
+      <li>
+        <a href="sell.html">
+          <span data-translate="Sell Your Vehicle">Sell Your Vehicle</span>
+        </a>
+      </li>
+       <li>
+        <a href="happy-customers.html">
+          <span data-translate="Happy Customers">Happy Customers</span>
+        </a>
+      </li>
+       <li>
+        <a href="finance.html">
+          <span data-translate="Financing">Financing</span>
+        </a>
+      </li>
+      <li>
+        <a href="about.html">
+          <span data-translate="About Us">About Us</span>
+        </a>
+      </li>
+      <li>
+        <a href="contact.html">
+          <span data-translate="Contact">Contact</span>
+        </a>
+      </li>
+    </ul>
+    <div class="login-btn">
+      <a href="/getquote.html">
+        <button aria-label="Get a quote for your Car" data-translate="Get the Quote">
+          Get the Quote
+        </button>
+      </a>
+    </div>
+  `;
+
+      document.body.appendChild(mobileMenu);
+
+      toggleBtn.addEventListener("click", function () {
+        mobileMenu.classList.add("active");
+        document.body.style.overflow = 'hidden';
+      });
+
+      mobileMenu
+        .querySelector(".close-btn")
+        .addEventListener("click", function () {
+          mobileMenu.classList.remove("active");
+          document.body.style.overflow = 'auto';
+        });
+    });
+  </script>
+
+  <script src="/i18n.js"></script>
+  <script src="/happy-customers.js"></script>
 </body>
 </html>
-<!-- i18n and page helper -->
-<script src="/i18n.js"></script>
-<script src="/happy-customers.js"></script>
