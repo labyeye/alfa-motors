@@ -55,53 +55,13 @@ const corsOptions = {
     }
   },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: ["Content-Type", "Authorization","Access-Control-Allow-Origin","All"],
   credentials: true,
 };
 
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
-// Lightweight CORS header middleware to ensure preflight responses
-// always include the expected headers (helps file uploads and Authorization preflight)
-app.use((req, res, next) => {
-  const origin = req.get('origin');
-
-  // If no origin (curl, mobile apps), allow by default
-  if (!origin) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-  } else {
-    // Use the corsOptions.origin function to check if origin is allowed
-    try {
-      if (typeof corsOptions.origin === 'function') {
-        corsOptions.origin(origin, (err, allowed) => {
-          if (!err && allowed) {
-            res.setHeader('Access-Control-Allow-Origin', origin);
-          }
-        });
-      } else if (Array.isArray(corsOptions.origin) && corsOptions.origin.includes(origin)) {
-        res.setHeader('Access-Control-Allow-Origin', origin);
-      }
-    } catch (e) {
-      // swallow and continue
-    }
-  }
-
-  if (corsOptions.credentials) {
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-  }
-
-  // Allow common headers needed by our frontend (Authorization + multipart/form-data)
-  res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type, Accept');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS,PATCH');
-
-  // Short-circuit preflight
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(204);
-  }
-
-  next();
-});
 
 // Enable pre-flight for all routes and apply CORS middleware
 app.options("*", cors(corsOptions));
