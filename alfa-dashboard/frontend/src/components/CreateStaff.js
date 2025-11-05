@@ -1,15 +1,14 @@
 import React, { useState, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-import {
-  User,
-  Mail,
-  Lock,
-  Users,
-} from "lucide-react";
+import { User, Mail, Lock, Users } from "lucide-react";
 import AuthContext from "../context/AuthContext";
 import Sidebar from "./Sidebar";
-const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'https://alfa-motors-5yfh.vercel.app' : 'https://alfa-motors-5yfh.vercel.app');
+const API_BASE =
+  window.API_BASE ||
+  (window.location.hostname === "localhost"
+    ? "https://alfa-motors-5yfh.vercel.app"
+    : "https://alfa-motors-5yfh.vercel.app");
 
 const CreateStaff = () => {
   const navigate = useNavigate();
@@ -25,7 +24,6 @@ const CreateStaff = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
-  // Menu state management
   const [activeMenu, setActiveMenu] = useState("Create Staff ID");
   const [expandedMenus, setExpandedMenus] = useState({});
 
@@ -43,10 +41,7 @@ const CreateStaff = () => {
     setError(null);
 
     try {
-      const response = await axios.post(
-        `${API_BASE}/api/users`,
-        formData
-      );
+      const response = await axios.post(`${API_BASE}/api/users`, formData);
       setSuccess(true);
       setTimeout(() => {
         navigate("/staff/list");
@@ -69,7 +64,6 @@ const CreateStaff = () => {
     navigate("/login");
   };
 
-  // Toggle menu expansion
   const toggleMenu = (menuName) => {
     setExpandedMenus((prev) => ({
       ...prev,
@@ -77,15 +71,11 @@ const CreateStaff = () => {
     }));
   };
 
-  // Handle menu clicks
   const handleMenuClick = (menuName, path) => {
     setActiveMenu(menuName);
-    const actualPath = typeof path === 'function' ? path(user?.role) : path;
+    const actualPath = typeof path === "function" ? path(user?.role) : path;
     navigate(actualPath);
   };
-
-  
-
 
   return (
     <div style={styles.container}>

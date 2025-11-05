@@ -25,8 +25,6 @@ import logo from "../images/company.png";
 import logo1 from "../images/okmotorback.png";
 import Sidebar from "./Sidebar";
 import AuthContext from "../context/AuthContext";
-
-// API base (shared pattern across components)
 const API_BASE =
   window.API_BASE ||
   (window.location.hostname === "localhost"

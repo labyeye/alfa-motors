@@ -136,7 +136,7 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
 
   return (
     <>
-      {/* Hamburger button visible on mobile */}
+      
       {isMobile && (
         <button
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
@@ -147,7 +147,7 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
         </button>
       )}
 
-      {/* overlay when mobile menu open */}
+      
       {isMobile && mobileOpen && (
         <div style={styles.overlay} onClick={() => setMobileOpen(false)} />
       )}
@@ -269,7 +269,7 @@ const styles = {
     marginTop: "16px",
     borderTop: "1px solid #334155",
   },
-  /* mobile-specific styles */
+  
   hamburgerButton: {
     position: "fixed",
     top: 12,

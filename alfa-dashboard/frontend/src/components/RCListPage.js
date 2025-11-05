@@ -1,11 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Edit,
-  Trash2,
-  Search,
-  Download,
-} from "lucide-react";
+import { Edit, Trash2, Search, Download } from "lucide-react";
 import {
   Input,
   Table,
@@ -87,7 +82,7 @@ const RcListPage = () => {
       justifyContent: isMobile ? "center" : "flex-start",
       flexDirection: isMobile ? "column" : "column",
     },
-    
+
     menuIcon: {
       marginRight: isMobile ? "0" : "12px",
       marginBottom: isMobile ? "2px" : "0",
@@ -290,7 +285,6 @@ const RcListPage = () => {
   };
 
   const handleExportExcel = () => {
-    // Use filteredEntries instead of rcEntries to respect search and filters
     const exportData = filteredEntries.map((entry) => ({
       "Vehicle Reg No.": entry.vehicleRegNo || "-",
       "Vehicle Name": entry.vehicleName || "-",

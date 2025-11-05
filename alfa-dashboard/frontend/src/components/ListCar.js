@@ -62,7 +62,7 @@ const ListCar = () => {
     <div style={styles.container}>
       <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
 
-      {/* Main Content */}
+      
       <div style={styles.mainContent}>
         <div style={styles.contentPadding}>
           <div style={styles.header}>

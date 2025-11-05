@@ -74,8 +74,7 @@ const SellRequests = () => {
           request._id === id ? response.data : request
         )
       );
-
-      // Show success message
+      
       const statusMsg = status === "Approved" ? "approved" : "rejected";
       alert(`Request ${statusMsg} successfully!`);
     } catch (err) {
@@ -99,7 +98,6 @@ const SellRequests = () => {
 
       setRequests((prev) => prev.filter((r) => r._id !== id));
       alert("Sell request deleted");
-      // If the modal is showing this request, close it
       if (selectedRequest && selectedRequest._id === id) {
         setShowModal(false);
         setSelectedRequest(null);
@@ -185,7 +183,7 @@ const SellRequests = () => {
 
       <div style={styles.mainContent}>
         <div style={styles.contentPadding}>
-          {/* Header */}
+          
           <div style={styles.header}>
             <div>
               <h1 style={styles.pageTitle}>Sell Queries</h1>
@@ -195,7 +193,7 @@ const SellRequests = () => {
             </div>
           </div>
 
-          {/* Stats */}
+          
           <div style={styles.statsGrid}>
             <div style={styles.statCard}>
               <h3 style={styles.statNumber}>{requests.length}</h3>
@@ -221,7 +219,7 @@ const SellRequests = () => {
             </div>
           </div>
 
-          {/* Filters */}
+          
           <div style={styles.filtersContainer}>
             <div style={styles.searchContainer}>
               <Search size={20} style={styles.searchIcon} />
@@ -248,7 +246,7 @@ const SellRequests = () => {
             </div>
           </div>
 
-          {/* Requests Table */}
+          
           <div style={styles.section}>
             {filteredRequests.length === 0 ? (
               <div style={styles.emptyState}>

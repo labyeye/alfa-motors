@@ -1,11 +1,11 @@
-import React, { useState, useContext } from "react";
-import AuthContext from "../context/AuthContext";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../css/AddcarForm.css";
+import AuthContext from "../context/AuthContext";
 import Sidebar from "./Sidebar";
+import "../css/AddcarForm.css";
 
-const AddcarForm = () => {
+const AddCarForm = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [error, setError] = useState(null);
@@ -26,7 +26,7 @@ const AddcarForm = () => {
     buyingPrice: "",
     quotingPrice: "",
     sellingPrice: "",
-    photos: [], // For file uploads
+    photos: [],
     status: "Available",
   });
   const [activeMenu, setActiveMenu] = useState("Add Car Data");
@@ -36,19 +36,14 @@ const AddcarForm = () => {
     (window.location.hostname === "localhost"
       ? "https://alfa-motors-5yfh.vercel.app"
       : "https://alfa-motors-5yfh.vercel.app");
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleFileChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      photos: Array.from(e.target.files),
-    }));
+    setFormData((prev) => ({ ...prev, photos: Array.from(e.target.files) }));
   };
 
   const handleSubmit = async (e) => {
@@ -71,12 +66,8 @@ const AddcarForm = () => {
         }
       });
       formPayload.append("addedBy", user._id);
-      // Let the browser set the Content-Type (including the multipart boundary).
-      // Only send Authorization header here.
       const response = await axios.post(`${API_BASE}/api/cars`, formPayload, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (response.data.success) {
         navigate("/admin");
@@ -84,7 +75,7 @@ const AddcarForm = () => {
         setError(response.data.message || "Failed to add car");
       }
     } catch (err) {
-      console.error("Error details:", err);
+      console.error(err);
       setError(
         err.response?.data?.message ||
           err.response?.data?.error?.join(", ") ||
@@ -96,15 +87,11 @@ const AddcarForm = () => {
     }
   };
 
-  const handleCancel = () => {
-    navigate("/admin");
-  };
+  const handleCancel = () => navigate("/admin");
 
   return (
     <div style={styles.container}>
       <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
-
-      {/* Main Content */}
       <div style={styles.mainContent}>
         <div style={styles.contentPadding}>
           <div style={styles.header}>
@@ -131,7 +118,7 @@ const AddcarForm = () => {
                 <div className="alert error">
                   <i
                     className="material-icons"
-                    style={{ verticalAlign: "middle", marginRight: "8px" }}
+                    style={{ verticalAlign: "middle", marginRight: 8 }}
                   >
                     error
                   </i>
@@ -157,6 +144,7 @@ const AddcarForm = () => {
                       placeholder="Enter car make (e.g., Toyota, Honda)"
                     />
                   </div>
+
                   <div className="form-group">
                     <label className="form-label required">Model</label>
                     <input
@@ -169,6 +157,7 @@ const AddcarForm = () => {
                       placeholder="Enter car model (e.g., Camry, Civic)"
                     />
                   </div>
+
                   <div className="form-group">
                     <label className="form-label required">Variant</label>
                     <input
@@ -181,6 +170,7 @@ const AddcarForm = () => {
                       placeholder="Enter car variant (e.g., GL, LXI, VXI)"
                     />
                   </div>
+
                   <div className="form-group">
                     <label className="form-label required">Fuel Type</label>
                     <select
@@ -198,6 +188,7 @@ const AddcarForm = () => {
                       <option value="Hybrid">Hybrid</option>
                     </select>
                   </div>
+
                   <div className="form-group">
                     <label className="form-label required">Model Year</label>
                     <input
@@ -211,6 +202,7 @@ const AddcarForm = () => {
                       onChange={handleChange}
                     />
                   </div>
+
                   <div className="form-group">
                     <label className="form-label required">
                       Registration Year
@@ -226,6 +218,7 @@ const AddcarForm = () => {
                       onChange={handleChange}
                     />
                   </div>
+
                   <div className="form-group">
                     <label className="form-label required">Color</label>
                     <input
@@ -238,6 +231,7 @@ const AddcarForm = () => {
                       placeholder="Enter car color"
                     />
                   </div>
+
                   <div className="form-group">
                     <label className="form-label required">Chassis No</label>
                     <input
@@ -250,6 +244,7 @@ const AddcarForm = () => {
                       placeholder="Enter chassis number"
                     />
                   </div>
+
                   <div className="form-group">
                     <label className="form-label required">Engine No</label>
                     <input
@@ -262,6 +257,7 @@ const AddcarForm = () => {
                       placeholder="Enter engine number"
                     />
                   </div>
+
                   <div className="form-group">
                     <label className="form-label required">KM Driven</label>
                     <input
@@ -274,6 +270,7 @@ const AddcarForm = () => {
                       onChange={handleChange}
                     />
                   </div>
+
                   <div className="form-group">
                     <label className="form-label required">Ownership</label>
                     <select
@@ -292,6 +289,7 @@ const AddcarForm = () => {
                       </option>
                     </select>
                   </div>
+
                   <div className="form-group">
                     <label className="form-label required">Days Old</label>
                     <input
@@ -304,6 +302,7 @@ const AddcarForm = () => {
                       onChange={handleChange}
                     />
                   </div>
+
                   <div className="form-group">
                     <label className="form-label required">
                       Buying Price (₹)
@@ -318,6 +317,7 @@ const AddcarForm = () => {
                       onChange={handleChange}
                     />
                   </div>
+
                   <div className="form-group">
                     <label className="form-label required">
                       Quoting Price (₹)
@@ -332,6 +332,7 @@ const AddcarForm = () => {
                       onChange={handleChange}
                     />
                   </div>
+
                   <div className="form-group">
                     <label className="form-label required">
                       Selling Price (₹)
@@ -346,6 +347,7 @@ const AddcarForm = () => {
                       onChange={handleChange}
                     />
                   </div>
+
                   <div className="form-group">
                     <label className="form-label required">Status</label>
                     <select
@@ -360,6 +362,7 @@ const AddcarForm = () => {
                       <option value="Coming Soon">Coming Soon</option>
                     </select>
                   </div>
+
                   <div className="form-group">
                     <label className="form-label required">
                       Photos (10-12)
@@ -374,18 +377,14 @@ const AddcarForm = () => {
                     />
                     {formData.photos && formData.photos.length > 0 && (
                       <div
-                        style={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                          gap: "10px",
-                        }}
+                        style={{ display: "flex", flexWrap: "wrap", gap: 10 }}
                       >
                         {Array.from(formData.photos).map((file, idx) => (
                           <div
                             key={idx}
                             style={{
-                              width: "100px",
-                              height: "100px",
+                              width: 100,
+                              height: 100,
                               overflow: "hidden",
                             }}
                           >
@@ -434,7 +433,6 @@ const AddcarForm = () => {
   );
 };
 
-// Use the same styles object from SellLetterPDF.js
 const styles = {
   container: {
     display: "flex",
@@ -553,7 +551,6 @@ const styles = {
     margin: "8px 0 0 0",
     textAlign: "center",
   },
-  
 };
 
-export default AddcarForm;
+export default AddCarForm;

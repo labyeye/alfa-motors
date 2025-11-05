@@ -1,6 +1,11 @@
 require("dotenv").config();
 const express = require("express");
+const path = require("path");
+const fs = require("fs");
+const cors = require("cors");
+
 const connectDB = require("./config/db");
+
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const sellLetterRoutes = require("./routes/selLetter");
@@ -13,23 +18,16 @@ const reviewRoutes = require("./routes/reviewRoutes");
 const galleryRoutes = require("./routes/galleryRoutes");
 const refurbishmentRoutes = require("./routes/refurbishmentRoutes");
 const advancePaymentRoutes = require("./routes/advancePaymentRoutes");
-const path = require("path");
-const fs = require("fs");
+
 const { protect } = require("./middleware/auth");
-const cors = require("cors");
 
 const app = express();
 
-// Connect to database
-
 connectDB();
 
-// CORS configuration
 const corsOptions = {
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps, curl, or file://)
     if (!origin) return callback(null, true);
-    
     const allowedOrigins = [
       "http://127.0.0.1:5502",
       "http://127.0.0.1:5500",
@@ -42,36 +40,29 @@ const corsOptions = {
       "https://alfa-motors-o5cm.vercel.app",
       "https://alfa-motors-5yfh.vercel.app",
     ];
-    
-    // Allow any localhost or 127.0.0.1 origin
-    if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+    if (origin.includes("localhost") || origin.includes("127.0.0.1"))
       return callback(null, true);
-    }
-    
-    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) callback(null, true);
+    else callback(new Error("Not allowed by CORS"));
   },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-  allowedHeaders: ["Content-Type", "Authorization","Access-Control-Allow-Origin","Access-Control-Allow-Credentials","Access-Control-Expose-Headers"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "Access-Control-Allow-Origin",
+    "Access-Control-Allow-Credentials",
+    "Access-Control-Expose-Headers",
+  ],
   credentials: true,
 };
 
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
-
-// Enable pre-flight for all routes and apply CORS middleware
 app.options("*", cors(corsOptions));
 app.use(cors(corsOptions));
 
-// Serve public directory for sell request uploads
-app.use(
-  "/public",
-  express.static(path.join(__dirname, "public"))
-);
+app.use("/public", express.static(path.join(__dirname, "public")));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/rc", rcRoutes);
@@ -97,16 +88,14 @@ app.use(
       corsOptions.origin.includes(origin)
     ) {
       res.setHeader("Access-Control-Allow-Origin", origin);
-      if (corsOptions.credentials) {
+      if (corsOptions.credentials)
         res.setHeader("Access-Control-Allow-Credentials", "true");
-      }
       res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
     }
     try {
       const requestedPath = decodeURIComponent(req.path || "");
       const fullPath = path.join(carImagesPath, requestedPath);
       if (!fs.existsSync(fullPath)) {
-        // 1x1 transparent PNG
         const placeholderBase64 =
           "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=";
         const placeholderBuffer = Buffer.from(placeholderBase64, "base64");
@@ -114,15 +103,12 @@ app.use(
         return res.status(200).send(placeholderBuffer);
       }
     } catch (err) {
-      // If something goes wrong checking the file, continue to static handler
       console.error("Error checking carimages file existence:", err);
     }
-
     next();
   },
   express.static(carImagesPath, {
     setHeaders: (res, filePath) => {
-      // Ensure PDFs are served with the correct MIME and disposition
       if (filePath.endsWith(".pdf")) {
         res.setHeader("Content-Type", "application/pdf");
         res.setHeader(
@@ -134,7 +120,6 @@ app.use(
   })
 );
 
-// Serve uploaded PDFs/files used by RC entries and service bills
 const utilsUploadsPath = path.join(__dirname, "utils/uploads");
 app.use(
   "/utils/uploads",
@@ -146,9 +131,8 @@ app.use(
       corsOptions.origin.includes(origin)
     ) {
       res.setHeader("Access-Control-Allow-Origin", origin);
-      if (corsOptions.credentials) {
+      if (corsOptions.credentials)
         res.setHeader("Access-Control-Allow-Credentials", "true");
-      }
       res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
     }
     next();
@@ -166,7 +150,6 @@ app.use(
   })
 );
 
-// Also serve general uploads (service-bills etc.)
 const uploadsPath = path.join(__dirname, "uploads");
 app.use(
   "/uploads",
@@ -178,9 +161,8 @@ app.use(
       corsOptions.origin.includes(origin)
     ) {
       res.setHeader("Access-Control-Allow-Origin", origin);
-      if (corsOptions.credentials) {
+      if (corsOptions.credentials)
         res.setHeader("Access-Control-Allow-Credentials", "true");
-      }
       res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
     }
     next();

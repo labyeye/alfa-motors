@@ -226,70 +226,6 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
-    <!-- Critical responsive & accessibility styles -->
-    <style>
-      /* Skip link (visible on keyboard focus) */
-      .skip-link {
-        position: absolute;
-        left: -9999px;
-        top: auto;
-        width: 1px;
-        height: 1px;
-        overflow: hidden;
-      }
-      .skip-link:focus {
-        position: fixed;
-        left: 16px;
-        top: 16px;
-        width: auto;
-        height: auto;
-        padding: 8px 12px;
-        background: #0d1b2a;
-        color: #fff;
-        border-radius: 4px;
-        z-index: 9999;
-      }
-
-      /* Prevent image layout shift and ensure responsive images */
-      .car-grid img,
-      .brand-logos-container img,
-      .logo img {
-        display: block;
-        max-width: 100%;
-        height: auto;
-      }
-      .car-card .image-container img,
-      .car-grid img {
-        aspect-ratio: 16/9;
-        object-fit: cover;
-      }
-      .brand-logos-container img {
-        width: 80px;
-        height: auto;
-        object-fit: contain;
-      }
-
-      /* Responsive heading */
-      .inventory-hero .section-header h1 {
-        font-size: clamp(1.4rem, 3.5vw, 2.4rem);
-        line-height: 1.05;
-      }
-
-      /* Ensure filters/sidebar collapse on small screens */
-      @media (max-width: 900px) {
-        .inventory-content {
-          flex-direction: column;
-        }
-        .sidebar-filters {
-          width: 100%;
-          order: 2;
-        }
-        .car-grid-container {
-          width: 100%;
-          order: 1;
-        }
-      }
-    </style>
   </head>
 
   <body>
@@ -982,7 +918,8 @@
             itemprop="description"
             data-translate="The best second-hand car showroom in Bangalore for luxury and premium cars."
           >
-            The best second-hand car showroom in Bangalore for luxury and premium cars.
+            The best second-hand car showroom in Bangalore for luxury and
+            premium cars.
           </p>
           <a
             href="#leave-review"

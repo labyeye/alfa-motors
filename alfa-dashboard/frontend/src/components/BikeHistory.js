@@ -1,4 +1,3 @@
-// BikeHistory.js
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import {
@@ -11,7 +10,11 @@ import {
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import Sidebar from "./Sidebar";
-const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'https://alfa-motors-5yfh.vercel.app' : 'https://alfa-motors-5yfh.vercel.app');
+const API_BASE =
+  window.API_BASE ||
+  (window.location.hostname === "localhost"
+    ? "https://alfa-motors-5yfh.vercel.app"
+    : "https://alfa-motors-5yfh.vercel.app");
 
 const BikeHistory = () => {
   const { user } = useContext(AuthContext);
@@ -54,7 +57,7 @@ const BikeHistory = () => {
         ),
       ]);
 
-      // Handle potential errors in individual requests
+      
       const buyData =
         buyLetters.status === 200
           ? Array.isArray(buyLetters.data)
@@ -173,8 +176,6 @@ const BikeHistory = () => {
     return "";
   };
 
-  
-
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -191,7 +192,7 @@ const BikeHistory = () => {
 
   const handleMenuClick = (menuName, path) => {
     setActiveMenu(menuName);
-    // Handle both string paths and function paths
+    
     const actualPath = typeof path === "function" ? path(user?.role) : path;
     navigate(actualPath);
   };

@@ -131,7 +131,14 @@ export default function Refurbishment() {
     );
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "#f3f4f6", overflowX: "hidden" }}>
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        background: "#f3f4f6",
+        overflowX: "hidden",
+      }}
+    >
       <Sidebar />
       <div style={{ flex: 1, padding: isMobile ? 16 : 28 }}>
         <div
@@ -250,9 +257,26 @@ export default function Refurbishment() {
                       border: "1px solid #e6edf3",
                     }}
                   />
-                  <div style={{ display: "flex", width: "100%", justifyContent: isMobile ? "space-between" : "flex-end", gap: 8, alignItems: "center" }}>
-                    <div style={{ width: isMobile ? "auto" : 100, textAlign: isMobile ? "left" : "right", fontWeight: 600 }}>
-                      ₹{(((Number(it.quantity) || 0) * (Number(it.rate) || 0))).toLocaleString()}
+                  <div
+                    style={{
+                      display: "flex",
+                      width: "100%",
+                      justifyContent: isMobile ? "space-between" : "flex-end",
+                      gap: 8,
+                      alignItems: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: isMobile ? "auto" : 100,
+                        textAlign: isMobile ? "left" : "right",
+                        fontWeight: 600,
+                      }}
+                    >
+                      ₹
+                      {(
+                        (Number(it.quantity) || 0) * (Number(it.rate) || 0)
+                      ).toLocaleString()}
                     </div>
                     <button
                       onClick={() => removeItem(idx)}
@@ -314,7 +338,13 @@ export default function Refurbishment() {
                 gap: isMobile ? 10 : 0,
               }}
             >
-              <div style={{ fontSize: 16, color: "#0f172a", textAlign: isMobile ? "center" : "left" }}>
+              <div
+                style={{
+                  fontSize: 16,
+                  color: "#0f172a",
+                  textAlign: isMobile ? "center" : "left",
+                }}
+              >
                 Total: <strong>₹{totalCost().toLocaleString()}</strong>
               </div>
               <button
@@ -334,7 +364,12 @@ export default function Refurbishment() {
             </div>
           </div>
 
-          <div style={{ width: isMobile ? "100%" : 420, marginTop: isMobile ? 8 : 0 }}>
+          <div
+            style={{
+              width: isMobile ? "100%" : 420,
+              marginTop: isMobile ? 8 : 0,
+            }}
+          >
             <h3 style={{ marginTop: 0 }}>Recent Refurbishments</h3>
             <div
               style={{
@@ -348,7 +383,11 @@ export default function Refurbishment() {
                 <div style={{ color: "#6b7280" }}>No entries</div>
               ) : (
                 <div
-                  style={{ maxHeight: isMobile ? 360 : 520, overflowY: "auto", paddingRight: 8 }}
+                  style={{
+                    maxHeight: isMobile ? 360 : 520,
+                    overflowY: "auto",
+                    paddingRight: 8,
+                  }}
                 >
                   {refurbs.map((r) => (
                     <div

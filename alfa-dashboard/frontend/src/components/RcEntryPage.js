@@ -63,7 +63,6 @@ const RcEntryPage = () => {
       );
 
       if (!response.ok) {
-        // Try to get error message from response
         let errorMessage = "Failed to fetch RC entry";
         try {
           const errorData = await response.json();
@@ -144,7 +143,6 @@ const RcEntryPage = () => {
       }
 
       if (!response.ok) {
-        // Better error handling for non-JSON responses
         let errorMessage = `Server error: ${response.status} ${response.statusText}`;
 
         try {

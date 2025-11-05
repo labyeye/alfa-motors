@@ -1,70 +1,70 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const rcSchema = new mongoose.Schema({
   vehicleName: {
     type: String,
-    required: true
+    required: true,
   },
   vehicleRegNo: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   ownerName: {
     type: String,
-    required: true
+    required: true,
   },
   ownerPhone: {
     type: String,
-    required: true
+    required: true,
   },
   applicantName: {
     type: String,
-    required: true
+    required: true,
   },
   applicantPhone: {
     type: String,
-    required: true
+    required: true,
   },
   work: {
     type: String,
-    required: true
+    required: true,
   },
   dealerName: {
-    type: String
+    type: String,
   },
   rtoAgentName: {
-    type: String
+    type: String,
   },
   remarks: {
-    type: String
+    type: String,
   },
   status: {
     rcTransferred: {
       type: Boolean,
-      default: false
+      default: false,
     },
     rtoFeesPaid: {
       type: Boolean,
-      default: false
+      default: false,
     },
-      returnedToDealer: {
+    returnedToDealer: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   pdfUrl: {
-    type: String
+    type: String,
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+    ref: "User",
+    required: true,
   },
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
-module.exports = mongoose.model('Rc', rcSchema);
+module.exports = mongoose.model("Rc", rcSchema);

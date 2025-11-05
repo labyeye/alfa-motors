@@ -344,7 +344,6 @@ const EditCar = () => {
 
   return (
     <div style={styles.container}>
-      {/* Sidebar */}
       <div style={styles.sidebar}>
         <div style={styles.sidebarHeader}>
           <img src={logo} alt="Alfa Motors Logo" style={styles.logoImage} />

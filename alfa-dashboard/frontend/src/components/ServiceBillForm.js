@@ -68,12 +68,10 @@ const ServiceBillForm = () => {
   const [previewMode, setPreviewMode] = useState(false);
   const API_BASE_URL = "https://alfa-motors-5yfh.vercel.app/api";
 
-  // Fetch available cars on component mount
   useEffect(() => {
     fetchAvailableCars();
   }, []);
 
-  // If editId is present, fetch service bill and prefill form
   useEffect(() => {
     if (!editId) return;
     (async function loadBill() {

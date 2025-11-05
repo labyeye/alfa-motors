@@ -73,6 +73,7 @@
 .slider-next:hover {
   background-color: rgba(0, 0, 0, 0.8);
 }
+
 .nav-links {
   display: flex;
   list-style: none;
@@ -235,7 +236,7 @@
 }
 
 .brand-logo:focus {
-  outline: 3px solid rgba(255,107,0,0.18);
+  outline: 3px solid rgba(255, 107, 0, 0.18);
   outline-offset: 3px;
 }
 
@@ -705,7 +706,8 @@
   width: 100%;
   height: 6px;
   -webkit-appearance: none;
-  appearance: none; /* standard property for broader browser support */
+  appearance: none;
+  /* standard property for broader browser support */
   background: #444;
   border-radius: 3px;
   margin: 10px 0;
@@ -1195,30 +1197,35 @@ body {
    wrapping and pushing content down. The card uses flex-column so a fixed
    height plus overflow/truncation keeps buttons and price aligned. */
 .Car-card {
-  height: 520px; /* adjust as needed for your layout */
+  height: 520px;
+  /* adjust as needed for your layout */
 }
 
 .Car-card .card-content {
-  overflow: hidden; /* ensure internal overflow is clipped */
+  overflow: hidden;
+  /* ensure internal overflow is clipped */
 }
 
 /* Allow detail items to shrink and truncate their text instead of wrapping */
 .Car-card .detail-item {
   /* when used inside grid cells, allow the flex child to shrink */
   flex: 1 1 auto;
-  min-width: 0; /* important to allow shrinking inside flex/grid */
+  min-width: 0;
+  /* important to allow shrinking inside flex/grid */
 }
 
 .Car-card .detail-item span {
   display: block;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; /* show "..." for long ownership text */
+  text-overflow: ellipsis;
+  /* show "..." for long ownership text */
 }
 
 /* Specific rules for featured slider (Best Cars) to keep parity with inventory cards */
 .Car-slider .Car-card {
-  height: 520px; /* match inventory card height */
+  height: 520px;
+  /* match inventory card height */
   overflow: hidden;
 }
 
@@ -1749,5 +1756,71 @@ body {
 
   .mobile-filters-inner {
     padding: 15px;
+  }
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.skip-link:focus {
+  position: fixed;
+  left: 16px;
+  top: 16px;
+  width: auto;
+  height: auto;
+  padding: 8px 12px;
+  background: #0d1b2a;
+  color: #fff;
+  border-radius: 4px;
+  z-index: 9999;
+}
+
+/* Prevent image layout shift and ensure responsive images */
+.car-grid img,
+.brand-logos-container img,
+.logo img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.car-card .image-container img,
+.car-grid img {
+  aspect-ratio: 16/9;
+  object-fit: cover;
+}
+
+.brand-logos-container img {
+  width: 80px;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Responsive heading */
+.inventory-hero .section-header h1 {
+  font-size: clamp(1.4rem, 3.5vw, 2.4rem);
+  line-height: 1.05;
+}
+
+/* Ensure filters/sidebar collapse on small screens */
+@media (max-width: 900px) {
+  .inventory-content {
+    flex-direction: column;
+  }
+
+  .sidebar-filters {
+    width: 100%;
+    order: 2;
+  }
+
+  .car-grid-container {
+    width: 100%;
+    order: 1;
   }
 }

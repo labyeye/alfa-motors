@@ -180,8 +180,8 @@ const styles = {
     backgroundColor: "#f3f4f6",
   },
   content: { flex: 1, padding: 24 },
-  header: { marginBottom: 16,textAlign: "center",marginTop: 18 },
-  title: { margin: 0, fontSize: 20, color: "#0f172a"},
+  header: { marginBottom: 16, textAlign: "center", marginTop: 18 },
+  title: { margin: 0, fontSize: 20, color: "#0f172a" },
   subtitle: { margin: "6px 0 0", color: "#6b7280" },
   card: {
     background: "#fff",

@@ -777,7 +777,7 @@ const SellLetterHistory = () => {
     <div style={styles.container}>
       <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
 
-      {/* Main Content */}
+      
       <div style={styles.mainContent}>
         <div style={styles.contentPadding}>
           <div style={styles.header}>
@@ -810,7 +810,7 @@ const SellLetterHistory = () => {
           {loading ? (
             <div style={styles.loadingContainer}>
               <p>Loading sell letters...</p>
-              {/* You can add a spinner here */}
+                
             </div>
           ) : filteredLetters.length === 0 ? (
             <div style={styles.emptyState}>

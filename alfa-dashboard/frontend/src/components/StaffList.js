@@ -72,8 +72,7 @@ const StaffList = () => {
     navigate(actualPath);
   };
 
-  // In the menuItems array (around line 250 in BuyLetterPDF.js)
-
+  
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -84,7 +83,7 @@ const StaffList = () => {
 
   return (
     <div style={styles.container}>
-      {/* Sidebar */}
+      
       <div style={styles.sidebar}>
         <div style={styles.sidebarHeader}>
           <img
@@ -98,7 +97,7 @@ const StaffList = () => {
         <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
       </div>
 
-      {/* Main Content */}
+      
       <div style={styles.mainContent}>
         <div style={styles.contentPadding}>
           <div style={styles.header}>

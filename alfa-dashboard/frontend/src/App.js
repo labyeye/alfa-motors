@@ -15,7 +15,7 @@ import StaffList from "./components/StaffList";
 import ServiceHistory from "./components/ServiceHistory";
 import RcListPage from "./components/RCListPage";
 import RcFormPage from "./components/RcEntryPage";
-import AddcarForm from "./components/AddCarForm";
+import AddCarForm from "./components/AddCarForm";
 import ListCar from "./components/ListCar";
 import EditCar from "./components/EditCar";
 import GalleryManagement from "./pages/GalleryManagement";
@@ -67,7 +67,7 @@ function App() {
             path="/car/create"
             element={
               <PrivateRoute roles={["admin", "staff"]}>
-                <AddcarForm />
+                <AddCarForm />
               </PrivateRoute>
             }
           />

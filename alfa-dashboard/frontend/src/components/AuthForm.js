@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import { Eye, EyeOff, Mail, Lock, ArrowRight } from "lucide-react";
-import logo from '../images/company.png';
+import logo from "../images/company.png";
 const AuthForm = ({ isLogin }) => {
   const navigate = useNavigate();
   const { user, login, loading: authLoading } = useContext(AuthContext);
@@ -17,7 +17,7 @@ const AuthForm = ({ isLogin }) => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { email, password} = formData;
+  const { email, password } = formData;
 
   useEffect(() => {
     if (user && !authLoading) {
@@ -86,7 +86,7 @@ const AuthForm = ({ isLogin }) => {
               <label className="input-label">Email Address</label>
             </div>
 
-            {/* Password Field */}
+            
             <div
               className={`input-group ${
                 focusedField === "password" ? "focused" : ""
@@ -114,7 +114,7 @@ const AuthForm = ({ isLogin }) => {
               </button>
             </div>
 
-            {/* Submit Button */}
+            
             <button
               type="button"
               onClick={onSubmit}
@@ -133,11 +133,11 @@ const AuthForm = ({ isLogin }) => {
             </button>
           </div>
 
-          {/* Footer */}
+          
         </div>
       </div>
 
-      {/* Image Section */}
+      
       <div className="auth-image-section">
         <div className="image-overlay">
           <div className="overlay-content">
