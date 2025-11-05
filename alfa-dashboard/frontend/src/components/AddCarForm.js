@@ -71,9 +71,10 @@ const AddcarForm = () => {
         }
       });
       formPayload.append("addedBy", user._id);
+      // Let the browser set the Content-Type (including the multipart boundary).
+      // Only send Authorization header here.
       const response = await axios.post(`${API_BASE}/api/cars`, formPayload, {
         headers: {
-          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
         },
       });
