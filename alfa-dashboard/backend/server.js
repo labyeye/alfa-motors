@@ -39,13 +39,10 @@ const ALLOWED_ORIGINS = [
 ];
 
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-    if (origin.includes("localhost") || origin.includes("127.0.0.1"))
-      return callback(null, true);
-    if (ALLOWED_ORIGINS.indexOf(origin) !== -1 || !origin) callback(null, true);
-    else callback(new Error("Not allowed by CORS"));
-  },
+  // Allow any origin. The `cors` package will reflect the request origin
+  // and still allow credentials when `origin: true` is used.
+  // This makes the server accept requests from any domain.
+  origin: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
   allowedHeaders: [
     "Content-Type",
@@ -62,32 +59,6 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
 app.options("*", cors(corsOptions));
 app.use(cors(corsOptions));
-
-app.use((req, res, next) => {
-  try {
-    if (!res.getHeader || !res.getHeader("Access-Control-Allow-Origin")) {
-      const origin = req.get("origin") || req.get("Origin");
-      if (origin) {
-        res.setHeader("Access-Control-Allow-Origin", origin);
-      } else {
-        res.setHeader("Access-Control-Allow-Origin", "*");
-      }
-      res.setHeader(
-        "Access-Control-Allow-Headers",
-        "Content-Type, Authorization, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Access-Control-Expose-Headers"
-      );
-      res.setHeader(
-        "Access-Control-Allow-Methods",
-        "GET,POST,PUT,DELETE,OPTIONS,PATCH"
-      );
-      res.setHeader("Access-Control-Allow-Credentials", "true");
-    }
-  } catch (err) {
-    console.error("CORS fallback error:", err);
-  }
-  if (req.method === "OPTIONS") return res.sendStatus(200);
-  next();
-});
 
 app.use("/public", express.static(path.join(__dirname, "public")));
 
@@ -109,7 +80,10 @@ app.use(
   "/carimages",
   (req, res, next) => {
     const origin = req.get("origin");
-    if (origin && (origin.includes("localhost") || ALLOWED_ORIGINS.includes(origin))) {
+    if (
+      origin &&
+      (origin.includes("localhost") || ALLOWED_ORIGINS.includes(origin))
+    ) {
       res.setHeader("Access-Control-Allow-Origin", origin);
       if (corsOptions.credentials)
         res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -148,7 +122,10 @@ app.use(
   "/utils/uploads",
   (req, res, next) => {
     const origin = req.get("origin");
-    if (origin && (origin.includes("localhost") || ALLOWED_ORIGINS.includes(origin))) {
+    if (
+      origin &&
+      (origin.includes("localhost") || ALLOWED_ORIGINS.includes(origin))
+    ) {
       res.setHeader("Access-Control-Allow-Origin", origin);
       if (corsOptions.credentials)
         res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -174,7 +151,10 @@ app.use(
   "/uploads",
   (req, res, next) => {
     const origin = req.get("origin");
-    if (origin && (origin.includes("localhost") || ALLOWED_ORIGINS.includes(origin))) {
+    if (
+      origin &&
+      (origin.includes("localhost") || ALLOWED_ORIGINS.includes(origin))
+    ) {
       res.setHeader("Access-Control-Allow-Origin", origin);
       if (corsOptions.credentials)
         res.setHeader("Access-Control-Allow-Credentials", "true");

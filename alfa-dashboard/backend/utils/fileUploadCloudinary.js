@@ -18,20 +18,10 @@ const storage = new CloudinaryStorage({
   }
 });
 
-// Increase file size limit to 20MB per file to allow larger uploads from clients.
-// Note: platform providers (e.g. Vercel Serverless Functions) may still enforce
-// a smaller overall request body limit. If you deploy to such providers, prefer
-// direct client-to-Cloudinary uploads (signed/upload presets) to avoid platform limits.
 const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 1024 * 1024 * 20 // 20MB per file
-  },
-  fileFilter: (req, file, cb) => {
-    // Accept only common image mime types
-    const allowed = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
-    if (allowed.includes(file.mimetype)) cb(null, true);
-    else cb(new Error("Only image files (jpg, png, webp) are allowed"));
+    fileSize: 1024 * 1024 * 5 // 5MB per file
   }
 });
 
