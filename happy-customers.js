@@ -1,10 +1,10 @@
-/* happy-customers.js - page translation helpers for happy-customers.html */
+/* happy-customers.js - page translation helpers for https://www.alfamotorworld.com/happy-customers.html */
 (function () {
   document.addEventListener('DOMContentLoaded', function () {
     try {
       const map = [
-        { s: '.nav-links a[href="index.html"]', k: 'Home' },
-        { s: '.nav-links a[href="inventory.html"]', k: 'Vehicles for Sale' },
+        { s: '.nav-links a[href="https://www.alfamotorworld.com/"]', k: 'Home' },
+        { s: '.nav-links a[href="https://www.alfamotorworld.com/inventory.html"]', k: 'Vehicles for Sale' },
         { s: '.login-btn button', k: 'Get the Quote' },
         { s: '.testimonials-title', k: 'Happy Customers' },
       ];

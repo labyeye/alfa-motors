@@ -1,5 +1,5 @@
 /* inventory.js
-   Page-specific translation helpers for inventory.html
+   Page-specific translation helpers for https://www.alfamotorworld.com/inventory.html
    Adds data-translate attributes for common static elements and triggers
    translatePage(preferredLanguage) when present.
 */
@@ -14,12 +14,12 @@
   document.addEventListener('DOMContentLoaded', function () {
     // Common header/footer
     setAttr('.login-btn button', 'Get the Quote');
-    setAttr('.nav-links a[href="index.html"]', 'Home');
-    setAttr('.nav-links a[href="inventory.html"]', 'Vehicles for Sale');
-    setAttr('.nav-links a[href="sell.html"]', 'Sell Your Vehicle');
-    setAttr('.nav-links a[href="about.html"]', 'About Us');
-    setAttr('.nav-links a[href="contact.html"]', 'Contact');
-    setAttr('.nav-links a[href="happy-customers.html"]', 'Happy Customers');
+    setAttr('.nav-links a[href="https://www.alfamotorworld.com/"]', 'Home');
+    setAttr('.nav-links a[href="https://www.alfamotorworld.com/inventory.html"]', 'Vehicles for Sale');
+    setAttr('.nav-links a[href="https://www.alfamotorworld.com/sell.html"]', 'Sell Your Vehicle');
+    setAttr('.nav-links a[href="https://www.alfamotorworld.com/about.html"]', 'About Us');
+    setAttr('.nav-links a[href="https://www.alfamotorworld.com/contact.html"]', 'Contact');
+    setAttr('.nav-links a[href="https://www.alfamotorworld.com/happy-customers.html"]', 'Happy Customers');
     setAttr('.nav-links a[href="financing.html"]', 'Financing');
 
     // Sidebar/filter labels

@@ -176,22 +176,22 @@ function initializeMobileMenu() {
     </button>
     <ul class="nav-links">
       <li>
-        <a href="index.html"  aria-current="page">
+        <a href="https://www.alfamotorworld.com/"  aria-current="page">
           <span data-translate="Home">Home</span>
         </a>
       </li>
       <li>
-        <a href="inventory.html">
+        <a href="https://www.alfamotorworld.com/inventory.html">
           <span data-translate="Vehicles for Sale">Vehicles for Sale</span>
         </a>
       </li>
       <li>
-        <a href="sell.html">
+        <a href="https://www.alfamotorworld.com/sell.html">
           <span data-translate="Sell Your Vehicle">Sell Your Vehicle</span>
         </a>
       </li>
        <li>
-        <a href="happy-customers.html">
+        <a href="https://www.alfamotorworld.com/happy-customers.html">
           <span data-translate="Happy Customers">Happy Customers</span>
         </a>
       </li>
@@ -201,18 +201,18 @@ function initializeMobileMenu() {
         </a>
       </li>
       <li>
-        <a href="about.html">
+        <a href="https://www.alfamotorworld.com/about.html">
           <span data-translate="About Us">About Us</span>
         </a>
       </li>
       <li>
-        <a href="contact.html">
+        <a href="https://www.alfamotorworld.com/contact.html">
           <span data-translate="Contact">Contact</span>
         </a>
       </li>
     </ul>
     <div class="login-btn">
-      <a href="/getquote.html">
+      <a href="https://www.alfamotorworld.com/getquote.html">
         <button aria-label="Get a quote for your Car" data-translate="Get the Quote">
           Get the Quote
         </button>
@@ -450,7 +450,7 @@ function displayFeaturedCars(Cars) {
       isDisabled = true;
     }
 
-    // Use car.photos[0] if available, normalize same as inventory.html
+    // Use car.photos[0] if available, normalize same as https://www.alfamotorworld.com/inventory.html
     let imgSrc = "https://via.placeholder.com/300x200?text=No+Image";
     if (Array.isArray(Car.photos) && Car.photos.length > 0) {
       let filename = Car.photos[0] || "";
@@ -531,7 +531,7 @@ function displayFeaturedCars(Cars) {
       CarCard.querySelector(".view-details-btn").addEventListener(
         "click",
         () => {
-          window.location.href = `inventory.html#${Car._id || ""}`;
+          window.location.href = `https://www.alfamotorworld.com/inventory.html#${Car._id || ""}`;
         }
       );
     }

@@ -3,8 +3,8 @@
   document.addEventListener('DOMContentLoaded', function () {
     try {
       const keys = [
-        { sel: '.nav-links a[href="index.html"]', key: 'Home' },
-        { sel: '.nav-links a[href="inventory.html"]', key: 'Vehicles for Sale' },
+        { sel: '.nav-links a[href="https://www.alfamotorworld.com/"]', key: 'Home' },
+        { sel: '.nav-links a[href="https://www.alfamotorworld.com/inventory.html"]', key: 'Vehicles for Sale' },
         { sel: '.login-btn button', key: 'Get the Quote' },
         { sel: '.add-to-cart-btn', key: 'Contact Seller' }
       ];

@@ -270,10 +270,10 @@
     window.translatePage = function (lang) {
       try {
         if (!lang) lang = getPreferred() || 'en';
-        const page = (location.pathname || '').split('/').pop() || 'index.html';
+        const page = (location.pathname || '').split('/').pop() || 'https://www.alfamotorworld.com/';
 
         // Finance page translations
-        if (page === 'finance.html') {
+        if (page === 'https://www.alfamotorworld.com/finance.html') {
           // helper to set text and preserve original
           function setText(sel, txt) {
             const el = document.querySelector(sel);

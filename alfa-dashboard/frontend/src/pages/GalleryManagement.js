@@ -314,7 +314,7 @@ const GalleryManagement = () => {
             </p>
             <div style={styles.actionButtons}>
               <a
-                href="/happy-customers.html"
+                href="/https://www.alfamotorworld.com/happy-customers.html"
                 target="_blank"
                 style={styles.viewGalleryButton}
               >
