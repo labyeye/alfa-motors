@@ -11,7 +11,8 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "check-cloudinary": "node scripts/checkCloudinarySetup.js",
-    "migrate-images": "node scripts/migrateImagesToCloudinary.js"
+    "migrate-images": "node scripts/migrateImagesToCloudinary.js",
+    "migrate-mongo-to-sql": "node scripts/migrateMongoToMySQL.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
@@ -22,6 +23,8 @@
     "express-async-handler": "^1.2.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.15.0",
+    "sequelize": "^6.33.0",
+    "mysql2": "^3.3.0",
     "multer": "^2.0.1",
     "multer-storage-cloudinary": "^4.0.0",
     "nodemon": "^3.1.10",

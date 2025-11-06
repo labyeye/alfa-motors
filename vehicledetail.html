@@ -287,29 +287,50 @@
           ? "https://alfa-motors-5yfh.vercel.app"
           : "https://alfa-motors-5yfh.vercel.app"; // Replace with your Vercel backend URL
 
-      // Helper function to get the correct image URL
+      // Helper function to get the correct image URL (robust)
       function getImageUrl(imagePath) {
         if (!imagePath) return "assets/placeholder.png";
 
-        // If it's already a full URL (Cloudinary or other CDN), use it as-is
-        if (
-          imagePath.startsWith("http://") ||
-          imagePath.startsWith("https://")
-        ) {
-          return imagePath;
+        if (Array.isArray(imagePath) && imagePath.length > 0) imagePath = imagePath[0];
+
+        if (typeof imagePath === "string") {
+          const raw = imagePath.trim();
+          if (raw.startsWith("[")) {
+            try {
+              const parsed = JSON.parse(raw);
+              if (Array.isArray(parsed) && parsed.length) imagePath = parsed[0];
+            } catch (e) {}
+          }
         }
 
-        // For local filenames, construct the full URL
-        const filename = imagePath.startsWith("carimages/")
-          ? imagePath.replace("carimages/", "")
-          : imagePath;
+        if (typeof imagePath !== "string") return "assets/placeholder.png";
+        const p = imagePath.trim();
 
-        // Check if it's a local asset
-        if (filename.startsWith("assets/")) {
-          return filename;
-        }
+        if (p.startsWith("http://") || p.startsWith("https://") || p.startsWith("data:")) return p;
 
+        const cleaned = p.replace(/^\/+/, "");
+        if (cleaned.startsWith("assets/")) return cleaned;
+
+        const filename = cleaned.startsWith("carimages/") ? cleaned.replace(/^carimages\//, "") : cleaned;
         return `${API_BASE_URL}/carimages/${filename}`;
+      }
+
+      // Normalize photos field from DB: may be an array, JSON string, or single filename
+      function normalizePhotos(photosField) {
+        if (!photosField) return [];
+        if (Array.isArray(photosField)) return photosField;
+        if (typeof photosField === 'string') {
+          const raw = photosField.trim();
+          if (raw.startsWith('[')) {
+            try {
+              const parsed = JSON.parse(raw);
+              if (Array.isArray(parsed)) return parsed;
+            } catch (e) {}
+          }
+          if (raw.includes(',')) return raw.split(',').map(s => s.trim()).filter(Boolean);
+          return [raw];
+        }
+        return [];
       }
 
       // Helper Functions
@@ -344,43 +365,49 @@
         }
       }
 
-      // Load Car Data
-      const car = getCarDataFromQuery();
-      if (car) {
-        // Populate car details
-        document.getElementById("vehicleTitle").textContent = `${
-          car.brand || car.make || ""
-        } ${car.model || ""}`;
-        document.getElementById("vehicleModel").textContent = `${
-          car.modelYear || ""
-        } Model`;
-        document.getElementById("vehicleKm").textContent = `${(
-          car.kmDriven || 0
-        ).toLocaleString()} km`;
-        document.getElementById("vehicleOwner").textContent = formatOwnership(
-          car.ownership || "1"
-        );
-        document.getElementById("vehicleFuel").textContent =
-          car.fuelType || "Petrol";
-        document.getElementById("vehicleColor").textContent = car.color || "";
-        document.getElementById("vehicleRegYear").textContent =
-          car.registrationYear || "";
-        document.getElementById("vehiclePrice").textContent = `₹${(
-          car.sellingPrice ||
-          car.price ||
-          0
-        ).toLocaleString()}`;
-        document.getElementById("vehicleEmi").textContent = `Down: ₹${(
-          car.downPayment || 0
-        ).toLocaleString()} | EMI: ₹${Math.round(
-          ((car.sellingPrice || car.price || 0) - (car.downPayment || 0)) / 36
-        ).toLocaleString()}/month`;
+      // Load Car Data: prefer fetching fresh record from SQL endpoint when an _id is present
+      (async function loadAndRenderCar() {
+        const initialCar = getCarDataFromQuery();
+        const idFromQuery = carIdFromQuery();
+        const carId = idFromQuery || (initialCar && initialCar._id) || null;
 
-        // Handle images
-        const images =
-          car.photos && car.photos.length > 0
-            ? car.photos
-            : ["assets/owner.png"];
+        let car = initialCar || null;
+        if (carId) {
+          try {
+            const res = await fetch(`${API_BASE_URL}/api/cars-sql/${carId}`);
+            if (res.ok) {
+              const payload = await res.json();
+              // payload may be { success, data } or the car object itself
+              if (Array.isArray(payload)) car = payload[0] || car;
+              else if (payload && payload.data) car = payload.data || car;
+              else if (payload && payload._id) car = payload;
+            } else {
+              console.warn('Failed to fetch car by id', res.status);
+            }
+          } catch (err) {
+            console.error('Error fetching car by id:', err);
+          }
+        }
+
+        if (!car) {
+          console.warn('No car data available to render');
+          return;
+        }
+
+        // Populate car details
+        document.getElementById("vehicleTitle").textContent = `${car.brand || car.make || ""} ${car.model || ""}`;
+        document.getElementById("vehicleModel").textContent = `${car.modelYear || ""} Model`;
+        document.getElementById("vehicleKm").textContent = `${(car.kmDriven || 0).toLocaleString()} km`;
+        document.getElementById("vehicleOwner").textContent = formatOwnership(car.ownership || "1");
+        document.getElementById("vehicleFuel").textContent = car.fuelType || "Petrol";
+        document.getElementById("vehicleColor").textContent = car.color || "";
+        document.getElementById("vehicleRegYear").textContent = car.registrationYear || "";
+        document.getElementById("vehiclePrice").textContent = `₹${(car.sellingPrice || car.price || 0).toLocaleString()}`;
+        document.getElementById("vehicleEmi").textContent = `Down: ₹${(car.downPayment || 0).toLocaleString()} | EMI: ₹${Math.round(((car.sellingPrice || car.price || 0) - (car.downPayment || 0)) / 36).toLocaleString()}/month`;
+
+        // Handle images (normalize photos stored in DB)
+        let images = normalizePhotos(car.photos);
+        if (!images || images.length === 0) images = ["assets/owner.png"];
         const mainImg = document.getElementById("mainVehicleImg");
         const thumbnails = document.getElementById("vehicleThumbnails");
         thumbnails.innerHTML = "";
@@ -436,88 +463,70 @@
             thumbnails.appendChild(thumb);
           });
           mainImg.src = normalizeImagePath(images[0]);
+          }
         }
-      }
-      // Fetch other cars from backend and show in slider
-      fetch(`${API_BASE_URL}/api/cars`)
-        .then((response) => response.json())
+      )();
+        // Fetch other cars from backend and show in slider (SQL endpoint)
+      fetch(`${API_BASE_URL}/api/cars-sql`)
+        .then((response) => {
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          return response.json();
+        })
         .then((data) => {
-          if (data.success && Array.isArray(data.data)) {
-            const cars = data.data;
-            const otherCarsRow = document.getElementById("otherCarsRow");
-            otherCarsRow.innerHTML = "";
+          // Support both response shapes: an array or { success, data }
+          const cars = Array.isArray(data) ? data : (data && Array.isArray(data.data) ? data.data : []);
+          const otherCarsRow = document.getElementById("otherCarsRow");
+          otherCarsRow.innerHTML = "";
 
-            cars.forEach((car) => {
-              if (car._id && car._id === (carIdFromQuery() || "")) return;
+          cars.forEach((car) => {
+            if (car._id && car._id === (carIdFromQuery() || "")) return;
 
-              const imgSrc =
-                car.photos && car.photos.length > 0
-                  ? car.photos[0].startsWith("assets/")
-                    ? car.photos[0]
-                    : `https://alfa-motors-5yfh.vercel.app/carimages/${car.photos[0]}`
-                  : "assets/owner.png";
+            const firstPhoto = (function(){ const arr = normalizePhotos(car.photos); return (arr && arr.length) ? arr[0] : "assets/owner.png"; })();
+            const imgSrc = getImageUrl(firstPhoto);
 
-              const statusClass =
-                car.status === "Available"
-                  ? "status-available"
-                  : car.status === "Sold Out"
-                  ? "status-sold"
-                  : car.status === "Coming Soon"
-                  ? "status-coming-soon"
-                  : "status-available";
+            const statusClass =
+              car.status === "Available"
+                ? "status-available"
+                : car.status === "Sold Out"
+                ? "status-sold"
+                : car.status === "Coming Soon"
+                ? "status-coming-soon"
+                : "status-available";
 
-              const ownerText = formatOwnership(car.ownership || "1");
+            const ownerText = formatOwnership(car.ownership || "1");
 
-              const card = document.createElement("div");
-              card.className = "other-car-card";
-              card.innerHTML = `
+            const card = document.createElement("div");
+            card.className = "other-car-card";
+            card.innerHTML = `
                 <div class="image-container">
-                  <img src="${imgSrc}" alt="${car.brand || car.make || ""} ${
-                car.model || ""
-              }" class="other-car-img" />
-                  <div class="status-badge ${statusClass}" data-translate="${
-                car.status || "Available"
-              }">${car.status || "Available"}</div>
+                  <img src="${imgSrc}" alt="${car.brand || car.make || ""} ${car.model || ""}" class="other-car-img" />
+                  <div class="status-badge ${statusClass}" data-translate="${car.status || "Available"}">${car.status || "Available"}</div>
                 </div>
                 <div class="card-content">
-                  <h3>${car.brand || car.make || "Unknown Brand"} ${
-                car.model || "Unknown Model"
-              }</h3>
+                  <h3>${car.brand || car.make || "Unknown Brand"} ${car.model || "Unknown Model"}</h3>
                   <span class="model">${car.modelYear || "-"} Model</span>
                   <div class="details">
-                    <div class="detail-item"><i class="fas fa-tachometer-alt"></i> <span>${(
-                      car.kmDriven || 0
-                    ).toLocaleString()} km</span></div>
+                    <div class="detail-item"><i class="fas fa-tachometer-alt"></i> <span>${(car.kmDriven || 0).toLocaleString()} km</span></div>
                     <div class="detail-item"><i class="fas fa-user"></i> <span>${ownerText}</span></div>
-                    <div class="detail-item"><i class="fas fa-gas-pump"></i> <span>${
-                      car.fuelType || "Petrol"
-                    }</span></div>
+                    <div class="detail-item"><i class="fas fa-gas-pump"></i> <span>${car.fuelType || "Petrol"}</span></div>
                   </div>
                   <div class="price-container">
-                    <div class="price">₹${(
-                      car.sellingPrice ||
-                      car.price ||
-                      0
-                    ).toLocaleString()}</div>
+                    <div class="price">₹${(car.sellingPrice || car.price || 0).toLocaleString()}</div>
                     <div class="button-group">
-                      <button class="contact-btn" data-translate="Contact Seller" ${
-                        car.status !== "Available" ? "disabled" : ""
-                      }>Contact Seller</button>
-                      <button class="view-details-btn" data-translate="View Details" ${
-                        car.status !== "Available" ? "disabled" : ""
-                      }>View Details</button>
+                      <button class="contact-btn" data-translate="Contact Seller" ${car.status !== "Available" ? "disabled" : ""}>Contact Seller</button>
+                      <button class="view-details-btn" data-translate="View Details" ${car.status !== "Available" ? "disabled" : ""}>View Details</button>
                     </div>
                   </div>
                 </div>
               `;
 
-              // Add event listeners
-              setTimeout(() => {
-                const viewDetailsBtn = card.querySelector(".view-details-btn");
-                const contactBtn = card.querySelector(".contact-btn");
+            // Add event listeners
+            setTimeout(() => {
+              const viewDetailsBtn = card.querySelector(".view-details-btn");
+              const contactBtn = card.querySelector(".contact-btn");
 
-                if (viewDetailsBtn && !viewDetailsBtn.disabled) {
-                  viewDetailsBtn.onclick = (e) => {
+              if (viewDetailsBtn && !viewDetailsBtn.disabled) {
+                viewDetailsBtn.onclick = (e) => {
                     e.stopPropagation();
                     const carQuery = encodeURIComponent(JSON.stringify(car));
                     window.location.href = `vehicledetail.html?car=${carQuery}`;
@@ -557,7 +566,6 @@
                 });
               }
             } catch (e) {}
-          }
         });
 
       // Auto-scroll functionality

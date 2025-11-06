@@ -27,11 +27,7 @@
       href="https://www.alfamotorworld.com/https://www.alfamotorworld.com/inventory.html"
       hreflang="hi"
     />
-    <link
-      rel="preconnect"
-      href="https://alfa-motors-5yfh.vercel.app"
-      crossorigin
-    />
+    <link rel="preconnect" href="https://alfa-motors-5yfh.vercel.app" crossorigin />
     <link
       rel="preconnect"
       href="https://alfa-motors-o5cm.vercel.app"
@@ -244,49 +240,106 @@
         <button class="mobile-menu-toggle"><i class="fas fa-bars"></i></button>
         <ul class="nav-links">
           <li>
-            <a href="https://www.alfamotorworld.com/" aria-current="page" data-translate="Home"
+            <a
+              href="https://www.alfamotorworld.com/"
+              aria-current="page"
+              data-translate="Home"
               >Home</a
             >
           </li>
 
           <li class="mega-menu-trigger">
-            <a href="https://www.alfamotorworld.com/inventory.html" data-translate="Vehicles for Sale"
+            <a
+              href="https://www.alfamotorworld.com/inventory.html"
+              data-translate="Vehicles for Sale"
               >Vehicles for Sale</a
             >
             <div class="mega-menu">
               <div class="mega-menu-content">
                 <div class="mega-menu-column">
                   <h3>Categories</h3>
-                  <a href="https://www.alfamotorworld.com/inventory.html?category=suv">SUV</a>
-                  <a href="https://www.alfamotorworld.com/inventory.html?category=sedan">Sedan</a>
-                  <a href="https://www.alfamotorworld.com/inventory.html?category=hatchback">Hatchback</a>
-                  <a href="https://www.alfamotorworld.com/inventory.html?category=luxury">Luxury</a>
-                  <a href="https://www.alfamotorworld.com/inventory.html?category=electric">Electric</a>
+                  <a
+                    href="https://www.alfamotorworld.com/inventory.html?category=suv"
+                    >SUV</a
+                  >
+                  <a
+                    href="https://www.alfamotorworld.com/inventory.html?category=sedan"
+                    >Sedan</a
+                  >
+                  <a
+                    href="https://www.alfamotorworld.com/inventory.html?category=hatchback"
+                    >Hatchback</a
+                  >
+                  <a
+                    href="https://www.alfamotorworld.com/inventory.html?category=luxury"
+                    >Luxury</a
+                  >
+                  <a
+                    href="https://www.alfamotorworld.com/inventory.html?category=electric"
+                    >Electric</a
+                  >
                 </div>
                 <div class="mega-menu-column">
                   <h3>Popular Brands</h3>
-                  <a href="https://www.alfamotorworld.com/inventory.html?brand=bmw">BMW</a>
-                  <a href="https://www.alfamotorworld.com/inventory.html?brand=audi">Audi</a>
-                  <a href="https://www.alfamotorworld.com/inventory.html?brand=mercedes">Mercedes</a>
-                  <a href="https://www.alfamotorworld.com/inventory.html?brand=toyota">Toyota</a>
-                  <a href="https://www.alfamotorworld.com/inventory.html?brand=honda">Honda</a>
+                  <a
+                    href="https://www.alfamotorworld.com/inventory.html?brand=bmw"
+                    >BMW</a
+                  >
+                  <a
+                    href="https://www.alfamotorworld.com/inventory.html?brand=audi"
+                    >Audi</a
+                  >
+                  <a
+                    href="https://www.alfamotorworld.com/inventory.html?brand=mercedes"
+                    >Mercedes</a
+                  >
+                  <a
+                    href="https://www.alfamotorworld.com/inventory.html?brand=toyota"
+                    >Toyota</a
+                  >
+                  <a
+                    href="https://www.alfamotorworld.com/inventory.html?brand=honda"
+                    >Honda</a
+                  >
                 </div>
               </div>
             </div>
           </li>
           <li>
-            <a href="https://www.alfamotorworld.com/sell.html" data-translate="Sell Your Vehicle"
+            <a
+              href="https://www.alfamotorworld.com/sell.html"
+              data-translate="Sell Your Vehicle"
               >Sell Your Vehicle</a
             >
           </li>
           <li>
-            <a href="https://www.alfamotorworld.com/happy-customers.html" data-translate="Happy Customers"
+            <a
+              href="https://www.alfamotorworld.com/happy-customers.html"
+              data-translate="Happy Customers"
               >Happy Customers</a
             >
           </li>
-          <li><a href="https://www.alfamotorworld.com/finance.html" data-translate="Financing">Financing</a></li>
-          <li><a href="https://www.alfamotorworld.com/about.html" data-translate="About Us">About Us</a></li>
-          <li><a href="https://www.alfamotorworld.com/contact.html" data-translate="Contact">Contact</a></li>
+          <li>
+            <a
+              href="https://www.alfamotorworld.com/finance.html"
+              data-translate="Financing"
+              >Financing</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://www.alfamotorworld.com/about.html"
+              data-translate="About Us"
+              >About Us</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://www.alfamotorworld.com/contact.html"
+              data-translate="Contact"
+              >Contact</a
+            >
+          </li>
         </ul>
         <div class="login-btn">
           <a href="https://www.alfamotorworld.com/getquote.html">
@@ -975,7 +1028,10 @@
           <h3>Quick Links</h3>
           <ul>
             <li>
-              <a href="https://www.alfamotorworld.com/" aria-label="Home page" data-translate="Home"
+              <a
+                href="https://www.alfamotorworld.com/"
+                aria-label="Home page"
+                data-translate="Home"
                 >Home</a
               >
             </li>
@@ -1193,27 +1249,57 @@
 
         // Helper function to get the correct image URL
         function getImageUrl(imagePath) {
+          // Normalize different stored shapes: array, JSON string, single filename or full URL
           if (!imagePath) return "assets/placeholder.png";
 
-          // If it's already a full URL (Cloudinary or other CDN), use it as-is
-          if (
-            imagePath.startsWith("http://") ||
-            imagePath.startsWith("https://")
-          ) {
-            return imagePath;
+          // If passed an array, use the first element
+          if (Array.isArray(imagePath) && imagePath.length > 0) imagePath = imagePath[0];
+
+          // If it's a JSON-encoded array string, try to parse
+          if (typeof imagePath === "string") {
+            const raw = imagePath.trim();
+            if (raw.startsWith("[")) {
+              try {
+                const parsed = JSON.parse(raw);
+                if (Array.isArray(parsed) && parsed.length) imagePath = parsed[0];
+              } catch (e) {}
+            }
           }
 
-          // For local filenames, construct the full URL
-          const filename = imagePath.startsWith("carimages/")
-            ? imagePath.replace("carimages/", "")
-            : imagePath;
+          if (typeof imagePath !== "string") return "assets/placeholder.png";
+          const p = imagePath.trim();
 
-          // Check if it's a local asset
-          if (filename.startsWith("assets/")) {
-            return filename;
-          }
+          // Full URLs or data URIs
+          if (p.startsWith("http://") || p.startsWith("https://") || p.startsWith("data:")) return p;
+
+          // Remove any leading slashes
+          const cleaned = p.replace(/^\/+/, "");
+
+          // If it's an assets path, return as-is
+          if (cleaned.startsWith("assets/")) return cleaned;
+
+          // If already contains carimages/, strip it and construct URL
+          const filename = cleaned.startsWith("carimages/") ? cleaned.replace(/^carimages\//, "") : cleaned;
 
           return `${API_BASE_URL}/carimages/${filename}`;
+        }
+
+        // Normalize photos field from DB: may be an array, JSON string, or single filename
+        function normalizePhotos(photosField) {
+          if (!photosField) return [];
+          if (Array.isArray(photosField)) return photosField;
+          if (typeof photosField === 'string') {
+            const raw = photosField.trim();
+            if (raw.startsWith('[')) {
+              try {
+                const parsed = JSON.parse(raw);
+                if (Array.isArray(parsed)) return parsed;
+              } catch (e) {}
+            }
+            if (raw.includes(',')) return raw.split(',').map(s => s.trim()).filter(Boolean);
+            return [raw];
+          }
+          return [];
         }
 
         let allCars = [];
@@ -1231,7 +1317,8 @@
         let currentSort = "default"; // Declare this ONCE at the top level
 
         function loadCars() {
-          fetch(`${API_BASE_URL}/api/cars`)
+          // Use the SQL-backed API endpoint
+          fetch(`${API_BASE_URL}/api/cars-sql`)
             .then((response) => {
               if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -1240,10 +1327,23 @@
             })
             .then((data) => {
               console.log("Loaded cars data:", data); // Inspect the data structure
-              if (data.success && Array.isArray(data.data)) {
-                allCars = data.data.map((car) => ({
+
+              // Backends sometimes return an array directly, or an object like { success: true, data: [...] }.
+              // Accept both shapes for robustness.
+              let carsArray = [];
+              if (Array.isArray(data)) {
+                carsArray = data;
+              } else if (data && Array.isArray(data.data)) {
+                carsArray = data.data;
+              }
+
+              if (carsArray.length > 0) {
+                allCars = carsArray.map((car) => ({
                   ...car,
-                  brand: car.make?.trim(), // Ensure brand is trimmed
+                  // Normalize photos column so downstream code always gets an array
+                  photos: normalizePhotos(car.photos),
+                  make: car.make || car.brand || car.make, // support both keys
+                  brand: (car.make || car.brand || "").toString().trim(), // Ensure brand is trimmed
                 }));
                 applyAllFilters();
               } else {
@@ -1540,23 +1640,29 @@
               viewDetailsBtn.addEventListener("click", goToDetails);
             }
 
-            // make the whole card clickable (but preserve button behavior)
-            card.addEventListener("click", (e) => {
-              // ignore clicks originating from buttons (they have their own handlers)
-              const target = e.target;
-              if (
-                target &&
-                (target.closest(".contact-btn") ||
-                  target.closest(".view-details-btn"))
-              )
-                return;
-              goToDetails(e);
-            });
+              // make the whole card clickable (but preserve button and slider behavior)
+              card.addEventListener("click", (e) => {
+                // ignore clicks originating from buttons, slider controls or dots (they have their own handlers)
+                const target = e.target;
+                if (
+                  !target ||
+                  target.closest(".contact-btn") ||
+                  target.closest(".view-details-btn") ||
+                  target.closest(".slider-prev") ||
+                  target.closest(".slider-next") ||
+                  target.closest(".dot") ||
+                  target.closest(".slider-images") ||
+                  target.closest(".car-slider")
+                )
+                  return;
+                goToDetails(e);
+              });
 
             if (contactBtn && !contactBtn.disabled) {
               contactBtn.addEventListener("click", (e) => {
                 e.stopPropagation();
-                window.location.href = "https://www.alfamotorworld.com/contact.html";
+                window.location.href =
+                  "https://www.alfamotorworld.com/contact.html";
               });
             }
           });
@@ -1632,7 +1738,8 @@
           // Contact Seller button navigation
           const contactBtn = popup.querySelector(".contact-btn");
           contactBtn.onclick = () => {
-            window.location.href = "https://www.alfamotorworld.com/contact.html";
+            window.location.href =
+              "https://www.alfamotorworld.com/contact.html";
           };
 
           // Show popup
@@ -1918,7 +2025,9 @@
               window.history.pushState(
                 {},
                 "",
-                `https://www.alfamotorworld.com/inventory.html?search=${encodeURIComponent(searchTerm)}`
+                `https://www.alfamotorworld.com/inventory.html?search=${encodeURIComponent(
+                  searchTerm
+                )}`
               );
               applyAllFilters();
             }
@@ -1931,7 +2040,9 @@
                 window.history.pushState(
                   {},
                   "",
-                  `https://www.alfamotorworld.com/inventory.html?search=${encodeURIComponent(searchTerm)}`
+                  `https://www.alfamotorworld.com/inventory.html?search=${encodeURIComponent(
+                    searchTerm
+                  )}`
                 );
                 applyAllFilters();
               }
@@ -2399,7 +2510,8 @@
           clearBtn.innerHTML = "&times;";
           clearBtn.title = "Clear search";
           clearBtn.addEventListener("click", () => {
-            window.location.href = "https://www.alfamotorworld.com/inventory.html";
+            window.location.href =
+              "https://www.alfamotorworld.com/inventory.html";
           });
 
           searchContainer.appendChild(searchText);

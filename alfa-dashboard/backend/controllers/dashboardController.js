@@ -2,6 +2,16 @@ const Rc = require("../models/Rc");
 const SellLetter = require("../models/SellLetter");
 const Service = require("../models/ServiceBill");
 const Car = require("../models/Car");
+// Optional: if SQL Car model exists use it for car stats
+let CarSQL = null;
+let { Op } = {};
+try {
+  const cs = require("../models_sql/CarSQL");
+  CarSQL = cs.Car;
+  Op = require("sequelize").Op;
+} catch (e) {
+  // models_sql may not exist in some environments — fall back to mongoose Car
+}
 const mongoose = require("mongoose");
 
 // Helper function to get monthly data
@@ -260,28 +270,51 @@ exports.getDashboardStats = async (req, res) => {
       getRecentTransactions(SellLetter, 3),
       getRecentTransactions(SellLetter, 3), // Fixed: this was missing proper call
       getRecentTransactions(Service, 3),
-      // Add car statistics queries
-      Car.aggregate([
-        {
-          $group: {
-            _id: null,
-            totalCars: { $sum: 1 },
-            soldCars: {
-              $sum: {
-                $cond: [{ $eq: ["$status", "Sold"] }, 1, 0],
+      // Add car statistics queries (use SQL model if available)
+      (async () => {
+        try {
+          if (CarSQL) {
+            const totalCars = await CarSQL.count();
+            // Count sold: accommodate different status strings
+            const soldCars = await CarSQL.count({
+              where: { status: { [Op.in]: ["Sold", "Sold Out"] } },
+            });
+            const availableCars = await CarSQL.count({
+              where: { status: "Available" },
+            });
+            return [
+              {
+                totalCars,
+                soldCars,
+                availableCars,
               },
-            },
-            availableCars: {
-              $sum: {
-                $cond: [{ $eq: ["$status", "Available"] }, 1, 0],
+            ];
+          } else {
+            // Fallback to mongoose aggregation if SQL model isn't available
+            return await Car.aggregate([
+              {
+                $group: {
+                  _id: null,
+                  totalCars: { $sum: 1 },
+                  soldCars: {
+                    $sum: {
+                      $cond: [{ $eq: ["$status", "Sold"] }, 1, 0],
+                    },
+                  },
+                  availableCars: {
+                    $sum: {
+                      $cond: [{ $eq: ["$status", "Available"] }, 1, 0],
+                    },
+                  },
+                },
               },
-            },
-          },
-        },
-      ]).catch(err => {
-        console.error('Error in car stats aggregation:', err);
-        return [];
-      }),
+            ]);
+          }
+        } catch (err) {
+          console.error("Error in car stats aggregation:", err);
+          return [];
+        }
+      })(),
     ]);
 
     // Process results with null checks

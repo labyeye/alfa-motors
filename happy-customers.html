@@ -238,26 +238,28 @@
           function getImageUrl(imagePath) {
             if (!imagePath) return "./assets/placeholder.png";
 
-            // If it's already a full URL (Cloudinary or other CDN), use it as-is
-            if (
-              imagePath.startsWith("http://") ||
-              imagePath.startsWith("https://")
-            ) {
-              return imagePath;
+            if (Array.isArray(imagePath) && imagePath.length > 0) imagePath = imagePath[0];
+
+            if (typeof imagePath === "string") {
+              const raw = imagePath.trim();
+              if (raw.startsWith("[")) {
+                try {
+                  const parsed = JSON.parse(raw);
+                  if (Array.isArray(parsed) && parsed.length) imagePath = parsed[0];
+                } catch (e) {}
+              }
             }
 
-            // If it's an absolute path on the site (starts with '/'), use as-is
-            if (imagePath.startsWith("/")) return imagePath;
+            if (typeof imagePath !== "string") return "./assets/placeholder.png";
+            const p = imagePath.trim();
 
-            // Strip any leading carimages/ prefix
-            const filename = imagePath.startsWith("carimages/")
-              ? imagePath.replace("carimages/", "")
-              : imagePath;
+            if (p.startsWith("http://") || p.startsWith("https://") || p.startsWith("data:")) return p;
+            if (p.startsWith("/")) return p;
 
-            // Local bundled assets
-            if (filename.startsWith("assets/")) return filename;
+            const cleaned = p.replace(/^\/+/, "");
+            if (cleaned.startsWith("assets/")) return cleaned;
 
-            // Fallback to backend-hosted carimages
+            const filename = cleaned.startsWith("carimages/") ? cleaned.replace(/^carimages\//, "") : cleaned;
             return `${API_BASE}/carimages/${filename}`;
           }
 

@@ -398,8 +398,30 @@ function initializeCarSlider() {
   });
 }
 
+// Helper to normalize image paths (used by featured cars)
+function getImageUrl(imagePath) {
+  if (!imagePath) return "https://via.placeholder.com/300x200?text=No+Image";
+  if (Array.isArray(imagePath) && imagePath.length > 0) imagePath = imagePath[0];
+  if (typeof imagePath === "string") {
+    const raw = imagePath.trim();
+    if (raw.startsWith("[")) {
+      try {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length) imagePath = parsed[0];
+      } catch (e) {}
+    }
+  }
+  if (typeof imagePath !== "string") return "https://via.placeholder.com/300x200?text=No+Image";
+  const p = imagePath.trim();
+  if (p.startsWith("http://") || p.startsWith("https://") || p.startsWith("data:")) return p;
+  const cleaned = p.replace(/^\/+/, "");
+  if (cleaned.startsWith("assets/")) return cleaned;
+  const filename = cleaned.startsWith("carimages/") ? cleaned.replace(/^carimages\//, "") : cleaned;
+  return `https://alfa-motors-5yfh.vercel.app/carimages/${filename}`;
+}
+
 function fetchFeaturedCars() {
-  fetch("https://alfa-motors-5yfh.vercel.app/api/Cars?limit=10")
+  fetch("https://alfa-motors-5yfh.vercel.app/api/cars-sql?limit=10")
     .then((response) => response.json())
     .then((payload) => displayFeaturedCars(payload))
     .catch((error) => {
@@ -450,38 +472,10 @@ function displayFeaturedCars(Cars) {
       isDisabled = true;
     }
 
-    // Use car.photos[0] if available, normalize same as https://www.alfamotorworld.com/inventory.html
-    let imgSrc = "https://via.placeholder.com/300x200?text=No+Image";
-    if (Array.isArray(Car.photos) && Car.photos.length > 0) {
-      let filename = Car.photos[0] || "";
-
-      // If it's already a full URL (Cloudinary or other CDN), use it as-is
-      if (filename.startsWith("http://") || filename.startsWith("https://")) {
-        imgSrc = filename;
-      } else {
-        if (filename.startsWith("carimages/"))
-          filename = filename.replace("carimages/", "");
-
-        // Local assets (bundled) can be used directly
-        if (filename.startsWith("assets/")) {
-          imgSrc = filename;
-        } else if (filename) {
-          // Fall back to backend-hosted carimages
-          imgSrc = `https://alfa-motors-5yfh.vercel.app/carimages/${filename}`;
-        }
-      }
-    } else if (Car.imageUrl) {
-      // If imageUrl is a full URL, use as-is; otherwise assume backend path
-      if (
-        typeof Car.imageUrl === "string" &&
-        (Car.imageUrl.startsWith("http://") ||
-          Car.imageUrl.startsWith("https://"))
-      ) {
-        imgSrc = Car.imageUrl;
-      } else if (Car.imageUrl) {
-        imgSrc = `https://alfa-motors-5yfh.vercel.app/carimages/${Car.imageUrl}`;
-      }
-    }
+    // Normalize image source (accept array/JSON/full URL/local assets)
+    const imgSrc = getImageUrl(
+      Array.isArray(Car.photos) && Car.photos.length > 0 ? Car.photos[0] : (Car.imageUrl || null)
+    );
 
     CarCard.innerHTML = `
       <div class="image-container">
