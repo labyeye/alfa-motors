@@ -1,25 +1,9 @@
 {
 	"version": 2,
 	"builds": [
-		{ 
-			"src": "server.js", 
-			"use": "@vercel/node",
-			"config": {
-				"maxLambdaSize": "50mb"
-			}
-		}
+		{ "src": "server.js", "use": "@vercel/node" }
 	],
 	"routes": [
 		{ "src": "/api/(.*)", "dest": "server.js" }
-	],
-	"functions": {
-		"server.js": {
-			"maxDuration": 30,
-			"memory": 1024
-		}
-	},
-	"regions": ["bom1"],
-	"env": {
-		"VERCEL_TIMEOUT": "30"
-	}
+	]
 }
