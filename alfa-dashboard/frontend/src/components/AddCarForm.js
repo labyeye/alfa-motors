@@ -31,11 +31,7 @@ const AddCarForm = () => {
   });
   const [activeMenu, setActiveMenu] = useState("Add Car Data");
 
-  const API_BASE =
-    window.API_BASE ||
-    (window.location.hostname === "localhost"
-      ? "https://alfa-motors-5yfh.vercel.app"
-      : "https://alfa-motors-5yfh.vercel.app");
+  const API_BASE = "https://alfa-motors-5yfh.vercel.app";
 
   const handleChange = (e) => {
     const { name, value } = e.target;

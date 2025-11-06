@@ -25,24 +25,25 @@ const app = express();
 
 connectDB();
 
+const ALLOWED_ORIGINS = [
+  "http://127.0.0.1:5502",
+  "http://127.0.0.1:5500",
+  "http://127.0.0.1:3000",
+  "http://localhost:3000",
+  "http://localhost:5500",
+  "http://localhost:5501",
+  "http://localhost:5502",
+  "https://www.alfamotorworld.com",
+  "https://alfa-motors-o5cm.vercel.app",
+  "https://alfa-motors-5yfh.vercel.app",
+];
+
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
-    const allowedOrigins = [
-      "http://127.0.0.1:5502",
-      "http://127.0.0.1:5500",
-      "http://127.0.0.1:3000",
-      "http://localhost:3000",
-      "http://localhost:5500",
-      "http://localhost:5501",
-      "http://localhost:5502",
-      "https://www.alfamotorworld.com",
-      "https://alfa-motors-o5cm.vercel.app",
-      "https://alfa-motors-5yfh.vercel.app",
-    ];
     if (origin.includes("localhost") || origin.includes("127.0.0.1"))
       return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1 || !origin) callback(null, true);
+    if (ALLOWED_ORIGINS.indexOf(origin) !== -1 || !origin) callback(null, true);
     else callback(new Error("Not allowed by CORS"));
   },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
@@ -61,6 +62,32 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
 app.options("*", cors(corsOptions));
 app.use(cors(corsOptions));
+
+app.use((req, res, next) => {
+  try {
+    if (!res.getHeader || !res.getHeader("Access-Control-Allow-Origin")) {
+      const origin = req.get("origin") || req.get("Origin");
+      if (origin) {
+        res.setHeader("Access-Control-Allow-Origin", origin);
+      } else {
+        res.setHeader("Access-Control-Allow-Origin", "*");
+      }
+      res.setHeader(
+        "Access-Control-Allow-Headers",
+        "Content-Type, Authorization, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Access-Control-Expose-Headers"
+      );
+      res.setHeader(
+        "Access-Control-Allow-Methods",
+        "GET,POST,PUT,DELETE,OPTIONS,PATCH"
+      );
+      res.setHeader("Access-Control-Allow-Credentials", "true");
+    }
+  } catch (err) {
+    console.error("CORS fallback error:", err);
+  }
+  if (req.method === "OPTIONS") return res.sendStatus(200);
+  next();
+});
 
 app.use("/public", express.static(path.join(__dirname, "public")));
 
@@ -82,11 +109,7 @@ app.use(
   "/carimages",
   (req, res, next) => {
     const origin = req.get("origin");
-    if (
-      Array.isArray(corsOptions.origin) &&
-      origin &&
-      corsOptions.origin.includes(origin)
-    ) {
+    if (origin && (origin.includes("localhost") || ALLOWED_ORIGINS.includes(origin))) {
       res.setHeader("Access-Control-Allow-Origin", origin);
       if (corsOptions.credentials)
         res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -125,11 +148,7 @@ app.use(
   "/utils/uploads",
   (req, res, next) => {
     const origin = req.get("origin");
-    if (
-      Array.isArray(corsOptions.origin) &&
-      origin &&
-      corsOptions.origin.includes(origin)
-    ) {
+    if (origin && (origin.includes("localhost") || ALLOWED_ORIGINS.includes(origin))) {
       res.setHeader("Access-Control-Allow-Origin", origin);
       if (corsOptions.credentials)
         res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -155,11 +174,7 @@ app.use(
   "/uploads",
   (req, res, next) => {
     const origin = req.get("origin");
-    if (
-      Array.isArray(corsOptions.origin) &&
-      origin &&
-      corsOptions.origin.includes(origin)
-    ) {
+    if (origin && (origin.includes("localhost") || ALLOWED_ORIGINS.includes(origin))) {
       res.setHeader("Access-Control-Allow-Origin", origin);
       if (corsOptions.credentials)
         res.setHeader("Access-Control-Allow-Credentials", "true");
