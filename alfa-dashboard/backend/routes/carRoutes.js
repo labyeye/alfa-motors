@@ -36,7 +36,8 @@ router.post(
       }
 
       const carData = {
-        make: req.body.brand,
+        // Accept either `make` (frontend field) or `brand` (legacy field)
+        make: req.body.make || req.body.brand,
         model: req.body.model,
         variant: req.body.variant,
         fuelType: req.body.fuelType,
@@ -252,7 +253,10 @@ router.put(
     try {
       // Build update object only from provided fields to allow partial updates
       const updatedCar = {};
-      if (req.body.brand !== undefined && req.body.brand !== "") updatedCar.make = req.body.brand;
+      // Accept either `make` or `brand` for compatibility with both frontend and older clients
+      if ((req.body.make !== undefined && req.body.make !== "") || (req.body.brand !== undefined && req.body.brand !== "")) {
+        updatedCar.make = req.body.make || req.body.brand;
+      }
       if (req.body.model !== undefined && req.body.model !== "") updatedCar.model = req.body.model;
       if (req.body.variant !== undefined && req.body.variant !== "") updatedCar.variant = req.body.variant;
       if (req.body.fuelType !== undefined && req.body.fuelType !== "") updatedCar.fuelType = req.body.fuelType;
