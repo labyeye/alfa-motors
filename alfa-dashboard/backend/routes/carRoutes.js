@@ -19,11 +19,21 @@ router.post(
   async (req, res) => {
     try {
       // Get uploaded photo file paths or URLs
-      // In production (Cloudinary), file.path contains the URL
-      // In development, file.filename contains the filename
-      const photoPaths = req.files ? req.files.map((file) => {
-        return isProduction ? file.path : file.filename;
-      }) : [];
+      // Support two modes:
+      // 1) Multipart upload via multer (req.files) — server uploads to Cloudinary/local
+      // 2) Direct upload from frontend to Cloudinary and pass URLs in req.body.photos
+      let photoPaths = [];
+      if (req.files && req.files.length) {
+        photoPaths = req.files.map((file) => (isProduction ? file.path : file.filename));
+      } else if (req.body && req.body.photos) {
+        try {
+          // photos may be sent as JSON string or array
+          const incoming = typeof req.body.photos === 'string' ? JSON.parse(req.body.photos) : req.body.photos;
+          if (Array.isArray(incoming)) photoPaths = incoming;
+        } catch (e) {
+          // if parse fails, ignore and keep empty
+        }
+      }
 
       const carData = {
         make: req.body.brand,
@@ -291,9 +301,17 @@ router.put(
   upload.array("photos", 12),
   async (req, res) => {
     try {
-      const photoPaths = req.files ? req.files.map((file) => {
-        return isProduction ? file.path : file.filename;
-      }) : [];
+      let photoPaths = [];
+      if (req.files && req.files.length) {
+        photoPaths = req.files.map((file) => (isProduction ? file.path : file.filename));
+      } else if (req.body && req.body.photos) {
+        try {
+          const incoming = typeof req.body.photos === 'string' ? JSON.parse(req.body.photos) : req.body.photos;
+          if (Array.isArray(incoming)) photoPaths = incoming;
+        } catch (e) {
+          // ignore parse errors
+        }
+      }
       
       if (photoPaths.length === 0) {
         return res.status(400).json({ success: false, error: "No photos provided" });
