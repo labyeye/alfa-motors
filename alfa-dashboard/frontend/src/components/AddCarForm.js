@@ -39,7 +39,64 @@ const AddCarForm = () => {
   };
 
   const handleFileChange = (e) => {
-    setFormData((prev) => ({ ...prev, photos: Array.from(e.target.files) }));
+    const files = Array.from(e.target.files || []);
+    // Enforce max 12 files client-side
+    if (files.length > 12) {
+      setError("You can upload a maximum of 12 photos. Extra files were ignored.");
+    }
+    const limitedFiles = files.slice(0, 12);
+
+    // Compress images before setting into state to reduce payload size
+    const compressAll = async (fileList) => {
+      try {
+        const compressed = await Promise.all(
+          fileList.map((f) => compressImageFile(f, 1200, 0.8))
+        );
+        setFormData((prev) => ({ ...prev, photos: compressed }));
+      } catch (err) {
+        console.error("Image compression failed:", err);
+        // Fallback: use original files
+        setFormData((prev) => ({ ...prev, photos: limitedFiles }));
+      }
+    };
+    compressAll(limitedFiles);
+  };
+
+  // Helper: compress an image File to a Blob/File with max width and quality
+  const compressImageFile = (file, maxWidth = 1200, quality = 0.8) => {
+    return new Promise((resolve, reject) => {
+      if (!file.type.startsWith("image/")) return resolve(file);
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const scale = Math.min(1, maxWidth / img.width);
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) return resolve(file);
+            // Preserve original filename when possible
+            const newFile = new File([blob], file.name, { type: blob.type });
+            resolve(newFile);
+          },
+          "image/jpeg",
+          quality
+        );
+      };
+      img.onerror = (e) => {
+        console.warn("Image load error for compression, returning original", e);
+        resolve(file);
+      };
+      // Support blob URL or file object
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        img.src = ev.target.result;
+      };
+      reader.onerror = () => resolve(file);
+      reader.readAsDataURL(file);
+    });
   };
 
   const handleSubmit = async (e) => {
