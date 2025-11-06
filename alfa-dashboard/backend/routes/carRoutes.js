@@ -15,13 +15,23 @@ const isProduction =
 router.post("/", protect, upload.array("photos", 12), async (req, res) => {
   try {
     // Get uploaded photo file paths or URLs
-    // In production (Cloudinary), file.path contains the URL
-    // In development, file.filename contains the filename
-    const photoPaths = req.files
-      ? req.files.map((file) => {
-          return isProduction ? file.path : file.filename;
-        })
-      : [];
+    // Priority: multipart uploads via multer (req.files). If not present,
+    // accept an array of photo URLs in req.body.photos (useful for direct-to-Cloudinary uploads).
+    let photoPaths = [];
+    if (req.files && req.files.length) {
+      photoPaths = req.files.map((file) => (isProduction ? file.path : file.filename));
+    } else if (req.body && req.body.photos) {
+      try {
+        // req.body.photos may be a JSON string or an array
+        if (typeof req.body.photos === 'string') {
+          photoPaths = JSON.parse(req.body.photos);
+        } else if (Array.isArray(req.body.photos)) {
+          photoPaths = req.body.photos;
+        }
+      } catch (parseErr) {
+        photoPaths = [];
+      }
+    }
 
     const carData = {
       make: req.body.make,
@@ -334,11 +344,17 @@ router.put(
   upload.array("photos", 12),
   async (req, res) => {
     try {
-      const photoPaths = req.files
-        ? req.files.map((file) => {
-            return isProduction ? file.path : file.filename;
-          })
-        : [];
+        let photoPaths = [];
+        if (req.files && req.files.length) {
+          photoPaths = req.files.map((file) => (isProduction ? file.path : file.filename));
+        } else if (req.body && req.body.photos) {
+          try {
+            if (typeof req.body.photos === 'string') photoPaths = JSON.parse(req.body.photos);
+            else if (Array.isArray(req.body.photos)) photoPaths = req.body.photos;
+          } catch (e) {
+            photoPaths = [];
+          }
+        }
 
       if (photoPaths.length === 0) {
         return res
@@ -377,7 +393,8 @@ router.put(
 // Add single photo to existing car
 router.post("/:id/photo", protect, upload.single("photo"), async (req, res) => {
   try {
-    if (!req.file) {
+    // Accept either a multipart file (req.file) or a photo URL in req.body.photo / req.body.photoUrl
+    if (!req.file && !(req.body && (req.body.photo || req.body.photoUrl))) {
       return res
         .status(400)
         .json({ success: false, error: "No photo provided" });
@@ -388,7 +405,12 @@ router.post("/:id/photo", protect, upload.single("photo"), async (req, res) => {
       return res.status(404).json({ success: false, error: "Car not found" });
     }
 
-    const photoPath = isProduction ? req.file.path : req.file.filename;
+    let photoPath = null;
+    if (req.file) {
+      photoPath = isProduction ? req.file.path : req.file.filename;
+    } else if (req.body) {
+      photoPath = req.body.photo || req.body.photoUrl || null;
+    }
     car.photos.push(photoPath);
     await car.save();
 

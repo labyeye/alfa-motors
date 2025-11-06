@@ -32,7 +32,8 @@ const AddCarForm = () => {
   const [activeMenu, setActiveMenu] = useState("Add Car Data");
 
   const API_BASE = "https://alfa-motors-5yfh.vercel.app";
-
+  const CLOUDINARY_CLOUD = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME;
+  const CLOUDINARY_UPLOAD_PRESET = process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET;
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -53,17 +54,55 @@ const AddCarForm = () => {
       return;
     }
     try {
-      const formPayload = new FormData();
-      Object.entries(formData).forEach(([key, value]) => {
-        if (key === "photos") {
-          value.forEach((file) => formPayload.append("photos", file));
-        } else {
-          formPayload.append(key, value);
+      // If there are File objects in photos, upload them directly to Cloudinary
+      // using an unsigned preset to avoid passing large file payloads through
+      // Vercel. The backend will accept an array of photo URLs instead of files.
+      let photoUrls = [];
+      const files = Array.isArray(formData.photos)
+        ? formData.photos.filter((f) => f && f instanceof File)
+        : [];
+
+      if (files.length > 0) {
+        if (!CLOUDINARY_CLOUD || !CLOUDINARY_UPLOAD_PRESET) {
+          throw new Error(
+            'Cloudinary env vars not set: REACT_APP_CLOUDINARY_CLOUD_NAME and REACT_APP_CLOUDINARY_UPLOAD_PRESET'
+          );
         }
-      });
-      formPayload.append("addedBy", user._id);
-      const response = await axios.post(`${API_BASE}/api/cars`, formPayload, {
-        headers: { Authorization: `Bearer ${token}` },
+
+        // Upload each file sequentially (could be parallelized if desired)
+        for (const file of files) {
+          const data = new FormData();
+          data.append('file', file);
+          data.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+          const cloudRes = await fetch(
+            `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,
+            {
+              method: 'POST',
+              body: data,
+            }
+          );
+          if (!cloudRes.ok) {
+            const errText = await cloudRes.text();
+            throw new Error(`Cloudinary upload failed: ${errText}`);
+          }
+          const cloudJson = await cloudRes.json();
+          if (cloudJson.secure_url) photoUrls.push(cloudJson.secure_url);
+        }
+      }
+
+      // Build JSON payload for backend. Use URLs returned from Cloudinary if any.
+      const payload = {
+        ...formData,
+        photos: photoUrls.length > 0 ? photoUrls : formData.photos || [],
+        addedBy: user._id,
+      };
+
+      const response = await axios.post(`${API_BASE}/api/cars`, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
       });
       if (response.data.success) {
         navigate("/admin");
