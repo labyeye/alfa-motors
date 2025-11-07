@@ -1,5 +1,10 @@
 // controllers/serviceBillController.js
-const ServiceBill = require("../models/ServiceBill");
+let ServiceBill;
+try {
+  ({ ServiceBill } = require('../models_sql/ServiceBillSQL'));
+} catch (e) {
+  ServiceBill = require("../models/ServiceBill");
+}
 const { generateServiceBillPDF } = require("../utils/pdfGenerator");
 const fs = require("fs");
 const path = require("path");

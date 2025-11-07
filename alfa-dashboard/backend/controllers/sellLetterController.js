@@ -1,4 +1,9 @@
-const SellLetter = require("../models/SellLetter");
+let SellLetter;
+try {
+  ({ SellLetter } = require('../models_sql/SellLetterSQL'));
+} catch (e) {
+  SellLetter = require("../models/SellLetter");
+}
 
 exports.createSellLetter = async (req, res) => {
   try {

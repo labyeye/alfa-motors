@@ -1,7 +1,7 @@
 require('dotenv').config();
-const mongoose = require('mongoose');
 const cloudinary = require('../config/cloudinary');
-const Car = require('../models/Car');
+const { Car } = require('../models_sql/CarSQL');
+const { sequelize } = require('../db');
 const path = require('path');
 const fs = require('fs');
 
@@ -30,12 +30,12 @@ cloudinary.api.ping()
     console.log('   ✓ Cloudinary connection successful!');
     
     // Connect to MongoDB
-    console.log('\n3. Connecting to MongoDB...');
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log('   ✓ MongoDB connected successfully');
-    
-    // Check cars and images
-    const cars = await Car.find({});
+  console.log('\n3. Testing DB connection (MySQL/Sequelize)...');
+  await sequelize.authenticate();
+  console.log('   ✓ MySQL (Sequelize) connected successfully');
+
+  // Check cars and images
+  const cars = await Car.findAll({ raw: true });
     console.log(`\n4. Database Analysis:`);
     console.log(`   Total cars: ${cars.length}`);
     

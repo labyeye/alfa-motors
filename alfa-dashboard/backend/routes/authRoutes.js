@@ -3,7 +3,14 @@ const router = express.Router();
 const { loginUser, registerUser } = require("../controllers/authController");
 const { protect } = require("../middleware/auth");
 const roleCheck = require("../middleware/role");
-const User = require("../models/User");
+let User;
+let USING_SQL_USER = false;
+try {
+  ({ User } = require('../models_sql/UserSQL'));
+  USING_SQL_USER = true;
+} catch (e) {
+  User = require("../models/User");
+}
 const jwt = require("jsonwebtoken");
 
 router.post("/login", loginUser);
@@ -11,7 +18,12 @@ router.post("/register", protect, roleCheck(["admin"]), registerUser);
 
 router.get("/me", authenticateToken, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select("-password");
+    let user;
+    if (USING_SQL_USER) {
+      user = await User.findByPk(req.user.id, { attributes: { exclude: ['password'] } });
+    } else {
+      user = await User.findById(req.user.id).select("-password");
+    }
     res.json(user);
   } catch (err) {
     console.error(err.message);

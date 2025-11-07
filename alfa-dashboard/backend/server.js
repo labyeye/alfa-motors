@@ -4,7 +4,8 @@ const path = require("path");
 const fs = require("fs");
 const cors = require("cors");
 
-const connectDB = require("./config/db");
+// Use Sequelize DB connection (MySQL)
+const { sequelize } = require('./db');
 
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
@@ -24,7 +25,8 @@ const { protect } = require("./middleware/auth");
 
 const app = express();
 
-connectDB();
+// Ensure Sequelize connection was initialized in db.js; no Mongo connect performed.
+// sequelize.authenticate().then(() => console.log('Database connected')).catch(err => console.error('Database connection error:', err));
 
 const ALLOWED_ORIGINS = [
   "http://127.0.0.1:5502",
@@ -58,6 +60,26 @@ const corsOptions = {
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
+// Early CORS header middleware: ensure responses (including errors)
+// always include Access-Control-Allow-Origin when origin is allowed.
+app.use((req, res, next) => {
+  const origin = req.get("origin");
+  if (origin && (origin.includes("localhost") || ALLOWED_ORIGINS.includes(origin))) {
+    // Reflect origin to allow cookies/credentials if needed
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    if (corsOptions.credentials) res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      (corsOptions.allowedHeaders || ["Content-Type", "Authorization"]).join(", ")
+    );
+    res.setHeader("Access-Control-Allow-Methods", (corsOptions.methods || ["GET", "POST"]).join(", "));
+  }
+  // Handle preflight quickly
+  if (req.method === "OPTIONS") return res.sendStatus(204);
+  next();
+});
+
+// apply cors middleware as well (keeps standard behavior for other cases)
 app.options("*", cors(corsOptions));
 app.use(cors(corsOptions));
 
@@ -65,8 +87,11 @@ app.use("/public", express.static(path.join(__dirname, "public")));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/rc", rcRoutes);
-app.use("/api/cars", carRoutes);
-app.use("/api/cars-sql", carSqlRoutes);
+// Mount SQL car routes as the primary `/api/cars` endpoint so frontend
+// and admin can use the new MySQL-backed CRUD handlers. Keep the
+// original Mongo routes mounted under `/api/cars-mongo` as a fallback.
+app.use("/api/cars", carSqlRoutes);
+app.use("/api/cars-mongo", carRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/sell-letters", sellLetterRoutes);
 app.use("/api/dashboard", dashboardRoutes);

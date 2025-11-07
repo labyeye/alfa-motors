@@ -1,5 +1,12 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+let User;
+let USING_SQL_USER = false;
+try {
+  ({ User } = require('../models_sql/UserSQL'));
+  USING_SQL_USER = true;
+} catch (e) {
+  User = require("../models/User");
+}
 
 const protect = async (req, res, next) => {
   let token;
@@ -11,7 +18,13 @@ const protect = async (req, res, next) => {
     try {
       token = req.headers.authorization.split(" ")[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.user = await User.findById(decoded.id).select("-password");
+      // decoded contains { id, role }
+      if (USING_SQL_USER) {
+        const u = await User.findByPk(decoded.id, { attributes: { exclude: ['password'] } });
+        req.user = u ? { id: u.id, role: u.role, name: u.name } : { id: decoded.id, role: decoded.role };
+      } else {
+        req.user = await User.findById(decoded.id).select("-password");
+      }
       next();
     } catch (error) {
       console.error(error);

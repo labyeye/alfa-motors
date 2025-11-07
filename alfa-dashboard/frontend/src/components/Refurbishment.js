@@ -39,7 +39,7 @@ export default function Refurbishment() {
     try {
       setLoading(true);
       const [carsRes, refRes] = await Promise.all([
-        axios.get(`${API_BASE}/api/cars`, {
+        axios.get(`${API_BASE}/api/cars-sql`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }),
         axios.get(`${API_BASE}/api/refurbishments`, {

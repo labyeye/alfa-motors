@@ -16,14 +16,16 @@ const ListCar = () => {
     const fetchCars = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(
-          "https://alfa-motors-5yfh.vercel.app/api/cars",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const API_BASE =
+          window.API_BASE ||
+          (window.location.hostname === "localhost"
+            ? "http://localhost:2500"
+            : "https://alfa-motors-5yfh.vercel.app");
+        const response = await axios.get(`${API_BASE}/api/cars-sql`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setCars(response.data.data);
         setLoading(false);
       } catch (err) {
@@ -43,14 +45,11 @@ const ListCar = () => {
     if (window.confirm("Are you sure you want to delete this car?")) {
       try {
         const token = localStorage.getItem("token");
-        await axios.delete(
-          `https://alfa-motors-5yfh.vercel.app/api/cars/${carId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        await axios.delete(`${API_BASE}/api/cars-sql/${carId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setCars(cars.filter((car) => car._id !== carId));
       } catch (err) {
         setError(err.response?.data?.message || "Failed to delete car");

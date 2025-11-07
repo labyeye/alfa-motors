@@ -1,4 +1,9 @@
-const Rc = require("../models/Rc");
+let Rc;
+try {
+  ({ Rc } = require('../models_sql/RcSQL'));
+} catch (e) {
+  Rc = require("../models/Rc");
+}
 const path = require("path");
 const fs = require("fs");
 

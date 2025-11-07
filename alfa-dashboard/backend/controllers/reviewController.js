@@ -1,4 +1,9 @@
-const Review = require("../models/Review");
+let Review;
+try {
+  ({ Review } = require('../models_sql/ReviewSQL'));
+} catch (e) {
+  Review = require("../models/Review");
+}
 const asyncHandler = require("express-async-handler");
 
 const createReview = asyncHandler(async (req, res) => {

@@ -1,5 +1,5 @@
-const Refurbishment = require('../models/Refurbishment');
-const Car = require('../models/Car');
+const { Refurbishment } = require('../models_sql/RefurbishmentSQL');
+const { Car } = require('../models_sql/CarSQL');
 
 exports.createRefurbishment = async (req, res) => {
   try {
@@ -11,11 +11,10 @@ exports.createRefurbishment = async (req, res) => {
     }
 
     // confirm car exists
-    const foundCar = await Car.findById(car);
+    const foundCar = await Car.findByPk(car);
     if (!foundCar) return res.status(404).json({ success: false, message: 'Car not found' });
 
-    const refurbishment = new Refurbishment({ car, items, notes, user: req.user.id });
-    await refurbishment.save();
+    const refurbishment = await Refurbishment.create({ car, items, notes, createdBy: req.user.id });
 
     res.status(201).json({ success: true, data: refurbishment });
   } catch (error) {
@@ -26,14 +25,19 @@ exports.createRefurbishment = async (req, res) => {
 
 exports.getRefurbishments = async (req, res) => {
   try {
-    const query = {};
+    const where = {};
     // admins see all
     if (req.user.role !== 'admin') {
-      query.user = req.user.id;
+      where.createdBy = req.user.id;
     }
 
-    const list = await Refurbishment.find(query).populate('car').sort({ createdAt: -1 });
-    res.status(200).json({ success: true, count: list.length, data: list });
+    const list = await Refurbishment.findAll({ where, order: [['createdAt', 'DESC']], raw: true });
+    // Attach car info (lightweight)
+    const withCar = await Promise.all(list.map(async (r) => {
+      const car = await Car.findByPk(r.car);
+      return Object.assign({}, r, { car: car || null });
+    }));
+    res.status(200).json({ success: true, count: withCar.length, data: withCar });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: 'Server Error' });
@@ -42,14 +46,15 @@ exports.getRefurbishments = async (req, res) => {
 
 exports.getRefurbishment = async (req, res) => {
   try {
-    const refurbishment = await Refurbishment.findById(req.params.id).populate('car');
+    const refurbishment = await Refurbishment.findByPk(req.params.id, { raw: true });
     if (!refurbishment) return res.status(404).json({ success: false, message: 'Not found' });
 
     // owner or admin
-    const isOwner = refurbishment.user && refurbishment.user.toString() === req.user.id.toString();
+    const isOwner = refurbishment.createdBy && refurbishment.createdBy.toString() === req.user.id.toString();
     if (!(req.user.role === 'admin' || isOwner)) return res.status(403).json({ success: false, message: 'Not authorized' });
 
-    res.status(200).json({ success: true, data: refurbishment });
+    const car = await Car.findByPk(refurbishment.car);
+    res.status(200).json({ success: true, data: Object.assign({}, refurbishment, { car }) });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: 'Server Error' });
@@ -58,14 +63,13 @@ exports.getRefurbishment = async (req, res) => {
 
 exports.updateRefurbishment = async (req, res) => {
   try {
-    const refurbishment = await Refurbishment.findById(req.params.id);
+    const refurbishment = await Refurbishment.findByPk(req.params.id);
     if (!refurbishment) return res.status(404).json({ success: false, message: 'Not found' });
 
-    const isOwner = refurbishment.user && refurbishment.user.toString() === req.user.id.toString();
+    const isOwner = refurbishment.createdBy && refurbishment.createdBy.toString() === req.user.id.toString();
     if (!(req.user.role === 'admin' || isOwner)) return res.status(403).json({ success: false, message: 'Not authorized' });
 
-    Object.assign(refurbishment, req.body);
-    await refurbishment.save();
+    await refurbishment.update(req.body);
     res.status(200).json({ success: true, data: refurbishment });
   } catch (error) {
     console.error(error);
@@ -75,13 +79,13 @@ exports.updateRefurbishment = async (req, res) => {
 
 exports.deleteRefurbishment = async (req, res) => {
   try {
-    const refurbishment = await Refurbishment.findById(req.params.id);
+    const refurbishment = await Refurbishment.findByPk(req.params.id);
     if (!refurbishment) return res.status(404).json({ success: false, message: 'Not found' });
 
-    const isOwner = refurbishment.user && refurbishment.user.toString() === req.user.id.toString();
+    const isOwner = refurbishment.createdBy && refurbishment.createdBy.toString() === req.user.id.toString();
     if (!(req.user.role === 'admin' || isOwner)) return res.status(403).json({ success: false, message: 'Not authorized' });
 
-    await Refurbishment.deleteOne({ _id: refurbishment._id });
+    await Refurbishment.destroy({ where: { id: refurbishment.id } });
     res.status(200).json({ success: true, data: {} });
   } catch (error) {
     console.error(error);

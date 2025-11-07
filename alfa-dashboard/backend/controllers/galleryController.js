@@ -1,5 +1,5 @@
-const Gallery = require('../models/Gallery');
-const Car = require('../models/Car');
+const { Gallery } = require('../models_sql/GallerySQL');
+const { Car } = require('../models_sql/CarSQL');
 const cloudinary = require('../config/cloudinary');
 const path = require('path');
 const fs = require('fs');
@@ -12,31 +12,23 @@ exports.uploadGalleryPhoto = async (req, res) => {
     const caption = req.body.caption || '';
     const testimonial = req.body.testimonial || '';
 
-    // Determine stored filename/URL. When using multer-storage-cloudinary, req.file.path
-    // will usually be the full uploaded URL. For local storage, req.file.filename is used.
-    let storedFilename = '';
-    if (req.file) {
-      // prefer a full URL if provided by the storage engine
-      storedFilename = req.file.path || req.file.secure_url || req.file.url || req.file.filename || '';
-    }
+    const storedFilename = req.file.path || req.file.secure_url || req.file.url || req.file.filename || '';
 
-    const galleryItem = new Gallery({
+    const galleryItem = await Gallery.create({
       car: carId,
       filename: storedFilename,
       caption,
       testimonial,
-      uploadedBy: req.user._id,
+      uploadedBy: req.user.id,
     });
 
-    await galleryItem.save();
-
-    // If associated with a car, also add to car.sold.customerPhotos for backwards compatibility
+    // If associated with a car, also add to car.soldCustomerPhotos (SQL column soldCustomerPhotos)
     if (carId) {
-      const car = await Car.findById(carId);
+      const car = await Car.findByPk(carId);
       if (car) {
-        car.sold = car.sold || {};
-        car.sold.customerPhotos = car.sold.customerPhotos || [];
-        car.sold.customerPhotos.push(req.file.filename);
+        const existing = Array.isArray(car.soldCustomerPhotos) ? car.soldCustomerPhotos : (car.soldCustomerPhotos || []);
+        existing.push(storedFilename);
+        car.soldCustomerPhotos = existing;
         await car.save();
       }
     }
@@ -51,9 +43,9 @@ exports.uploadGalleryPhoto = async (req, res) => {
 // List public gallery items (optionally filter by car)
 exports.listGallery = async (req, res) => {
   try {
-    const filter = {};
-    if (req.query.carId) filter.car = req.query.carId;
-    const items = await Gallery.find(filter).populate('uploadedBy', 'username').sort({ createdAt: -1 }).lean();
+    const where = {};
+    if (req.query.carId) where.car = req.query.carId;
+    const items = await Gallery.findAll({ where, order: [['createdAt', 'DESC']] });
     return res.json({ success: true, data: items });
   } catch (err) {
     console.error('Gallery list error:', err);
@@ -66,7 +58,7 @@ exports.updateGallery = async (req, res) => {
   try {
     const id = req.params.id;
     const { caption, testimonial } = req.body;
-    const item = await Gallery.findById(id);
+    const item = await Gallery.findByPk(id);
     if (!item) return res.status(404).json({ success: false, error: 'Gallery item not found' });
 
     if (typeof caption !== 'undefined') item.caption = caption;
@@ -84,21 +76,19 @@ exports.updateGallery = async (req, res) => {
 exports.deleteGallery = async (req, res) => {
   try {
     const id = req.params.id;
-    const item = await Gallery.findById(id);
+    const item = await Gallery.findByPk(id);
     if (!item) return res.status(404).json({ success: false, error: 'Gallery item not found' });
 
     const filename = item.filename;
     const carId = item.car;
 
-    // Remove the gallery document
-    await Gallery.deleteOne({ _id: id });
+    await Gallery.destroy({ where: { id } });
 
-    // If associated with a car, remove from car.sold.customerPhotos
     if (carId) {
-      const car = await Car.findById(carId);
+      const car = await Car.findByPk(carId);
       if (car) {
-        car.sold = car.sold || {};
-        car.sold.customerPhotos = (car.sold.customerPhotos || []).filter(f => f !== filename);
+        const existing = Array.isArray(car.soldCustomerPhotos) ? car.soldCustomerPhotos : (car.soldCustomerPhotos || []);
+        car.soldCustomerPhotos = existing.filter(f => f !== filename);
         await car.save();
       }
     }
@@ -106,27 +96,20 @@ exports.deleteGallery = async (req, res) => {
     // Delete file from disk or Cloudinary depending on how it was stored
     try {
       if (filename && (filename.startsWith('http://') || filename.startsWith('https://'))) {
-        // Attempt to derive public_id for Cloudinary and delete
         try {
           const parts = filename.split('/upload/');
           if (parts.length > 1) {
             let publicId = parts[1];
-            // strip version prefix like v12345/
             publicId = publicId.replace(/^v\d+\//, '');
-            // remove file extension and any query params
             publicId = publicId.split('?')[0].replace(/\.[a-zA-Z0-9]+$/, '');
-            // Destroy on cloudinary
             await cloudinary.uploader.destroy(publicId, { resource_type: 'image', invalidate: true });
           }
         } catch (cErr) {
           console.warn('Failed to delete Cloudinary image:', cErr);
         }
       } else {
-        // Local disk file
         const filePath = path.join(__dirname, '../utils/carimages', filename);
-        if (fs.existsSync(filePath)) {
-          fs.unlinkSync(filePath);
-        }
+        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
       }
     } catch (fsErr) {
       console.warn('Failed to delete gallery file from disk or cloud:', fsErr);
@@ -142,19 +125,23 @@ exports.deleteGallery = async (req, res) => {
 // Delete ALL gallery items and associated files (admin only)
 exports.deleteAllGallery = async (req, res) => {
   try {
-    const items = await Gallery.find().lean();
+    const items = await Gallery.findAll({ raw: true });
     const filenames = items.map((i) => i.filename).filter(Boolean);
 
-    // Remove filenames from any car.sold.customerPhotos arrays
+    // Remove filenames from any car.soldCustomerPhotos arrays
     if (filenames.length > 0) {
-      await Car.updateMany(
-        { 'sold.customerPhotos': { $in: filenames } },
-        { $pull: { 'sold.customerPhotos': { $in: filenames } } }
-      );
+      const cars = await Car.findAll();
+      for (const car of cars) {
+        const arr = Array.isArray(car.soldCustomerPhotos) ? car.soldCustomerPhotos : (car.soldCustomerPhotos || []);
+        const filtered = arr.filter(f => !filenames.includes(f));
+        if (filtered.length !== arr.length) {
+          car.soldCustomerPhotos = filtered;
+          await car.save();
+        }
+      }
     }
 
-    // Delete gallery documents
-    await Gallery.deleteMany({});
+    await Gallery.destroy({ where: {} });
 
     // Delete files from Cloudinary or disk depending on how they are stored
     try {

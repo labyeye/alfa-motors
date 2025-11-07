@@ -58,7 +58,7 @@ const GalleryManagement = () => {
 
       // Fetch all cars to manage which ones appear in gallery
       console.log("Fetching all cars...");
-      const allResponse = await axios.get(`${API_BASE}/api/cars`, {
+      const allResponse = await axios.get(`${API_BASE}/api/cars-sql`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       const allCarsData = allResponse.data.data || [];

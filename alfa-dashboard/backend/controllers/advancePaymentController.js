@@ -1,5 +1,11 @@
-const AdvancePayment = require("../models/AdvancePayment");
-const SellLetter = require("../models/SellLetter");
+let AdvancePayment, SellLetter;
+try {
+  ({ AdvancePayment } = require('../models_sql/AdvancePaymentSQL'));
+  ({ SellLetter } = require('../models_sql/SellLetterSQL'));
+} catch (e) {
+  AdvancePayment = require("../models/AdvancePayment");
+  SellLetter = require("../models/SellLetter");
+}
 
 exports.createPayment = async (req, res) => {
   try {

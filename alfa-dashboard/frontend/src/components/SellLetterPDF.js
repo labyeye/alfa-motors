@@ -168,7 +168,7 @@ const SellLetterForm = () => {
     const fetchCars = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get(`${API_BASE}/api/cars?available=true`, {
+        const res = await axios.get(`${API_BASE}/api/cars-sql?available=true`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         // API may return data or data.data depending on convention

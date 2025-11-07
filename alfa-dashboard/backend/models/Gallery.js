@@ -1,16 +1,7 @@
-const mongoose = require("mongoose");
-
-const gallerySchema = new mongoose.Schema({
-  car: { type: mongoose.Schema.Types.ObjectId, ref: "Car", required: false },
-  filename: { type: String, required: true },
-  caption: { type: String },
-  testimonial: { type: String },
-  uploadedBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  createdAt: { type: Date, default: Date.now },
-});
-
-module.exports = mongoose.model("Gallery", gallerySchema);
+// Backward-compat shim: re-export Sequelize Gallery model
+try {
+  module.exports = require('../models_sql/GallerySQL').Gallery;
+} catch (e) {
+  module.exports = null;
+  console.error('[models/Gallery] Sequelize Gallery model not available.');
+}

@@ -1,20 +1,9 @@
 require('dotenv').config();
-const mongoose = require('mongoose');
 const cloudinary = require('../config/cloudinary');
-const Car = require('../models/Car');
+const { Car } = require('../models_sql/CarSQL');
+const { sequelize } = require('../db');
 const path = require('path');
 const fs = require('fs');
-
-// Connect to MongoDB
-const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log('MongoDB connected successfully');
-  } catch (err) {
-    console.error('MongoDB connection error:', err);
-    process.exit(1);
-  }
-};
 
 // Upload a single image to Cloudinary
 const uploadToCloudinary = async (localPath) => {
@@ -35,11 +24,12 @@ const uploadToCloudinary = async (localPath) => {
 // Main migration function
 const migrateImages = async () => {
   try {
-    await connectDB();
+  // Ensure DB connection
+  await sequelize.authenticate();
 
-    // Get all cars from database
-    const cars = await Car.find({});
-    console.log(`Found ${cars.length} cars in database`);
+  // Get all cars from database
+  const cars = await Car.findAll({ raw: true });
+  console.log(`Found ${cars.length} cars in database`);
 
     let totalImages = 0;
     let uploadedImages = 0;
@@ -47,7 +37,7 @@ const migrateImages = async () => {
     let skippedImages = 0;
 
     for (const car of cars) {
-      console.log(`\nProcessing car: ${car.make} ${car.model} (ID: ${car._id})`);
+      console.log(`\nProcessing car: ${car.make} ${car.model} (ID: ${car.id})`);
       
       if (!car.photos || car.photos.length === 0) {
         console.log('  No photos to migrate');
@@ -97,13 +87,12 @@ const migrateImages = async () => {
 
       // Update car in database with new Cloudinary URLs
       if (updatedPhotos.length > 0) {
-        car.photos = updatedPhotos;
-        await car.save();
-        console.log(`  ✓ Database updated for car ${car._id}`);
+        await Car.update({ photos: updatedPhotos }, { where: { id: car.id } });
+        console.log(`  ✓ Database updated for car ${car.id}`);
       }
 
       // Handle sold car customer photos if they exist
-      if (car.sold && car.sold.customerPhotos && car.sold.customerPhotos.length > 0) {
+      if (car.soldCustomerPhotos && car.soldCustomerPhotos.length > 0) {
         const updatedCustomerPhotos = [];
 
         for (const photo of car.sold.customerPhotos) {
@@ -139,8 +128,7 @@ const migrateImages = async () => {
           }
         }
 
-        car.sold.customerPhotos = updatedCustomerPhotos;
-        await car.save();
+        await Car.update({ soldCustomerPhotos: updatedCustomerPhotos }, { where: { id: car.id } });
       }
     }
 

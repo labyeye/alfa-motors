@@ -1,13 +1,7 @@
-const mongoose = require("mongoose");
+// Deprecated: MongoDB is no longer used in this project.
+// This file is kept to avoid breaking older scripts. If you see this message
+// remove references to `config/db.js` and delete this file.
 
-const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGO_URI, {});
-    console.log("MongoDB Connected...");
-  } catch (err) {
-    console.error(err.message);
-    process.exit(1);
-  }
+module.exports = async function deprecatedConnectDB() {
+  console.warn('[config/db] Deprecated: MongoDB connect called but the project uses MySQL/Sequelize.');
 };
-
-module.exports = connectDB;
