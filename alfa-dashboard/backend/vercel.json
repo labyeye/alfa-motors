@@ -1,9 +1,20 @@
 {
-	"version": 2,
-	"builds": [
-		{ "src": "server.js", "use": "@vercel/node" }
-	],
-	"routes": [
-		{ "src": "/api/(.*)", "dest": "server.js" }
-	]
+  "version": 2,
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "node_modules/mysql2/**"
+        ]
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "server.js"
+    }
+  ]
 }
