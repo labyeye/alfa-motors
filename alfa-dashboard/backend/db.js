@@ -1,6 +1,6 @@
 require("dotenv").config();
 const { Sequelize } = require("sequelize");
-
+const mysql2 = require("mysql2");
 const DB_HOST = process.env.DB_HOST || "localhost";
 const DB_NAME = process.env.DB_NAME || "database";
 const DB_USER = process.env.DB_USER || "root";
@@ -12,6 +12,7 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASS, {
   host: DB_HOST,
   port: DB_PORT,
   dialect: "mysql",
+  dialectModule: mysql2,
   logging: false,
   pool: {
     max: 10,

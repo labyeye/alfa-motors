@@ -3,5 +3,7 @@
 // remove references to `config/db.js` and delete this file.
 
 module.exports = async function deprecatedConnectDB() {
-  console.warn('[config/db] Deprecated: MongoDB connect called but the project uses MySQL/Sequelize.');
+  console.warn(
+    "[config/db] Deprecated: MongoDB connect called but the project uses MySQL/Sequelize."
+  );
 };
