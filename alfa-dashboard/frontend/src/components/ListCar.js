@@ -11,6 +11,8 @@ const ListCar = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeMenu, setActiveMenu] = useState("List Car Data");
+const  API_BASE = "https://alfa-motors-5yfh.vercel.app";
+  const getId = (obj) => (obj && (obj.id || obj._id)) || null;
 
   useEffect(() => {
     const fetchCars = async () => {
@@ -19,14 +21,16 @@ const ListCar = () => {
         const API_BASE =
           window.API_BASE ||
           (window.location.hostname === "localhost"
-            ? "http://localhost:2500"
+            ? "https://alfa-motors-5yfh.vercel.app"
             : "https://alfa-motors-5yfh.vercel.app");
-        const response = await axios.get(`${API_BASE}/api/cars-sql`, {
+        const response = await axios.get(`${API_BASE}/api/cars`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        setCars(response.data.data);
+  // response.data.data may be undefined depending on API response shape;
+  // ensure we always store an array to avoid `.map` on undefined.
+  setCars(response.data?.data || response.data || []);
         setLoading(false);
       } catch (err) {
         setError(err.response?.data?.message || "Failed to fetch cars");
@@ -45,12 +49,15 @@ const ListCar = () => {
     if (window.confirm("Are you sure you want to delete this car?")) {
       try {
         const token = localStorage.getItem("token");
-        await axios.delete(`${API_BASE}/api/cars-sql/${carId}`, {
+        await axios.delete(`${API_BASE}/api/cars/${carId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        setCars(cars.filter((car) => car._id !== carId));
+        // use functional update and guard against undefined/current not being an array
+        setCars((current) =>
+          Array.isArray(current) ? current.filter((car) => getId(car) !== carId) : []
+        );
       } catch (err) {
         setError(err.response?.data?.message || "Failed to delete car");
       }
@@ -92,8 +99,8 @@ const ListCar = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {cars.map((car) => (
-                    <tr key={car._id} style={styles.tr}>
+                  {(Array.isArray(cars) ? cars : []).map((car) => (
+                    <tr key={getId(car) || Math.random()} style={styles.tr}>
                       <td style={styles.td}>{car.make}</td>
                       <td style={styles.td}>{car.model}</td>
                       <td style={styles.td}>{car.modelYear}</td>
@@ -140,13 +147,13 @@ const ListCar = () => {
                       </td>
                       <td style={styles.td}>
                         <button
-                          onClick={() => handleEdit(car._id)}
+                          onClick={() => handleEdit(getId(car))}
                           style={styles.editButton}
                         >
                           <Edit size={16} />
                         </button>
                         <button
-                          onClick={() => handleDelete(car._id)}
+                          onClick={() => handleDelete(getId(car))}
                           style={styles.deleteButton}
                         >
                           <Trash2 size={16} />

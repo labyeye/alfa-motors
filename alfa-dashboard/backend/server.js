@@ -14,7 +14,7 @@ const dashboardRoutes = require("./routes/dashboard");
 const serviceBillRoutes = require("./routes/serviceBillRoutes");
 const rcRoutes = require("./routes/rcRoutes");
 const sellRoutes = require("./routes/sellRoutes");
-const carRoutes = require("./routes/carRoutes");
+// legacy Mongo routes removed. Use SQL routes (carSqlRoutes) instead.
 const carSqlRoutes = require("./routes/carSqlRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const galleryRoutes = require("./routes/galleryRoutes");
@@ -60,6 +60,43 @@ const corsOptions = {
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
+// Response normalizer: ensure objects returned by Sequelize (which use `id`)
+// also include a Mongo-compatible `_id` field when `_id` is not present.
+// This makes frontend/dashboard code that expects `_id` continue to work
+// while the backend uses numeric `id` from SQL.
+app.use((req, res, next) => {
+  const originalJson = res.json;
+  res.json = function (payload) {
+    function normalize(obj) {
+      if (!obj || typeof obj !== "object") return obj;
+      if (Array.isArray(obj)) return obj.map(normalize);
+      // Convert Sequelize instance to plain object if necessary
+      if (obj.dataValues && typeof obj.dataValues === "object") obj = obj.dataValues;
+      if (obj.id && !Object.prototype.hasOwnProperty.call(obj, "_id")) {
+        try {
+          // ensure not to mutate shared prototypes
+          obj._id = obj.id;
+        } catch (e) {}
+      }
+      // recurse into object properties
+      Object.keys(obj).forEach((k) => {
+        try {
+          if (obj[k] && typeof obj[k] === "object") obj[k] = normalize(obj[k]);
+        } catch (e) {}
+      });
+      return obj;
+    }
+
+    try {
+      payload = normalize(payload);
+    } catch (e) {
+      // if normalization fails, fall back to original payload
+    }
+    return originalJson.call(this, payload);
+  };
+  next();
+});
+
 // Early CORS header middleware: ensure responses (including errors)
 // always include Access-Control-Allow-Origin when origin is allowed.
 app.use((req, res, next) => {
@@ -87,11 +124,7 @@ app.use("/public", express.static(path.join(__dirname, "public")));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/rc", rcRoutes);
-// Mount SQL car routes as the primary `/api/cars` endpoint so frontend
-// and admin can use the new MySQL-backed CRUD handlers. Keep the
-// original Mongo routes mounted under `/api/cars-mongo` as a fallback.
 app.use("/api/cars", carSqlRoutes);
-app.use("/api/cars-mongo", carRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/sell-letters", sellLetterRoutes);
 app.use("/api/dashboard", dashboardRoutes);

@@ -55,6 +55,7 @@ const EditCar = () => {
     status: "Available",
     sold: {},
   });
+  const [replacePhotos, setReplacePhotos] = useState(false);
 
   const menuItems = [
     {
@@ -130,7 +131,29 @@ const EditCar = () => {
             ? response.data.data
             : response.data;
 
-        setCarData({
+          // Coerce `photos` to an array in case the API returns a single string or
+          // unexpected shape. This prevents `.map` from throwing if photos is not
+          // an array.
+          // photos may be stored as JSON string in DB (e.g. "[\"url1\",\"url2\"]").
+          // Try to parse stringified JSON arrays, otherwise coerce safely.
+          let photosArray = [];
+          if (Array.isArray(car.photos)) {
+            photosArray = car.photos;
+          } else if (typeof car.photos === "string") {
+            try {
+              const parsed = JSON.parse(car.photos);
+              photosArray = Array.isArray(parsed) ? parsed : [car.photos];
+            } catch (e) {
+              // not JSON — treat as single URL or filename
+              photosArray = [car.photos];
+            }
+          } else if (car.photos) {
+            photosArray = [car.photos];
+          } else {
+            photosArray = [];
+          }
+
+          setCarData({
           make: car.make || "",
           model: car.model || "",
           variant: car.variant || "",
@@ -146,7 +169,7 @@ const EditCar = () => {
           buyingPrice: car.buyingPrice || "",
           quotingPrice: car.quotingPrice || "",
           sellingPrice: car.sellingPrice || "",
-          photos: car.photos || [],
+          photos: photosArray,
           status: car.status || "Available",
           sold: car.sold || {},
         });
@@ -188,7 +211,7 @@ const EditCar = () => {
   const handleFileUpload = async (files) => {
     if (files.length === 0) return;
 
-    // Validate file count
+      // Validate file count
     if (files.length > 12) {
       alert("Please select maximum 12 images at once.");
       return;
@@ -205,14 +228,13 @@ const EditCar = () => {
     }
 
     try {
-      // Show loading state
+      // Show loading placeholders
       const uploadingPhotos = files.map((_, index) => `uploading-${index}`);
       setCarData((prev) => ({ ...prev, photos: uploadingPhotos }));
 
       const formData = new FormData();
-
-      // Add replace flag to replace all existing photos
-      formData.append("replacePhotos", "true");
+      // Add replace flag depending on user's choice (default: append)
+      formData.append("replacePhotos", replacePhotos ? "true" : "false");
 
       for (let file of files) {
         formData.append("photos", file);
@@ -240,7 +262,24 @@ const EditCar = () => {
         updatedResponse.data && updatedResponse.data.data
           ? updatedResponse.data.data
           : updatedResponse.data;
-      setCarData((prev) => ({ ...prev, photos: car.photos || [] }));
+
+      // Ensure photos is always an array when updating state
+      let updatedPhotos = [];
+      if (Array.isArray(car.photos)) {
+        updatedPhotos = car.photos;
+      } else if (typeof car.photos === "string") {
+        try {
+          const parsed = JSON.parse(car.photos);
+          updatedPhotos = Array.isArray(parsed) ? parsed : [car.photos];
+        } catch (e) {
+          updatedPhotos = [car.photos];
+        }
+      } else if (car.photos) {
+        updatedPhotos = [car.photos];
+      } else {
+        updatedPhotos = [];
+      }
+      setCarData((prev) => ({ ...prev, photos: updatedPhotos }));
 
       alert(`${files.length} photos uploaded successfully!`);
     } catch (error) {
@@ -264,10 +303,12 @@ const EditCar = () => {
         data: { filename: filename },
       });
 
-      // Remove from local state
+      // Remove from local state (guard against non-array prev.photos)
       setCarData((prev) => ({
         ...prev,
-        photos: prev.photos.filter((photo) => photo !== photoToDelete),
+        photos: Array.isArray(prev.photos)
+          ? prev.photos.filter((photo) => photo !== photoToDelete)
+          : [],
       }));
 
       alert("Photo deleted successfully!");
@@ -290,21 +331,21 @@ const EditCar = () => {
 
     try {
       const updateData = {
-        brand: carData.make,
+        make: carData.make,
         model: carData.model,
         variant: carData.variant,
         fuelType: carData.fuelType,
-        modelYear: Number(carData.modelYear),
-        registrationYear: Number(carData.registrationYear),
+        modelYear: Number(carData.modelYear) || null,
+        registrationYear: Number(carData.registrationYear) || null,
         color: carData.color,
         chassisNo: carData.chassisNo,
         engineNo: carData.engineNo,
-        kmDriven: Number(carData.kmDriven),
+        kmDriven: Number(carData.kmDriven) || 0,
         ownership: carData.ownership,
-        daysOld: Number(carData.daysOld),
-        buyingPrice: Number(carData.buyingPrice),
-        quotingPrice: Number(carData.quotingPrice),
-        sellingPrice: Number(carData.sellingPrice),
+        daysOld: Number(carData.daysOld) || 0,
+        buyingPrice: Number(carData.buyingPrice) || 0,
+        quotingPrice: Number(carData.quotingPrice) || 0,
+        sellingPrice: Number(carData.sellingPrice) || 0,
         status: carData.status,
       };
 
@@ -680,8 +721,19 @@ const EditCar = () => {
                     Select up to 12 high-quality images (JPEG, PNG, WEBP)
                   </p>
                   <p style={styles.uploadNote}>
-                    ⚠️ Uploading new photos will replace all existing photos
+                    ⚠️ By default new photos are appended to existing ones. Check "Replace existing photos" to replace them instead.
                   </p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }}>
+                    <input
+                      id="replace-photos"
+                      type="checkbox"
+                      checked={replacePhotos}
+                      onChange={(e) => setReplacePhotos(e.target.checked)}
+                    />
+                    <label htmlFor="replace-photos" style={{ fontSize: 12, color: '#374151' }}>
+                      Replace existing photos
+                    </label>
+                  </div>
                   <input
                     type="file"
                     accept="image/jpeg,image/jpg,image/png,image/webp"
@@ -700,9 +752,10 @@ const EditCar = () => {
                   </label>
                 </div>
 
-                {carData.photos && carData.photos.length > 0 && (
+                {Array.isArray(carData.photos) && carData.photos.length > 0 && (
                   <div style={styles.photoGrid}>
-                    {carData.photos.map((photo, index) => {
+                    {(Array.isArray(carData.photos) ? carData.photos : []).map(
+                      (photo, index) => {
                       // Show loading placeholder for uploading photos
                       if (
                         typeof photo === "string" &&

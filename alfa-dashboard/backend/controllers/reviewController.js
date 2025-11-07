@@ -1,32 +1,18 @@
-let Review;
-try {
-  ({ Review } = require('../models_sql/ReviewSQL'));
-} catch (e) {
-  Review = require("../models/Review");
-}
-const asyncHandler = require("express-async-handler");
+const asyncHandler = require('express-async-handler');
+const { Review } = require('../models_sql/ReviewSQL');
 
 const createReview = asyncHandler(async (req, res) => {
+  if (!Review) return res.status(500).json({ success: false, message: 'Review model not available' });
   const { name, email, message, rating } = req.body;
-  if (!name || !email || !message) {
-    res.status(400);
-    throw new Error("Name, email and message are required");
-  }
-  const review = await Review.create({
-    name,
-    email,
-    message,
-    rating: rating || 5,
-  });
-  res.status(201).json({ success: true, data: review });
+  if (!name || !email || !message) return res.status(400).json({ success: false, message: 'Name, email and message are required' });
+  const review = await Review.create({ userName: name, comment: message, rating: rating || 5 });
+  return res.status(201).json({ success: true, data: review });
 });
 
 const getReviews = asyncHandler(async (req, res) => {
-  const reviews = await Review.find({})
-    .sort({ createdAt: -1 })
-    .limit(20)
-    .lean();
-  res.json({ success: true, data: reviews });
+  if (!Review) return res.status(500).json({ success: false, message: 'Review model not available' });
+  const reviews = await Review.findAll({ order: [['createdAt', 'DESC']], limit: 20, raw: true });
+  return res.json({ success: true, data: reviews });
 });
 
 module.exports = { createReview, getReviews };

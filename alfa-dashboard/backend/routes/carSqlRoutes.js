@@ -2,14 +2,15 @@ const express = require("express");
 const router = express.Router();
 const { Car } = require("../models_sql/CarSQL");
 const { protect } = require("../middleware/auth");
-const upload = require("../utils/fileUploadCloudinary");
+const upload = require("../utils/fileUploadLocal");
 const cloudinary = require("../config/cloudinary");
+
 const path = require("path");
 const fs = require("fs");
 
 const isProduction = process.env.NODE_ENV === "production" || process.env.VERCEL;
 
-// GET /api/cars-sql  -> list all cars
+// GET /api/cars  -> list all cars
 router.get("/", async (req, res) => {
   try {
     const where = {};
@@ -25,7 +26,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET /api/cars-sql/:id -> get single car
+// GET /api/cars/:id -> get single car
 router.get("/:id", async (req, res) => {
   try {
     const car = await Car.findByPk(req.params.id);
@@ -37,7 +38,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// POST /api/cars-sql -> create new car
+// POST /api/cars -> create new car
 // Create new car (supports multipart file upload)
 router.post("/", protect, upload.array("photos", 12), async (req, res) => {
   try {
@@ -65,7 +66,7 @@ router.post("/", protect, upload.array("photos", 12), async (req, res) => {
   }
 });
 
-// PUT /api/cars-sql/:id -> update car
+// PUT /api/cars/:id -> update car
 router.put("/:id", protect, async (req, res) => {
   try {
     const car = await Car.findByPk(req.params.id);
@@ -78,7 +79,7 @@ router.put("/:id", protect, async (req, res) => {
   }
 });
 
-// DELETE /api/cars-sql/:id -> delete car
+// DELETE /api/cars/:id -> delete car
 router.delete("/:id", async (req, res) => {
   try {
     const car = await Car.findByPk(req.params.id);
@@ -146,17 +147,24 @@ router.delete('/:id/photo', protect, async (req, res) => {
     car.photos = updated;
     await car.save();
 
-    // attempt deletion from cloudinary if URL
+    // attempt deletion from Cloudinary if URL, otherwise delete local file
     try {
-      if (filename.startsWith('http') && filename.includes('/upload/')) {
+      if (filename.includes('cloudinary.com') || (filename.startsWith('http') && filename.includes('/upload/'))) {
+        // Cloudinary style URL
         const parts = filename.split('/upload/');
-        let publicId = parts[1];
+        let publicId = parts[1] || '';
         publicId = publicId.replace(/^v\d+\//, '');
         publicId = publicId.split('?')[0].replace(/\.[a-zA-Z0-9]+$/, '');
         await cloudinary.uploader.destroy(publicId, { resource_type: 'image', invalidate: true });
+      } else {
+        // Local file: remove from configured dir
+        const CAR_IMAGES_DIR = process.env.CAR_IMAGES_DIR || path.join(__dirname, '../utils/carimages/');
+        const filenameOnly = filename.split('/').pop();
+        const filePath = path.join(CAR_IMAGES_DIR, filenameOnly.replace('carimages/', ''));
+        fs.unlink(filePath, () => {});
       }
     } catch (delErr) {
-      console.warn('Failed to delete cloudinary file', delErr);
+      console.warn('Failed to delete remote/local file', delErr);
     }
 
     res.json({ success: true, data: car });

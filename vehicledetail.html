@@ -287,6 +287,13 @@
           ? "https://alfa-motors-5yfh.vercel.app"
           : "https://alfa-motors-5yfh.vercel.app"; // Replace with your Vercel backend URL
 
+      // Image base: in production use the public Xozz/DirectAdmin folder (/car-images)
+      // In development, fall back to the backend static route that serves /carimages
+      const IMAGE_BASE =
+        window.location.hostname === "localhost"
+          ? `${API_BASE_URL}/carimages`
+          : `${window.location.protocol}//${window.location.hostname}/car-images`;
+
       // Helper function to get the correct image URL (robust)
       function getImageUrl(imagePath) {
         if (!imagePath) return "assets/placeholder.png";
@@ -311,8 +318,9 @@
         const cleaned = p.replace(/^\/+/, "");
         if (cleaned.startsWith("assets/")) return cleaned;
 
-        const filename = cleaned.startsWith("carimages/") ? cleaned.replace(/^carimages\//, "") : cleaned;
-        return `${API_BASE_URL}/carimages/${filename}`;
+  const filename = cleaned.startsWith("carimages/") ? cleaned.replace(/^carimages\//, "") : cleaned;
+  // Prefer IMAGE_BASE (production serves files from /car-images). For local/dev use backend /carimages route.
+  return `${IMAGE_BASE}/${filename}`;
       }
 
       // Normalize photos field from DB: may be an array, JSON string, or single filename
@@ -359,7 +367,7 @@
         const params = new URLSearchParams(window.location.search);
         try {
           const car = JSON.parse(decodeURIComponent(params.get("car")));
-          return car && car._id ? car._id : null;
+          return car && (car._id || car.id) ? (car._id || car.id) : null;
         } catch {
           return null;
         }
@@ -367,20 +375,20 @@
 
       // Load Car Data: prefer fetching fresh record from SQL endpoint when an _id is present
       (async function loadAndRenderCar() {
-        const initialCar = getCarDataFromQuery();
-        const idFromQuery = carIdFromQuery();
-        const carId = idFromQuery || (initialCar && initialCar._id) || null;
+  const initialCar = getCarDataFromQuery();
+  const idFromQuery = carIdFromQuery();
+  const carId = idFromQuery || (initialCar && (initialCar._id || initialCar.id)) || null;
 
         let car = initialCar || null;
         if (carId) {
           try {
-            const res = await fetch(`${API_BASE_URL}/api/cars-sql/${carId}`);
+            const res = await fetch(`${API_BASE_URL}/api/cars/${carId}`);
             if (res.ok) {
               const payload = await res.json();
               // payload may be { success, data } or the car object itself
               if (Array.isArray(payload)) car = payload[0] || car;
               else if (payload && payload.data) car = payload.data || car;
-              else if (payload && payload._id) car = payload;
+              else if (payload && (payload._id || payload.id)) car = payload;
             } else {
               console.warn('Failed to fetch car by id', res.status);
             }
@@ -467,7 +475,7 @@
         }
       )();
         // Fetch other cars from backend and show in slider (SQL endpoint)
-      fetch(`${API_BASE_URL}/api/cars-sql`)
+      fetch(`${API_BASE_URL}/api/cars`)
         .then((response) => {
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
           return response.json();
@@ -478,8 +486,9 @@
           const otherCarsRow = document.getElementById("otherCarsRow");
           otherCarsRow.innerHTML = "";
 
-          cars.forEach((car) => {
-            if (car._id && car._id === (carIdFromQuery() || "")) return;
+            cars.forEach((car) => {
+            const thisId = car && (car._id || car.id);
+            if (thisId && thisId === (carIdFromQuery() || "")) return;
 
             const firstPhoto = (function(){ const arr = normalizePhotos(car.photos); return (arr && arr.length) ? arr[0] : "assets/owner.png"; })();
             const imgSrc = getImageUrl(firstPhoto);

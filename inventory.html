@@ -1247,6 +1247,13 @@
             ? "https://alfa-motors-5yfh.vercel.app"
             : "https://alfa-motors-5yfh.vercel.app"; // Replace with your Vercel backend URL
 
+        // Image base: in production use the public Xozz/DirectAdmin folder (/car-images)
+        // In development, fall back to the backend static route that serves /carimages
+        const IMAGE_BASE =
+          window.location.hostname === "localhost"
+            ? `${API_BASE_URL}/carimages`
+            : `${window.location.protocol}//${window.location.hostname}/car-images`;
+
         // Helper function to get the correct image URL
         function getImageUrl(imagePath) {
           // Normalize different stored shapes: array, JSON string, single filename or full URL
@@ -1281,7 +1288,8 @@
           // If already contains carimages/, strip it and construct URL
           const filename = cleaned.startsWith("carimages/") ? cleaned.replace(/^carimages\//, "") : cleaned;
 
-          return `${API_BASE_URL}/carimages/${filename}`;
+          // Prefer IMAGE_BASE (production serves files from /car-images). For local/dev use backend /carimages route.
+          return `${IMAGE_BASE}/${filename}`;
         }
 
         // Normalize photos field from DB: may be an array, JSON string, or single filename
@@ -1318,7 +1326,7 @@
 
         function loadCars() {
           // Use the SQL-backed API endpoint
-          fetch(`${API_BASE_URL}/api/cars-sql`)
+          fetch(`${API_BASE_URL}/api/cars`)
             .then((response) => {
               if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);

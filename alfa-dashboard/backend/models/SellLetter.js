@@ -1,7 +1,4 @@
-// Backward-compat shim: re-export Sequelize SellLetter model
-try {
-  module.exports = require('../models_sql/SellLetterSQL').SellLetter;
-} catch (e) {
-  module.exports = null;
-  console.error('[models/SellLetter] Sequelize SellLetter model not available.');
-}
+// Removed legacy Mongo model shim.
+// This project uses Sequelize models in `models_sql/`.
+module.exports = null;
+console.error('[models/SellLetter] legacy shim removed — use models_sql/SellLetterSQL.js');

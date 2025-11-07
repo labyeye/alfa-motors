@@ -1,7 +1,4 @@
-// Backward-compat shim: re-export Sequelize Rc model
-try {
-  module.exports = require('../models_sql/RcSQL').Rc;
-} catch (e) {
-  module.exports = null;
-  console.error('[models/Rc] Sequelize Rc model not available.');
-}
+// Removed legacy Mongo model shim.
+// This project uses Sequelize models in `models_sql/`.
+module.exports = null;
+console.error('[models/Rc] legacy shim removed — use models_sql/RcSQL.js');

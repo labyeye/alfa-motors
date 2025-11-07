@@ -26,6 +26,9 @@ const GalleryManagement = () => {
   const [editCaption, setEditCaption] = useState("");
   const [editTestimonial, setEditTestimonial] = useState("");
 
+  // Helper to read id from objects that may have either `id` (SQL) or `_id` (Mongo)
+  const getId = (obj) => (obj && (obj.id || obj._id)) || null;
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -58,7 +61,7 @@ const GalleryManagement = () => {
 
       // Fetch all cars to manage which ones appear in gallery
       console.log("Fetching all cars...");
-      const allResponse = await axios.get(`${API_BASE}/api/cars-sql`, {
+      const allResponse = await axios.get(`${API_BASE}/api/cars`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       const allCarsData = allResponse.data.data || [];
@@ -111,7 +114,7 @@ const GalleryManagement = () => {
         if (galleryItem && galleryItem.filename) {
           setSoldCars((prev) =>
             prev.map((c) =>
-              c._id === carId
+              (getId(c) === carId)
                 ? {
                     ...c,
                     sold: {
@@ -146,9 +149,7 @@ const GalleryManagement = () => {
             }
           );
           const updatedSold = res2.data?.data?.sold;
-          setSoldCars((prev) =>
-            prev.map((c) => (c._id === carId ? { ...c, sold: updatedSold } : c))
-          );
+          setSoldCars((prev) => prev.map((c) => (getId(c) === carId ? { ...c, sold: updatedSold } : c)));
           successCount++;
         } catch (err2) {
           console.error(`Upload failed for file ${i + 1}:`, err2);
@@ -173,7 +174,7 @@ const GalleryManagement = () => {
 
   // Edit handlers
   const startEdit = (item) => {
-    setEditingId(item._id);
+    setEditingId(getId(item));
     setEditCaption(item.caption || "");
     setEditTestimonial(item.testimonial || "");
   };
@@ -194,20 +195,9 @@ const GalleryManagement = () => {
         }
       );
       const updated = res.data.data;
-      setGalleryItems((prev) =>
-        prev.map((it) => (it._id === id ? updated : it))
-      );
+      setGalleryItems((prev) => prev.map((it) => (getId(it) === id ? updated : it)));
       // Also update soldCars testimonial if present
-      setSoldCars((prev) =>
-        prev.map((c) =>
-          c._id === updated.car
-            ? {
-                ...c,
-                sold: { ...(c.sold || {}), testimonial: updated.testimonial },
-              }
-            : c
-        )
-      );
+      setSoldCars((prev) => prev.map((c) => (getId(c) === updated.car ? { ...c, sold: { ...(c.sold || {}), testimonial: updated.testimonial } } : c)));
       cancelEdit();
       alert("Gallery item updated");
     } catch (err) {
@@ -227,7 +217,7 @@ const GalleryManagement = () => {
       await axios.delete(`${API_BASE}/api/gallery/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
-      setGalleryItems((prev) => prev.filter((it) => it._id !== id));
+  setGalleryItems((prev) => prev.filter((it) => getId(it) !== id));
       // Also refresh soldCars to reflect possible removal
       fetchData();
       alert("Gallery item deleted");

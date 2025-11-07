@@ -12,11 +12,15 @@
     "dev": "nodemon server.js",
     "check-cloudinary": "node scripts/checkCloudinarySetup.js",
     "migrate-images": "node scripts/migrateImagesToCloudinary.js",
-    "migrate-mongo-to-sql": "node scripts/migrateMongoToMySQL.js"
+    "migrate-to-xozz": "node scripts/migrate-cloudinary.js"
+    ,"create-tables": "node scripts/createTables.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
-    "cloudinary": "^1.41.3",
+  "cloudinary": "^1.41.3",
+  "ssh2-sftp-client": "^9.0.0",
+  "axios": "^1.4.0",
+  "basic-ftp": "^5.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^4.21.2",

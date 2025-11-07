@@ -1,7 +1,4 @@
-// Backward-compat shim: re-export Sequelize Review model
-try {
-  module.exports = require('../models_sql/ReviewSQL').Review;
-} catch (e) {
-  module.exports = null;
-  console.error('[models/Review] Sequelize Review model not available.');
-}
+// Removed legacy Mongo model shim.
+// This project uses Sequelize models in `models_sql/`.
+module.exports = null;
+console.error('[models/Review] legacy shim removed — use models_sql/ReviewSQL.js');

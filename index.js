@@ -421,7 +421,7 @@ function getImageUrl(imagePath) {
 }
 
 function fetchFeaturedCars() {
-  fetch("https://alfa-motors-5yfh.vercel.app/api/cars-sql?limit=10")
+  fetch("https://alfa-motors-5yfh.vercel.app/api/cars?limit=10")
     .then((response) => response.json())
     .then((payload) => displayFeaturedCars(payload))
     .catch((error) => {

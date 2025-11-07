@@ -31,6 +31,8 @@ const AddCarForm = () => {
   });
   const [activeMenu, setActiveMenu] = useState("Add Car Data");
 
+  const getId = (obj) => (obj && (obj.id || obj._id)) || null;
+
   const API_BASE = "https://alfa-motors-5yfh.vercel.app";
 
   const handleChange = (e) => {
@@ -104,7 +106,7 @@ const AddCarForm = () => {
     setIsSubmitting(true);
     setError(null);
     const token = localStorage.getItem("token");
-    if (!user || !user._id || !token) {
+    if (!user || !getId(user) || !token) {
       setError("User not authenticated. Please log in.");
       setIsSubmitting(false);
       return;
@@ -118,7 +120,7 @@ const AddCarForm = () => {
           formPayload.append(key, value);
         }
       });
-      formPayload.append("addedBy", user._id);
+  formPayload.append("addedBy", getId(user));
       const response = await axios.post(`${API_BASE}/api/cars`, formPayload, {
         headers: { Authorization: `Bearer ${token}` },
       });

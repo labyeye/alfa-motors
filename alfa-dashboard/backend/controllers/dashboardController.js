@@ -52,7 +52,7 @@ exports.getOwnerDashboardStats = async (req, res) => {
 
     // SellLetters created by this owner (createdBy)
     const [totalSellLetters, totalSellValue] = await Promise.all([
-      SellLetter.count({ where: { createdBy: ownerId } }),
+      SellLetter.count({ where: { createdBy: ownerId } }).catch(() => 0),
       SellLetter.sum('saleAmount', { where: { createdBy: ownerId } }).catch(() => 0),
     ]);
 
@@ -84,6 +84,8 @@ exports.getOwnerDashboardStats = async (req, res) => {
 
 exports.getDashboardStats = async (req, res) => {
   try {
+    // Make each DB call resilient — if a table is missing or query fails,
+    // return a sensible default instead of throwing so the dashboard can render.
     const [
       totalSellLetters,
       totalSaleValue,
@@ -95,17 +97,18 @@ exports.getDashboardStats = async (req, res) => {
       recentService,
       carStatsArr,
     ] = await Promise.all([
-      SellLetter.count(),
+      SellLetter.count().catch(() => 0),
       SellLetter.sum('saleAmount').catch(() => 0),
-      ServiceBill.sum('amount').catch(() => 0),
-      getMonthlyAggregation(SellLetter, 'saleDate', {}),
-      getMonthlyAggregation(ServiceBill, 'createdAt', {}),
+      // ServiceBill stores total in `total` column
+      ServiceBill.sum('total').catch(() => 0),
+      getMonthlyAggregation(SellLetter, 'saleDate', {}).catch(() => []),
+      getMonthlyAggregation(ServiceBill, 'createdAt', {}).catch(() => []),
       Rc.count().catch(() => 0),
-      getRecent(SellLetter, {}, 3),
-      getRecent(ServiceBill, {}, 3),
+      getRecent(SellLetter, {}, 3).catch(() => []),
+      getRecent(ServiceBill, {}, 3).catch(() => []),
       (async () => {
         try {
-          const totalCars = await Car.count();
+          const totalCars = await Car.count().catch(() => 0);
           const soldCars = await Car.count({ where: { status: 'Sold' } }).catch(() => 0);
           const availableCars = await Car.count({ where: { status: 'Available' } }).catch(() => 0);
           return [{ totalCars, soldCars, availableCars }];

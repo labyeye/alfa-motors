@@ -3,9 +3,10 @@ const router = express.Router();
 const Car = require("../models/Car");
 const Gallery = require("../models/Gallery");
 const { protect } = require("../middleware/auth");
-const upload = require("../utils/fileUploadCloudinary");
+const upload = require("../utils/fileUploadLocal");
 const cloudinary = require("../config/cloudinary");
 const path = require("path");
+const fs = require("fs");
 
 // Helper to check if we're in production
 const isProduction =
@@ -160,32 +161,27 @@ router.delete("/:id/photo", protect, async (req, res) => {
     await car.save();
 
     // Delete file from storage
-    if (isProduction) {
-      // Cloudinary deletion
-      try {
-        // Extract public_id from Cloudinary URL
-        if (photoIdentifier.includes("cloudinary.com")) {
-          const urlParts = photoIdentifier.split("/");
-          const publicIdWithExt = urlParts
-            .slice(urlParts.indexOf("alfa-motors"))
-            .join("/");
-          const publicId = publicIdWithExt.replace(/\.[^/.]+$/, ""); // Remove extension
-          await cloudinary.uploader.destroy(publicId);
-        }
-      } catch (cloudErr) {
-        console.error("Error deleting from Cloudinary:", cloudErr);
+    // If this appears to be a Cloudinary URL, attempt Cloudinary deletion.
+    try {
+      if (photoIdentifier.includes("cloudinary.com")) {
+        const urlParts = photoIdentifier.split("/");
+        const publicIdWithExt = urlParts
+          .slice(urlParts.indexOf("alfa-motors"))
+          .join("/");
+        const publicId = publicIdWithExt.replace(/\.[^/.]+$/, ""); // Remove extension
+        await cloudinary.uploader.destroy(publicId);
+      } else {
+        // Otherwise treat as a local URL/file and remove from configured CAR_IMAGES_DIR
+        const CAR_IMAGES_DIR = process.env.CAR_IMAGES_DIR;
+        // If the identifier is a URL like https://alfamotorworld.com/car-images/filename
+        const filename = photoIdentifier.split('/').pop();
+        const filePath = path.join(CAR_IMAGES_DIR, filename.replace('carimages/', ''));
+        fs.unlink(filePath, (err) => {
+          // ignore missing file errors
+        });
       }
-    } else {
-      // Local file deletion
-      const fs = require("fs");
-      const filePath = path.join(
-        __dirname,
-        "../utils/carimages/",
-        photoIdentifier.replace("carimages/", "")
-      );
-      fs.unlink(filePath, (err) => {
-        // Ignore error if file not found
-      });
+    } catch (cloudErr) {
+      console.error("Error deleting remote/local file:", cloudErr);
     }
 
     res.json({ success: true, message: "Photo deleted" });

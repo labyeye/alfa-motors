@@ -1,7 +1,4 @@
-// Backward-compat shim: re-export Sequelize Gallery model
-try {
-  module.exports = require('../models_sql/GallerySQL').Gallery;
-} catch (e) {
-  module.exports = null;
-  console.error('[models/Gallery] Sequelize Gallery model not available.');
-}
+// Removed legacy Mongo model shim.
+// This project uses Sequelize models in `models_sql/`.
+module.exports = null;
+console.error('[models/Gallery] legacy shim removed — use models_sql/GallerySQL.js');
