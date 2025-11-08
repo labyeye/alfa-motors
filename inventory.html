@@ -15,16 +15,16 @@
     <meta name="robots" content="index,follow,max-image-preview:large" />
     <link
       rel="canonical"
-      href="https://www.alfamotorworld.com/https://www.alfamotorworld.com/inventory.html"
+      href="https://www.alfamotorworld.com/inventory.html"
     />
     <link
       rel="alternate"
-      href="https://www.alfamotorworld.com/https://www.alfamotorworld.com/inventory.html"
+      href="https://www.alfamotorworld.com/inventory.html"
       hreflang="en"
     />
     <link
       rel="alternate"
-      href="https://www.alfamotorworld.com/https://www.alfamotorworld.com/inventory.html"
+      href="https://www.alfamotorworld.com/inventory.html"
       hreflang="hi"
     />
     <link rel="preconnect" href="https://alfa-motors-5yfh.vercel.app" crossorigin />
@@ -389,37 +389,11 @@
                       />
                     </div>
                     <div class="price-presets">
-                      <button
-                        class="price-preset"
-                        data-min="0"
-                        data-max="50000"
-                      >
-                        Under 50K
-                      </button>
-                      <button
-                        class="price-preset"
-                        data-min="50000"
-                        data-max="100000"
-                      >
-                        50K-1L
-                      </button>
-                      <button
-                        class="price-preset"
-                        data-min="100000"
-                        data-max="200000"
-                      >
-                        1L-2L
-                      </button>
-                      <button
-                        class="price-preset"
-                        data-min="200000"
-                        data-max="500000"
-                      >
-                        2L-5L
-                      </button>
-                      <button class="price-preset" data-min="500000">
-                        5L+
-                      </button>
+                      <button class="price-preset" data-min="0" data-max="50000">Under ₹50,000</button>
+                      <button class="price-preset" data-min="50000" data-max="100000">₹50,000 - ₹100,000</button>
+                      <button class="price-preset" data-min="100000" data-max="200000">₹100,000 - ₹200,000</button>
+                      <button class="price-preset" data-min="200000" data-max="500000">₹200,000 - ₹500,000</button>
+                      <button class="price-preset" data-min="500000">₹500,000+</button>
                     </div>
                   </div>
                 </div>
@@ -1255,9 +1229,9 @@
             : `${window.location.protocol}//${window.location.hostname}/car-images`;
 
         // Helper function to get the correct image URL
+        // After migrating photos to Cloudinary this should mainly return absolute URLs.
         function getImageUrl(imagePath) {
           // Normalize different stored shapes: array, JSON string, single filename or full URL
-          if (!imagePath) return "assets/placeholder.png";
 
           // If passed an array, use the first element
           if (Array.isArray(imagePath) && imagePath.length > 0) imagePath = imagePath[0];
@@ -1276,7 +1250,7 @@
           if (typeof imagePath !== "string") return "assets/placeholder.png";
           const p = imagePath.trim();
 
-          // Full URLs or data URIs
+          // Prefer absolute URLs (Cloudinary / CDN) or data URIs
           if (p.startsWith("http://") || p.startsWith("https://") || p.startsWith("data:")) return p;
 
           // Remove any leading slashes
@@ -1288,7 +1262,7 @@
           // If already contains carimages/, strip it and construct URL
           const filename = cleaned.startsWith("carimages/") ? cleaned.replace(/^carimages\//, "") : cleaned;
 
-          // Prefer IMAGE_BASE (production serves files from /car-images). For local/dev use backend /carimages route.
+          // Fallback to IMAGE_BASE for legacy/local filenames
           return `${IMAGE_BASE}/${filename}`;
         }
 
@@ -1582,7 +1556,7 @@
       <div class="details">
         <div class="detail-item">
           <i class="fas fa-tachometer-alt"></i>
-          <span>${(car.kmDriven || 0).toLocaleString()} km</span>
+          <span>${(car.kmDriven || 0).toLocaleString('en-IN')} km</span>
         </div>
         <div class="detail-item">
           <i class="fas fa-user"></i>
@@ -1598,7 +1572,7 @@
         </div>
       </div>
       <div class="price-container">
-        <div class="price">₹${(car.sellingPrice || 0).toLocaleString()}</div>
+  <div class="price">₹${(car.sellingPrice || 0).toLocaleString('en-IN')}</div>
         
         <div class="button-group">
           <button class="contact-btn" data-translate="Contact Seller" ${
@@ -1728,7 +1702,7 @@
           } Model`;
           document.getElementById("popup-Car-km").textContent = `${(
             car.kmDriven || 0
-          ).toLocaleString()} km`;
+          ).toLocaleString('en-IN')} km`;
           document.getElementById("popup-Car-owner").textContent =
             typeof formatOwnership === "function"
               ? formatOwnership(car.ownership || "1")
@@ -1741,7 +1715,7 @@
               : car.daysOld || 0;
           document.getElementById("popup-Car-price").textContent = `₹${(
             car.sellingPrice || 0
-          ).toLocaleString()}`;
+          ).toLocaleString('en-IN')}`;
 
           // Contact Seller button navigation
           const contactBtn = popup.querySelector(".contact-btn");
@@ -2206,13 +2180,13 @@
 
           if (kmMin && kmMax) {
             kmMin.addEventListener("input", function () {
-              kmMinValue.textContent = parseInt(this.value).toLocaleString();
+              kmMinValue.textContent = parseInt(this.value).toLocaleString('en-IN');
               currentFilters.minKm = parseInt(this.value);
               applyAllFilters();
             });
 
             kmMax.addEventListener("input", function () {
-              kmMaxValue.textContent = parseInt(this.value).toLocaleString();
+              kmMaxValue.textContent = parseInt(this.value).toLocaleString('en-IN');
               currentFilters.maxKm = parseInt(this.value);
               applyAllFilters();
             });
@@ -2353,13 +2327,13 @@
 
           if (kmMin && kmMax) {
             kmMin.addEventListener("input", function () {
-              kmMinValue.textContent = parseInt(this.value).toLocaleString();
+              kmMinValue.textContent = parseInt(this.value).toLocaleString('en-IN');
               currentFilters.minKm = parseInt(this.value);
               applyAllFilters();
             });
 
             kmMax.addEventListener("input", function () {
-              kmMaxValue.textContent = parseInt(this.value).toLocaleString();
+              kmMaxValue.textContent = parseInt(this.value).toLocaleString('en-IN');
               currentFilters.maxKm = parseInt(this.value);
               applyAllFilters();
             });
@@ -3054,31 +3028,11 @@
                   />
                 </div>
                 <div class="price-presets">
-                  <button class="price-preset" data-min="0" data-max="50000">
-                    Under 50K
-                  </button>
-                  <button
-                    class="price-preset"
-                    data-min="50000"
-                    data-max="100000"
-                  >
-                    50K-1L
-                  </button>
-                  <button
-                    class="price-preset"
-                    data-min="100000"
-                    data-max="200000"
-                  >
-                    1L-2L
-                  </button>
-                  <button
-                    class="price-preset"
-                    data-min="200000"
-                    data-max="500000"
-                  >
-                    2L-5L
-                  </button>
-                  <button class="price-preset" data-min="500000">5L+</button>
+                  <button class="price-preset" data-min="0" data-max="50000">Under ₹50,000</button>
+                  <button class="price-preset" data-min="50000" data-max="100000">₹50,000 - ₹100,000</button>
+                  <button class="price-preset" data-min="100000" data-max="200000">₹100,000 - ₹200,000</button>
+                  <button class="price-preset" data-min="200000" data-max="500000">₹200,000 - ₹500,000</button>
+                  <button class="price-preset" data-min="500000">₹500,000+</button>
                 </div>
               </div>
             </div>

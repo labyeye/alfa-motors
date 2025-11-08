@@ -20,19 +20,13 @@ export default function AdvancePaymentForm() {
   });
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    fetchSellLetters();
-  }, []);
+  useEffect(() => { fetchSellLetters(); }, []);
 
   const fetchSellLetters = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/api/sell-letters`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
+      const res = await axios.get(`${API_BASE}/api/sell-letters`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
       setSellLetters(res.data || res.data.data || []);
-    } catch (err) {
-      console.error(err);
-    }
+    } catch (err) { console.error(err); }
   };
 
   const submit = async () => {

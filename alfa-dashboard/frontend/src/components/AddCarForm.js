@@ -42,14 +42,12 @@ const AddCarForm = () => {
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files || []);
-    // Enforce max 12 files client-side
     if (files.length > 12) {
       setError("You can upload a maximum of 12 photos. Extra files were ignored.");
     }
     const limitedFiles = files.slice(0, 12);
 
-    // Compress images before setting into state to reduce payload size
-    const compressAll = async (fileList) => {
+  const compressAll = async (fileList) => {
       try {
         const compressed = await Promise.all(
           fileList.map((f) => compressImageFile(f, 1200, 0.8))
@@ -64,7 +62,6 @@ const AddCarForm = () => {
     compressAll(limitedFiles);
   };
 
-  // Helper: compress an image File to a Blob/File with max width and quality
   const compressImageFile = (file, maxWidth = 1200, quality = 0.8) => {
     return new Promise((resolve, reject) => {
       if (!file.type.startsWith("image/")) return resolve(file);
@@ -87,11 +84,8 @@ const AddCarForm = () => {
           quality
         );
       };
-      img.onerror = (e) => {
-        console.warn("Image load error for compression, returning original", e);
-        resolve(file);
-      };
-      // Support blob URL or file object
+      img.onerror = () => resolve(file);
+  // Support blob URL or file object
       const reader = new FileReader();
       reader.onload = (ev) => {
         img.src = ev.target.result;

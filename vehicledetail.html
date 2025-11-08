@@ -405,13 +405,13 @@
         // Populate car details
         document.getElementById("vehicleTitle").textContent = `${car.brand || car.make || ""} ${car.model || ""}`;
         document.getElementById("vehicleModel").textContent = `${car.modelYear || ""} Model`;
-        document.getElementById("vehicleKm").textContent = `${(car.kmDriven || 0).toLocaleString()} km`;
+  document.getElementById("vehicleKm").textContent = `${(car.kmDriven || 0).toLocaleString('en-IN')} km`;
         document.getElementById("vehicleOwner").textContent = formatOwnership(car.ownership || "1");
         document.getElementById("vehicleFuel").textContent = car.fuelType || "Petrol";
         document.getElementById("vehicleColor").textContent = car.color || "";
         document.getElementById("vehicleRegYear").textContent = car.registrationYear || "";
-        document.getElementById("vehiclePrice").textContent = `₹${(car.sellingPrice || car.price || 0).toLocaleString()}`;
-        document.getElementById("vehicleEmi").textContent = `Down: ₹${(car.downPayment || 0).toLocaleString()} | EMI: ₹${Math.round(((car.sellingPrice || car.price || 0) - (car.downPayment || 0)) / 36).toLocaleString()}/month`;
+  document.getElementById("vehiclePrice").textContent = `₹${(car.sellingPrice || car.price || 0).toLocaleString('en-IN')}`;
+  document.getElementById("vehicleEmi").textContent = `Down: ₹${(car.downPayment || 0).toLocaleString('en-IN')} | EMI: ₹${Math.round(((car.sellingPrice || car.price || 0) - (car.downPayment || 0)) / 36).toLocaleString('en-IN')}/month`;
 
         // Handle images (normalize photos stored in DB)
         let images = normalizePhotos(car.photos);

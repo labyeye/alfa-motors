@@ -3,7 +3,8 @@ const router = express.Router();
 const Car = require("../models/Car");
 const Gallery = require("../models/Gallery");
 const { protect } = require("../middleware/auth");
-const upload = require("../utils/fileUploadLocal");
+const uploadLocal = require("../utils/fileUploadLocal");
+const uploadCloud = require("../utils/fileUploadCloudinary");
 const cloudinary = require("../config/cloudinary");
 const path = require("path");
 const fs = require("fs");
@@ -13,14 +14,15 @@ const isProduction =
   process.env.NODE_ENV === "production" || process.env.VERCEL;
 
 // API endpoint for adding a car (for React frontend)
-router.post("/", protect, upload.array("photos", 12), async (req, res) => {
+router.post("/", protect, uploadCloud.array("photos", 12), async (req, res) => {
   try {
     // Get uploaded photo file paths or URLs
     // Priority: multipart uploads via multer (req.files). If not present,
     // accept an array of photo URLs in req.body.photos (useful for direct-to-Cloudinary uploads).
     let photoPaths = [];
     if (req.files && req.files.length) {
-      photoPaths = req.files.map((file) => (isProduction ? file.path : file.filename));
+      // prefer Cloudinary secure_url when available
+      photoPaths = req.files.map((file) => file.secure_url || file.path || file.filename);
     } else if (req.body && req.body.photos) {
       try {
         // req.body.photos may be a JSON string or an array
@@ -337,12 +339,12 @@ router.put("/:id", protect, async (req, res) => {
 router.put(
   "/:id/photos",
   protect,
-  upload.array("photos", 12),
+  uploadCloud.array("photos", 12),
   async (req, res) => {
     try {
         let photoPaths = [];
         if (req.files && req.files.length) {
-          photoPaths = req.files.map((file) => (isProduction ? file.path : file.filename));
+          photoPaths = req.files.map((file) => file.secure_url || file.path || file.filename);
         } else if (req.body && req.body.photos) {
           try {
             if (typeof req.body.photos === 'string') photoPaths = JSON.parse(req.body.photos);
@@ -387,7 +389,7 @@ router.put(
 );
 
 // Add single photo to existing car
-router.post("/:id/photo", protect, upload.single("photo"), async (req, res) => {
+router.post("/:id/photo", protect, uploadCloud.single("photo"), async (req, res) => {
   try {
     // Accept either a multipart file (req.file) or a photo URL in req.body.photo / req.body.photoUrl
     if (!req.file && !(req.body && (req.body.photo || req.body.photoUrl))) {
@@ -403,7 +405,7 @@ router.post("/:id/photo", protect, upload.single("photo"), async (req, res) => {
 
     let photoPath = null;
     if (req.file) {
-      photoPath = isProduction ? req.file.path : req.file.filename;
+      photoPath = req.file.secure_url || req.file.path || req.file.filename;
     } else if (req.body) {
       photoPath = req.body.photo || req.body.photoUrl || null;
     }
@@ -476,7 +478,7 @@ router.put("/:id/mark-sold", protect, async (req, res) => {
 router.post(
   "/:id/sold-photo",
   protect,
-  upload.single("photo"),
+  uploadCloud.single("photo"),
   async (req, res) => {
     try {
       if (!req.file)
@@ -491,7 +493,7 @@ router.post(
           .status(401)
           .json({ success: false, error: "Not authorized" });
 
-      const photoPath = isProduction ? req.file.path : req.file.filename;
+  const photoPath = req.file.secure_url || req.file.path || req.file.filename;
       car.sold = car.sold || {};
       car.sold.customerPhotos = car.sold.customerPhotos || [];
       car.sold.customerPhotos.push(photoPath);
