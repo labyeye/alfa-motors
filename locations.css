@@ -52,7 +52,7 @@ h2 {
   padding: 8px 12px;
   background: var(--card);
   border-radius: 8px;
-  color: var(--accent);
+  color: black;
   text-decoration: none;
   border: 1px solid #e6eefb;
   font-size: 14px;

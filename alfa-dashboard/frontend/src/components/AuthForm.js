@@ -86,7 +86,6 @@ const AuthForm = ({ isLogin }) => {
               <label className="input-label">Email Address</label>
             </div>
 
-            
             <div
               className={`input-group ${
                 focusedField === "password" ? "focused" : ""
@@ -114,7 +113,6 @@ const AuthForm = ({ isLogin }) => {
               </button>
             </div>
 
-            
             <button
               type="button"
               onClick={onSubmit}
@@ -132,12 +130,9 @@ const AuthForm = ({ isLogin }) => {
               )}
             </button>
           </div>
-
-          
         </div>
       </div>
 
-      
       <div className="auth-image-section">
         <div className="image-overlay">
           <div className="overlay-content">
@@ -154,7 +149,7 @@ const AuthForm = ({ isLogin }) => {
           display: flex;
           min-height: 100vh;
           font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: #2B2B2B;
         }
 
         .auth-form-section {
@@ -204,30 +199,27 @@ const AuthForm = ({ isLogin }) => {
         }
 
         .brand-icon {
-          width: 20.5rem;
+          width: 15.5rem;
           height: 15.5rem;
-          color: #7c3aed;
+          color: #D4D4D4;
         }
 
         .brand-text {
           font-size: 1.75rem;
           font-weight: 700;
-          background: linear-gradient(135deg, #7c3aed, #3b82f6);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
+          color: #2B2B2B;
         }
 
         .auth-title {
           font-size: 2rem;
           font-weight: 700;
-          color: #1f2937;
+          color: #2B2B2B;
           margin-bottom: 0.5rem;
           letter-spacing: -0.025em;
         }
 
         .auth-subtitle {
-          color: #6b7280;
+          color: #B3B3B3;
           font-size: 1rem;
           line-height: 1.5;
         }
@@ -263,7 +255,7 @@ const AuthForm = ({ isLogin }) => {
           width: 100%;
           padding: 1rem 1rem 1rem 3rem;
           font-size: 1rem;
-          border: 2px solid #e5e7eb;
+          border: 2px solid #D4D4D4;
           border-radius: 0.75rem;
           background: rgba(255, 255, 255, 0.8);
           backdrop-filter: blur(10px);
@@ -273,8 +265,8 @@ const AuthForm = ({ isLogin }) => {
 
         .form-input:focus {
           outline: none;
-          border-color: #7c3aed;
-          box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+          border-color: #2B2B2B;
+          box-shadow: 0 0 0 3px rgba(43, 43, 43, 0.06);
           background: rgba(255, 255, 255, 0.95);
         }
 
@@ -285,14 +277,14 @@ const AuthForm = ({ isLogin }) => {
           transform: translateY(-50%);
           width: 1.25rem;
           height: 1.25rem;
-          color: #9ca3af;
+          color: #B3B3B3;
           transition: color 0.3s ease;
           z-index: 1;
         }
 
         .input-group.focused .input-icon,
         .input-group.filled .input-icon {
-          color: #7c3aed;
+          color: #000000;
         }
 
         .input-label {
@@ -312,7 +304,7 @@ const AuthForm = ({ isLogin }) => {
           top: 0;
           left: 0.75rem;
           font-size: 0.75rem;
-          color: #7c3aed;
+          color: #2B2B2B;
           background: rgba(255, 255, 255, 0.9);
           padding: 0 0.5rem;
           border-radius: 0.25rem;
@@ -325,7 +317,7 @@ const AuthForm = ({ isLogin }) => {
           transform: translateY(-50%);
           background: none;
           border: none;
-          color: #9ca3af;
+          color: #B3B3B3;
           cursor: pointer;
           transition: color 0.3s ease;
           padding: 0.25rem;
@@ -333,15 +325,15 @@ const AuthForm = ({ isLogin }) => {
         }
 
         .password-toggle:hover {
-          color: #7c3aed;
+          color: #2B2B2B;
         }
 
         .submit-button {
           position: relative;
           width: 100%;
           padding: 1rem 1.5rem;
-          background: linear-gradient(135deg, #7c3aed, #3b82f6);
-          color: white;
+          background: #2B2B2B;
+          color: #FFFFFF;
           border: none;
           font-size: 1rem;
           font-weight: 600;
@@ -357,7 +349,7 @@ const AuthForm = ({ isLogin }) => {
 
         .submit-button:hover:not(:disabled) {
           transform: translateY(-2px);
-          box-shadow: 0 10px 25px rgba(124, 58, 237, 0.3);
+          box-shadow: 0 10px 25px rgba(43, 43, 43, 0.18);
         }
 
         .submit-button:active:not(:disabled) {
@@ -400,25 +392,25 @@ const AuthForm = ({ isLogin }) => {
 
         .auth-footer {
           text-align: center;
-          color: #6b7280;
+          color: #B3B3B3;
           font-size: 0.875rem;
         }
 
         .auth-link {
-          color: #7c3aed;
+          color: #2B2B2B;
           text-decoration: none;
           font-weight: 600;
           transition: all 0.3s ease;
         }
 
         .auth-link:hover {
-          color: #5b21b6;
+          color: #B3B3B3;
           text-decoration: underline;
         }
 
         .auth-image-section {
           flex: 1;
-          background-image: url("https://cdn.bikedekho.com/processedimages/yamaha/mt-15-2-0/source/mt-15-2-06613f885e681c.jpg");
+          background-image: url("https://w0.peakpx.com/wallpaper/144/274/HD-wallpaper-bmw-black-car-class-engine-turbo.jpg");
           background-size: cover;
           background-position: center;
           position: relative;
@@ -428,11 +420,7 @@ const AuthForm = ({ isLogin }) => {
         .image-overlay {
           position: absolute;
           inset: 0;
-          background: linear-gradient(
-            135deg,
-            rgba(124, 58, 237, 0.8),
-            rgba(59, 130, 246, 0.6)
-          );
+          background: rgba(43, 43, 43, 0.8);
           display: flex;
           align-items: center;
           justify-content: center;

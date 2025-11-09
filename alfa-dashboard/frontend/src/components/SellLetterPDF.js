@@ -10,13 +10,7 @@ import {
   Clock,
   IndianRupee,
   CheckCircle,
-  LayoutDashboard,
-  TrendingUp,
-  Wrench,
-  Users,
   AlertCircle,
-  Bike,
-  CarFront,
   Car,
   FileText,
 } from "lucide-react";
@@ -181,70 +175,7 @@ const SellLetterForm = () => {
     fetchCars();
   }, []);
 
-  const menuItems = [
-    {
-      name: "Dashboard",
-      icon: LayoutDashboard,
-      path: (userRole) => (userRole === "admin" ? "/admin" : "/staff"),
-    },
-    {
-      name: "RTO",
-      icon: Car,
-      submenu: [
-        { name: "RC Entry", path: "/rc/create" },
-        { name: "RC List", path: "/rc/list" },
-      ],
-    },
-
-    {
-      name: "Car Management",
-      icon: CarFront,
-      submenu: [
-        { name: "Add Car Data", path: "/car/create" },
-        { name: "List Car Data", path: "/car/list" },
-      ],
-    },
-
-    {
-      name: "Sell",
-      icon: TrendingUp,
-      submenu: [
-        { name: "Create Sell Letter", path: "/sell/create" },
-        { name: "Sell Letter History", path: "/sell/history" },
-        { name: "Sell Queries", path: "/sell-requests" },
-        { name: "Advance Payments", path: "/advance-payments/create" },
-        { name: "Payment History", path: "/advance-payments/history" },
-      ],
-    },
-    {
-      name: "Gallery Management",
-      icon: Car,
-      path: "/gallery",
-    },
-    {
-      name: "Service",
-      icon: Wrench,
-      submenu: [
-        { name: "Create Service Bill", path: "/service/create" },
-        { name: "Service History", path: "/service/history" },
-        { name: "Sell Queries", path: "/sell-requests" },
-      ],
-    },
-    {
-      name: "Staff",
-      icon: Users,
-      submenu: [
-        { name: "Create Staff ID", path: "/staff/create" },
-        { name: "Staff List", path: "/staff/list" },
-      ],
-    },
-    {
-      name: "Vehicle History",
-      icon: Bike,
-      path: "/bike-history",
-    },
-  ];
-  // Generate a professional A4 PDF using pdf-lib, embedding logos and styled text
+  
   const generatePdfBytes = async (language = "hindi") => {
     try {
       // Create a PDF document
@@ -686,116 +617,9 @@ const SellLetterForm = () => {
       alert("Failed to download PDF");
     }
   };
-  const formatIndianAmountInWords = (amount) => {
-    if (isNaN(amount)) return "(Zero Rupees)";
+  
 
-    const num = parseFloat(amount);
-    if (num === 0) return "(Zero Rupees)";
-
-    const units = [
-      "",
-      "One",
-      "Two",
-      "Three",
-      "Four",
-      "Five",
-      "Six",
-      "Seven",
-      "Eight",
-      "Nine",
-    ];
-    const teens = [
-      "Ten",
-      "Eleven",
-      "Twelve",
-      "Thirteen",
-      "Fourteen",
-      "Fifteen",
-      "Sixteen",
-      "Seventeen",
-      "Eighteen",
-      "Nineteen",
-    ];
-    const tens = [
-      "",
-      "Ten",
-      "Twenty",
-      "Thirty",
-      "Forty",
-      "Fifty",
-      "Sixty",
-      "Seventy",
-      "Eighty",
-      "Ninety",
-    ];
-    const convertLessThanHundred = (n) => {
-      if (n < 10) return units[n];
-      if (n < 20) return teens[n - 10];
-      return (
-        tens[Math.floor(n / 10)] + (n % 10 !== 0 ? " " + units[n % 10] : "")
-      );
-    };
-
-    const convertLessThanThousand = (n) => {
-      if (n < 100) return convertLessThanHundred(n);
-      const hundred = Math.floor(n / 100);
-      const remainder = n % 100;
-      return (
-        units[hundred] +
-        " Hundred" +
-        (remainder !== 0 ? " and " + convertLessThanHundred(remainder) : "")
-      );
-    };
-
-    const convert = (n) => {
-      if (n === 0) return "Zero";
-
-      let result = "";
-      const crore = Math.floor(n / 10000000);
-      if (crore > 0) {
-        result += convertLessThanThousand(crore) + " Crore ";
-        n = n % 10000000;
-      }
-
-      const lakh = Math.floor(n / 100000);
-      if (lakh > 0) {
-        result += convertLessThanThousand(lakh) + " Lakh ";
-        n = n % 100000;
-      }
-
-      const thousand = Math.floor(n / 1000);
-      if (thousand > 0) {
-        result += convertLessThanThousand(thousand) + " Thousand ";
-        n = n % 1000;
-      }
-
-      if (n > 0) {
-        result += convertLessThanThousand(n);
-      }
-
-      return result.trim();
-    };
-
-    const amountInPaise = num / 100;
-    return `(${convert(amountInPaise)} Only)`;
-  };
-
-  const toggleMenu = (menuName) => {
-    setExpandedMenus((prev) => ({
-      ...prev,
-      [menuName]: !prev[menuName],
-    }));
-  };
-  const formatKm = (val) => {
-    const num = parseFloat(val.toString().replace(/,/g, ""));
-    return isNaN(num)
-      ? "0.00"
-      : new Intl.NumberFormat("en-IN", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        }).format(num / 100);
-  };
-
+  
   const formatRupee = (val) => {
     const num = parseFloat(val.toString().replace(/,/g, ""));
     return isNaN(num)
@@ -818,11 +642,7 @@ const SellLetterForm = () => {
     });
   };
 
-  const handleMenuClick = (menuName, path) => {
-    setActiveMenu(menuName);
-    const actualPath = typeof path === "function" ? path(user?.role) : path;
-    navigate(actualPath);
-  };
+  
   const saveToDatabase = async () => {
     try {
       setIsSaving(true);
@@ -996,16 +816,6 @@ const SellLetterForm = () => {
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
-  };
-
-  // Removed old PDF-template fill functions. Preview/download now uses HTML preview.
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("authToken");
-    sessionStorage.clear();
-    navigate("/login");
   };
 
   return (

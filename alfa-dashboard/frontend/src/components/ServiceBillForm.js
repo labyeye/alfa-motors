@@ -25,8 +25,6 @@ import Sidebar from "./Sidebar";
 const ServiceBillForm = () => {
   const { user } = useContext(AuthContext);
   const [activeMenu, setActiveMenu] = useState("Create Service Bill");
-  const [expandedMenus, setExpandedMenus] = useState({});
-  const navigate = useNavigate();
   const { id: editId } = useParams();
   const [isSaving, setIsSaving] = useState(false);
   const [availableCars, setAvailableCars] = useState([]);

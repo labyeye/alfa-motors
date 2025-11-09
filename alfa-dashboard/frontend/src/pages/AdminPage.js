@@ -46,7 +46,6 @@ ChartJS.register(
 const AdminPage = () => {
   const { user } = useContext(AuthContext);
   const [activeMenu, setActiveMenu] = useState("Dashboard");
-  const [expandedMenus, setExpandedMenus] = useState({});
   const [dashboardData, setDashboardData] = useState({
     totalBuyLetters: 0,
     totalSellLetters: 0,
@@ -136,20 +135,6 @@ const AdminPage = () => {
     }
   };
 
-  const formatCurrency = (amount) => {
-    if (isNaN(amount)) return "₹0";
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
-
-  const toggleOwnerView = () => {
-    setIsOwnerView(!isOwnerView);
-  };
-
   // Chart data configuration
   const monthlyChartData = {
     labels: dashboardData.monthlyData?.map((item) => item.month) || [],
@@ -157,12 +142,12 @@ const AdminPage = () => {
       {
         label: "Buy Letters",
         data: dashboardData.monthlyData?.map((item) => item.buy) || [],
-        backgroundColor: "#3b82f6",
+        backgroundColor: "#B3B3B3",
       },
       {
         label: "Sell Letters",
         data: dashboardData.monthlyData?.map((item) => item.sell) || [],
-        backgroundColor: "#10b981",
+        backgroundColor: "#D4D4D4",
       },
     ],
   };
@@ -175,7 +160,7 @@ const AdminPage = () => {
         data: dashboardData.monthlyData?.map((item) => item.profit) || [],
         backgroundColor:
           dashboardData.monthlyData?.map((item) =>
-            item.profit >= 0 ? "#10b981" : "#ef4444"
+            item.profit >= 0 ? "#B3B3B3" : "#2B2B2B"
           ) || [],
       },
     ],
@@ -190,8 +175,8 @@ const AdminPage = () => {
           dashboardData.totalSellLetters || 0,
           dashboardData.recentTransactions?.service?.length || 0,
         ],
-        backgroundColor: ["#3b82f6", "#10b981", "#f59e0b"],
-        borderColor: ["#2563eb", "#059669", "#d97706"],
+        backgroundColor: ["#B3B3B3", "#D4D4D4", "#FFFFFF"],
+        borderColor: ["#2B2B2B", "#2B2B2B", "#2B2B2B"],
         borderWidth: 1,
       },
     ],
@@ -232,18 +217,16 @@ const AdminPage = () => {
               key={index}
               style={{
                 ...styles.card,
-                borderLeft: `4px solid ${
-                  [
-                    "#3b82f6",
-                    "#10b981",
-                    "#8b5cf6",
-                    "#f59e0b",
-                    "#ef4444",
-                    "#f97316",
-                    "#8b5cf6",
-                    "#14b8a6",
-                  ][index]
-                }`,
+                        borderLeft: `4px solid ${[
+                          "#B3B3B3",
+                          "#D4D4D4",
+                          "#B3B3B3",
+                          "#D4D4D4",
+                          "#2B2B2B",
+                          "#B3B3B3",
+                          "#D4D4D4",
+                          "#B3B3B3",
+                        ][index]}`,
                 opacity: 0.7,
               }}
             >
@@ -255,28 +238,28 @@ const AdminPage = () => {
                 <div
                   style={{
                     ...styles.cardIcon,
-                    backgroundColor: [
-                      "#dbeafe",
-                      "#d1fae5",
-                      "#ede9fe",
-                      "#fef3c7",
-                      "#fee2e2",
-                      "#ffedd5",
-                      "#ede9fe",
-                      "#ccfbf1",
-                    ][index],
+                            backgroundColor: [
+                              "#D4D4D4",
+                              "#D4D4D4",
+                              "#D4D4D4",
+                              "#D4D4D4",
+                              "#D4D4D4",
+                              "#D4D4D4",
+                              "#D4D4D4",
+                              "#D4D4D4",
+                            ][index],
                   }}
                 >
                   {
                     [
-                      <FileText size={32} color="#2563eb" />,
-                      <TrendingUp size={32} color="#059669" />,
-                      <ShoppingCart size={32} color="#7c3aed" />,
-                      <Target size={32} color="#d97706" />,
-                      <Car size={32} color="#dc2626" />,
-                      <CarFront size={32} color="#ea580c" />,
-                      <PenTool size={32} color="#7c3aed" />,
-                      <Bike size={32} color="#0d9488" />,
+                              <FileText size={32} color="#2B2B2B" />,
+                              <TrendingUp size={32} color="#2B2B2B" />,
+                              <ShoppingCart size={32} color="#2B2B2B" />,
+                              <Target size={32} color="#2B2B2B" />,
+                              <Car size={32} color="#2B2B2B" />,
+                              <CarFront size={32} color="#2B2B2B" />,
+                              <PenTool size={32} color="#2B2B2B" />,
+                              <Bike size={32} color="#2B2B2B" />,
                     ][index]
                   }
                 </div>
@@ -292,7 +275,7 @@ const AdminPage = () => {
             padding: "20px",
           }}
         >
-          <p style={{ color: "#ef4444" }}>{error}</p>
+          <p style={{ color: "#2B2B2B" }}>{error}</p>
           <button
             onClick={fetchDashboardData}
             style={{
@@ -311,7 +294,7 @@ const AdminPage = () => {
       ) : (
         <>
           {/* Existing cards */}
-          <div style={{ ...styles.card, borderLeft: "4px solid #3b82f6" }}>
+          <div style={{ ...styles.card, borderLeft: "4px solid #B3B3B3" }}>
             <div style={styles.cardContent}>
               <div>
                 <p style={styles.cardLabel}>Total Cars</p>
@@ -319,13 +302,13 @@ const AdminPage = () => {
                   {dashboardData.carStats.totalCars}
                 </p>
               </div>
-              <div style={{ ...styles.cardIcon, backgroundColor: "#dbeafe" }}>
-                <Car size={32} color="#2563eb" />
+              <div style={{ ...styles.cardIcon, backgroundColor: "#D4D4D4" }}>
+                <Car size={32} color="#2B2B2B" />
               </div>
             </div>
           </div>
 
-          <div style={{ ...styles.card, borderLeft: "4px solid #10b981" }}>
+          <div style={{ ...styles.card, borderLeft: "4px solid #D4D4D4" }}>
             <div style={styles.cardContent}>
               <div>
                 <p style={styles.cardLabel}>Sold Cars</p>
@@ -333,13 +316,13 @@ const AdminPage = () => {
                   {dashboardData.carStats.soldCars}
                 </p>
               </div>
-              <div style={{ ...styles.cardIcon, backgroundColor: "#d1fae5" }}>
-                <CarFront size={32} color="#059669" />
+              <div style={{ ...styles.cardIcon, backgroundColor: "#D4D4D4" }}>
+                <CarFront size={32} color="#2B2B2B" />
               </div>
             </div>
           </div>
 
-          <div style={{ ...styles.card, borderLeft: "4px solid #8b5cf6" }}>
+          <div style={{ ...styles.card, borderLeft: "4px solid #B3B3B3" }}>
             <div style={styles.cardContent}>
               <div>
                 <p style={styles.cardLabel}>Available Cars</p>
@@ -347,13 +330,13 @@ const AdminPage = () => {
                   {dashboardData.carStats.availableCars}
                 </p>
               </div>
-              <div style={{ ...styles.cardIcon, backgroundColor: "#ede9fe" }}>
-                <Car size={32} color="#7c3aed" />
+              <div style={{ ...styles.cardIcon, backgroundColor: "#D4D4D4" }}>
+                <Car size={32} color="#2B2B2B" />
               </div>
             </div>
           </div>
 
-          <div style={{ ...styles.card, borderLeft: "4px solid #f59e0b" }}>
+          <div style={{ ...styles.card, borderLeft: "4px solid #D4D4D4" }}>
             <div style={styles.cardContent}>
               <div>
                 <p style={styles.cardLabel}>Total RCs</p>
@@ -361,13 +344,13 @@ const AdminPage = () => {
                   {dashboardData.carStats.totalRCs}
                 </p>
               </div>
-              <div style={{ ...styles.cardIcon, backgroundColor: "#fef3c7" }}>
-                <FileText size={32} color="#d97706" />
+              <div style={{ ...styles.cardIcon, backgroundColor: "#D4D4D4" }}>
+                <FileText size={32} color="#2B2B2B" />
               </div>
             </div>
           </div>
 
-          <div style={{ ...styles.card, borderLeft: "4px solid #ef4444" }}>
+          <div style={{ ...styles.card, borderLeft: "4px solid #2B2B2B" }}>
             <div style={styles.cardContent}>
               <div>
                 <p style={styles.cardLabel}>RCs Transferred</p>
@@ -375,13 +358,13 @@ const AdminPage = () => {
                   {dashboardData.carStats.rcTransferred}
                 </p>
               </div>
-              <div style={{ ...styles.cardIcon, backgroundColor: "#fee2e2" }}>
-                <PenTool size={32} color="#dc2626" />
+              <div style={{ ...styles.cardIcon, backgroundColor: "#D4D4D4" }}>
+                <PenTool size={32} color="#2B2B2B" />
               </div>
             </div>
           </div>
 
-          <div style={{ ...styles.card, borderLeft: "4px solid #f97316" }}>
+          <div style={{ ...styles.card, borderLeft: "4px solid #B3B3B3" }}>
             <div style={styles.cardContent}>
               <div>
                 <p style={styles.cardLabel}>RC Fee Done</p>
@@ -389,13 +372,13 @@ const AdminPage = () => {
                   {dashboardData.carStats.rcFeeDone}
                 </p>
               </div>
-              <div style={{ ...styles.cardIcon, backgroundColor: "#ffedd5" }}>
-                <FileText size={32} color="#ea580c" />
+              <div style={{ ...styles.cardIcon, backgroundColor: "#D4D4D4" }}>
+                <FileText size={32} color="#2B2B2B" />
               </div>
             </div>
           </div>
 
-          <div style={{ ...styles.card, borderLeft: "4px solid #8b5cf6" }}>
+          <div style={{ ...styles.card, borderLeft: "4px solid #D4D4D4" }}>
             <div style={styles.cardContent}>
               <div>
                 <p style={styles.cardLabel}>RCs Available to Transfer</p>
@@ -403,13 +386,13 @@ const AdminPage = () => {
                   {dashboardData.carStats.rcAvailableToTransfer}
                 </p>
               </div>
-              <div style={{ ...styles.cardIcon, backgroundColor: "#ede9fe" }}>
-                <PenTool size={32} color="#7c3aed" />
+              <div style={{ ...styles.cardIcon, backgroundColor: "#D4D4D4" }}>
+                <PenTool size={32} color="#2B2B2B" />
               </div>
             </div>
           </div>
 
-          <div style={{ ...styles.card, borderLeft: "4px solid #14b8a6" }}>
+          <div style={{ ...styles.card, borderLeft: "4px solid #B3B3B3" }}>
             <div style={styles.cardContent}>
               <div>
                 <p style={styles.cardLabel}>RC Fee to be Taken</p>
@@ -417,8 +400,8 @@ const AdminPage = () => {
                   {dashboardData.carStats.rcFeeToBeTaken}
                 </p>
               </div>
-              <div style={{ ...styles.cardIcon, backgroundColor: "#ccfbf1" }}>
-                <FileText size={32} color="#0d9488" />
+              <div style={{ ...styles.cardIcon, backgroundColor: "#D4D4D4" }}>
+                <FileText size={32} color="#2B2B2B" />
               </div>
             </div>
           </div>
@@ -479,13 +462,13 @@ const AdminPage = () => {
             {dashboardData.monthlyData?.length > 0 ? (
               <Bar data={monthlyChartData} options={chartOptions} />
             ) : (
-              <p
-                style={{
-                  textAlign: "center",
-                  color: "#6b7280",
-                  padding: "20px",
-                }}
-              >
+                <p
+                  style={{
+                    textAlign: "center",
+                    color: "#B3B3B3",
+                    padding: "20px",
+                  }}
+                >
                 No transaction data available
               </p>
             )}
@@ -498,13 +481,13 @@ const AdminPage = () => {
             {dashboardData.monthlyData?.length > 0 ? (
               <Bar data={profitChartData} options={chartOptions} />
             ) : (
-              <p
-                style={{
-                  textAlign: "center",
-                  color: "#6b7280",
-                  padding: "20px",
-                }}
-              >
+                <p
+                  style={{
+                    textAlign: "center",
+                    color: "#B3B3B3",
+                    padding: "20px",
+                  }}
+                >
                 No profit data available
               </p>
             )}
@@ -537,7 +520,7 @@ const AdminPage = () => {
               }}
             >
               <div>
-                <h1 style={styles.pageTitle}>Dashboard</h1>
+                <h1>Dashboard</h1>
                 <p style={styles.pageSubtitle}>
                   {isOwnerView ? (
                     <>
@@ -557,62 +540,7 @@ const AdminPage = () => {
               <DashboardCards />
               {/* <RevenueCard /> */}
               <ChartsSection />
-              {!loading && !error && (
-                <div style={styles.quickActionsCard}>
-                  <h3 style={styles.quickActionsTitle}>Quick Actions</h3>
-                  <div style={styles.quickActionsGrid}>
-                    <button
-                      style={{
-                        ...styles.quickActionButton,
-                        backgroundColor: "#f0fdf4",
-                      }}
-                      onClick={() => navigate("/sell/create")}
-                    >
-                      <TrendingUp
-                        size={24}
-                        color="#059669"
-                        style={styles.quickActionIcon}
-                      />
-                      <p style={styles.quickActionTitle}>Create Sell Letter</p>
-                      <p style={styles.quickActionSubtitle}>Record new sale</p>
-                    </button>
-                    <button
-                      style={{
-                        ...styles.quickActionButton,
-                        backgroundColor: "#faf5ff",
-                      }}
-                      onClick={() => navigate("/service/create")}
-                    >
-                      <Wrench
-                        size={24}
-                        color="#7c3aed"
-                        style={styles.quickActionIcon}
-                      />
-                      <p style={styles.quickActionTitle}>Service Bill</p>
-                      <p style={styles.quickActionSubtitle}>
-                        Create service record
-                      </p>
-                    </button>
-                    <button
-                      style={{
-                        ...styles.quickActionButton,
-                        backgroundColor: "#fffbeb",
-                      }}
-                      onClick={() => navigate("/staff/create")}
-                    >
-                      <Users
-                        size={24}
-                        color="#d97706"
-                        style={styles.quickActionIcon}
-                      />
-                      <p style={styles.quickActionTitle}>Add Staff</p>
-                      <p style={styles.quickActionSubtitle}>
-                        Register new staff
-                      </p>
-                    </button>
-                  </div>
-                </div>
-              )}
+              
             </>
           )}
 
@@ -636,19 +564,19 @@ const styles = {
   container: {
     display: "flex",
     height: "100vh",
-    backgroundColor: "#f3f4f6",
+    backgroundColor: "#FFFFFF",
     fontFamily: "Arial, sans-serif",
   },
   // Sidebar Styles
   sidebar: {
     width: "280px",
-    backgroundColor: "#1e293b",
-    color: "#f8fafc",
+    backgroundColor: "#2B2B2B",
+    color: "#FFFFFF",
     boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
     position: "sticky",
     top: 0,
     height: "100vh",
-    backgroundImage: "linear-gradient(to bottom, #1e293b, #0f172a)",
+    backgroundImage: "linear-gradient(to bottom, #2B2B2B, #122236)",
   },
   sidebarHeader: {
     padding: "24px",
@@ -657,12 +585,12 @@ const styles = {
   sidebarTitle: {
     fontSize: "1.25rem",
     fontWeight: "600",
-    color: "#ffffff",
+    color: "#FFFFFF",
     margin: 0,
   },
   sidebarSubtitle: {
     fontSize: "0.875rem",
-    color: "#94a3b8",
+    color: "#D4D4D4",
     margin: "4px 0 0 0",
   },
   nav: {
@@ -674,16 +602,13 @@ const styles = {
     justifyContent: "space-between",
     padding: "12px 24px",
     cursor: "pointer",
-    color: "#e2e8f0",
+    color: "#FFFFFF",
     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-    ":hover": {
-      backgroundColor: "#334155",
-    },
   },
   menuItemActive: {
-    backgroundColor: "#334155",
-    borderRight: "3px solid #3b82f6",
-    color: "#ffffff",
+    backgroundColor: "#B3B3B3",
+    borderRight: "3px solid #D4D4D4",
+    color: "#2B2B2B",
   },
   menuItemContent: {
     display: "flex",
@@ -691,40 +616,40 @@ const styles = {
   },
   menuIcon: {
     marginRight: "12px",
-    color: "#94a3b8",
+    color: "#D4D4D4",
   },
   menuText: {
     fontSize: "0.9375rem",
     fontWeight: "500",
   },
   submenu: {
-    backgroundColor: "#1a2536",
+    backgroundColor: "#D4D4D4",
   },
   submenuItem: {
     padding: "10px 24px 10px 64px",
     cursor: "pointer",
-    color: "#cbd5e1",
+    color: "#2B2B2B",
     fontSize: "0.875rem",
     transition: "all 0.2s ease",
     ":hover": {
-      backgroundColor: "#2d3748",
+      backgroundColor: "#B3B3B3",
     },
   },
   submenuItemActive: {
-    backgroundColor: "#2d3748",
-    color: "#ffffff",
+    backgroundColor: "#B3B3B3",
+    color: "#2B2B2B",
   },
   logoutButton: {
     display: "flex",
     alignItems: "center",
     padding: "12px 24px",
     cursor: "pointer",
-    color: "#f87171",
+    color: "#FFFFFF",
     marginTop: "16px",
     borderTop: "1px solid #334155",
     transition: "all 0.2s ease",
     ":hover": {
-      backgroundColor: "#7f1d1d20",
+      backgroundColor: "#B3B3B3",
     },
   },
   mainContent: {
@@ -740,12 +665,12 @@ const styles = {
   pageTitle: {
     fontSize: "1.875rem",
     fontWeight: "bold",
-    color: "#1f2937",
+    color: "#2B2B2B",
     margin: 0,
     textAlign: "center",
   },
   pageSubtitle: {
-    color: "#6b7280",
+    color: "#B3B3B3",
     marginTop: "8px",
     margin: "8px 0 0 0",
     textAlign: "center",
@@ -776,13 +701,13 @@ const styles = {
   cardLabel: {
     fontSize: "0.875rem",
     fontWeight: "500",
-    color: "#6b7280",
+    color: "#B3B3B3",
     margin: 0,
   },
   cardValue: {
     fontSize: "1.875rem",
     fontWeight: "bold",
-    color: "#1f2937",
+    color: "#2B2B2B",
     margin: "4px 0 0 0",
   },
   cardIcon: {
@@ -800,7 +725,7 @@ const styles = {
   revenueTitle: {
     fontSize: "1.125rem",
     fontWeight: "600",
-    color: "#1f2937",
+    color: "#2B2B2B",
     marginBottom: "16px",
     margin: "0 0 16px 0",
   },
@@ -812,7 +737,7 @@ const styles = {
   revenueItem: {
     textAlign: "center",
     padding: "16px",
-    backgroundColor: "#f9fafb",
+  backgroundColor: "#FFFFFF",
     borderRadius: "8px",
     transition: "transform 0.2s",
     ":hover": {
@@ -821,12 +746,13 @@ const styles = {
   },
   revenueLabel: {
     fontSize: "0.875rem",
-    color: "#6b7280",
+    color: "#B3B3B3",
     margin: 0,
   },
   revenueValue: {
     fontSize: "1.25rem",
     fontWeight: "bold",
+    color: "#2B2B2B",
     margin: "4px 0 0 0",
   },
   // Charts Styles
@@ -837,7 +763,7 @@ const styles = {
     marginBottom: "32px",
   },
   chartCard: {
-    backgroundColor: "#ffffff",
+  backgroundColor: "#FFFFFF",
     borderRadius: "12px",
     boxShadow:
       "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
@@ -846,7 +772,7 @@ const styles = {
   chartTitle: {
     fontSize: "1.125rem",
     fontWeight: "600",
-    color: "#1f2937",
+    color: "#2B2B2B",
     margin: "0 0 16px 0",
   },
   chartWrapper: {
@@ -861,7 +787,7 @@ const styles = {
     marginBottom: "32px",
   },
   transactionCard: {
-    backgroundColor: "#ffffff",
+  backgroundColor: "#FFFFFF",
     borderRadius: "12px",
     boxShadow:
       "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
@@ -870,7 +796,7 @@ const styles = {
   transactionTitle: {
     fontSize: "1.125rem",
     fontWeight: "600",
-    color: "#1f2937",
+    color: "#2B2B2B",
     margin: "0 0 16px 0",
     display: "flex",
     alignItems: "center",
@@ -885,7 +811,7 @@ const styles = {
     justifyContent: "space-between",
     alignItems: "center",
     padding: "12px",
-    backgroundColor: "#f9fafb",
+  backgroundColor: "#D4D4D4",
     borderRadius: "8px",
     transition: "all 0.2s",
     ":hover": {
@@ -899,17 +825,17 @@ const styles = {
   transactionBike: {
     fontSize: "0.875rem",
     fontWeight: "500",
-    color: "#1f2937",
+    color: "#2B2B2B",
     margin: 0,
   },
   transactionCustomer: {
     fontSize: "0.75rem",
-    color: "#6b7280",
+    color: "#B3B3B3",
     margin: "2px 0 0 0",
   },
   transactionService: {
     fontSize: "0.75rem",
-    color: "#6b7280",
+    color: "#B3B3B3",
     fontStyle: "italic",
     margin: "2px 0 0 0",
   },
@@ -920,17 +846,17 @@ const styles = {
   },
   transactionDate: {
     fontSize: "0.75rem",
-    color: "#6b7280",
+    color: "#B3B3B3",
     margin: 0,
   },
   transactionAmount: {
     fontSize: "0.875rem",
     fontWeight: "500",
-    color: "#1f2937",
+    color: "#2B2B2B",
     margin: "2px 0 0 0",
   },
   quickActionsCard: {
-    backgroundColor: "#ffffff",
+    backgroundColor: "#FFFFFF",
     borderRadius: "12px",
     boxShadow:
       "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
@@ -939,7 +865,7 @@ const styles = {
   quickActionsTitle: {
     fontSize: "1.125rem",
     fontWeight: "600",
-    color: "#1f2937",
+    color: "#2B2B2B",
     marginBottom: "16px",
     margin: "0 0 16px 0",
   },
@@ -964,12 +890,12 @@ const styles = {
   },
   quickActionTitle: {
     fontWeight: "500",
-    color: "#1f2937",
+    color: "#2B2B2B",
     margin: 0,
   },
   quickActionSubtitle: {
     fontSize: "0.875rem",
-    color: "#6b7280",
+    color: "#B3B3B3",
     margin: "4px 0 0 0",
   },
   placeholderCard: {
@@ -983,12 +909,12 @@ const styles = {
   placeholderTitle: {
     fontSize: "1.5rem",
     fontWeight: "600",
-    color: "#1f2937",
+    color: "#2B2B2B",
     marginBottom: "16px",
     margin: "0 0 16px 0",
   },
   placeholderText: {
-    color: "#6b7280",
+    color: "#B3B3B3",
     margin: 0,
   },
 };

@@ -167,7 +167,7 @@
   padding: 15px 0;
   overflow-x: auto;
   scrollbar-width: thin;
-  scrollbar-color: #ff6b00 #2a2a2a;
+  scrollbar-color: var(--primary-color) #2a2a2a;
   margin-bottom: 20px;
   width: 100%;
 }
@@ -182,7 +182,7 @@
 }
 
 .brand-logos::-webkit-scrollbar-thumb {
-  background: #ff6b00;
+  background: var(--primary-color);
   border-radius: 3px;
 }
 
@@ -210,7 +210,7 @@
 }
 
 .brand-logo.active {
-  border-color: #ff6b00;
+  border-color: var(--primary-color);
   transform: scale(1.1);
   box-shadow: 0 0 10px rgba(255, 107, 0, 0.5);
 }
@@ -229,7 +229,7 @@
 
 /* Selected brand visual (used by JS: brand-selected) */
 .brand-logo.brand-selected {
-  border-color: #ff6b00;
+  border-color: var(--primary-color);
   transform: scale(1.08);
   box-shadow: 0 6px 18px rgba(255, 107, 0, 0.28);
   background: linear-gradient(180deg, #fff, #fff);
@@ -386,7 +386,7 @@
 }
 
 .popup-details .detail-item i {
-  color: #ff6b00;
+  color: var(--primary-color);
   font-size: 18px;
 }
 
@@ -400,7 +400,7 @@
 .price-container .price {
   font-size: 24px;
   font-weight: 700;
-  color: #ff6b00;
+  color: var(--primary-color);
 }
 
 .price-container .emi {
@@ -410,7 +410,7 @@
 
 /* 
 .contact-btn {
-  background-color: #ff6b00;
+  background-color: var(--primary-color);
   color: white;
   border: none;
   padding: 14px 25px;
@@ -515,12 +515,8 @@
 }
 
 .contact-btn {
-  background-color: #ff6b00;
+  background-color: var(--primary-color);
   color: white;
-}
-
-.contact-btn:hover {
-  background-color: #e05d00;
 }
 
 .view-details-btn {
@@ -573,7 +569,7 @@
 }
 
 .filter-btn {
-  background: #e05d00;
+  background: var(--primary-color);
   color: white;
   border: 1px solid #444;
   padding: 12px 20px;
@@ -590,8 +586,8 @@
 }
 
 .filter-btn.active {
-  background: #ff6b00;
-  border-color: #ff6b00;
+  background: var(--primary-color);
+  border-color: var(--primary-color);
   color: white;
   padding: 12px 20px;
 
@@ -641,8 +637,8 @@
 
 .filter-option:hover,
 .filter-option.active {
-  background: #ff6b00;
-  border-color: #ff6b00;
+  background: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
 .price-range {
@@ -670,7 +666,7 @@
 
 .range-inputs input:focus {
   outline: none;
-  border-color: #ff6b00;
+  border-color: var(--primary-color);
 }
 
 .price-presets {
@@ -694,8 +690,8 @@
 
 .price-preset:hover,
 .price-preset.active {
-  background: #ff6b00;
-  border-color: #ff6b00;
+  background: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
 .slider-container {
@@ -717,7 +713,7 @@
   -webkit-appearance: none;
   width: 18px;
   height: 18px;
-  background: #ff6b00;
+  background: var(--primary-color);
   border-radius: 50%;
   cursor: pointer;
 }
@@ -821,7 +817,7 @@
 }
 
 .card-content .detail-item i {
-  color: #ff6b00;
+  color: var(--primary-color);
   font-size: 14px;
 }
 
@@ -832,7 +828,7 @@
 .card-content .price {
   font-size: 20px;
   font-weight: bold;
-  color: #ff6b00;
+  color: var(--primary-color);
 }
 
 .card-content .emi {
@@ -982,7 +978,7 @@
 }
 
 #brand-dropdown::-webkit-scrollbar-thumb {
-  background: #ff6b00;
+  background: var(--primary-color);
   border-radius: 3px;
 }
 
@@ -1290,7 +1286,7 @@ body {
   background: none;
   border: none;
   cursor: pointer;
-  color: #ff6b00;
+  color: var(--primary-color);
   font-size: 18px;
   padding: 5px 10px;
   transition: transform 0.2s;
@@ -1327,7 +1323,7 @@ body {
 }
 
 .clear-search-btn:hover {
-  color: #ff6b00;
+  color: var(--primary-color);
 }
 
 /* Mobile-specific improvements */
@@ -1552,8 +1548,8 @@ body {
 }
 
 .sort-btn.active {
-  background: #ff6b00;
-  border-color: #ff6b00;
+  background: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
 .sort-options {
@@ -1591,7 +1587,7 @@ body {
 
 .sort-option:hover,
 .sort-option.active {
-  background: #ff6b00;
+  background: var(--primary-color);
 }
 
 /* Search container adjustments */
@@ -1719,7 +1715,7 @@ body {
   /* Mobile Filter Button */
   .mobile-filter-btn {
     display: none;
-    background: #ff6b00;
+    background: var(--primary-color);
     color: white;
     border: none;
     padding: 10px 15px;

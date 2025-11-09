@@ -602,33 +602,33 @@ const styles = {
   container: {
     display: "flex",
     height: "100vh",
-    backgroundColor: "#f3f4f6",
+    backgroundColor: "#FFFFFF",
     fontFamily: "Arial, sans-serif",
   },
   // Sidebar Styles
   sidebar: {
     width: "280px",
-    backgroundColor: "#1e293b",
-    color: "#f8fafc",
-    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+    backgroundColor: "#2B2B2B",
+    color: "#FFFFFF",
+    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.08)",
     position: "sticky",
     top: 0,
     height: "100vh",
-    backgroundImage: "linear-gradient(to bottom, #1e293b, #0f172a)",
+    /* flat dark sidebar to match palette */
   },
   sidebarHeader: {
     padding: "24px",
-    borderBottom: "1px solid #334155",
+    borderBottom: "1px solid #B3B3B3",
   },
   sidebarTitle: {
     fontSize: "1.25rem",
     fontWeight: "600",
-    color: "#ffffff",
+    color: "#FFFFFF",
     margin: 0,
   },
   sidebarSubtitle: {
     fontSize: "0.875rem",
-    color: "#94a3b8",
+    color: "#D4D4D4",
     margin: "4px 0 0 0",
   },
   nav: {
@@ -640,16 +640,16 @@ const styles = {
     justifyContent: "space-between",
     padding: "12px 24px",
     cursor: "pointer",
-    color: "#e2e8f0",
+    color: "#D4D4D4",
     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
     ":hover": {
-      backgroundColor: "#334155",
+      backgroundColor: "#B3B3B3",
     },
   },
   menuItemActive: {
-    backgroundColor: "#334155",
-    borderRight: "3px solid #3b82f6",
-    color: "#ffffff",
+    backgroundColor: "#B3B3B3",
+    borderRight: "3px solid #D4D4D4",
+    color: "#2B2B2B",
   },
   menuItemContent: {
     display: "flex",
@@ -657,23 +657,23 @@ const styles = {
   },
   menuIcon: {
     marginRight: "12px",
-    color: "#94a3b8",
+    color: "#D4D4D4",
   },
   menuText: {
     fontSize: "0.9375rem",
     fontWeight: "500",
   },
   submenu: {
-    backgroundColor: "#1a2536",
+    backgroundColor: "#2B2B2B",
   },
   submenuItem: {
     padding: "10px 24px 10px 64px",
     cursor: "pointer",
-    color: "#cbd5e1",
+    color: "#D4D4D4",
     fontSize: "0.875rem",
     transition: "all 0.2s ease",
     ":hover": {
-      backgroundColor: "#2d3748",
+      backgroundColor: "#B3B3B3",
     },
   },
   submenuItemActive: {
@@ -687,7 +687,7 @@ const styles = {
     cursor: "pointer",
     color: "#f87171",
     marginTop: "16px",
-    borderTop: "1px solid #334155",
+    borderTop: "1px solid #B3B3B3",
     transition: "all 0.2s ease",
     ":hover": {
       backgroundColor: "#7f1d1d20",
@@ -706,11 +706,11 @@ const styles = {
   pageTitle: {
     fontSize: "1.875rem",
     fontWeight: "bold",
-    color: "#1f2937",
+    color: "#2B2B2B",
     margin: 0,
   },
   pageSubtitle: {
-    color: "#6b7280",
+    color: "#B3B3B3",
     marginTop: "8px",
     margin: "8px 0 0 0",
   },
@@ -724,7 +724,7 @@ const styles = {
     backgroundColor: "#ffffff",
     borderRadius: "12px",
     boxShadow:
-      "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+      "0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04)",
     padding: "24px",
     transition: "transform 0.2s",
     ":hover": {
@@ -739,13 +739,13 @@ const styles = {
   cardLabel: {
     fontSize: "0.875rem",
     fontWeight: "500",
-    color: "#6b7280",
+    color: "#B3B3B3",
     margin: 0,
   },
   cardValue: {
     fontSize: "1.875rem",
     fontWeight: "bold",
-    color: "#1f2937",
+    color: "#2B2B2B",
     margin: "4px 0 0 0",
   },
   cardIcon: {
@@ -756,7 +756,7 @@ const styles = {
     backgroundColor: "#ffffff",
     borderRadius: "12px",
     boxShadow:
-      "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+      "0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04)",
     padding: "24px",
     marginBottom: "24px",
   },
@@ -775,7 +775,7 @@ const styles = {
   revenueItem: {
     textAlign: "center",
     padding: "16px",
-    backgroundColor: "#f9fafb",
+    backgroundColor: "#FFFFFF",
     borderRadius: "8px",
     transition: "transform 0.2s",
     ":hover": {
@@ -784,7 +784,7 @@ const styles = {
   },
   revenueLabel: {
     fontSize: "0.875rem",
-    color: "#6b7280",
+    color: "#B3B3B3",
     margin: 0,
   },
   revenueValue: {
@@ -802,7 +802,7 @@ const styles = {
   quickActionsTitle: {
     fontSize: "1.125rem",
     fontWeight: "600",
-    color: "#1f2937",
+    color: "#2B2B2B",
     marginBottom: "16px",
     margin: "0 0 16px 0",
   },
@@ -827,12 +827,12 @@ const styles = {
   },
   quickActionTitle: {
     fontWeight: "500",
-    color: "#1f2937",
+    color: "#2B2B2B",
     margin: 0,
   },
   quickActionSubtitle: {
     fontSize: "0.875rem",
-    color: "#6b7280",
+    color: "#B3B3B3",
     margin: "4px 0 0 0",
   },
   placeholderCard: {
@@ -846,12 +846,12 @@ const styles = {
   placeholderTitle: {
     fontSize: "1.5rem",
     fontWeight: "600",
-    color: "#1f2937",
+    color: "#2B2B2B",
     marginBottom: "16px",
     margin: "0 0 16px 0",
   },
   placeholderText: {
-    color: "#6b7280",
+    color: "#B3B3B3",
     margin: 0,
   },
 };

@@ -18,6 +18,7 @@
   height: 1px;
   overflow: hidden;
 }
+
 .skip-link:focus {
   position: fixed;
   left: 16px;
@@ -51,6 +52,7 @@ img {
   font-size: clamp(1.6rem, 4vw, 3rem);
   line-height: 1.05;
 }
+
 .hero-content .subtitle {
   font-size: clamp(0.9rem, 2.2vw, 1.1rem);
   font-weight: 400;
@@ -69,6 +71,7 @@ img {
   .search-container {
     width: 100%;
   }
+
   .search-input {
     width: 100%;
     box-sizing: border-box;
@@ -452,12 +455,14 @@ img {
 }
 
 @media (max-width: 480px) {
+
   /* Make each card occupy the full viewport width on small screens
      so sliding shows one complete card at a time instead of halves. */
   .Car-slider {
     gap: 12px;
     scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch; /* smooth momentum scrolling on iOS */
+    -webkit-overflow-scrolling: touch;
+    /* smooth momentum scrolling on iOS */
   }
 
   .Car-slider .Car-card {
@@ -613,12 +618,10 @@ img {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    135deg,
-    rgba(13, 27, 42, 0.7) 0%,
-    rgba(13, 27, 42, 0.5) 50%,
-    rgba(13, 27, 42, 0.8) 100%
-  );
+  background: linear-gradient(135deg,
+      rgba(13, 27, 42, 0.7) 0%,
+      rgba(13, 27, 42, 0.5) 50%,
+      rgba(13, 27, 42, 0.8) 100%);
   z-index: 1;
 }
 
@@ -696,11 +699,9 @@ body {
   position: absolute;
   width: 100%;
   height: 100%;
-  background: radial-gradient(
-    50% 50% at 77% 49%,
-    rgba(48, 46, 46, 1) 0%,
-    rgba(1, 1, 1, 0) 100%
-  );
+  background: radial-gradient(50% 50% at 77% 49%,
+      rgba(48, 46, 46, 1) 0%,
+      rgba(1, 1, 1, 0) 100%);
 }
 
 .navbar {
@@ -871,12 +872,10 @@ body {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.2),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent);
   transition: left 0.7s ease;
   z-index: -1;
 }
@@ -971,11 +970,9 @@ body {
 
 .hero-line {
   display: block;
-  background: linear-gradient(
-    188deg,
-    rgba(255, 255, 255, 1) 0%,
-    rgba(255, 255, 255, 0.7) 100%
-  );
+  background: linear-gradient(188deg,
+      rgba(255, 255, 255, 1) 0%,
+      rgba(255, 255, 255, 0.7) 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -991,9 +988,9 @@ body {
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-size: 9rem;
+  font-size: 8rem;
   font-weight: 700;
-  margin-top: -15px;
+  margin-top: 15px;
 }
 
 .hero-line.subtitle {
@@ -1011,11 +1008,9 @@ body {
 @media only screen and (max-width: 768px) {
   .hero-line {
     display: block;
-    background: linear-gradient(
-      188deg,
-      rgba(255, 255, 255, 1) 0%,
-      rgba(255, 255, 255, 0.7) 100%
-    );
+    background: linear-gradient(188deg,
+        rgba(255, 255, 255, 1) 0%,
+        rgba(255, 255, 255, 0.7) 100%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -1142,11 +1137,6 @@ h2 {
   left: -50%;
   width: 80%;
   height: 200%;
-  background: radial-gradient(
-    circle,
-    rgba(163, 41, 25, 0.1) 0%,
-    transparent 70%
-  );
   z-index: 0;
 }
 
@@ -1383,6 +1373,15 @@ h2 {
 }
 
 .sell-card .step-image {
+
+/* Responsive: reduce card height on small screens to avoid excessive vertical space */
+@media (max-width: 600px) {
+  .service-card {
+    min-height: 0;
+    padding: 20px 18px;
+    max-width: none;
+  }
+}
   width: 80px;
   height: 80px;
   border-radius: 10px;
@@ -1425,6 +1424,7 @@ h2 {
   .sell-card {
     width: 100%;
   }
+
   .sell-card .number-overlay {
     font-size: 64px;
     right: 14px;
@@ -1494,11 +1494,9 @@ h2 {
   right: -50%;
   width: 80%;
   height: 200%;
-  background: radial-gradient(
-    circle,
-    rgba(163, 41, 25, 0.1) 0%,
-    transparent 70%
-  );
+  background: radial-gradient(circle,
+      rgba(163, 41, 25, 0.1) 0%,
+      transparent 70%);
   z-index: 0;
 }
 
@@ -1534,9 +1532,9 @@ h2 {
 }
 
 .stat-number {
-  font-size: 3rem;
+  font-size: 2rem;
   font-weight: 700;
-  background: linear-gradient(90deg, #000000 100%);
+  background: linear-gradient(90deg, var(--primary-color) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -1551,6 +1549,8 @@ h2 {
 .stat-image {
   width: 100%;
   align-items: center;
+  justify-content: center;
+  display: flex;
 }
 
 .stat-image img {
@@ -1613,6 +1613,7 @@ h2 {
   border-color: var(--primary-color);
   transform: translateY(-3px);
 }
+
 .kannada-font {
   font-family: "Noto Sans Kannada", sans-serif;
 }
@@ -1640,11 +1641,9 @@ h2 {
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(
-    circle at 20% 50%,
-    var(--primary-color) -80%,
-    transparent 50%
-  );
+  background: radial-gradient(circle at 20% 50%,
+      var(--primary-color) -80%,
+      transparent 50%);
   z-index: 0;
 }
 
@@ -1672,6 +1671,12 @@ h2 {
   border: 1px solid rgba(255, 255, 255, 0.05);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* keep CTA/buttons visually fixed at the bottom and make cards uniform height */
+  justify-content: space-between;
+  min-height: 360px; /* ensures even card heights */
 }
 
 .service-card:hover {
@@ -1681,13 +1686,14 @@ h2 {
 }
 
 .service-card i {
+  width: auto;
   font-size: 2.5rem;
-  background: linear-gradient(135deg, var(--primary-color), #ff6b4a);
+  background: linear-gradient(135deg, var(--primary-color), #152d46);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 20px;
-  transition: transform 0.4s;
+  transition: transform 0.4s ease;
 }
 
 .service-card:hover i {
@@ -1735,13 +1741,12 @@ h2 {
   left: -50%;
   width: 80%;
   height: 200%;
-  background: radial-gradient(
-    circle,
-    rgba(163, 41, 25, 0.1) 0%,
-    transparent 70%
-  );
+  background: radial-gradient(circle,
+      rgba(163, 41, 25, 0.1) 0%,
+      transparent 70%);
   z-index: 0;
 }
+
 .styles-section {
   position: relative;
   overflow: hidden;
@@ -1851,7 +1856,8 @@ h2 {
   .styles-container-wrapper {
     overflow-x: auto;
     overflow-y: hidden;
-    -webkit-overflow-scrolling: touch; /* momentum on iOS */
+    -webkit-overflow-scrolling: touch;
+    /* momentum on iOS */
   }
 
   .styles-container {
@@ -1861,7 +1867,8 @@ h2 {
 
   .style-card {
     flex: 0 0 auto;
-    min-width: 72%; /* make cards large but allow peeking of next card */
+    min-width: 72%;
+    /* make cards large but allow peeking of next card */
     max-width: 72%;
     scroll-snap-align: start;
     box-sizing: border-box;
@@ -1871,6 +1878,7 @@ h2 {
   .styles-container-wrapper::-webkit-scrollbar {
     display: none;
   }
+
   .styles-container-wrapper {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -2111,11 +2119,9 @@ h2 {
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(
-    circle at 20% 50%,
-    #0e1b2a -100%,
-    transparent 50%
-  );
+  background: radial-gradient(circle at 20% 50%,
+      #0e1b2a -100%,
+      transparent 50%);
   z-index: 0;
 }
 
@@ -2135,7 +2141,7 @@ h2 {
   transform: translateX(-50%);
   width: 80px;
   height: 3px;
-  background: linear-gradient(90deg, var(--primary-color), #ff6b4a);
+  background: linear-gradient(90deg, var(--primary-color), white);
 }
 
 .testimonials-container {
@@ -2172,11 +2178,9 @@ h2 {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.03) 0%,
-    rgba(255, 255, 255, 0) 50%
-  );
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.03) 0%,
+      rgba(255, 255, 255, 0) 50%);
   z-index: -1;
 }
 
@@ -2721,12 +2725,10 @@ input[type="range"]::-webkit-slider-thumb {
   position: absolute;
   width: 100%;
   height: 100%;
-  background-image: radial-gradient(
-    circle at center,
-    rgba(0, 0, 0, 0.7) 0%,
-    rgba(0, 0, 0, 0.85) 60%,
-    rgba(0, 0, 0, 0.95) 100%
-  );
+  background-image: radial-gradient(circle at center,
+      rgba(0, 0, 0, 0.7) 0%,
+      rgba(0, 0, 0, 0.85) 60%,
+      rgba(0, 0, 0, 0.95) 100%);
 }
 
 .social-icons {

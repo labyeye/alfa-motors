@@ -12,7 +12,36 @@ exports.uploadGalleryPhoto = async (req, res) => {
     const caption = req.body.caption || '';
     const testimonial = req.body.testimonial || '';
 
-    const storedFilename = req.file.path || req.file.secure_url || req.file.url || req.file.filename || '';
+    // Attempt to upload the received file to Cloudinary. If that fails,
+    // fall back to saving a local filename (existing behavior).
+    let storedFilename = '';
+    try {
+      // multer with diskStorage provides `req.file.path` as the local filepath
+      if (req.file && req.file.path) {
+        const uploadRes = await cloudinary.uploader.upload(req.file.path, {
+          folder: 'carimages',
+          resource_type: 'image',
+        });
+        storedFilename = uploadRes.secure_url || uploadRes.url || '';
+
+        // delete local temp file after successful cloud upload
+        try {
+          if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+            fs.unlinkSync(req.file.path);
+          }
+        } catch (delErr) {
+          console.warn('Failed to remove local upload file:', delErr);
+        }
+      } else if (req.file && (req.file.secure_url || req.file.url)) {
+        storedFilename = req.file.secure_url || req.file.url;
+      } else {
+        storedFilename = req.file.filename || '';
+      }
+    } catch (uploadErr) {
+      console.warn('Cloudinary upload failed, falling back to local filename/path', uploadErr);
+      // Fallback: try to use the filename or path so existing serving logic remains valid
+      storedFilename = req.file && (req.file.filename || req.file.path || req.file.url || req.file.secure_url) || '';
+    }
 
     const galleryItem = await Gallery.create({
       car: carId,

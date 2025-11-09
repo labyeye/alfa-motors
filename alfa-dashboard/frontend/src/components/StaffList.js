@@ -1,5 +1,4 @@
 import { useState, useEffect, useContext } from "react";
-
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
@@ -57,30 +56,6 @@ const StaffList = () => {
       }
     }
   };
-
-  const toggleMenu = (menuName) => {
-    setExpandedMenus((prev) => ({
-      ...prev,
-      [menuName]: !prev[menuName],
-    }));
-  };
-
-  // Handle menu clicks
-  const handleMenuClick = (menuName, path) => {
-    setActiveMenu(menuName);
-    const actualPath = typeof path === "function" ? path(user?.role) : path;
-    navigate(actualPath);
-  };
-
-  
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("authToken");
-    sessionStorage.clear();
-    navigate("/login");
-  };
-
   return (
     <div style={styles.container}>
       

@@ -43,8 +43,10 @@ const RcEntryPage = () => {
     const pathParts = window.location.pathname.split("/");
     if (pathParts.includes("edit") && pathParts.length > 2) {
       const id = pathParts[pathParts.length - 1];
-      setIsEditMode(true);
-      setRcId(id);
+      if (id && id !== 'null' && id !== 'undefined') {
+        setIsEditMode(true);
+        setRcId(id);
+      }
       fetchRcEntry(id);
     }
   }, []);
@@ -75,7 +77,27 @@ const RcEntryPage = () => {
       }
 
       const data = await response.json();
-      setFormData(data.data);
+      // Normalize SQL-backed RC entry into the form shape expected by this component
+      const raw = data.data || data;
+      const details = raw.details || {};
+      const normalized = Object.assign(
+        {
+          vehicleName: details.vehicleName || "",
+          vehicleRegNo: raw.registrationNumber || details.registrationNumber || "",
+          ownerName: raw.holderName || details.ownerName || "",
+          ownerPhone: details.ownerPhone || "",
+          applicantName: details.applicantName || "",
+          applicantPhone: details.applicantPhone || "",
+          work: details.work || "",
+          dealerName: details.dealerName || "",
+          rtoAgentName: details.rtoAgentName || "",
+          remarks: details.remarks || "",
+          status: details.status || { rcTransferred: false, rtoFeesPaid: false },
+          pdfUrl: details.pdfUrl || raw.pdfUrl || null,
+        },
+        raw
+      );
+      setFormData(normalized);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching RC entry:", error);
@@ -117,12 +139,25 @@ const RcEntryPage = () => {
 
     try {
       let response;
+
       const payload = {
-        ...formData,
-        createdBy: user.id,
+        holderName: formData.ownerName || null,
+        registrationNumber: formData.vehicleRegNo || null,
+        details: {
+          vehicleName: formData.vehicleName || null,
+          ownerPhone: formData.ownerPhone || null,
+          applicantName: formData.applicantName || null,
+          applicantPhone: formData.applicantPhone || null,
+          work: formData.work || null,
+          dealerName: formData.dealerName || null,
+          rtoAgentName: formData.rtoAgentName || null,
+          remarks: formData.remarks || null,
+          status: formData.status || { rcTransferred: false, rtoFeesPaid: false },
+        },
+        createdBy: user && user.id ? user.id : null,
       };
 
-      if (isEditMode) {
+      if (isEditMode && rcId) {
         response = await fetch(`https://alfa-motors-5yfh.vercel.app/api/rc/${rcId}`, {
           method: "PUT",
           headers: {
@@ -144,14 +179,12 @@ const RcEntryPage = () => {
 
       if (!response.ok) {
         let errorMessage = `Server error: ${response.status} ${response.statusText}`;
-
         try {
           const contentType = response.headers.get("content-type");
           if (contentType && contentType.includes("application/json")) {
             const errorData = await response.json();
             errorMessage = errorData.message || errorMessage;
           } else {
-            // If response is HTML or other format, get text
             const errorText = await response.text();
             console.error("Server returned non-JSON response:", errorText);
             errorMessage = `Server error (${response.status}). Check console for details.`;
@@ -159,22 +192,25 @@ const RcEntryPage = () => {
         } catch (parseError) {
           console.error("Error parsing server response:", parseError);
         }
-
         throw new Error(errorMessage);
       }
 
       const data = await response.json();
       setSuccess("RC entry saved successfully!");
 
-      
-      if (!isEditMode) {
-        navigate(`/rc/list`);
-        setRcId(data.data._id);
+      let createdId = (data && data.data && (data.data.id || data.data._id)) || data.id || data._id || null;
+      if (createdId === 'null' || createdId === 'undefined') createdId = null;
+      if (createdId) {
+        setRcId(createdId);
         setIsEditMode(true);
       }
 
       if (pdfFile) {
-        await uploadPdf(data.data._id);
+        await uploadPdf(createdId);
+      }
+
+      if (!isEditMode) {
+        navigate(`/rc/list`);
       }
     } catch (error) {
       console.error("Error saving RC entry:", error);
@@ -186,21 +222,23 @@ const RcEntryPage = () => {
 
   const uploadPdf = async (id) => {
     if (!pdfFile) return;
+    if (!id) id = rcId;
+    if (!id) {
+      setError("Save the RC entry first before uploading PDF.");
+      return;
+    }
 
-    const formData = new FormData();
-    formData.append("pdf", pdfFile);
+    const fd = new FormData();
+    fd.append("pdf", pdfFile);
 
     try {
-      const response = await fetch(
-        `https://alfa-motors-5yfh.vercel.app/api/rc/${id}/upload`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-          },
-          body: formData,
-        }
-      );
+      const response = await fetch(`https://alfa-motors-5yfh.vercel.app/api/rc/${id}/upload`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+        body: fd,
+      });
 
       if (!response.ok) {
         let errorMessage = "Failed to upload PDF";
@@ -217,9 +255,12 @@ const RcEntryPage = () => {
       }
 
       const data = await response.json();
+      // backend may store pdfUrl inside details.json; normalize both shapes
+      const returned = data.data || data;
+      const pdfUrl = (returned.details && returned.details.pdfUrl) || returned.pdfUrl || null;
       setFormData((prev) => ({
         ...prev,
-        pdfUrl: data.data.pdfUrl,
+        pdfUrl,
       }));
       setPdfFile(null);
       setSuccess("PDF uploaded successfully!");
@@ -231,7 +272,15 @@ const RcEntryPage = () => {
 
   const downloadPdf = () => {
     if (!formData.pdfUrl) return;
-    window.open(`https://alfa-motors-5yfh.vercel.app${formData.pdfUrl}`, "_blank");
+    const url = formData.pdfUrl;
+    // if the stored URL is absolute (cloudinary secure url), open it directly
+    if (typeof url === 'string' && (url.startsWith('http://') || url.startsWith('https://'))) {
+      window.open(url, '_blank');
+      return;
+    }
+    // otherwise assume it's a path on our server
+    const API_BASE = process.env.REACT_APP_API_BASE_URL || 'https://alfa-motors-5yfh.vercel.app';
+    window.open(`${API_BASE}${url}`, '_blank');
   };
 
   return (
@@ -453,10 +502,15 @@ const RcEntryPage = () => {
                     type="button"
                     onClick={() => uploadPdf(rcId)}
                     style={styles.uploadButton}
-                    disabled={loading}
+                    disabled={loading || !rcId || rcId === 'null' || rcId === 'undefined'}
                   >
                     {loading ? "Uploading..." : "Upload Now"}
                   </button>
+                  {(!rcId || rcId === 'null' || rcId === 'undefined') && (
+                    <span style={{ marginLeft: 12, color: '#6b7280', fontSize: 13 }}>
+                      Save the entry first to enable upload
+                    </span>
+                  )}
                 </p>
               )}
             </div>

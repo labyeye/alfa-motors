@@ -1,8 +1,7 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Camera, Edit, Plus, ExternalLink } from "lucide-react";
-import AuthContext from "../context/AuthContext";
 import Sidebar from "../components/Sidebar";
 
 const API_BASE =
@@ -14,7 +13,6 @@ const API_BASE =
 const GalleryManagement = () => {
   const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = useState("Gallery Management");
-  const [expandedMenus, setExpandedMenus] = useState({});
   const [soldCars, setSoldCars] = useState([]);
   const [uploadingIds, setUploadingIds] = useState([]);
   const [allCars, setAllCars] = useState([]);
@@ -45,10 +43,6 @@ const GalleryManagement = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-
-      // Fetch sold cars for gallery
-
-      // Fetch gallery items
       console.log("Fetching gallery items...");
       const galleryResp = await axios.get(`${API_BASE}/api/gallery`);
       const galleryItemsData = galleryResp.data.data || [];
@@ -114,7 +108,7 @@ const GalleryManagement = () => {
         if (galleryItem && galleryItem.filename) {
           setSoldCars((prev) =>
             prev.map((c) =>
-              (getId(c) === carId)
+              getId(c) === carId
                 ? {
                     ...c,
                     sold: {
@@ -149,7 +143,11 @@ const GalleryManagement = () => {
             }
           );
           const updatedSold = res2.data?.data?.sold;
-          setSoldCars((prev) => prev.map((c) => (getId(c) === carId ? { ...c, sold: updatedSold } : c)));
+          setSoldCars((prev) =>
+            prev.map((c) =>
+              getId(c) === carId ? { ...c, sold: updatedSold } : c
+            )
+          );
           successCount++;
         } catch (err2) {
           console.error(`Upload failed for file ${i + 1}:`, err2);
@@ -195,9 +193,20 @@ const GalleryManagement = () => {
         }
       );
       const updated = res.data.data;
-      setGalleryItems((prev) => prev.map((it) => (getId(it) === id ? updated : it)));
+      setGalleryItems((prev) =>
+        prev.map((it) => (getId(it) === id ? updated : it))
+      );
       // Also update soldCars testimonial if present
-      setSoldCars((prev) => prev.map((c) => (getId(c) === updated.car ? { ...c, sold: { ...(c.sold || {}), testimonial: updated.testimonial } } : c)));
+      setSoldCars((prev) =>
+        prev.map((c) =>
+          getId(c) === updated.car
+            ? {
+                ...c,
+                sold: { ...(c.sold || {}), testimonial: updated.testimonial },
+              }
+            : c
+        )
+      );
       cancelEdit();
       alert("Gallery item updated");
     } catch (err) {
@@ -217,7 +226,7 @@ const GalleryManagement = () => {
       await axios.delete(`${API_BASE}/api/gallery/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
-  setGalleryItems((prev) => prev.filter((it) => getId(it) !== id));
+      setGalleryItems((prev) => prev.filter((it) => getId(it) !== id));
       // Also refresh soldCars to reflect possible removal
       fetchData();
       alert("Gallery item deleted");
@@ -749,60 +758,6 @@ const styles = {
     justifyContent: "space-between",
     alignItems: "flex-start",
   },
-  pageTitle: {
-    fontSize: "1.875rem",
-    fontWeight: "700",
-    color: "#1e293b",
-    margin: 0,
-    textAlign: "center",
-  },
-  pageSubtitle: {
-    fontSize: "1rem",
-    color: "#64748b",
-    margin: "8px 0 0 0",
-    textAlign: "center",
-  },
-  actionButtons: {
-    display: "flex",
-    gap: "12px",
-  },
-  viewGalleryButton: {
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-    padding: "10px 16px",
-    backgroundColor: "#3b82f6",
-    color: "white",
-    textDecoration: "none",
-    borderRadius: "6px",
-    fontSize: "0.875rem",
-    fontWeight: "500",
-    transition: "background-color 0.2s",
-  },
-  statsGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-    gap: "20px",
-    marginBottom: "32px",
-  },
-  statCard: {
-    backgroundColor: "white",
-    padding: "24px",
-    borderRadius: "12px",
-    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-    textAlign: "center",
-  },
-  statNumber: {
-    fontSize: "2rem",
-    fontWeight: "700",
-    color: "#1e293b",
-    margin: "0 0 8px 0",
-  },
-  statLabel: {
-    fontSize: "0.875rem",
-    color: "#64748b",
-    margin: 0,
-  },
   section: {
     backgroundColor: "white",
     borderRadius: "12px",
@@ -941,12 +896,6 @@ const styles = {
     border: "none",
     borderRadius: 6,
     cursor: "pointer",
-  },
-  header: {
-    marginBottom: "32px",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
   },
   pageTitle: {
     fontSize: "1.875rem",

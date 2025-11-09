@@ -175,32 +175,32 @@ const styles = {
   container: {
     display: "flex",
     minHeight: "100vh",
-    backgroundColor: "#f1f5f9",
+    backgroundColor: "#FFFFFF",
     fontFamily: "'Inter', sans-serif",
   },
   sidebar: {
     width: "280px",
-    backgroundColor: "#1e293b",
-    color: "#f8fafc",
-    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+    backgroundColor: "#2B2B2B",
+    color: "#FFFFFF",
+    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.08)",
     position: "sticky",
     top: 0,
     height: "100vh",
-    backgroundImage: "linear-gradient(to bottom, #1e293b, #0f172a)",
+    /* flat dark sidebar to match palette */
   },
   sidebarHeader: {
     padding: "24px",
-    borderBottom: "1px solid #334155",
+    borderBottom: "1px solid #B3B3B3",
   },
   sidebarTitle: {
     fontSize: "1.25rem",
     fontWeight: "600",
-    color: "#ffffff",
+    color: "#FFFFFF",
     margin: 0,
   },
   sidebarSubtitle: {
     fontSize: "0.875rem",
-    color: "#94a3b8",
+    color: "#D4D4D4",
     margin: "4px 0 0 0",
   },
   nav: {
@@ -212,16 +212,16 @@ const styles = {
     justifyContent: "space-between",
     padding: "12px 24px",
     cursor: "pointer",
-    color: "#e2e8f0",
+    color: "#D4D4D4",
     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
     ":hover": {
-      backgroundColor: "#334155",
+      backgroundColor: "#B3B3B3",
     },
   },
   menuItemActive: {
-    backgroundColor: "#334155",
-    borderRight: "3px solid #3b82f6",
-    color: "#ffffff",
+    backgroundColor: "#B3B3B3",
+    borderRight: "3px solid #D4D4D4",
+    color: "#2B2B2B",
   },
   menuItemContent: {
     display: "flex",
@@ -229,28 +229,28 @@ const styles = {
   },
   menuIcon: {
     marginRight: "12px",
-    color: "#94a3b8",
+    color: "#D4D4D4",
   },
   menuText: {
     fontSize: "0.9375rem",
     fontWeight: "500",
   },
   submenu: {
-    backgroundColor: "#1a2536",
+    backgroundColor: "#2B2B2B",
   },
   submenuItem: {
     padding: "10px 24px 10px 64px",
     cursor: "pointer",
-    color: "#cbd5e1",
+    color: "#D4D4D4",
     fontSize: "0.875rem",
     transition: "all 0.2s ease",
     ":hover": {
-      backgroundColor: "#2d3748",
+      backgroundColor: "#B3B3B3",
     },
   },
   submenuItemActive: {
-    backgroundColor: "#2d3748",
-    color: "#ffffff",
+    backgroundColor: "#D4D4D4",
+    color: "#2B2B2B",
   },
   logoutButton: {
     display: "flex",
@@ -259,7 +259,7 @@ const styles = {
     cursor: "pointer",
     color: "#f87171",
     marginTop: "16px",
-    borderTop: "1px solid #334155",
+    borderTop: "1px solid #B3B3B3",
     transition: "all 0.2s ease",
     ":hover": {
       backgroundColor: "#7f1d1d20",
@@ -268,7 +268,7 @@ const styles = {
   mainContent: {
     flex: 1,
     overflow: "auto",
-    backgroundColor: "#ffffff",
+    backgroundColor: "#FFFFFF",
   },
   contentPadding: {
     padding: "32px",
@@ -279,20 +279,20 @@ const styles = {
   pageTitle: {
     fontSize: "1.875rem",
     fontWeight: "700",
-    color: "#1e293b",
+    color: "#2B2B2B",
     margin: 0,
     textAlign: "center",
   },
   pageSubtitle: {
     fontSize: "1rem",
-    color: "#64748b",
+    color: "#B3B3B3",
     margin: "8px 0 0 0",
     textAlign: "center",
   },
   loading: {
     padding: "20px",
     textAlign: "center",
-    color: "#64748b",
+    color: "#B3B3B3",
   },
   error: {
     padding: "20px",
@@ -308,22 +308,22 @@ const styles = {
     marginTop: "20px",
   },
   th: {
-    backgroundColor: "#f1f5f9",
+    backgroundColor: "#FFFFFF",
     padding: "12px 16px",
     textAlign: "left",
     fontWeight: "600",
-    color: "#334155",
-    borderBottom: "1px solid #e2e8f0",
+    color: "#2B2B2B",
+    borderBottom: "1px solid #D4D4D4",
   },
   tr: {
-    borderBottom: "1px solid #e2e8f0",
+    borderBottom: "1px solid #D4D4D4",
     ":hover": {
-      backgroundColor: "#f8fafc",
+      backgroundColor: "#FFFFFF",
     },
   },
   td: {
     padding: "12px 16px",
-    color: "#334155",
+    color: "#2B2B2B",
   },
   statusBadge: {
     display: "inline-block",
@@ -347,12 +347,12 @@ const styles = {
   editButton: {
     backgroundColor: "transparent",
     border: "none",
-    color: "#3b82f6",
+    color: "#2B2B2B",
     cursor: "pointer",
     padding: "4px 8px",
     marginRight: "8px",
     ":hover": {
-      color: "#2563eb",
+      color: "#B3B3B3",
     },
   },
   deleteButton: {

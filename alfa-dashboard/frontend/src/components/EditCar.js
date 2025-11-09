@@ -1,24 +1,16 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
-  LayoutDashboard,
   Car,
   CarFront,
-  Bike,
   TrendingUp,
-  Wrench,
-  Users,
-  LogOut,
-  ChevronDown,
-  ChevronRight,
   Save,
   Upload,
   X,
   Camera,
 } from "lucide-react";
-import AuthContext from "../context/AuthContext";
-import logo from "../images/company.png";
+import Sidebar from "./Sidebar";
 
 const API_BASE = (function () {
   const host = window.location.hostname;
@@ -29,10 +21,7 @@ const API_BASE = (function () {
 
 const EditCar = () => {
   const { id } = useParams();
-  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [activeMenu, setActiveMenu] = useState("Edit Car Data");
-  const [expandedMenus, setExpandedMenus] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [carData, setCarData] = useState({
@@ -57,66 +46,6 @@ const EditCar = () => {
   });
   const [replacePhotos, setReplacePhotos] = useState(false);
 
-  const menuItems = [
-    {
-      name: "Dashboard",
-      icon: LayoutDashboard,
-      path: (userRole) => (userRole === "admin" ? "/admin" : "/staff"),
-    },
-    {
-      name: "RTO",
-      icon: Car,
-      submenu: [
-        { name: "RC Entry", path: "/rc/create" },
-        { name: "RC List", path: "/rc/list" },
-      ],
-    },
-    {
-      name: "Car Management",
-      icon: CarFront,
-      submenu: [
-        { name: "Add Car Data", path: "/car/create" },
-        { name: "List Car Data", path: "/car/list" },
-        { name: "Edit Car Data", path: "/car/edit" },
-      ],
-    },
-    {
-      name: "Gallery Management",
-      icon: Camera,
-      path: "/gallery",
-    },
-    {
-      name: "Sell",
-      icon: TrendingUp,
-      submenu: [
-        { name: "Create Sell Letter", path: "/sell/create" },
-        { name: "Sell Letter History", path: "/sell/history" },
-        { name: "Sell Queries", path: "/sell-requests" },
-      ],
-    },
-    {
-      name: "Service",
-      icon: Wrench,
-      submenu: [
-        { name: "Create Service Bill", path: "/service/create" },
-        { name: "Service History", path: "/service/history" },
-      ],
-    },
-    {
-      name: "Staff",
-      icon: Users,
-      submenu: [
-        { name: "Create Staff ID", path: "/staff/create" },
-        { name: "Staff List", path: "/staff/list" },
-      ],
-    },
-    {
-      name: "Vehicle History",
-      icon: Bike,
-      path: "/bike-history",
-    },
-  ];
-
   useEffect(() => {
     const fetchCarData = async () => {
       try {
@@ -130,30 +59,23 @@ const EditCar = () => {
           response.data && response.data.data
             ? response.data.data
             : response.data;
-
-          // Coerce `photos` to an array in case the API returns a single string or
-          // unexpected shape. This prevents `.map` from throwing if photos is not
-          // an array.
-          // photos may be stored as JSON string in DB (e.g. "[\"url1\",\"url2\"]").
-          // Try to parse stringified JSON arrays, otherwise coerce safely.
-          let photosArray = [];
-          if (Array.isArray(car.photos)) {
-            photosArray = car.photos;
-          } else if (typeof car.photos === "string") {
-            try {
-              const parsed = JSON.parse(car.photos);
-              photosArray = Array.isArray(parsed) ? parsed : [car.photos];
-            } catch (e) {
-              // not JSON — treat as single URL or filename
-              photosArray = [car.photos];
-            }
-          } else if (car.photos) {
+        let photosArray = [];
+        if (Array.isArray(car.photos)) {
+          photosArray = car.photos;
+        } else if (typeof car.photos === "string") {
+          try {
+            const parsed = JSON.parse(car.photos);
+            photosArray = Array.isArray(parsed) ? parsed : [car.photos];
+          } catch (e) {
             photosArray = [car.photos];
-          } else {
-            photosArray = [];
           }
+        } else if (car.photos) {
+          photosArray = [car.photos];
+        } else {
+          photosArray = [];
+        }
 
-          setCarData({
+        setCarData({
           make: car.make || "",
           model: car.model || "",
           variant: car.variant || "",
@@ -187,19 +109,6 @@ const EditCar = () => {
     fetchCarData();
   }, [id, navigate]);
 
-  const toggleMenu = (menuName) => {
-    setExpandedMenus((prev) => ({
-      ...prev,
-      [menuName]: !prev[menuName],
-    }));
-  };
-
-  const handleMenuClick = (menuName, path) => {
-    setActiveMenu(menuName);
-    const actualPath = typeof path === "function" ? path(user?.role) : path;
-    navigate(actualPath);
-  };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCarData((prev) => ({
@@ -210,14 +119,10 @@ const EditCar = () => {
 
   const handleFileUpload = async (files) => {
     if (files.length === 0) return;
-
-      // Validate file count
     if (files.length > 12) {
       alert("Please select maximum 12 images at once.");
       return;
     }
-
-    // Validate file types
     const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
     const invalidFiles = files.filter(
       (file) => !validTypes.includes(file.type)
@@ -366,14 +271,6 @@ const EditCar = () => {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("authToken");
-    sessionStorage.clear();
-    navigate("/login");
-  };
-
   if (isLoading) {
     return (
       <div style={styles.loadingContainer}>
@@ -385,69 +282,7 @@ const EditCar = () => {
 
   return (
     <div style={styles.container}>
-      <div style={styles.sidebar}>
-        <div style={styles.sidebarHeader}>
-          <img src={logo} alt="Alfa Motors Logo" style={styles.logoImage} />
-          <p style={styles.sidebarSubtitle}>Welcome, Alfa Motor World</p>
-        </div>
-
-        <nav style={styles.nav}>
-          {menuItems.map((item) => (
-            <div key={item.name}>
-              <div
-                style={{
-                  ...styles.menuItem,
-                  ...(activeMenu === item.name ? styles.menuItemActive : {}),
-                }}
-                onClick={() => {
-                  if (item.submenu) {
-                    toggleMenu(item.name);
-                  } else {
-                    handleMenuClick(item.name, item.path);
-                  }
-                }}
-              >
-                <div style={styles.menuItemContent}>
-                  <item.icon size={20} style={styles.menuIcon} />
-                  <span style={styles.menuText}>{item.name}</span>
-                </div>
-                {item.submenu &&
-                  (expandedMenus[item.name] ? (
-                    <ChevronDown size={16} />
-                  ) : (
-                    <ChevronRight size={16} />
-                  ))}
-              </div>
-
-              {item.submenu && expandedMenus[item.name] && (
-                <div style={styles.submenu}>
-                  {item.submenu.map((subItem) => (
-                    <div
-                      key={subItem.name}
-                      style={{
-                        ...styles.submenuItem,
-                        ...(activeMenu === subItem.name
-                          ? styles.submenuItemActive
-                          : {}),
-                      }}
-                      onClick={() =>
-                        handleMenuClick(subItem.name, subItem.path)
-                      }
-                    >
-                      {subItem.name}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-
-          <div style={styles.logoutButton} onClick={handleLogout}>
-            <LogOut size={20} style={styles.menuIcon} />
-            <span style={styles.menuText}>Logout</span>
-          </div>
-        </nav>
-      </div>
+      <Sidebar />
 
       {/* Main Content */}
       <div style={styles.mainContent}>
@@ -721,16 +556,27 @@ const EditCar = () => {
                     Select up to 12 high-quality images (JPEG, PNG, WEBP)
                   </p>
                   <p style={styles.uploadNote}>
-                    ⚠️ By default new photos are appended to existing ones. Check "Replace existing photos" to replace them instead.
+                    ⚠️ By default new photos are appended to existing ones.
+                    Check "Replace existing photos" to replace them instead.
                   </p>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      marginTop: 8,
+                    }}
+                  >
                     <input
                       id="replace-photos"
                       type="checkbox"
                       checked={replacePhotos}
                       onChange={(e) => setReplacePhotos(e.target.checked)}
                     />
-                    <label htmlFor="replace-photos" style={{ fontSize: 12, color: '#374151' }}>
+                    <label
+                      htmlFor="replace-photos"
+                      style={{ fontSize: 12, color: "#374151" }}
+                    >
                       Replace existing photos
                     </label>
                   </div>
@@ -756,51 +602,52 @@ const EditCar = () => {
                   <div style={styles.photoGrid}>
                     {(Array.isArray(carData.photos) ? carData.photos : []).map(
                       (photo, index) => {
-                      // Show loading placeholder for uploading photos
-                      if (
-                        typeof photo === "string" &&
-                        photo.startsWith("uploading-")
-                      ) {
+                        // Show loading placeholder for uploading photos
+                        if (
+                          typeof photo === "string" &&
+                          photo.startsWith("uploading-")
+                        ) {
+                          return (
+                            <div key={index} style={styles.photoCard}>
+                              <div style={styles.uploadingPlaceholder}>
+                                <div style={styles.uploadingSpinner}></div>
+                                <span style={styles.uploadingText}>
+                                  Uploading...
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        }
+
                         return (
                           <div key={index} style={styles.photoCard}>
-                            <div style={styles.uploadingPlaceholder}>
-                              <div style={styles.uploadingSpinner}></div>
-                              <span style={styles.uploadingText}>
-                                Uploading...
-                              </span>
-                            </div>
+                            <img
+                              src={buildImageUrl(photo)}
+                              alt={`Vehicle ${index + 1}`}
+                              style={styles.photoImage}
+                              onError={(e) => {
+                                e.currentTarget.src = "/assets/placeholder.png";
+                              }}
+                            />
+                            <button
+                              type="button"
+                              style={styles.deletePhotoButton}
+                              onClick={() => {
+                                if (
+                                  window.confirm(
+                                    "Delete this photo from server? This cannot be undone."
+                                  )
+                                ) {
+                                  handleDeletePhoto(photo);
+                                }
+                              }}
+                            >
+                              <X size={16} />
+                            </button>
                           </div>
                         );
                       }
-
-                      return (
-                        <div key={index} style={styles.photoCard}>
-                          <img
-                            src={buildImageUrl(photo)}
-                            alt={`Vehicle ${index + 1}`}
-                            style={styles.photoImage}
-                            onError={(e) => {
-                              e.currentTarget.src = "/assets/placeholder.png";
-                            }}
-                          />
-                          <button
-                            type="button"
-                            style={styles.deletePhotoButton}
-                            onClick={() => {
-                              if (
-                                window.confirm(
-                                  "Delete this photo from server? This cannot be undone."
-                                )
-                              ) {
-                                handleDeletePhoto(photo);
-                              }
-                            }}
-                          >
-                            <X size={16} />
-                          </button>
-                        </div>
-                      );
-                    })}
+                    )}
                   </div>
                 )}
               </div>
@@ -846,7 +693,7 @@ const styles = {
   container: {
     display: "flex",
     minHeight: "100vh",
-    backgroundColor: "#f8fafc",
+    backgroundColor: "#FFFFFF",
     fontFamily: "'Inter', sans-serif",
   },
 
@@ -857,11 +704,11 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     height: "100vh",
-    backgroundColor: "#f8fafc",
+    backgroundColor: "#FFFFFF",
   },
   loadingSpinner: {
-    border: "4px solid #e5e7eb",
-    borderLeftColor: "#3b82f6",
+    border: "4px solid #D4D4D4",
+    borderLeftColor: "#2B2B2B",
     borderRadius: "50%",
     width: "48px",
     height: "48px",
@@ -870,34 +717,34 @@ const styles = {
   },
   loadingText: {
     fontSize: "1rem",
-    color: "#6b7280",
+    color: "#B3B3B3",
     fontWeight: "500",
   },
 
   // Sidebar Styles
   sidebar: {
     width: "280px",
-    backgroundColor: "#1e293b",
-    color: "#f8fafc",
-    boxShadow: "0 10px 25px -3px rgba(0, 0, 0, 0.1)",
+    backgroundColor: "#2B2B2B",
+    color: "#FFFFFF",
+    boxShadow: "0 10px 25px -3px rgba(0, 0, 0, 0.08)",
     position: "sticky",
     top: 0,
     height: "100vh",
-    backgroundImage: "linear-gradient(to bottom, #1e293b, #0f172a)",
+    /* flat dark background to match palette */
     zIndex: 10,
   },
   sidebarHeader: {
     padding: "24px",
-    borderBottom: "1px solid #334155",
+    borderBottom: "1px solid #B3B3B3",
   },
   logoImage: {
     width: "12.5rem",
     height: "7.5rem",
-    color: "#7c3aed",
+    color: "#D4D4D4",
   },
   sidebarSubtitle: {
     fontSize: "0.875rem",
-    color: "#94a3b8",
+    color: "#D4D4D4",
     margin: "8px 0 0 0",
   },
   nav: {
@@ -909,16 +756,16 @@ const styles = {
     justifyContent: "space-between",
     padding: "12px 24px",
     cursor: "pointer",
-    color: "#e2e8f0",
+    color: "#D4D4D4",
     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
     ":hover": {
-      backgroundColor: "#334155",
+      backgroundColor: "#B3B3B3",
     },
   },
   menuItemActive: {
-    backgroundColor: "#334155",
-    borderRight: "3px solid #3b82f6",
-    color: "#ffffff",
+    backgroundColor: "#B3B3B3",
+    borderRight: "3px solid #D4D4D4",
+    color: "#2B2B2B",
   },
   menuItemContent: {
     display: "flex",
@@ -926,28 +773,28 @@ const styles = {
   },
   menuIcon: {
     marginRight: "12px",
-    color: "#94a3b8",
+    color: "#D4D4D4",
   },
   menuText: {
     fontSize: "0.9375rem",
     fontWeight: "500",
   },
   submenu: {
-    backgroundColor: "#1a2536",
+    backgroundColor: "#2B2B2B",
   },
   submenuItem: {
     padding: "10px 24px 10px 64px",
     cursor: "pointer",
-    color: "#cbd5e1",
+    color: "#D4D4D4",
     fontSize: "0.875rem",
     transition: "all 0.2s ease",
     ":hover": {
-      backgroundColor: "#2d3748",
+      backgroundColor: "#B3B3B3",
     },
   },
   submenuItemActive: {
-    backgroundColor: "#2d3748",
-    color: "#ffffff",
+    backgroundColor: "#D4D4D4",
+    color: "#2B2B2B",
   },
   logoutButton: {
     display: "flex",
@@ -956,7 +803,7 @@ const styles = {
     cursor: "pointer",
     color: "#f87171",
     marginTop: "16px",
-    borderTop: "1px solid #334155",
+    borderTop: "1px solid #B3B3B3",
     transition: "all 0.2s ease",
     ":hover": {
       backgroundColor: "#7f1d1d20",
@@ -966,7 +813,7 @@ const styles = {
   // Main Content Styles
   mainContent: {
     flex: 1,
-    backgroundColor: "#f8fafc",
+    backgroundColor: "#FFFFFF",
     overflow: "auto",
   },
   contentWrapper: {
@@ -981,13 +828,13 @@ const styles = {
   pageTitle: {
     fontSize: "2.5rem",
     fontWeight: "700",
-    color: "#1e293b",
+    color: "#2B2B2B",
     margin: "0 0 8px 0",
     letterSpacing: "-0.025em",
   },
   pageSubtitle: {
     fontSize: "1.125rem",
-    color: "#64748b",
+    color: "#B3B3B3",
     margin: 0,
   },
 
@@ -998,12 +845,12 @@ const styles = {
     gap: "32px",
   },
   section: {
-    backgroundColor: "#ffffff",
+    backgroundColor: "#FFFFFF",
     borderRadius: "16px",
     padding: "32px",
     boxShadow:
-      "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-    border: "1px solid #e5e7eb",
+      "0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04)",
+    border: "1px solid #D4D4D4",
   },
   sectionHeader: {
     display: "flex",
@@ -1011,16 +858,16 @@ const styles = {
     gap: "12px",
     marginBottom: "24px",
     paddingBottom: "16px",
-    borderBottom: "2px solid #f1f5f9",
+    borderBottom: "2px solid #D4D4D4",
   },
   sectionIcon: {
-    color: "#3b82f6",
+    color: "#D4D4D4",
     flexShrink: 0,
   },
   sectionTitle: {
     fontSize: "1.5rem",
     fontWeight: "600",
-    color: "#1e293b",
+    color: "#2B2B2B",
     margin: 0,
   },
 
@@ -1038,24 +885,24 @@ const styles = {
   label: {
     fontSize: "0.875rem",
     fontWeight: "600",
-    color: "#374151",
+    color: "#2B2B2B",
     letterSpacing: "0.025em",
   },
   input: {
     padding: "12px 16px",
-    border: "2px solid #e5e7eb",
+    border: "2px solid #D4D4D4",
     borderRadius: "12px",
     fontSize: "0.875rem",
     transition: "all 0.2s ease",
-    backgroundColor: "#ffffff",
+    backgroundColor: "#FFFFFF",
     fontFamily: "inherit",
   },
   select: {
     padding: "12px 16px",
-    border: "2px solid #e5e7eb",
+    border: "2px solid #D4D4D4",
     borderRadius: "12px",
     fontSize: "0.875rem",
-    backgroundColor: "#ffffff",
+    backgroundColor: "#FFFFFF",
     cursor: "pointer",
     transition: "all 0.2s ease",
     fontFamily: "inherit",
@@ -1073,25 +920,25 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     padding: "48px 24px",
-    border: "2px dashed #d1d5db",
+    border: "2px dashed #D4D4D4",
     borderRadius: "16px",
-    backgroundColor: "#f9fafb",
+    backgroundColor: "#FFFFFF",
     textAlign: "center",
     transition: "all 0.2s ease",
   },
   uploadIcon: {
-    color: "#6b7280",
+    color: "#B3B3B3",
     marginBottom: "16px",
   },
   uploadTitle: {
     fontSize: "1.125rem",
     fontWeight: "600",
-    color: "#374151",
+    color: "#2B2B2B",
     margin: "0 0 8px 0",
   },
   uploadSubtitle: {
     fontSize: "0.875rem",
-    color: "#6b7280",
+    color: "#B3B3B3",
     margin: "0 0 8px 0",
   },
   uploadNote: {
@@ -1108,8 +955,8 @@ const styles = {
     alignItems: "center",
     gap: "8px",
     padding: "12px 24px",
-    backgroundColor: "#3b82f6",
-    color: "#ffffff",
+    backgroundColor: "#2B2B2B",
+    color: "#FFFFFF",
     border: "none",
     borderRadius: "12px",
     fontSize: "0.875rem",
@@ -1127,7 +974,7 @@ const styles = {
     position: "relative",
     borderRadius: "12px",
     overflow: "hidden",
-    backgroundColor: "#f3f4f6",
+    backgroundColor: "#D4D4D4",
     aspectRatio: "1",
   },
   photoImage: {
@@ -1158,14 +1005,14 @@ const styles = {
     justifyContent: "center",
     width: "100%",
     height: "100%",
-    backgroundColor: "#f3f4f6",
-    color: "#6b7280",
+    backgroundColor: "#D4D4D4",
+    color: "#B3B3B3",
   },
   uploadingSpinner: {
     width: "24px",
     height: "24px",
-    border: "3px solid #e5e7eb",
-    borderTop: "3px solid #3b82f6",
+    border: "3px solid #D4D4D4",
+    borderTop: "3px solid #2B2B2B",
     borderRadius: "50%",
     animation: "spin 1s linear infinite",
     marginBottom: "8px",
@@ -1198,7 +1045,7 @@ const styles = {
     justifyContent: "center",
   },
   submitButtonDisabled: {
-    backgroundColor: "#9ca3af",
+    backgroundColor: "#B3B3B3",
     cursor: "not-allowed",
   },
   submitButtonIcon: {

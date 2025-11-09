@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Edit, Trash2, Search, Download } from "lucide-react";
 import {
@@ -13,7 +13,6 @@ import {
   message,
   Checkbox,
 } from "antd";
-import AuthContext from "../context/AuthContext";
 import * as XLSX from "xlsx";
 import { useMediaQuery } from "react-responsive";
 import Sidebar from "./Sidebar";
@@ -29,7 +28,6 @@ const RcListPage = () => {
   const [rcEntries, setRcEntries] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [activeMenu, setActiveMenu] = useState("RC Status");
-  const [expandedMenus, setExpandedMenus] = useState({});
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [currentRecord, setCurrentRecord] = useState(null);
   const [filterVisible, setFilterVisible] = useState(false);
@@ -43,35 +41,35 @@ const RcListPage = () => {
     container: {
       display: "flex",
       height: "100vh",
-      backgroundColor: "#f3f4f6",
+      backgroundColor: "#FFFFFF",
       fontFamily: "Arial, sans-serif",
       flexDirection: isMobile ? "column" : "row",
       minHeight: isMobile ? "100vh" : "100vh",
     },
     sidebar: {
       width: isMobile ? "100%" : isTablet ? "250px" : "280px",
-      backgroundColor: "#1e293b",
-      color: "#f8fafc",
-      boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+      backgroundColor: "#2B2B2B",
+      color: "#FFFFFF",
+      boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.08)",
       position: isMobile ? "relative" : "sticky",
       top: 0,
       height: isMobile ? "auto" : "100vh",
-      backgroundImage: "linear-gradient(to bottom, #1e293b, #0f172a)",
+      /* flat dark sidebar to match palette */
     },
     sidebarHeader: {
       padding: isMobile ? "12px 16px" : isTablet ? "16px 20px" : "24px",
-      borderBottom: "1px solid #334155",
+      borderBottom: "1px solid #B3B3B3",
       textAlign: isMobile ? "center" : "left",
     },
     sidebarTitle: {
       fontSize: isMobile ? "1rem" : isTablet ? "1.125rem" : "1.25rem",
       fontWeight: "600",
-      color: "#ffffff",
+      color: "#FFFFFF",
       margin: 0,
     },
     sidebarSubtitle: {
       fontSize: isMobile ? "0.75rem" : isTablet ? "0.8125rem" : "0.875rem",
-      color: "#94a3b8",
+      color: "#D4D4D4",
       margin: "4px 0 0 0",
     },
     nav: {
@@ -86,7 +84,7 @@ const RcListPage = () => {
     menuIcon: {
       marginRight: isMobile ? "0" : "12px",
       marginBottom: isMobile ? "2px" : "0",
-      color: "#94a3b8",
+      color: "#D4D4D4",
       width: isMobile ? "16px" : "20px",
       height: isMobile ? "16px" : "20px",
     },
@@ -95,13 +93,13 @@ const RcListPage = () => {
       fontWeight: isMobile ? "400" : "500",
     },
     submenu: {
-      backgroundColor: "#1a2536",
+      backgroundColor: "#2B2B2B",
       display: isMobile ? "none" : "block", // Hide submenus on mobile
     },
     submenuItem: {
       padding: isMobile ? "8px 16px" : "10px 24px 10px 64px",
       cursor: "pointer",
-      color: "#cbd5e1",
+      color: "#D4D4D4",
       fontSize: isMobile ? "0.8125rem" : "0.875rem",
       transition: "all 0.2s ease",
     },
@@ -112,7 +110,7 @@ const RcListPage = () => {
       cursor: "pointer",
       color: isMobile ? "#ffffff" : "#f87171",
       marginTop: isMobile ? "8px" : "16px",
-      borderTop: isMobile ? "none" : "1px solid #334155",
+      borderTop: isMobile ? "none" : "1px solid #B3B3B3",
       transition: "all 0.2s ease",
       borderRadius: isMobile ? "6px" : "0",
       margin: isMobile ? "8px 4px 0 4px" : "16px 0 0 0",
@@ -135,11 +133,11 @@ const RcListPage = () => {
     pageTitle: {
       fontSize: isMobile ? "1.25rem" : isTablet ? "1.375rem" : "1.875rem",
       fontWeight: "bold",
-      color: "#1f2937",
+      color: "#2B2B2B",
       margin: 0,
     },
     pageSubtitle: {
-      color: "#6b7280",
+      color: "#B3B3B3",
       marginTop: isMobile ? "4px" : "8px",
       margin: `${isMobile ? "4px" : "8px"} 0 0 0`,
       fontSize: isMobile ? "0.8125rem" : isTablet ? "0.875rem" : "1rem",
@@ -170,9 +168,9 @@ const RcListPage = () => {
       height: "300px",
     },
     table: {
-      backgroundColor: "#ffffff",
+      backgroundColor: "#FFFFFF",
       borderRadius: isMobile ? "6px" : isTablet ? "8px" : "12px",
-      boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+      boxShadow: "0 1px 3px rgba(0, 0, 0, 0.06)",
       overflow: "hidden",
       fontSize: isMobile ? "0.8125rem" : isTablet ? "0.875rem" : "1rem",
       minWidth: isMobile ? "800px" : "auto", // Set a minimum width for mobile
@@ -200,9 +198,9 @@ const RcListPage = () => {
       display: "inline-block",
     },
     statusInactive: {
-      color: "#6b7280",
+      color: "#B3B3B3",
       fontSize: isMobile ? "9px" : isTablet ? "10px" : "12px",
-      backgroundColor: "#f3f4f6",
+      backgroundColor: "#D4D4D4",
       padding: isMobile ? "2px 4px" : isTablet ? "2px 6px" : "4px 8px",
       borderRadius: "4px",
       display: "inline-block",
@@ -214,17 +212,17 @@ const RcListPage = () => {
     actionButton: {
       backgroundColor: "transparent",
       border: "none",
-      color: "#3b82f6",
+      color: "#2B2B2B",
       cursor: "pointer",
       padding: isMobile ? "2px" : "4px",
       borderRadius: "4px",
     },
     filterDropdown: {
       position: isMobile ? "relative" : "absolute",
-      backgroundColor: "#fff",
+      backgroundColor: "#FFFFFF",
       padding: isMobile ? "8px" : isTablet ? "12px" : "16px",
       borderRadius: "8px",
-      boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+      boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
       zIndex: 10000,
       marginTop: isMobile ? "0" : "8px",
       display: "flex",
@@ -239,7 +237,7 @@ const RcListPage = () => {
     },
     filterLabel: {
       fontSize: isMobile ? "12px" : isTablet ? "13px" : "14px",
-      color: "#666",
+      color: "#2B2B2B",
     },
     responsiveButton: {
       fontSize: isMobile ? "0.8125rem" : isTablet ? "0.875rem" : "1rem",
@@ -265,7 +263,32 @@ const RcListPage = () => {
         }
 
         const data = await response.json();
-        setRcEntries(data.data);
+        // Normalize entries coming from SQL `rcs` table. Backend returns
+        // records with fields: `id`, `carId`, `holderName`, `registrationNumber`, `details` (JSON).
+        // The legacy frontend expects top-level fields like vehicleRegNo, vehicleName, ownerName, etc.
+        const normalized = (data.data || []).map((e) => {
+          const details = e.details || {};
+          return Object.assign({}, e, {
+            // preserve both id and _id (server adds _id when sending)
+            vehicleRegNo:
+              e.registrationNumber || details.registrationNumber || "",
+            vehicleName: details.vehicleName || "",
+            ownerName: e.holderName || details.ownerName || "",
+            applicantName: details.applicantName || "",
+            ownerPhone: details.ownerPhone || "",
+            applicantPhone: details.applicantPhone || "",
+            work: details.work || "",
+            dealerName: details.dealerName || "",
+            rtoAgentName: details.rtoAgentName || "",
+            remarks: details.remarks || "",
+            status: details.status || {
+              rcTransferred: false,
+              rtoFeesPaid: false,
+              returnedToDealer: false,
+            },
+          });
+        });
+        setRcEntries(normalized);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching RC entries:", error);
@@ -401,9 +424,33 @@ const RcListPage = () => {
       }
 
       const updatedData = await response.json();
+      // Normalize the updated entry as well (backend may return SQL shape)
+      const updatedEntryRaw = updatedData.data || updatedData;
+      const updatedDetails = updatedEntryRaw.details || {};
+      const normalizedUpdated = Object.assign({}, updatedEntryRaw, {
+        vehicleRegNo:
+          updatedEntryRaw.registrationNumber ||
+          updatedDetails.registrationNumber ||
+          "",
+        vehicleName: updatedDetails.vehicleName || "",
+        ownerName: updatedEntryRaw.holderName || updatedDetails.ownerName || "",
+        applicantName: updatedDetails.applicantName || "",
+        ownerPhone: updatedDetails.ownerPhone || "",
+        applicantPhone: updatedDetails.applicantPhone || "",
+        work: updatedDetails.work || "",
+        dealerName: updatedDetails.dealerName || "",
+        rtoAgentName: updatedDetails.rtoAgentName || "",
+        remarks: updatedDetails.remarks || "",
+        status: updatedDetails.status || {
+          rcTransferred: false,
+          rtoFeesPaid: false,
+          returnedToDealer: false,
+        },
+      });
+
       setRcEntries((prevEntries) =>
         prevEntries.map((entry) =>
-          entry._id === currentRecord._id ? updatedData.data : entry
+          entry._id === currentRecord._id ? normalizedUpdated : entry
         )
       );
       setIsEditModalVisible(false);
@@ -591,6 +638,15 @@ const RcListPage = () => {
           >
             <Edit size={18} />
           </button>
+          {record.pdfUrl && (
+            <button
+              onClick={() => handleViewPdf(record)}
+              style={styles.actionButton}
+              title="View PDF"
+            >
+              <Download size={18} />
+            </button>
+          )}
           <button
             onClick={() => handleDelete(record._id)}
             style={{ ...styles.actionButton, color: "#ef4444" }}
@@ -794,4 +850,19 @@ const RcListPage = () => {
     </div>
   );
 };
+
+function handleViewPdf(record) {
+  if (!record || !record.pdfUrl) return;
+  const url = record.pdfUrl;
+  if (
+    typeof url === "string" &&
+    (url.startsWith("http://") || url.startsWith("https://"))
+  ) {
+    window.open(url, "_blank");
+    return;
+  }
+  const API_BASE =
+    process.env.REACT_APP_API_BASE_URL || "https://alfa-motors-5yfh.vercel.app";
+  window.open(`${API_BASE}${url}`, "_blank");
+}
 export default RcListPage;

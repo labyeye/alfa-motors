@@ -1,21 +1,22 @@
 // review.js - handles opening modal, collecting form data and submitting to backend
 (function () {
-  const API_BASE = window.REVIEW_API_BASE || 'https://alfa-motors-5yfh.vercel.app/api/reviews';
+  const API_BASE =
+    window.REVIEW_API_BASE || "https://alfa-motors-5yfh.vercel.app/api/reviews";
 
   function createModal() {
-    if (document.getElementById('review-modal')) return;
+    if (document.getElementById("review-modal")) return;
 
-    const modal = document.createElement('div');
-    modal.id = 'review-modal';
-    modal.style.position = 'fixed';
+    const modal = document.createElement("div");
+    modal.id = "review-modal";
+    modal.style.position = "fixed";
     modal.style.left = 0;
     modal.style.top = 0;
-    modal.style.width = '100vw';
-    modal.style.height = '100vh';
-    modal.style.display = 'none';
-    modal.style.alignItems = 'center';
-    modal.style.justifyContent = 'center';
-    modal.style.background = 'rgba(0,0,0,0.6)';
+    modal.style.width = "100vw";
+    modal.style.height = "100vh";
+    modal.style.display = "none";
+    modal.style.alignItems = "center";
+    modal.style.justifyContent = "center";
+    modal.style.background = "rgba(0,0,0,0.6)";
     modal.style.zIndex = 10000;
 
     modal.innerHTML = `
@@ -33,8 +34,8 @@
     <small id="review-rating-text" style="color:#444">5</small>
   </div>
   <div style="display:flex;flex-direction:column;gap:8px">
-    <input id="review-name" placeholder="Your name" style="padding:10px;border:1px solid #ddd;border-radius:6px" />
-    <input id="review-email" placeholder="Your email" style="padding:10px;border:1px solid #ddd;border-radius:6px" />
+  <input id="review-name" placeholder="Your name" style="padding:10px;border:1px solid #ddd;border-radius:6px" />
+  <input id="review-email" placeholder="Your email (optional)" style="padding:10px;border:1px solid #ddd;border-radius:6px" />
     <textarea id="review-message" placeholder="Your message" rows="4" style="padding:10px;border:1px solid #ddd;border-radius:6px"></textarea>
     <div style="display:flex;gap:8px;justify-content:flex-end">
       <button id="review-submit" style="background:#10b981;color:#fff;border:none;padding:8px 14px;border-radius:6px;cursor:pointer">Send</button>
@@ -48,12 +49,12 @@
     document.body.appendChild(modal);
 
     // style stars
-    modal.querySelectorAll('.star').forEach((btn) => {
-      btn.style.fontSize = '22px';
-      btn.style.background = 'transparent';
-      btn.style.border = 'none';
-      btn.style.cursor = 'pointer';
-      btn.style.color = '#d1d5db';
+    modal.querySelectorAll(".star").forEach((btn) => {
+      btn.style.fontSize = "22px";
+      btn.style.background = "transparent";
+      btn.style.border = "none";
+      btn.style.cursor = "pointer";
+      btn.style.color = "#d1d5db";
     });
 
     // default rating
@@ -61,74 +62,81 @@
 
     function updateStars(rating) {
       currentRating = rating;
-      modal.querySelectorAll('.star').forEach((s) => {
-        s.style.color = Number(s.dataset.value) <= rating ? '#f59e0b' : '#d1d5db';
+      modal.querySelectorAll(".star").forEach((s) => {
+        s.style.color =
+          Number(s.dataset.value) <= rating ? "#f59e0b" : "#d1d5db";
       });
-      const text = modal.querySelector('#review-rating-text');
+      const text = modal.querySelector("#review-rating-text");
       if (text) text.textContent = rating;
     }
 
-    modal.addEventListener('click', (e) => {
+    modal.addEventListener("click", (e) => {
       if (e.target === modal) hideModal();
     });
 
-    modal.querySelector('#review-close').addEventListener('click', hideModal);
-    modal.querySelector('#review-cancel').addEventListener('click', hideModal);
+    modal.querySelector("#review-close").addEventListener("click", hideModal);
+    modal.querySelector("#review-cancel").addEventListener("click", hideModal);
 
-    modal.querySelectorAll('.star').forEach((s) => {
-      s.addEventListener('click', () => updateStars(Number(s.dataset.value)));
+    modal.querySelectorAll(".star").forEach((s) => {
+      s.addEventListener("click", () => updateStars(Number(s.dataset.value)));
     });
 
-    modal.querySelector('#review-submit').addEventListener('click', async () => {
-      const name = document.getElementById('review-name').value.trim();
-      const email = document.getElementById('review-email').value.trim();
-      const message = document.getElementById('review-message').value.trim();
-      const status = document.getElementById('review-status');
+    modal
+      .querySelector("#review-submit")
+      .addEventListener("click", async () => {
+        const name = document.getElementById("review-name").value.trim();
+        const email = document.getElementById("review-email").value.trim();
+        const message = document.getElementById("review-message").value.trim();
+        const status = document.getElementById("review-status");
 
-      if (!name || !email || !message) {
-        status.textContent = 'Please fill name, email and message';
-        status.style.color = '#ef4444';
-        return;
-      }
-
-      status.textContent = 'Sending...';
-      status.style.color = '#111';
-
-      try {
-        const res = await fetch(API_BASE, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, message, rating: currentRating }),
-        });
-
-        const data = await res.json();
-        if (res.ok) {
-          status.textContent = 'Thank you for your review!';
-          status.style.color = '#10b981';
-          setTimeout(hideModal, 1200);
-          // clear
-          document.getElementById('review-name').value = '';
-          document.getElementById('review-email').value = '';
-          document.getElementById('review-message').value = '';
-        } else {
-          status.textContent = (data && data.message) || 'Failed to send';
-          status.style.color = '#ef4444';
+        if (!name || !message) {
+          status.textContent = "Please fill name and message (email optional)";
+          status.style.color = "#ef4444";
+          return;
         }
-      } catch (err) {
-        status.textContent = 'Network error';
-        status.style.color = '#ef4444';
-      }
-    });
+
+        status.textContent = "Sending...";
+        status.style.color = "#111";
+
+        try {
+          // build payload and include email only if provided
+          const payload = { name, message, rating: currentRating };
+          if (email) payload.email = email;
+
+          const res = await fetch(API_BASE, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+
+          const data = await res.json();
+          if (res.ok) {
+            status.textContent = "Thank you for your review!";
+            status.style.color = "#10b981";
+            setTimeout(hideModal, 1200);
+            // clear
+            document.getElementById("review-name").value = "";
+            document.getElementById("review-email").value = "";
+            document.getElementById("review-message").value = "";
+          } else {
+            status.textContent = (data && data.message) || "Failed to send";
+            status.style.color = "#ef4444";
+          }
+        } catch (err) {
+          status.textContent = "Network error";
+          status.style.color = "#ef4444";
+        }
+      });
 
     function hideModal() {
-      modal.style.display = 'none';
-      document.body.style.overflow = '';
+      modal.style.display = "none";
+      document.body.style.overflow = "";
     }
 
     function showModal() {
-      modal.style.display = 'flex';
+      modal.style.display = "flex";
       updateStars(5);
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     }
 
     // expose for other scripts
@@ -136,17 +144,17 @@
   }
 
   // create modal at load
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', createModal);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", createModal);
   } else {
     createModal();
   }
 
   // install click handler for any element with .footer-stars class
   function attachFooterButtons() {
-    document.querySelectorAll('.footer-stars').forEach((el) => {
-      el.style.cursor = 'pointer';
-      el.addEventListener('click', (e) => {
+    document.querySelectorAll(".footer-stars").forEach((el) => {
+      el.style.cursor = "pointer";
+      el.addEventListener("click", (e) => {
         e.preventDefault();
         if (!window.ReviewModal) return;
         window.ReviewModal.show();
@@ -154,8 +162,8 @@
     });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', attachFooterButtons);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", attachFooterButtons);
   } else {
     attachFooterButtons();
   }
@@ -163,7 +171,7 @@
   // Fetch reviews and render into homepage testimonials container
   async function fetchAndRenderReviews() {
     try {
-      const container = document.querySelector('.testimonials-container');
+      const container = document.querySelector(".testimonials-container");
       if (!container) return; // not on homepage
 
       const res = await fetch(API_BASE);
@@ -176,34 +184,34 @@
 
       // helper: create star icons according to rating (max 5)
       function createStars(rating) {
-        const div = document.createElement('div');
-        div.className = 'rating';
-        div.setAttribute('itemprop', 'reviewRating');
-        div.setAttribute('itemscope', '');
-        div.setAttribute('itemtype', 'https://schema.org/Rating');
+        const div = document.createElement("div");
+        div.className = "rating";
+        div.setAttribute("itemprop", "reviewRating");
+        div.setAttribute("itemscope", "");
+        div.setAttribute("itemtype", "https://schema.org/Rating");
 
-        const meta = document.createElement('meta');
-        meta.setAttribute('itemprop', 'ratingValue');
+        const meta = document.createElement("meta");
+        meta.setAttribute("itemprop", "ratingValue");
         meta.content = String(rating || 5);
         div.appendChild(meta);
 
         const full = Math.floor(rating || 5);
         const half = (rating || 0) - full >= 0.5;
         for (let i = 0; i < full; i++) {
-          const iEl = document.createElement('i');
-          iEl.className = 'fas fa-star';
+          const iEl = document.createElement("i");
+          iEl.className = "fas fa-star";
           div.appendChild(iEl);
         }
         if (half) {
-          const iEl = document.createElement('i');
-          iEl.className = 'fas fa-star-half-alt';
+          const iEl = document.createElement("i");
+          iEl.className = "fas fa-star-half-alt";
           div.appendChild(iEl);
         }
         const remaining = 5 - full - (half ? 1 : 0);
         for (let i = 0; i < remaining; i++) {
-          const iEl = document.createElement('i');
-          iEl.className = 'fas fa-star';
-          iEl.style.opacity = '0.3';
+          const iEl = document.createElement("i");
+          iEl.className = "fas fa-star";
+          iEl.style.opacity = "0.3";
           div.appendChild(iEl);
         }
         return div;
@@ -211,7 +219,7 @@
 
       function timeAgo(dateStr) {
         const d = new Date(dateStr);
-        if (!d || isNaN(d)) return '';
+        if (!d || isNaN(d)) return "";
         const diff = Date.now() - d.getTime();
         const mins = Math.floor(diff / 60000);
         if (mins < 60) return `${mins} minutes ago`;
@@ -226,13 +234,20 @@
       }
 
       // clear container and rebuild
-      container.innerHTML = '';
+      container.innerHTML = "";
 
       reviews.forEach((r) => {
-        const div = document.createElement('div');
-        div.className = 'testimonial';
-        div.setAttribute('itemscope', '');
-        div.setAttribute('itemtype', 'https://schema.org/Review');
+        // normalize fields from different backends (SQL or legacy API)
+        const reviewerName =
+          r.name || r.userName || r.user || r.user_name || "Anonymous";
+        const messageText = r.message || r.comment || r.body || "";
+        const ratingValue = r.rating || r.stars || 5;
+        const createdAtVal = r.createdAt || r.created_at || r.date || null;
+
+        const div = document.createElement("div");
+        div.className = "testimonial";
+        div.setAttribute("itemscope", "");
+        div.setAttribute("itemtype", "https://schema.org/Review");
 
         div.innerHTML = `
           <div class="quote-icon">
@@ -240,65 +255,65 @@
           </div>
         `;
 
-        const header = document.createElement('div');
-        header.className = 'testimonial-header';
+        const header = document.createElement("div");
+        header.className = "testimonial-header";
 
-        const img = document.createElement('img');
-        img.src = './assets/person.jpg';
-        img.alt = r.name || 'Reviewer';
-        img.className = 'user-avatar';
+        const img = document.createElement("img");
+        img.src = "./assets/person.jpg";
+        img.alt = reviewerName || "Reviewer";
+        img.className = "user-avatar";
         img.width = 60;
         img.height = 60;
-        img.loading = 'lazy';
+        img.loading = "lazy";
 
-        const info = document.createElement('div');
-        info.className = 'user-info';
+        const info = document.createElement("div");
+        info.className = "user-info";
 
-  const h3 = document.createElement('h3');
-  h3.className = 'user-name';
-  h3.setAttribute('itemprop', 'author');
-  h3.textContent = r.name || 'Anonymous';
+        const h3 = document.createElement("h3");
+        h3.className = "user-name";
+        h3.setAttribute("itemprop", "author");
+        h3.textContent = reviewerName;
 
-        const loc = document.createElement('p');
-        loc.className = 'user-location';
-        loc.textContent = r.location || ''; // optional
+        const loc = document.createElement("p");
+        loc.className = "user-location";
+        loc.textContent = r.location || ""; // optional
 
-  info.appendChild(h3);
+        info.appendChild(h3);
         info.appendChild(loc);
         // rating
-        const ratingEl = createStars(r.rating || 5);
+        const ratingEl = createStars(ratingValue || 5);
         info.appendChild(ratingEl);
 
         header.appendChild(img);
         header.appendChild(info);
 
-        const quote = document.createElement('div');
-        quote.className = 'quote';
-        quote.setAttribute('itemprop', 'reviewBody');
-        quote.textContent = r.message || '';
+        const quote = document.createElement("div");
+        quote.className = "quote";
+        quote.setAttribute("itemprop", "reviewBody");
+        quote.textContent = messageText || "";
 
-        const footer = document.createElement('div');
-        footer.className = 'testimonial-footer';
+        const footer = document.createElement("div");
+        footer.className = "testimonial-footer";
 
-        const dateSpan = document.createElement('span');
-        dateSpan.className = 'testimonial-date';
-        dateSpan.textContent = r.createdAt ? `Posted: ${timeAgo(r.createdAt)}` : '';
-
-        const proof = document.createElement('span');
-        proof.className = 'social-proof';
-        proof.textContent = 'Verified Owner';
+        const dateSpan = document.createElement("span");
+        dateSpan.className = "testimonial-date";
+        
+        const proof = document.createElement("span");
+        proof.className = "social-proof";
 
         footer.appendChild(dateSpan);
         footer.appendChild(proof);
 
         // metadata
-        const metaReviewed = document.createElement('meta');
-        metaReviewed.setAttribute('itemprop', 'itemReviewed');
-        metaReviewed.content = 'Alfa Motors World';
+        const metaReviewed = document.createElement("meta");
+        metaReviewed.setAttribute("itemprop", "itemReviewed");
+        metaReviewed.content = "Alfa Motors World";
 
-        const metaDate = document.createElement('meta');
-        metaDate.setAttribute('itemprop', 'datePublished');
-        metaDate.content = r.createdAt ? new Date(r.createdAt).toISOString().split('T')[0] : '';
+        const metaDate = document.createElement("meta");
+        metaDate.setAttribute("itemprop", "datePublished");
+        metaDate.content = createdAtVal
+          ? new Date(createdAtVal).toISOString().split("T")[0]
+          : "";
 
         div.appendChild(header);
         div.appendChild(quote);
@@ -310,28 +325,28 @@
       });
 
       // update nav dots
-      const nav = document.querySelector('.testimonial-nav');
+      const nav = document.querySelector(".testimonial-nav");
       if (nav) {
-        nav.innerHTML = '';
+        nav.innerHTML = "";
         reviews.forEach((_, i) => {
           // create a real button so it's keyboard accessible
-          const dot = document.createElement('button');
-          dot.type = 'button';
-          dot.className = 'testimonial-dot' + (i === 0 ? ' active' : '');
-          dot.setAttribute('aria-label', `Show testimonial ${i + 1}`);
+          const dot = document.createElement("button");
+          dot.type = "button";
+          dot.className = "testimonial-dot" + (i === 0 ? " active" : "");
+          dot.setAttribute("aria-label", `Show testimonial ${i + 1}`);
           // mark current state for assistive tech
-          dot.setAttribute('aria-current', i === 0 ? 'true' : 'false');
+          dot.setAttribute("aria-current", i === 0 ? "true" : "false");
           nav.appendChild(dot);
         });
       }
     } catch (err) {
       // ignore errors and keep static testimonials
-      console.error('Failed to load reviews', err);
+      console.error("Failed to load reviews", err);
     }
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', fetchAndRenderReviews);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", fetchAndRenderReviews);
   } else {
     fetchAndRenderReviews();
   }

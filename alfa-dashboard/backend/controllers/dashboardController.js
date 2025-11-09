@@ -12,14 +12,15 @@ const monthNames = [
 ];
 
 // Helper: monthly aggregation using saleDate / createdAt
-async function getMonthlyAggregation(model, dateField = 'createdAt', where = {}) {
+// amountField: which numeric column to SUM (defaults to 'saleAmount')
+async function getMonthlyAggregation(model, dateField = 'createdAt', where = {}, amountField = 'saleAmount') {
   try {
     const rows = await model.findAll({
       attributes: [
         [Sequelize.fn('YEAR', Sequelize.col(dateField)), 'year'],
         [Sequelize.fn('MONTH', Sequelize.col(dateField)), 'month'],
         [Sequelize.fn('COUNT', Sequelize.col('*')), 'count'],
-        [Sequelize.fn('SUM', Sequelize.col('saleAmount')), 'totalAmount'],
+        [Sequelize.fn('SUM', Sequelize.col(amountField)), 'totalAmount'],
       ],
       where,
       group: [Sequelize.fn('YEAR', Sequelize.col(dateField)), Sequelize.fn('MONTH', Sequelize.col(dateField))],
@@ -101,8 +102,9 @@ exports.getDashboardStats = async (req, res) => {
       SellLetter.sum('saleAmount').catch(() => 0),
       // ServiceBill stores total in `total` column
       ServiceBill.sum('total').catch(() => 0),
-      getMonthlyAggregation(SellLetter, 'saleDate', {}).catch(() => []),
-      getMonthlyAggregation(ServiceBill, 'createdAt', {}).catch(() => []),
+  getMonthlyAggregation(SellLetter, 'saleDate', {}).catch(() => []),
+  // ServiceBill stores totals in `total` column
+  getMonthlyAggregation(ServiceBill, 'createdAt', {}, 'total').catch(() => []),
       Rc.count().catch(() => 0),
       getRecent(SellLetter, {}, 3).catch(() => []),
       getRecent(ServiceBill, {}, 3).catch(() => []),
