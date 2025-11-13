@@ -39,7 +39,7 @@ const StaffPage = () => {
     if (activeMenu === "Dashboard") {
       fetchDashboardData();
     }
-  }, [activeMenu, /* fetchDashboardData is stable via useCallback below */]);
+  }, [activeMenu, fetchDashboardData]);
 
   const fetchDashboardData = useCallback(async () => {
     try {

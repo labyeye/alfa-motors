@@ -69,14 +69,14 @@ const AdminPage = () => {
     },
   });
   const [loading, setLoading] = useState(true);
-  const [isOwnerView, _setIsOwnerView] = useState(false);
+  const [isOwnerView] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     if (activeMenu === "Dashboard") {
       fetchDashboardData();
     }
-  }, [activeMenu, /* fetchDashboardData is stable via useCallback below */]);
+  }, [activeMenu, fetchDashboardData]);
 
   const fetchDashboardData = useCallback(async () => {
     try {

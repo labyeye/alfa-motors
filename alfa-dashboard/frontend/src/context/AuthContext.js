@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
 axios.defaults.withCredentials = true;
@@ -11,11 +11,7 @@ export const AuthProvider = ({ children }) => {
           const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'https://alfa-motors-5yfh.vercel.app' : 'https://alfa-motors-5yfh.vercel.app');
 
 
-  useEffect(() => {
-    checkUserLoggedIn();
-  }, []);
-
-  const checkUserLoggedIn = async () => {
+  const checkUserLoggedIn = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
       if (token) {
@@ -28,7 +24,11 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    checkUserLoggedIn();
+  }, [checkUserLoggedIn]);
 
   const login = async (email, password) => {
     try {
