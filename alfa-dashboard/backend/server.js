@@ -18,6 +18,7 @@ const reviewRoutes = require('./routes/reviewRoutes');
 const galleryRoutes = require('./routes/galleryRoutes');
 const refurbishmentRoutes = require('./routes/refurbishmentRoutes');
 const advancePaymentRoutes = require('./routes/advancePaymentRoutes');
+const uploadRoutes = require('./routes/uploadRoutes');
 
 const app = express();
 
@@ -100,6 +101,8 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/gallery', galleryRoutes);
 app.use('/api/refurbishments', refurbishmentRoutes);
 app.use('/api/advance-payments', advancePaymentRoutes);
+// XOZZ upload endpoint
+app.use('/upload', uploadRoutes);
 
 const carImagesPath = path.join(__dirname, 'utils/carimages');
 app.use('/carimages', (req, res, next) => {

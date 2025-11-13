@@ -1,6 +1,6 @@
 const { Gallery } = require('../models_sql/GallerySQL');
 const { Car } = require('../models_sql/CarSQL');
-const cloudinary = require('../config/cloudinary');
+const { uploadBufferToXOZZ } = require('../utils/xozzUpload');
 const path = require('path');
 const fs = require('fs');
 
@@ -16,30 +16,18 @@ exports.uploadGalleryPhoto = async (req, res) => {
     // fall back to saving a local filename (existing behavior).
     let storedFilename = '';
     try {
-      // multer with diskStorage provides `req.file.path` as the local filepath
-      if (req.file && req.file.path) {
-        const uploadRes = await cloudinary.uploader.upload(req.file.path, {
-          folder: 'carimages',
-          resource_type: 'image',
-        });
-        storedFilename = uploadRes.secure_url || uploadRes.url || '';
-
-        // delete local temp file after successful cloud upload
-        try {
-          if (req.file && req.file.path && fs.existsSync(req.file.path)) {
-            fs.unlinkSync(req.file.path);
-          }
-        } catch (delErr) {
-          console.warn('Failed to remove local upload file:', delErr);
-        }
-      } else if (req.file && (req.file.secure_url || req.file.url)) {
-        storedFilename = req.file.secure_url || req.file.url;
+      // If memory storage: upload buffer to XOZZ
+      if (req.file && req.file.buffer) {
+        const r = await uploadBufferToXOZZ(req.file.buffer, req.file.originalname || `gallery-${Date.now()}`, req.file.mimetype || 'image/jpeg');
+        storedFilename = (r && r.url) ? r.url : '';
+      } else if (req.file && (req.file.path || req.file.filename)) {
+        // fallback for diskStorage or other middlewares
+        storedFilename = req.file.path || req.file.filename || '';
       } else {
-        storedFilename = req.file.filename || '';
+        storedFilename = req.file && (req.file.url || req.file.secure_url) || '';
       }
     } catch (uploadErr) {
-      console.warn('Cloudinary upload failed, falling back to local filename/path', uploadErr);
-      // Fallback: try to use the filename or path so existing serving logic remains valid
+      console.warn('XOZZ upload failed, falling back to local filename/path', uploadErr);
       storedFilename = req.file && (req.file.filename || req.file.path || req.file.url || req.file.secure_url) || '';
     }
 
@@ -122,19 +110,13 @@ exports.deleteGallery = async (req, res) => {
       }
     }
 
-    // Delete file from disk or Cloudinary depending on how it was stored
+    // Delete file from disk or skip remote deletion for XOZZ
     try {
       if (filename && (filename.startsWith('http://') || filename.startsWith('https://'))) {
-        try {
-          const parts = filename.split('/upload/');
-          if (parts.length > 1) {
-            let publicId = parts[1];
-            publicId = publicId.replace(/^v\d+\//, '');
-            publicId = publicId.split('?')[0].replace(/\.[a-zA-Z0-9]+$/, '');
-            await cloudinary.uploader.destroy(publicId, { resource_type: 'image', invalidate: true });
-          }
-        } catch (cErr) {
-          console.warn('Failed to delete Cloudinary image:', cErr);
+        if (filename.includes('/uploads/')) {
+          console.log('Skipping remote XOZZ file deletion for', filename);
+        } else {
+          console.log('Remote URL found but no deletion performed for', filename);
         }
       } else {
         const filePath = path.join(__dirname, '../utils/carimages', filename);
@@ -172,21 +154,15 @@ exports.deleteAllGallery = async (req, res) => {
 
     await Gallery.destroy({ where: {} });
 
-    // Delete files from Cloudinary or disk depending on how they are stored
+    // Files are stored on XOZZ (remote) or disk: we do not delete remote XOZZ files here.
     try {
       for (const fname of filenames) {
         if (!fname) continue;
         if (fname.startsWith('http://') || fname.startsWith('https://')) {
-          try {
-            const parts = fname.split('/upload/');
-            if (parts.length > 1) {
-              let publicId = parts[1];
-              publicId = publicId.replace(/^v\d+\//, '');
-              publicId = publicId.split('?')[0].replace(/\.[a-zA-Z0-9]+$/, '');
-              await cloudinary.uploader.destroy(publicId, { resource_type: 'image', invalidate: true });
-            }
-          } catch (e) {
-            console.warn('Failed to delete cloudinary file', fname, e);
+          if (fname.includes('/uploads/')) {
+            console.log('Skipping XOZZ deletion for', fname);
+          } else {
+            console.log('Remote URL (non-XOZZ) found, no deletion attempted for', fname);
           }
         } else {
           try {

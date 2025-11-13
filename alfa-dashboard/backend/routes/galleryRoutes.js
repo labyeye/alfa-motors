@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { protect, admin } = require('../middleware/auth');
-const upload = require('../utils/fileUpload');
+const { upload } = require('../utils/multerMemory');
 const galleryController = require('../controllers/galleryController');
 
 router.post('/', protect, upload.single('photo'), galleryController.uploadGalleryPhoto);

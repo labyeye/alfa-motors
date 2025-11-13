@@ -1,7 +1,7 @@
 const { Rc } = require('../models_sql/RcSQL');
 const path = require('path');
 const fs = require('fs');
-const cloudinary = require('../config/cloudinary');
+const { uploadBufferToXOZZ } = require('../utils/xozzUpload');
 
 // Note: RcSQL stores flexible data in `details` JSON; we store legacy fields
 // such as createdBy, pdfUrl, rtoFeesPaid, returnedToDealer inside details.
@@ -155,10 +155,9 @@ exports.uploadRcPdf = async (req, res, next) => {
     if (req.user.role !== 'admin' && createdBy !== String(req.user.id))
       return res.status(403).json({ success: false, message: 'Not authorized to upload PDF for this RC entry' });
 
-    // delete old pdf if exists (local file or cloudinary raw resource)
+    // delete old pdf if exists (local file)
     try {
       if (rcEntry.details) {
-        // delete local file if previously stored under /utils/uploads/
         if (rcEntry.details.pdfUrl && String(rcEntry.details.pdfUrl).includes('/utils/uploads/')) {
           try {
             const oldFilePath = path.join(__dirname, '../utils/uploads', String(rcEntry.details.pdfUrl).split('/uploads/')[1] || '');
@@ -170,33 +169,20 @@ exports.uploadRcPdf = async (req, res, next) => {
             console.error('Error deleting old local PDF file:', fileError);
           }
         }
-
-        // delete old cloudinary raw resource if pdfPublicId present
-        if (rcEntry.details.pdfPublicId) {
-          try {
-            await cloudinary.uploader.destroy(String(rcEntry.details.pdfPublicId), { resource_type: 'raw' });
-            console.log('Old Cloudinary PDF deleted:', rcEntry.details.pdfPublicId);
-          } catch (cloudErr) {
-            console.error('Error deleting old Cloudinary PDF:', cloudErr);
-          }
-        }
       }
     } catch (e) {
       console.error('Cleanup error before upload:', e);
     }
 
-    // req.file from Cloudinary storage should include path (secure_url) and filename (public_id)
-    let newPdfUrl = (req.file && (req.file.path || req.file.secure_url || req.file.url)) || null;
-    let newPdfPublicId = (req.file && (req.file.filename || req.file.public_id)) || null;
-
-    // If the storage didn't return a URL but provided a public id, try to fetch resource info
-    if (!newPdfUrl && newPdfPublicId) {
+    // If multer memory provided a buffer, upload directly to XOZZ
+    let newPdfUrl = null;
+    let newPdfPublicId = null;
+    if (req.file && req.file.buffer) {
       try {
-        const info = await cloudinary.api.resource(String(newPdfPublicId), { resource_type: 'raw' });
-        if (info && info.secure_url) newPdfUrl = info.secure_url;
+        const r = await uploadBufferToXOZZ(req.file.buffer, req.file.originalname || `rc-${Date.now()}.pdf`, req.file.mimetype || 'application/pdf');
+        if (r && r.url) newPdfUrl = r.url;
       } catch (e) {
-        // ignore; we'll still store what we have
-        console.error('Cloudinary lookup failed for public id', newPdfPublicId, e.message || e);
+        console.error('Failed to upload RC PDF to XOZZ', e.message || e);
       }
     }
 

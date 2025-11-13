@@ -9,8 +9,8 @@ const {
   deleteRcEntry,
   uploadRcPdf,
 } = require("../controllers/rcController");
-// use Cloudinary PDF/raw upload middleware for RC PDFs
-const upload = require("../utils/fileUploadCloudinaryPdf");
+// use multer memory upload for RC PDFs
+const { upload } = require("../utils/multerMemory");
 
 router.route("/").post(protect, createRcEntry).get(protect, getAllRcEntries);
 router

@@ -4,8 +4,8 @@ const Car = require("../models/Car");
 const Gallery = require("../models/Gallery");
 const { protect } = require("../middleware/auth");
 const uploadLocal = require("../utils/fileUploadLocal");
-const uploadCloud = require("../utils/fileUploadCloudinary");
-const cloudinary = require("../config/cloudinary");
+const { upload } = require("../utils/multerMemory");
+const { uploadBufferToXOZZ } = require('../utils/xozzUpload');
 const path = require("path");
 const fs = require("fs");
 
@@ -14,15 +14,23 @@ const isProduction =
   process.env.NODE_ENV === "production" || process.env.VERCEL;
 
 // API endpoint for adding a car (for React frontend)
-router.post("/", protect, uploadCloud.array("photos", 12), async (req, res) => {
+router.post("/", protect, upload.array("photos", 12), async (req, res) => {
   try {
     // Get uploaded photo file paths or URLs
     // Priority: multipart uploads via multer (req.files). If not present,
     // accept an array of photo URLs in req.body.photos (useful for direct-to-Cloudinary uploads).
     let photoPaths = [];
     if (req.files && req.files.length) {
-      // prefer Cloudinary secure_url when available
-      photoPaths = req.files.map((file) => file.secure_url || file.path || file.filename);
+      const uploaded = [];
+      for (const file of req.files) {
+        try {
+          const r = await uploadBufferToXOZZ(file.buffer, file.originalname || `car-${Date.now()}`, file.mimetype);
+          if (r && r.url) uploaded.push(r.url);
+        } catch (e) {
+          console.error('carRoutes: XOZZ upload failed for file', file.originalname, e.message || e);
+        }
+      }
+      photoPaths = uploaded;
     } else if (req.body && req.body.photos) {
       try {
         // req.body.photos may be a JSON string or an array
@@ -163,27 +171,23 @@ router.delete("/:id/photo", protect, async (req, res) => {
     await car.save();
 
     // Delete file from storage
-    // If this appears to be a Cloudinary URL, attempt Cloudinary deletion.
+    // For XOZZ-hosted remote files we do not have a delete API here; just remove DB reference.
     try {
-      if (photoIdentifier.includes("cloudinary.com")) {
-        const urlParts = photoIdentifier.split("/");
-        const publicIdWithExt = urlParts
-          .slice(urlParts.indexOf("alfa-motors"))
-          .join("/");
-        const publicId = publicIdWithExt.replace(/\.[^/.]+$/, ""); // Remove extension
-        await cloudinary.uploader.destroy(publicId);
+      if (photoIdentifier && (photoIdentifier.startsWith('http://') || photoIdentifier.startsWith('https://'))) {
+        if (photoIdentifier.includes('/uploads/')) {
+          console.log('Skipping XOZZ remote deletion for', photoIdentifier);
+        } else {
+          console.log('Remote URL found, not deleting:', photoIdentifier);
+        }
       } else {
-        // Otherwise treat as a local URL/file and remove from configured CAR_IMAGES_DIR
+        // local file
         const CAR_IMAGES_DIR = process.env.CAR_IMAGES_DIR;
-        // If the identifier is a URL like https://alfamotorworld.com/car-images/filename
         const filename = photoIdentifier.split('/').pop();
         const filePath = path.join(CAR_IMAGES_DIR, filename.replace('carimages/', ''));
-        fs.unlink(filePath, (err) => {
-          // ignore missing file errors
-        });
+        fs.unlink(filePath, () => {});
       }
     } catch (cloudErr) {
-      console.error("Error deleting remote/local file:", cloudErr);
+      console.error('Error deleting remote/local file:', cloudErr);
     }
 
     res.json({ success: true, message: "Photo deleted" });
@@ -207,19 +211,14 @@ router.delete("/:id/photos", protect, async (req, res) => {
 
     // Delete files from storage
     if (isProduction) {
-      // Cloudinary deletion
+      // In production many images are remote (XOZZ). We do not attempt remote deletion here.
       for (const img of images) {
         try {
-          if (img.includes("cloudinary.com")) {
-            const urlParts = img.split("/");
-            const publicIdWithExt = urlParts
-              .slice(urlParts.indexOf("alfa-motors"))
-              .join("/");
-            const publicId = publicIdWithExt.replace(/\.[^/.]+$/, "");
-            await cloudinary.uploader.destroy(publicId);
+          if (img && img.startsWith('http') && img.includes('/uploads/')) {
+            console.log('Skipping XOZZ deletion for', img);
           }
-        } catch (cloudErr) {
-          console.error("Error deleting from Cloudinary:", cloudErr);
+        } catch (e) {
+          console.warn('Error checking remote image for deletion', e);
         }
       }
     } else {

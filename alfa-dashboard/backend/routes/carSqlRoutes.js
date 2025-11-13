@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const { Car } = require("../models_sql/CarSQL");
 const { protect } = require("../middleware/auth");
-const upload = require("../utils/fileUploadCloudinary");
-const cloudinary = require("../config/cloudinary");
+const { upload } = require("../utils/multerMemory");
+const { uploadBufferToXOZZ } = require('../utils/xozzUpload');
 
 const path = require("path");
 const fs = require("fs");
@@ -113,7 +113,16 @@ router.post("/", protect, upload.array("photos", 12), async (req, res) => {
   try {
     let photoPaths = [];
     if (req.files && req.files.length) {
-      photoPaths = req.files.map((f) => f.path || f.secure_url || f.filename);
+      const uploaded = [];
+      for (const f of req.files) {
+        try {
+          const r = await uploadBufferToXOZZ(f.buffer, f.originalname, f.mimetype);
+          if (r && r.url) uploaded.push(r.url);
+        } catch (e) {
+          console.error('carSqlRoutes: XOZZ upload failed for file', f.originalname, e.message || e);
+        }
+      }
+      photoPaths = uploaded;
     } else if (req.body && req.body.photos) {
       try {
         photoPaths =
@@ -181,7 +190,16 @@ router.put(
 
       let photoPaths = [];
       if (req.files && req.files.length) {
-        photoPaths = req.files.map((f) => f.path || f.secure_url || f.filename);
+        const uploaded = [];
+        for (const f of req.files) {
+          try {
+            const r = await uploadBufferToXOZZ(f.buffer, f.originalname, f.mimetype);
+            if (r && r.url) uploaded.push(r.url);
+          } catch (e) {
+            console.error('carSqlRoutes: XOZZ upload failed for file', f.originalname, e.message || e);
+          }
+        }
+        photoPaths = uploaded;
       } else if (req.body && req.body.photos) {
         try {
           photoPaths =
@@ -213,10 +231,17 @@ router.post("/:id/photo", protect, upload.single("photo"), async (req, res) => {
   try {
     const car = await Car.findByPk(req.params.id);
     if (!car) return res.status(404).json({ message: "Car not found" });
-    const photo = req.file
-      ? req.file.path || req.file.secure_url || req.file.filename
-      : req.body.photo || req.body.photoUrl;
-    if (!photo) return res.status(400).json({ message: "No photo provided" });
+    let photo = null;
+    if (req.file && req.file.buffer) {
+      try {
+        const r = await uploadBufferToXOZZ(req.file.buffer, req.file.originalname, req.file.mimetype);
+        if (r && r.url) photo = r.url;
+      } catch (e) {
+        console.error('carSqlRoutes: XOZZ upload failed for single photo', e.message || e);
+      }
+    }
+    if (!photo) photo = req.body.photo || req.body.photoUrl;
+    if (!photo) return res.status(400).json({ message: 'No photo provided' });
     car.photos = [...normalizePhotos(car.photos), photo];
     await car.save();
     res.json({ success: true, data: car });
@@ -241,21 +266,12 @@ router.delete("/:id/photo", protect, async (req, res) => {
     car.photos = updated;
     await car.save();
 
-    // attempt deletion from Cloudinary if URL, otherwise delete local file
+    // Note: XOZZ currently doesn't provide a delete API here. We remove the reference
+    // from the DB row only. If you have a delete endpoint for XOZZ, implement it here.
     try {
-      if (
-        filename.includes("cloudinary.com") ||
-        (filename.startsWith("http") && filename.includes("/upload/"))
-      ) {
-        // Cloudinary style URL
-        const parts = filename.split("/upload/");
-        let publicId = parts[1] || "";
-        publicId = publicId.replace(/^v\d+\//, "");
-        publicId = publicId.split("?")[0].replace(/\.[a-zA-Z0-9]+$/, "");
-        await cloudinary.uploader.destroy(publicId, {
-          resource_type: "image",
-          invalidate: true,
-        });
+      if (filename && filename.startsWith('http') && filename.includes('/uploads/')) {
+        // remote XOZZ file - skipping deletion (no API implemented)
+        console.log('Skipping remote XOZZ file deletion for', filename);
       } else {
         // Local file: remove from configured dir
         const CAR_IMAGES_DIR =
@@ -285,21 +301,15 @@ router.delete("/:id/photos", protect, async (req, res) => {
     const car = await Car.findByPk(req.params.id);
     if (!car) return res.status(404).json({ message: "Car not found" });
     const photos = normalizePhotos(car.photos);
-    // attempt to delete cloudinary files
+    // If XOZZ supports deletion, implement deletion logic here. Currently we only
+    // clear the references in the DB and skip deleting remote files.
     for (const p of photos) {
       try {
-        if (p && p.startsWith("http") && p.includes("/upload/")) {
-          const parts = p.split("/upload/");
-          let publicId = parts[1];
-          publicId = publicId.replace(/^v\d+\//, "");
-          publicId = publicId.split("?")[0].replace(/\.[a-zA-Z0-9]+$/, "");
-          await cloudinary.uploader.destroy(publicId, {
-            resource_type: "image",
-            invalidate: true,
-          });
+        if (p && p.startsWith('http') && p.includes('/uploads/')) {
+          console.log('Skipping XOZZ deletion for', p);
         }
       } catch (e) {
-        console.warn("Failed to delete cloud file", e);
+        console.warn('Failed during photo cleanup check', e);
       }
     }
     car.photos = [];
