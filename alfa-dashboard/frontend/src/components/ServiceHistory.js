@@ -13,12 +13,18 @@ import logo from "../images/company.png";
 
 import Sidebar from "./Sidebar";
 
+const API_BASE =
+  window.API_BASE ||
+  (window.location.hostname === "localhost"
+    ? "https://alfa-motors-5yfh.vercel.app"
+    : "https://alfa-motors-5yfh.vercel.app");
+
 const ServiceHistory = () => {
   const { user } = useContext(AuthContext);
   const [activeMenu, setActiveMenu] = useState("Service History");
-  const [expandedMenus, setExpandedMenus] = useState({});
+  // expandedMenus not used here
   const [serviceBills, setServiceBills] = useState([]);
-  const [purchaseHistory, setPurchaseHistory] = useState([]);
+  const [purchaseHistory] = useState([]);
   const [sellHistory, setSellHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -26,11 +32,6 @@ const ServiceHistory = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [showVehicleHistory, setShowVehicleHistory] = useState(false);
   const navigate = useNavigate();
-  const API_BASE =
-    window.API_BASE ||
-    (window.location.hostname === "localhost"
-      ? "https://alfa-motors-5yfh.vercel.app"
-      : "https://alfa-motors-5yfh.vercel.app");
 
   useEffect(() => {
     const fetchData = async () => {

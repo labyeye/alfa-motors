@@ -14,7 +14,6 @@ import {
   Car,
   FileText,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import logo from "../images/company.png";
 import logo1 from "../images/okmotorback.png";
 import Sidebar from "./Sidebar";
@@ -30,13 +29,12 @@ const SellLetterForm = () => {
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [savedLetterData, setSavedLetterData] = useState(null);
   const [activeMenu, setActiveMenu] = useState("Create Sell Letter");
-  const [expandedMenus, setExpandedMenus] = useState({});
   const [previewPdf, setPreviewPdf] = useState(null);
   const [previewLanguage, setPreviewLanguage] = useState("hindi");
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
   const [cars, setCars] = useState([]);
-  const navigate = useNavigate();
+  // navigation not used in this component
 
   const [formData, setFormData] = useState({
     vehicleName: "",
@@ -189,7 +187,7 @@ const SellLetterForm = () => {
       const logo1Bytes = await fetch(logo1)
         .then((r) => r.arrayBuffer())
         .catch(() => null);
-      let embeddedLogo, embeddedLogoBack;
+      let embeddedLogo;
       if (logoBytes) embeddedLogo = await pdfDoc.embedPng(logoBytes);
       if (logo1Bytes) embeddedLogoBack = await pdfDoc.embedPng(logo1Bytes);
 
@@ -198,7 +196,7 @@ const SellLetterForm = () => {
       // ---- Invoice-style layout to match provided image ----
       const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
       const fontNormal = await pdfDoc.embedFont(StandardFonts.Helvetica);
-      const small = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
+      // small font removed (not used in template)
 
       // Header: logo left, company center, invoice title and number/date/time right
       const headerY = height - 40;
@@ -399,7 +397,7 @@ const SellLetterForm = () => {
       const pX = 40;
       let pY = ceY - 28;
       const pW = width - 80;
-      const pCols = [50, pW - 150, 100];
+      // pCols removed (not used)
 
       // Draw table header
       page.drawRectangle({
@@ -805,7 +803,7 @@ const SellLetterForm = () => {
   };
   // NOTE: PDF drawing/positioning logic removed on purpose per new template decision.
   const handleInput = (e) => {
-    const { name, value } = e.target;
+    const { value } = e.target;
     e.target.value = value.toUpperCase();
     handleChange(e);
   };

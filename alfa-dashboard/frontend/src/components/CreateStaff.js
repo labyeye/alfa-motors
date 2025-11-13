@@ -63,19 +63,7 @@ const CreateStaff = () => {
     sessionStorage.clear();
     navigate("/login");
   };
-
-  const toggleMenu = (menuName) => {
-    setExpandedMenus((prev) => ({
-      ...prev,
-      [menuName]: !prev[menuName],
-    }));
-  };
-
-  const handleMenuClick = (menuName, path) => {
-    setActiveMenu(menuName);
-    const actualPath = typeof path === "function" ? path(user?.role) : path;
-    navigate(actualPath);
-  };
+  // Sidebar interaction helpers removed (not used in this page)
 
   return (
     <div style={styles.container}>

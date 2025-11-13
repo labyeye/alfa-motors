@@ -32,10 +32,6 @@ const SellRequests = () => {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  useEffect(() => {
-    fetchSellRequests();
-  }, []);
-
   const fetchSellRequests = async () => {
     try {
       setLoading(true);
@@ -56,6 +52,10 @@ const SellRequests = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchSellRequests();
+  }, []);
 
   const updateStatus = async (id, status) => {
     try {

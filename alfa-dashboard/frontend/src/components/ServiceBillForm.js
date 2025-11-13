@@ -16,7 +16,7 @@ import {
   Car,
   Search,
 } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 
 import AuthContext from "../context/AuthContext";
@@ -26,7 +26,7 @@ const ServiceBillForm = () => {
   const { user } = useContext(AuthContext);
   const [activeMenu, setActiveMenu] = useState("Create Service Bill");
   const { id: editId } = useParams();
-  const [isSaving, setIsSaving] = useState(false);
+  const [, setIsSaving] = useState(false);
   const [availableCars, setAvailableCars] = useState([]);
   const [selectedCarId, setSelectedCarId] = useState("");
   const [isLoadingCars, setIsLoadingCars] = useState(false);
@@ -1518,14 +1518,6 @@ const styles = {
     padding: "20px",
     marginBottom: "24px",
     textAlign: "center",
-  },
-  orDivider: {
-    margin: "16px 0",
-    position: "relative",
-    textAlign: "center",
-    color: "#6b7280",
-    fontSize: "0.875rem",
-    fontWeight: "500",
   },
   orDivider: {
     margin: "16px 0",
