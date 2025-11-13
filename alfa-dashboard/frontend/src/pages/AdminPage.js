@@ -71,12 +71,6 @@ const AdminPage = () => {
   const [loading, setLoading] = useState(true);
   const [isOwnerView] = useState(false);
   const [error, setError] = useState(null);
-
-  useEffect(() => {
-    if (activeMenu === "Dashboard") {
-      fetchDashboardData();
-    }
-  }, [activeMenu, fetchDashboardData]);
   const fetchDashboardData = useCallback(async () => {
     try {
       setLoading(true);
@@ -129,6 +123,12 @@ const AdminPage = () => {
       setLoading(false);
     }
   }, [isOwnerView]);
+  useEffect(() => {
+    if (activeMenu === "Dashboard") {
+      fetchDashboardData();
+    }
+  }, [activeMenu, fetchDashboardData]);
+  
 
   // Chart data configuration
   const monthlyChartData = {

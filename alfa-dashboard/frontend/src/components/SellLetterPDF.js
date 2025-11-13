@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext } from "react";
+import React, { useState, useCallback } from "react";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { saveAs } from "file-saver";
 import axios from "axios";
@@ -17,7 +17,7 @@ import {
 import logo from "../images/company.png";
 import logo1 from "../images/okmotorback.png";
 import Sidebar from "./Sidebar";
-import AuthContext from "../context/AuthContext";
+// AuthContext not required in this component
 const API_BASE =
   window.API_BASE ||
   (window.location.hostname === "localhost"
@@ -25,9 +25,8 @@ const API_BASE =
     : "https://alfa-motors-5yfh.vercel.app");
 
 const SellLetterForm = () => {
-  const { user } = useContext(AuthContext);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
-  const [savedLetterData, setSavedLetterData] = useState(null);
+  const [, setSavedLetterData] = useState(null);
   const [activeMenu, setActiveMenu] = useState("Create Sell Letter");
   const [previewPdf, setPreviewPdf] = useState(null);
   const [previewLanguage, setPreviewLanguage] = useState("hindi");
@@ -187,9 +186,9 @@ const SellLetterForm = () => {
       const logo1Bytes = await fetch(logo1)
         .then((r) => r.arrayBuffer())
         .catch(() => null);
-      let embeddedLogo, embeddedLogoBack;
+      let embeddedLogo;
       if (logoBytes) embeddedLogo = await pdfDoc.embedPng(logoBytes);
-      if (logo1Bytes) embeddedLogoBack = await pdfDoc.embedPng(logo1Bytes);
+      if (logo1Bytes) await pdfDoc.embedPng(logo1Bytes);
 
       const { width, height } = page.getSize();
 

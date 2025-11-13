@@ -35,11 +35,6 @@ const StaffPage = () => {
   const [isOwnerView, setIsOwnerView] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (activeMenu === "Dashboard") {
-      fetchDashboardData();
-    }
-  }, [activeMenu, fetchDashboardData]);
   const fetchDashboardData = useCallback(async () => {
     try {
       setLoading(true);
@@ -75,6 +70,13 @@ const StaffPage = () => {
       setLoading(false);
     }
   }, [isOwnerView]);
+
+  useEffect(() => {
+    if (activeMenu === "Dashboard") {
+      fetchDashboardData();
+    }
+  }, [activeMenu, fetchDashboardData]);
+  
 
   const formatCurrency = (amount) => {
     if (isNaN(amount)) return "₹0";

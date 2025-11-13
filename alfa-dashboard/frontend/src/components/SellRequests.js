@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
@@ -32,7 +32,7 @@ const SellRequests = () => {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  const fetchSellRequests = async () => {
+  const fetchSellRequests = useCallback(async () => {
     try {
       setLoading(true);
       const response = await axios.get(`${API_BASE}/api/sell-requests`, {
@@ -51,11 +51,11 @@ const SellRequests = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [navigate]);
 
   useEffect(() => {
     fetchSellRequests();
-  }, []);
+  }, [fetchSellRequests]);
 
   const updateStatus = async (id, status) => {
     try {

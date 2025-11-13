@@ -1,8 +1,7 @@
-import React, { useState, useContext } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { User, Mail, Lock, Users } from "lucide-react";
-import AuthContext from "../context/AuthContext";
 import Sidebar from "./Sidebar";
 const API_BASE =
   window.API_BASE ||
@@ -12,7 +11,6 @@ const API_BASE =
 
 const CreateStaff = () => {
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -55,15 +53,6 @@ const CreateStaff = () => {
       setIsSubmitting(false);
     }
   };
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("authToken");
-    sessionStorage.clear();
-    navigate("/login");
-  };
-  // Sidebar interaction helpers removed (not used in this page)
 
   return (
     <div style={styles.container}>

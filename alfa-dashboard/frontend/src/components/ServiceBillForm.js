@@ -544,7 +544,7 @@ const ServiceBillForm = () => {
     }
   };
   const handleInput = (e) => {
-    const { name, value } = e.target;
+    const { value } = e.target;
     e.target.value = value.toUpperCase();
     handleChange(e);
   };

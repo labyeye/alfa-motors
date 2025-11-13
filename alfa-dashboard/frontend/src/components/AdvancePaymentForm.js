@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 // AuthContext not required in this component
 import Sidebar from "./Sidebar";
@@ -36,7 +36,7 @@ export default function AdvancePaymentForm() {
     }
     try {
       setSaving(true);
-      const res = await axios.post(`${API_BASE}/api/advance-payments`, form, {
+      await axios.post(`${API_BASE}/api/advance-payments`, form, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       alert("Payment recorded");
