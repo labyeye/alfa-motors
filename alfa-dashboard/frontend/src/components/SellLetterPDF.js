@@ -187,7 +187,7 @@ const SellLetterForm = () => {
       const logo1Bytes = await fetch(logo1)
         .then((r) => r.arrayBuffer())
         .catch(() => null);
-      let embeddedLogo;
+      let embeddedLogo, embeddedLogoBack;
       if (logoBytes) embeddedLogo = await pdfDoc.embedPng(logoBytes);
       if (logo1Bytes) embeddedLogoBack = await pdfDoc.embedPng(logo1Bytes);
 
