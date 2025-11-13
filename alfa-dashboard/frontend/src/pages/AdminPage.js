@@ -1,9 +1,7 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import {
   ShoppingCart,
   TrendingUp,
-  Wrench,
-  Users,
   FileText,
   Target,
   RefreshCw,
@@ -12,7 +10,6 @@ import {
   PenTool,
   CarFront,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { Bar, Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -72,17 +69,16 @@ const AdminPage = () => {
     },
   });
   const [loading, setLoading] = useState(true);
-  const [isOwnerView, setIsOwnerView] = useState(false);
+  const [isOwnerView, _setIsOwnerView] = useState(false);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (activeMenu === "Dashboard") {
       fetchDashboardData();
     }
-  }, [activeMenu, isOwnerView]);
+  }, [activeMenu, /* fetchDashboardData is stable via useCallback below */]);
 
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -133,7 +129,7 @@ const AdminPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [isOwnerView]);
 
   // Chart data configuration
   const monthlyChartData = {

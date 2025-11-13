@@ -15,7 +15,7 @@ const GalleryManagement = () => {
   const [activeMenu, setActiveMenu] = useState("Gallery Management");
   const [soldCars, setSoldCars] = useState([]);
   const [uploadingIds, setUploadingIds] = useState([]);
-  const [allCars, setAllCars] = useState([]);
+  const [_allCars, setAllCars] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Gallery items and edit UI state

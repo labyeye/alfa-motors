@@ -20,7 +20,7 @@ const LoginPage = () => {
         navigate(user.role === "admin" ? "/admin" : "/staff", { replace: true });
       }
     }
-  }, [user, loading]);
+  }, [user, loading, from, navigate]);
 
   if (loading) return null;
 

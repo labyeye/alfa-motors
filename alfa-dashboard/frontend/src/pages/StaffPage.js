@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import {
   LayoutDashboard,
   ShoppingCart,
@@ -39,9 +39,9 @@ const StaffPage = () => {
     if (activeMenu === "Dashboard") {
       fetchDashboardData();
     }
-  }, [activeMenu, isOwnerView]);
+  }, [activeMenu, /* fetchDashboardData is stable via useCallback below */]);
 
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     try {
       setLoading(true);
       const endpoint = isOwnerView
@@ -75,7 +75,7 @@ const StaffPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [isOwnerView]);
 
   const formatCurrency = (amount) => {
     if (isNaN(amount)) return "₹0";
