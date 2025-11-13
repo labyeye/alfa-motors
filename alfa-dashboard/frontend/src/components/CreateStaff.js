@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { User, Mail, Lock, Users } from "lucide-react";
 import AuthContext from "../context/AuthContext";
@@ -25,7 +25,7 @@ const CreateStaff = () => {
   const [success, setSuccess] = useState(false);
 
   const [activeMenu, setActiveMenu] = useState("Create Staff ID");
-  const [expandedMenus, setExpandedMenus] = useState({});
+  // expandedMenus not used here
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -41,7 +41,7 @@ const CreateStaff = () => {
     setError(null);
 
     try {
-      const response = await axios.post(`${API_BASE}/api/users`, formData);
+      await axios.post(`${API_BASE}/api/users`, formData);
       setSuccess(true);
       setTimeout(() => {
         navigate("/staff/list");

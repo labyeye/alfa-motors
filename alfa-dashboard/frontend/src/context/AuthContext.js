@@ -5,12 +5,15 @@ axios.defaults.withCredentials = true;
 
 const AuthContext = createContext();
 
+const API_BASE =
+  window.API_BASE ||
+  (window.location.hostname === "localhost"
+    ? "https://alfa-motors-5yfh.vercel.app"
+    : "https://alfa-motors-5yfh.vercel.app");
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-          const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'https://alfa-motors-5yfh.vercel.app' : 'https://alfa-motors-5yfh.vercel.app');
-
-
   const checkUserLoggedIn = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');

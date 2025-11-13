@@ -146,7 +146,6 @@ const EditSellLetterModal = ({ letter, onClose, onSave }) => {
 const SellLetterHistory = () => {
   const { user } = useContext(AuthContext);
   const [activeMenu, setActiveMenu] = useState("Sell Letter History");
-  const [expandedMenus, setExpandedMenus] = useState({});
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [selectedLetter, setSelectedLetter] = useState(null);
   const [sellLetters, setSellLetters] = useState([]);

@@ -19,13 +19,13 @@ const API_BASE =
 const BikeHistory = () => {
   const { user } = useContext(AuthContext);
   const [activeMenu, setActiveMenu] = useState("Bike History");
-  const [expandedMenus, setExpandedMenus] = useState({});
+  // expandedMenus not used in this component
   const [searchTerm, setSearchTerm] = useState("");
   const [bikeHistory, setBikeHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const fetchBikeHistory = async () => {
+  const fetchBikeHistory = useCallback(async () => {
     if (!searchTerm.trim()) return;
 
     try {
@@ -114,7 +114,8 @@ const BikeHistory = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchTerm]);
+
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       if (searchTerm.trim().length > 0) {
@@ -125,7 +126,7 @@ const BikeHistory = () => {
     }, 500);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [searchTerm]);
+  }, [searchTerm, fetchBikeHistory]);
 
   const getActionIcon = (type) => {
     switch (type) {
@@ -176,26 +177,7 @@ const BikeHistory = () => {
     return "";
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("authToken");
-    sessionStorage.clear();
-    navigate("/login");
-  };
-  const toggleMenu = (menuName) => {
-    setExpandedMenus((prev) => ({
-      ...prev,
-      [menuName]: !prev[menuName],
-    }));
-  };
-
-  const handleMenuClick = (menuName, path) => {
-    setActiveMenu(menuName);
-    
-    const actualPath = typeof path === "function" ? path(user?.role) : path;
-    navigate(actualPath);
-  };
+  // Navigation helpers removed: not used in this component
 
   return (
     <div style={styles.container}>

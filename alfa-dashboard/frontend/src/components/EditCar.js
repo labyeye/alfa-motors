@@ -145,7 +145,7 @@ const EditCar = () => {
         formData.append("photos", file);
       }
 
-      const response = await axios.put(
+      await axios.put(
         `${API_BASE}/api/cars/${id}/photos`,
         formData,
         {

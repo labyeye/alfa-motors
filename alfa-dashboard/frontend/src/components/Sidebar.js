@@ -8,7 +8,6 @@ import {
   Users,
   LogOut,
   ChevronDown,
-  ChevronRight,
   Bike,
   Camera,
   CarFront,

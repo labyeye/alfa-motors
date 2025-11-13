@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import AuthContext from "../context/AuthContext";
+// AuthContext not required in this component
 import Sidebar from "./Sidebar";
 
 const API_BASE =
@@ -10,7 +10,7 @@ const API_BASE =
     : "https://alfa-motors-5yfh.vercel.app");
 
 export default function AdvancePaymentForm() {
-  const { user } = useContext(AuthContext);
+  // auth context not used here
   const [sellLetters, setSellLetters] = useState([]);
   const [form, setForm] = useState({
     sellLetter: "",
@@ -48,14 +48,7 @@ export default function AdvancePaymentForm() {
       setSaving(false);
     }
   };
-  const formatRupee = (val) => {
-    const n = Number(val);
-    if (!n) return "0.00";
-    return new Intl.NumberFormat("en-IN", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(n / 100);
-  };
+  // removed unused formatRupee helper
 
   return (
     <div style={styles.container}>

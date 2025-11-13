@@ -1,0 +1,14 @@
+node_modules/
+build/
+dist/
+.next/
+public/
+coverage/
+*.min.js
+**/*.min.js
+**/vendor/**
+uploads/
+*.bundle.js
+webpack.config.js
+yarn.lock
+package-lock.json

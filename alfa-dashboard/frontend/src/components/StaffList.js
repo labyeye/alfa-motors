@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
@@ -7,7 +7,6 @@ import {
   UserPlus,
 } from "lucide-react";
 import Sidebar from "./Sidebar";
-import AuthContext from "../context/AuthContext";
 import logo from "../images/company.png";
 const API_BASE =
   window.API_BASE ||

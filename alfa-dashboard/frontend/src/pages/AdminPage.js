@@ -77,7 +77,6 @@ const AdminPage = () => {
       fetchDashboardData();
     }
   }, [activeMenu, fetchDashboardData]);
-
   const fetchDashboardData = useCallback(async () => {
     try {
       setLoading(true);
