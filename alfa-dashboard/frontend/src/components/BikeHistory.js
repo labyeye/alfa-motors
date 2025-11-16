@@ -131,7 +131,7 @@ const BikeHistory = () => {
   const getActionIcon = (type) => {
     switch (type) {
       case "buy":
-        return <ArrowDownLeft size={16} color="#3b82f6" />;
+        return <ArrowDownLeft size={16} color="#2D2D2D" />;
       case "sell":
         return <ArrowUpRight size={16} color="#ef4444" />;
       case "service":
@@ -341,7 +341,7 @@ const styles = {
   },
   menuItemActive: {
     backgroundColor: "#334155",
-    borderRight: "3px solid #3b82f6",
+    borderRight: "3px solid #2D2D2D",
     color: "#ffffff",
   },
   menuItemContent: {
@@ -438,7 +438,7 @@ const styles = {
     backgroundColor: "#f8fafc",
     ":focus": {
       outline: "none",
-      borderColor: "#3b82f6",
+      borderColor: "#2D2D2D",
       boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.1)",
       backgroundColor: "#ffffff",
     },
@@ -511,7 +511,7 @@ const styles = {
   },
   viewButton: {
     padding: "6px 12px",
-    backgroundColor: "#3b82f6",
+    backgroundColor: "#2D2D2D",
     color: "white",
     border: "none",
     borderRadius: "4px",

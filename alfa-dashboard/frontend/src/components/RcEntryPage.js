@@ -588,7 +588,7 @@ const styles = {
   },
   menuItemActive: {
     backgroundColor: "#334155",
-    borderRight: "3px solid #3b82f6",
+    borderRight: "3px solid #2D2D2D",
     color: "#ffffff",
   },
   menuItemContent: {
@@ -654,7 +654,7 @@ const styles = {
     gap: "8px",
     backgroundColor: "transparent",
     border: "none",
-    color: "#3b82f6",
+    color: "#2D2D2D",
     cursor: "pointer",
     fontSize: "16px",
     marginRight: "20px",
@@ -675,7 +675,7 @@ const styles = {
     gap: "12px",
   },
   titleIcon: {
-    color: "#3b82f6",
+    color: "#2D2D2D",
   },
   alertError: {
     backgroundColor: "#fee2e2",
@@ -767,7 +767,7 @@ const styles = {
   },
   inputFocus: {
     outline: "none",
-    borderColor: "#3b82f6",
+    borderColor: "#2D2D2D",
     boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.1)",
   },
   inputError: {
@@ -835,7 +835,7 @@ const styles = {
   checkbox: {
     width: "18px",
     height: "18px",
-    accentColor: "#3b82f6",
+    accentColor: "#2D2D2D",
     marginTop: "2px",
     flexShrink: 0,
   },
@@ -856,7 +856,7 @@ const styles = {
   radio: {
     width: "18px",
     height: "18px",
-    accentColor: "#3b82f6",
+    accentColor: "#2D2D2D",
     marginTop: "2px",
     flexShrink: 0,
   },
@@ -883,18 +883,18 @@ const styles = {
     cursor: "pointer",
   },
   fileUploadZoneHover: {
-    borderColor: "#3b82f6",
+    borderColor: "#2D2D2D",
     backgroundColor: "#eff6ff",
   },
   fileUploadZoneDragOver: {
-    borderColor: "#3b82f6",
+    borderColor: "#2D2D2D",
     backgroundColor: "#dbeafe",
   },
   pdfButton: {
     display: "flex",
     alignItems: "center",
     gap: "8px",
-    backgroundColor: "#3b82f6",
+    backgroundColor: "#2D2D2D",
     color: "#ffffff",
     border: "none",
     borderRadius: "8px",
@@ -991,7 +991,7 @@ const styles = {
     display: "flex",
     alignItems: "center",
     gap: "8px",
-    backgroundColor: "#3b82f6",
+    backgroundColor: "#2D2D2D",
     color: "white",
     border: "none",
     borderRadius: "8px",

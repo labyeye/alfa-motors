@@ -43,11 +43,13 @@ const AddCarForm = () => {
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files || []);
     if (files.length > 12) {
-      setError("You can upload a maximum of 12 photos. Extra files were ignored.");
+      setError(
+        "You can upload a maximum of 12 photos. Extra files were ignored."
+      );
     }
     const limitedFiles = files.slice(0, 12);
 
-  const compressAll = async (fileList) => {
+    const compressAll = async (fileList) => {
       try {
         const compressed = await Promise.all(
           fileList.map((f) => compressImageFile(f, 1200, 0.8))
@@ -85,7 +87,7 @@ const AddCarForm = () => {
         );
       };
       img.onerror = () => resolve(file);
-  // Support blob URL or file object
+      // Support blob URL or file object
       const reader = new FileReader();
       reader.onload = (ev) => {
         img.src = ev.target.result;
@@ -114,7 +116,7 @@ const AddCarForm = () => {
           formPayload.append(key, value);
         }
       });
-  formPayload.append("addedBy", getId(user));
+      formPayload.append("addedBy", getId(user));
       const response = await axios.post(`${API_BASE}/api/cars`, formPayload, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -181,7 +183,7 @@ const AddCarForm = () => {
                 encType="multipart/form-data"
               >
                 <div className="form-grid">
-                  <div className="form-group">
+                  <div className="form-group col-3">
                     <label className="form-label required">Make</label>
                     <input
                       type="text"
@@ -194,7 +196,7 @@ const AddCarForm = () => {
                     />
                   </div>
 
-                  <div className="form-group">
+                  <div className="form-group col-3">
                     <label className="form-label required">Model</label>
                     <input
                       type="text"
@@ -207,7 +209,7 @@ const AddCarForm = () => {
                     />
                   </div>
 
-                  <div className="form-group">
+                  <div className="form-group col-2">
                     <label className="form-label required">Variant</label>
                     <input
                       type="text"
@@ -220,7 +222,7 @@ const AddCarForm = () => {
                     />
                   </div>
 
-                  <div className="form-group">
+                  <div className="form-group col-2">
                     <label className="form-label required">Fuel Type</label>
                     <select
                       name="fuelType"
@@ -238,7 +240,7 @@ const AddCarForm = () => {
                     </select>
                   </div>
 
-                  <div className="form-group">
+                  <div className="form-group col-2">
                     <label className="form-label required">Model Year</label>
                     <input
                       type="number"
@@ -252,7 +254,7 @@ const AddCarForm = () => {
                     />
                   </div>
 
-                  <div className="form-group">
+                  <div className="form-group col-2">
                     <label className="form-label required">
                       Registration Year
                     </label>
@@ -268,7 +270,7 @@ const AddCarForm = () => {
                     />
                   </div>
 
-                  <div className="form-group">
+                  <div className="form-group col-2">
                     <label className="form-label required">Color</label>
                     <input
                       type="text"
@@ -281,7 +283,7 @@ const AddCarForm = () => {
                     />
                   </div>
 
-                  <div className="form-group">
+                  <div className="form-group col-2">
                     <label className="form-label required">Chassis No</label>
                     <input
                       type="text"
@@ -294,7 +296,7 @@ const AddCarForm = () => {
                     />
                   </div>
 
-                  <div className="form-group">
+                  <div className="form-group col-2">
                     <label className="form-label required">Engine No</label>
                     <input
                       type="text"
@@ -307,7 +309,7 @@ const AddCarForm = () => {
                     />
                   </div>
 
-                  <div className="form-group">
+                  <div className="form-group col-2">
                     <label className="form-label required">KM Driven</label>
                     <input
                       type="number"
@@ -320,7 +322,7 @@ const AddCarForm = () => {
                     />
                   </div>
 
-                  <div className="form-group">
+                  <div className="form-group col-2">
                     <label className="form-label required">Ownership</label>
                     <select
                       name="ownership"
@@ -330,16 +332,14 @@ const AddCarForm = () => {
                       onChange={handleChange}
                     >
                       <option value="">Select Ownership</option>
-                      <option value="1st Owner">1st Owner</option>
-                      <option value="2nd Owner">2nd Owner</option>
-                      <option value="3rd Owner">3rd Owner</option>
-                      <option value="4th Owner or more">
-                        4th Owner or more
-                      </option>
+                      <option value="1st Own">1st Own</option>
+                      <option value="2nd Own">2nd Own</option>
+                      <option value="3rd Own">3rd Own</option>
+                      <option value="4th Own">4th Own</option>
                     </select>
                   </div>
 
-                  <div className="form-group">
+                  <div className="form-group col-2">
                     <label className="form-label required">Days Old</label>
                     <input
                       type="number"
@@ -352,7 +352,7 @@ const AddCarForm = () => {
                     />
                   </div>
 
-                  <div className="form-group">
+                  <div className="form-group col-2">
                     <label className="form-label required">
                       Buying Price (₹)
                     </label>
@@ -367,7 +367,7 @@ const AddCarForm = () => {
                     />
                   </div>
 
-                  <div className="form-group">
+                  <div className="form-group col-2">
                     <label className="form-label required">
                       Quoting Price (₹)
                     </label>
@@ -382,7 +382,7 @@ const AddCarForm = () => {
                     />
                   </div>
 
-                  <div className="form-group">
+                  <div className="form-group col-2">
                     <label className="form-label required">
                       Selling Price (₹)
                     </label>
@@ -397,7 +397,7 @@ const AddCarForm = () => {
                     />
                   </div>
 
-                  <div className="form-group">
+                  <div className="form-group col-2">
                     <label className="form-label required">Status</label>
                     <select
                       name="status"
@@ -457,7 +457,7 @@ const AddCarForm = () => {
                   </div>
                 </div>
 
-                <div className="form-actions">
+                <div style={{ display: "flex", justifyContent: "flex-start", gap: "10px" }}>
                   <button
                     type="button"
                     className="btn btn-outlined"

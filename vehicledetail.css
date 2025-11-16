@@ -2,6 +2,7 @@ body {
   background: #f9fafb;
   font-family: "Inter", sans-serif;
 }
+
 /* Override hero-section for vehicle detail page */
 .hero-section {
   position: relative;
@@ -13,23 +14,22 @@ body {
   align-items: unset;
   justify-content: unset;
   background-color: #f9fafb;
-  padding-top: 80px; /* Space for fixed navbar */
+  padding-top: 80px;
+  /* Space for fixed navbar */
 }
 
 .vehicle-main-section {
-  width: 100%;
-  max-width: 1400px; /* constrain content width for mobile friendliness */
+  width: 90%;
   margin: 24px auto;
-  background-color: #ffffff;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border-radius: 16px;
+  background-color: #F9FAFB;
   padding: 32px 24px;
   display: block;
 }
 
 .vehicle-content-row {
   display: flex;
-  flex-direction: row; /* image left, details right on desktop */
+  flex-direction: row;
+  /* image left, details right on desktop */
   gap: 32px;
   width: 100%;
   align-items: flex-start;
@@ -43,7 +43,8 @@ body {
   background: #f8f9fa;
   border-radius: 12px;
   padding: 24px;
-  flex: 0 0 58%; /* occupy ~58% of row */
+  flex: 0 0 58%;
+  /* occupy ~58% of row */
   max-width: 58%;
   order: 1;
 }
@@ -51,8 +52,10 @@ body {
 .vehicle-main-img {
   /* Enforce a consistent visual size while allowing scaling on very small viewports */
   width: 100%;
-  aspect-ratio: 5 / 3; /* Keep main image in a stable 5:3 ratio (width:height = 5:3). */
-  max-width: 100%; /* allows shrinking on small screens */
+  aspect-ratio: 5 / 3;
+  /* Keep main image in a stable 5:3 ratio (width:height = 5:3). */
+  max-width: 100%;
+  /* allows shrinking on small screens */
   object-fit: cover;
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
@@ -134,7 +137,8 @@ body {
   border-radius: 12px;
   padding: 32px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  flex: 0 0 42%; /* occupy ~42% of row */
+  flex: 0 0 42%;
+  /* occupy ~42% of row */
   max-width: 42%;
   order: 2;
 }
@@ -284,28 +288,70 @@ body {
   max-width: 1400px;
   width: calc(100% - 48px);
   padding: 40px 24px;
-  background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  background: #F9FAFB;
   order: 3;
 }
 
-/* Responsive: stack column on smaller screens */
-@media (max-width: 900px) {
-  .vehicle-content-row {
-    flex-direction: column;
-  }
+/* (mobile rules consolidated later) */
 
-  .vehicle-image-block,
-  .vehicle-details-block {
-    flex: 0 0 auto;
-    max-width: 100%;
-    width: 100%;
-  }
+/* Mid-size laptops: shrink a few values for screens between 901px and 1280px */
+@media (min-width: 901px) and (max-width: 1280px) {
 
+  /* Subtle reductions for smaller laptops — avoid large visual shifts */
   .vehicle-main-section {
+    padding: 24px 20px;
+    margin: 20px auto;
+  }
+
+  .vehicle-content-row {
+    gap: 24px;
+  }
+
+  .vehicle-image-block {
+    flex: 0 0 59%;
+    max-width: 59%;
     padding: 20px;
-    margin: 16px;
+  }
+
+  .vehicle-details-block {
+    flex: 0 0 41%;
+    max-width: 41%;
+    padding: 24px;
+  }
+
+  .vehicle-main-img {
+    max-height: 600px;
+    /* gentle reduction only */
+  }
+
+  .vehicle-thumbnails img {
+    width: 104px;
+    height: 78px;
+  }
+
+  .vehicle-title {
+    font-size: 2.15rem;
+  }
+
+  .vehicle-model {
+    font-size: 1.12rem;
+  }
+
+  .vehicle-price {
+    font-size: 1.9rem;
+  }
+
+  .other-car-card {
+    min-width: 310px;
+    max-width: 310px;
+  }
+
+  .slider-btn.prev {
+    left: -35px;
+  }
+
+  .slider-btn.next {
+    right: -35px;
   }
 }
 
@@ -360,16 +406,21 @@ body {
 .vehicle-thumbnails,
 .mobile-thumbnails,
 .other-cars-row {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
+
 .vehicle-thumbnails::-webkit-scrollbar,
 .mobile-thumbnails::-webkit-scrollbar,
 .other-cars-row::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none;
+  /* Chrome, Safari, Opera */
   width: 0;
   height: 0;
 }
+
 .vehicle-thumbnails:focus,
 .mobile-thumbnails:focus,
 .other-cars-row:focus {
@@ -527,7 +578,8 @@ body {
      Use higher specificity and !important so the button shows on mobile. */
   .hero-section header .navbar .mobile-menu-toggle {
     display: block !important;
-    color: white !important; /* dark icon on light background */
+    color: white !important;
+    /* dark icon on light background */
     right: 5% !important;
     top: 32px !important;
     z-index: 9999 !important;
@@ -545,133 +597,66 @@ body {
   }
 }
 
-/* Responsive adjustments */
+/* Consolidated mobile rules: stack columns and reduce sizes for smaller screens */
 @media (max-width: 900px) {
-  .vehicle-main-section {
-    padding: 24px;
-    gap: 24px;
-  }
-
   .vehicle-content-row {
+    flex-direction: column;
     gap: 20px;
   }
 
-  .vehicle-image-block {
-    order: 1;
-    padding: 20px;
-  }
-
+  .vehicle-image-block,
   .vehicle-details-block {
-    order: 2;
-    padding: 24px;
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 100%;
+    padding: 16px;
   }
 
-  .vehicle-details-grid {
-    grid-template-columns: 1fr;
+  .vehicle-main-section {
+    padding: 20px;
+    margin: 16px;
+  }
+
+  /* Main image + thumbnails */
+  .vehicle-main-img {
+    width: 100%;
+    aspect-ratio: 5/3;
+    max-height: 420px;
+    object-fit: cover;
+    border-radius: 12px;
   }
 
   .vehicle-thumbnails {
-    flex-direction: row;
+    order: 2;
+    margin-top: 12px;
     gap: 10px;
     overflow-x: auto;
     padding-bottom: 8px;
-    margin-bottom: 8px;
     width: 100%;
     justify-content: flex-start;
   }
 
-  /* Improve mobile image block layout for horizontal thumbnails */
-  .vehicle-image-block {
-    width: 100%;
-    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
-    border-radius: 16px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-    border: 1px solid #e2e8f0;
+  .vehicle-thumbnails img {
+    width: 96px;
+    height: 72px;
   }
-
-  .vehicle-thumbnails {
-    order: 2;
-    margin-top: 20px;
-  }
-
-  .vehicle-main-img {
-    order: 1;
-    max-height: 420px;
-    border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  }
-
-  /* Modern horizontal mobile thumbnails design */
-  .mobile-thumbnails {
-    display: flex;
-    flex-direction: row !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    width: 100% !important;
-    gap: 12px !important;
-    padding: 16px !important;
-    margin-top: 16px !important;
-    margin-bottom: 0 !important;
-    margin-right: 0 !important;
-    align-items: center !important;
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-    border-radius: 16px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-    border: 1px solid #e2e8f0;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    position: relative;
-  }
-
-  /* Remove duplicate mobile-thumbnails rule and the nested media query */
 
   .mobile-thumbnails img {
-    flex: 0 0 auto;
     width: 80px !important;
     height: 60px !important;
-    object-fit: cover;
-    border-radius: 12px;
-    cursor: pointer;
-    border: 3px solid transparent;
-    transition: all 0.3s ease;
-    background: #fff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    scroll-snap-align: center;
   }
 
-  .mobile-thumbnails img:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  /* Detail column adjustments */
+  .vehicle-details-grid {
+    grid-template-columns: 1fr;
+    padding: 16px;
   }
 
-  .mobile-thumbnails img.selected {
-    border: 3px solid var(--primary-color);
-    box-shadow: 0 6px 20px rgba(255, 107, 0, 0.3);
-    transform: translateY(-2px) scale(1.05);
+  .vehicle-details-block {
+    padding: 18px;
   }
 
-  /* Hide scrollbar but keep functionality */
-  .mobile-thumbnails::-webkit-scrollbar {
-    display: none;
-  }
-
-  .mobile-thumbnails {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-
-  .vehicle-thumbnails img {
-    width: 120px; /* Keep thumbnails a uniform fixed size */
-    height: 90px;
-  }
-
-  .vehicle-main-img {
-    width: 100%;
-    aspect-ratio: 5 / 3;
-    max-height: 360px;
-    object-fit: cover;
-  }
-
+  /* Typography */
   .vehicle-title {
     font-size: 1.8rem;
     text-align: center;
@@ -687,21 +672,7 @@ body {
     text-align: center;
   }
 
-  .other-cars-section {
-    padding: 24px;
-  }
-
-  .why-choose-row {
-    gap: 20px;
-    flex-wrap: wrap;
-    border-radius: 0%;
-  }
-
-  .other-cars-title {
-    font-size: 1.6rem;
-    margin-bottom: 24px;
-  }
-
+  /* Other cars slider */
   .other-cars-row {
     gap: 16px;
     padding: 12px 0;
@@ -710,6 +681,29 @@ body {
   .other-car-card {
     min-width: 260px;
     max-width: 260px;
+    padding: 18px;
+  }
+
+  /* CTAs */
+  .add-to-cart-btn,
+  .contact-btn,
+  .view-details-btn {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 1rem;
+  }
+
+  /* Mobile menu */
+  .mobile-menu-toggle {
+    display: block;
+    z-index: 9999;
+  }
+
+  .hero-section header .navbar .mobile-menu-toggle {
+    display: block !important;
+    color: #0f172a !important;
+    right: 5% !important;
+    top: 32px !important;
   }
 }
 
@@ -865,6 +859,7 @@ body {
     max-width: 1920px;
     margin: 84px auto;
     display: block;
+    background-color: #F9FAFB;
   }
 
   .vehicle-content-row {

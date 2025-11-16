@@ -172,7 +172,6 @@ const SellLetterForm = () => {
     fetchCars();
   }, []);
 
-  
   const generatePdfBytes = async (language = "hindi") => {
     try {
       // Create a PDF document
@@ -614,9 +613,7 @@ const SellLetterForm = () => {
       alert("Failed to download PDF");
     }
   };
-  
 
-  
   const formatRupee = (val) => {
     const num = parseFloat(val.toString().replace(/,/g, ""));
     return isNaN(num)
@@ -639,7 +636,6 @@ const SellLetterForm = () => {
     });
   };
 
-  
   const saveToDatabase = async () => {
     try {
       setIsSaving(true);
@@ -835,13 +831,14 @@ const SellLetterForm = () => {
               <h2 style={styles.sectionTitle}>
                 <Car style={styles.sectionIcon} /> Vehicle Information
               </h2>
-              <div style={styles.formGrid}>
-                <div style={styles.formField}>
+              <div className="form-grid">
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <Car style={styles.formIcon} />
-                    Select from Inventory (optional)
+                    Select from Inventory
                   </label>
                   <select
+                    className="form-control select"
                     style={styles.formSelect}
                     onChange={handleSelectCar}
                     defaultValue=""
@@ -856,7 +853,7 @@ const SellLetterForm = () => {
                     ))}
                   </select>
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <Car style={styles.formIcon} />
                     Vehicle Brand
@@ -867,12 +864,13 @@ const SellLetterForm = () => {
                     value={formData.vehicleName}
                     onChange={handleChange}
                     onInput={handleInput}
+                    className="form-control"
                     style={styles.formInput}
                     required
                     maxLength={30}
                   />
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <Car style={styles.formIcon} />
                     Vehicle Model
@@ -883,12 +881,13 @@ const SellLetterForm = () => {
                     value={formData.vehicleModel}
                     onChange={handleChange}
                     onInput={handleInput}
+                    className="form-control"
                     style={styles.formInput}
                     required
                     maxLength={30}
                   />
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <Car style={styles.formIcon} />
                     Vehicle Color
@@ -899,12 +898,13 @@ const SellLetterForm = () => {
                     value={formData.vehicleColor}
                     onChange={handleChange}
                     onInput={handleInput}
+                    className="form-control"
                     style={styles.formInput}
                     required
                     maxLength={30}
                   />
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <Car style={styles.formIcon} />
                     Registration Number
@@ -915,12 +915,13 @@ const SellLetterForm = () => {
                     value={formData.registrationNumber}
                     onChange={handleChange}
                     onInput={handleInput}
+                    className="form-control"
                     style={styles.formInput}
                     required
                     maxLength={11}
                   />
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <Car style={styles.formIcon} />
                     Chassis Number
@@ -936,7 +937,7 @@ const SellLetterForm = () => {
                     maxLength={18}
                   />
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <Car style={styles.formIcon} />
                     Engine Number
@@ -951,7 +952,7 @@ const SellLetterForm = () => {
                     maxLength={15}
                   />
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <Car style={styles.formIcon} />
                     Vehicle KM
@@ -978,7 +979,7 @@ const SellLetterForm = () => {
                     placeholder="e.g. 36,000.00"
                   />
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <Car style={styles.formIcon} />
                     Vehicle Condition
@@ -1002,8 +1003,8 @@ const SellLetterForm = () => {
               <h2 style={styles.sectionTitle}>
                 <User style={styles.sectionIcon} /> Buyer Information
               </h2>
-              <div style={styles.formGrid}>
-                <div style={styles.formField}>
+              <div className="form-grid">
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <User style={styles.formIcon} />
                     Buyer Name
@@ -1019,7 +1020,7 @@ const SellLetterForm = () => {
                     maxLength={30}
                   />
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <User style={styles.formIcon} />
                     Buyer Father's Name
@@ -1035,7 +1036,7 @@ const SellLetterForm = () => {
                     maxLength={16}
                   />
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <User style={styles.formIcon} />
                     Buyer Address
@@ -1051,7 +1052,7 @@ const SellLetterForm = () => {
                     maxLength={100}
                   />
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <User style={styles.formIcon} />
                     Buyer Phone
@@ -1073,7 +1074,7 @@ const SellLetterForm = () => {
                     maxLength={10}
                   />
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <User style={styles.formIcon} />
                     Buyer Alternate Phone
@@ -1091,11 +1092,12 @@ const SellLetterForm = () => {
                         buyerPhone2: rawValue,
                       }));
                     }}
+                    className="form-control"
                     style={styles.formInput}
                     maxLength={10}
                   />
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <User style={styles.formIcon} />
                     Buyer Aadhar
@@ -1114,11 +1116,12 @@ const SellLetterForm = () => {
                         buyerAadhar: formatted,
                       }));
                     }}
+                    className="form-control"
                     style={styles.formInput}
                     placeholder="1234-5678-9012"
                   />
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <User style={styles.formIcon} />
                     Witness Name
@@ -1128,12 +1131,13 @@ const SellLetterForm = () => {
                     name="witnessName"
                     value={formData.witnessName}
                     onChange={handleChange}
+                    className="form-control"
                     style={styles.formInput}
                     required
                     maxLength={30}
                   />
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <User style={styles.formIcon} />
                     Witness Phone
@@ -1151,6 +1155,7 @@ const SellLetterForm = () => {
                         witnessPhone: rawValue,
                       }));
                     }}
+                    className="form-control"
                     style={styles.formInput}
                     maxLength={10}
                   />
@@ -1162,8 +1167,8 @@ const SellLetterForm = () => {
               <h2 style={styles.sectionTitle}>
                 <IndianRupee style={styles.sectionIcon} /> Sale Details
               </h2>
-              <div style={styles.formGrid}>
-                <div style={styles.formField}>
+              <div className="form-grid">
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <Calendar style={styles.formIcon} />
                     Sale Date
@@ -1174,10 +1179,11 @@ const SellLetterForm = () => {
                     value={formData.saleDate}
                     onChange={handleChange}
                     onInput={handleInput}
+                    className="form-control"
                     style={styles.formInput}
                   />
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <Clock style={styles.formIcon} />
                     Sale Time
@@ -1188,10 +1194,11 @@ const SellLetterForm = () => {
                     value={formData.saleTime}
                     onChange={handleChange}
                     onInput={handleInput}
+                    className="form-control"
                     style={styles.formInput}
                   />
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <IndianRupee style={styles.formIcon} />
                     Sale Amount (₹)
@@ -1214,10 +1221,11 @@ const SellLetterForm = () => {
                         saleAmount: rawValue,
                       }));
                     }}
+                    className="form-control"
                     style={styles.formInput}
                   />
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <IndianRupee style={styles.formIcon} />
                     Payment Method
@@ -1227,6 +1235,7 @@ const SellLetterForm = () => {
                     value={formData.paymentMethod}
                     onChange={handleChange}
                     onInput={handleInput}
+                    className="form-control select"
                     style={styles.formSelect}
                   >
                     <option value="cash">Cash</option>
@@ -1235,7 +1244,7 @@ const SellLetterForm = () => {
                     <option value="other">Other</option>
                   </select>
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <Calendar style={styles.formIcon} />
                     Today's Date
@@ -1245,10 +1254,11 @@ const SellLetterForm = () => {
                     name="todayDate"
                     value={formData.todayDate}
                     onChange={handleChange}
+                    className="form-control"
                     style={styles.formInput}
                   />
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <Clock style={styles.formIcon} />
                     Today's Time
@@ -1258,6 +1268,7 @@ const SellLetterForm = () => {
                     name="todayTime"
                     value={formData.todayTime}
                     onChange={handleChange}
+                    className="form-control"
                     style={styles.formInput}
                   />
                 </div>
@@ -1269,18 +1280,20 @@ const SellLetterForm = () => {
               <h2 style={styles.sectionTitle}>
                 <FileText style={styles.sectionIcon} /> Invoice / Particulars
               </h2>
-              <div style={styles.formGrid}>
-                <div style={styles.formField}>
+              <div className="form-grid">
+                {" "}
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>Invoice No.</label>
                   <input
                     type="text"
                     name="invoiceNumber"
                     value={formData.invoiceNumber}
                     onChange={handleChange}
+                    className="form-control"
                     style={styles.formInput}
                   />
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>Sale Value (₹)</label>
                   <input
                     type="text"
@@ -1290,10 +1303,11 @@ const SellLetterForm = () => {
                       const raw = e.target.value.replace(/[^0-9]/g, "");
                       setFormData((prev) => ({ ...prev, saleValue: raw }));
                     }}
+                    className="form-control"
                     style={styles.formInput}
                   />
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>Commission (₹)</label>
                   <input
                     type="text"
@@ -1303,10 +1317,11 @@ const SellLetterForm = () => {
                       const raw = e.target.value.replace(/[^0-9]/g, "");
                       setFormData((prev) => ({ ...prev, commission: raw }));
                     }}
+                    className="form-control"
                     style={styles.formInput}
                   />
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>RTO Charges (₹)</label>
                   <input
                     type="text"
@@ -1316,10 +1331,11 @@ const SellLetterForm = () => {
                       const raw = e.target.value.replace(/[^0-9]/g, "");
                       setFormData((prev) => ({ ...prev, rtoCharges: raw }));
                     }}
+                    className="form-control"
                     style={styles.formInput}
                   />
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>Other Charges (₹)</label>
                   <input
                     type="text"
@@ -1329,10 +1345,11 @@ const SellLetterForm = () => {
                       const raw = e.target.value.replace(/[^0-9]/g, "");
                       setFormData((prev) => ({ ...prev, otherCharges: raw }));
                     }}
+                    className="form-control"
                     style={styles.formInput}
                   />
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>Advance (₹)</label>
                   <input
                     type="text"
@@ -1342,10 +1359,11 @@ const SellLetterForm = () => {
                       const raw = e.target.value.replace(/[^0-9]/g, "");
                       setFormData((prev) => ({ ...prev, advanceAmount: raw }));
                     }}
+                    className="form-control"
                     style={styles.formInput}
                   />
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>Balance (₹)</label>
                   <input
                     type="text"
@@ -1355,15 +1373,17 @@ const SellLetterForm = () => {
                       const raw = e.target.value.replace(/[^0-9]/g, "");
                       setFormData((prev) => ({ ...prev, balanceAmount: raw }));
                     }}
+                    className="form-control"
                     style={styles.formInput}
                   />
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>Declaration</label>
                   <textarea
                     name="declaration"
                     value={formData.declaration}
                     onChange={handleChange}
+                    className="form-control"
                     style={{ ...styles.formInput, height: "120px" }}
                   />
                 </div>
@@ -1375,7 +1395,7 @@ const SellLetterForm = () => {
               <h2 style={styles.sectionTitle}>
                 <FileSignature style={styles.sectionIcon} /> Legal Terms
               </h2>
-              <div style={styles.formGrid}>
+              <div className="form-grid">
                 <div style={styles.formCheckboxField}>
                   <input
                     type="checkbox"
@@ -1390,7 +1410,7 @@ const SellLetterForm = () => {
                     सत्यापित और संतोषजनक
                   </label>
                 </div>
-                <div style={styles.formField}>
+                <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <AlertCircle style={styles.formIcon} />
                     Note
@@ -1401,6 +1421,7 @@ const SellLetterForm = () => {
                     onChange={handleChange}
                     onFocus={() => setFocusedInput("note")}
                     onBlur={() => setFocusedInput(null)}
+                    className="form-control"
                     style={{
                       ...styles.formInput,
                       ...(focusedInput === "note" ? styles.inputFocused : {}),
@@ -1597,7 +1618,7 @@ const styles = {
   },
   menuItemActive: {
     backgroundColor: "#334155",
-    borderRight: "3px solid #3b82f6",
+    borderRight: "3px solid #2D2D2D",
     color: "#ffffff",
   },
   menuItemContent: {
@@ -1706,7 +1727,7 @@ const styles = {
   englishButton: {
     flex: 1,
     padding: "12px",
-    backgroundColor: "#3b82f6",
+    backgroundColor: "#2D2D2D",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -1803,7 +1824,7 @@ const styles = {
     backgroundColor: "#f8fafc",
     ":focus": {
       outline: "none",
-      borderColor: "#3b82f6",
+      borderColor: "#2D2D2D",
       boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.1)",
       backgroundColor: "#ffffff",
     },
@@ -1846,7 +1867,7 @@ const styles = {
     backgroundSize: "1em",
     ":focus": {
       outline: "none",
-      borderColor: "#3b82f6",
+      borderColor: "#2D2D2D",
       boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.1)",
       backgroundColor: "#ffffff",
     },
@@ -1863,7 +1884,7 @@ const styles = {
     backgroundColor: "#f8fafc",
     ":focus": {
       outline: "none",
-      borderColor: "#3b82f6",
+      borderColor: "#2D2D2D",
       boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.1)",
       backgroundColor: "#ffffff",
     },
@@ -1877,7 +1898,7 @@ const styles = {
   formCheckbox: {
     width: "16px",
     height: "16px",
-    accentColor: "#3b82f6",
+    accentColor: "#2D2D2D",
   },
   formCheckboxLabel: {
     display: "flex",
@@ -1919,7 +1940,7 @@ const styles = {
     alignItems: "center",
     gap: "8px",
     padding: "10px 20px",
-    backgroundColor: "#3b82f6",
+    backgroundColor: "#2D2D2D",
     color: "white",
     border: "none",
     borderRadius: "8px",

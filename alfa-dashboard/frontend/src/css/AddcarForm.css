@@ -1,5 +1,5 @@
 :root {
-  --primary-color: #1976d2;
+  --primary-color: #2D2D2D;
   --danger-color: #d32f2f;
   --text-color: #212121;
   --text-secondary: #757575;
@@ -72,14 +72,66 @@
 }
 
 .form-grid {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
   gap: 1.5rem;
-  flex-wrap: wrap;
+  align-items: start;
 }
 
 .form-group {
-  flex: 1;
-  min-width: 280px;
+  /* By default each form-group takes full width (12 columns). Use the helper classes below
+     to change the width of individual inputs: e.g. `col-3`, `col-4`, `col-2` etc. */
+  grid-column: span 12;
+  min-width: 0;
+}
+
+/* Column span helpers (12-column grid) */
+.col-1 {
+  grid-column: span 1;
+}
+
+.col-2 {
+  grid-column: span 2;
+}
+
+.col-3 {
+  grid-column: span 3;
+}
+
+.col-4 {
+  grid-column: span 4;
+}
+
+.col-5 {
+  grid-column: span 5;
+}
+
+.col-6 {
+  grid-column: span 6;
+}
+
+.col-7 {
+  grid-column: span 7;
+}
+
+.col-8 {
+  grid-column: span 8;
+}
+
+.col-9 {
+  grid-column: span 9;
+}
+
+.col-10 {
+  grid-column: span 10;
+}
+
+.col-11 {
+  grid-column: span 11;
+}
+
+.col-12 {
+  grid-column: span 12;
 }
 
 .form-label {
@@ -95,7 +147,7 @@
 }
 
 .form-control {
-  width: 95%;
+  width: 90%;
   padding: 0.65rem 0.75rem;
   border: 1px solid #ccc;
   border-radius: var(--border-radius);
@@ -106,6 +158,53 @@
   outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+}
+
+/* Responsive: switch to 2-column layout on smaller screens */
+@media (max-width: 900px) {
+  .form-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .form-group {
+    grid-column: span 6;
+  }
+}
+
+@media (max-width: 520px) {
+
+  /* Two columns on mobile so inputs can appear side-by-side. Default
+     form-group should occupy one column (half width). Larger desktop
+     spans (>=6) will occupy both columns (full-width). */
+  .form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .form-group {
+    grid-column: span 1;
+  }
+
+  /* Map desktop column helpers into mobile-friendly spans:
+     - col-1..col-5 -> half-width (span 1)
+     - col-6..col-12 -> full-width (span 2)
+  */
+  .col-1,
+  .col-2,
+  .col-3,
+  .col-4,
+  .col-5 {
+    grid-column: span 1;
+  }
+
+  .col-6,
+  .col-7,
+  .col-8,
+  .col-9,
+  .col-10,
+  .col-11,
+  .col-12 {
+    grid-column: span 2;
+  }
 }
 
 .select {

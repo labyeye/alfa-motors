@@ -1044,7 +1044,7 @@ const modalStyles = {
     backgroundColor: "#f8fafc",
     ":focus": {
       outline: "none",
-      borderColor: "#3b82f6",
+      borderColor: "#2D2D2D",
       boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.1)",
       backgroundColor: "#ffffff",
     },
@@ -1059,7 +1059,7 @@ const modalStyles = {
   },
   saveButton: {
     padding: "8px 16px",
-    backgroundColor: "#3b82f6",
+    backgroundColor: "#2D2D2D",
     color: "white",
     border: "none",
     borderRadius: "4px",
@@ -1133,7 +1133,7 @@ const styles = {
   },
   menuItemActive: {
     backgroundColor: "#334155",
-    borderRight: "3px solid #3b82f6",
+    borderRight: "3px solid #2D2D2D",
     color: "#ffffff",
   },
   menuItemContent: {
@@ -1217,7 +1217,7 @@ const styles = {
     alignItems: "center",
     gap: "8px",
     padding: "10px 16px",
-    backgroundColor: "#3b82f6",
+    backgroundColor: "#2D2D2D",
     color: "white",
     border: "none",
     borderRadius: "8px",
@@ -1260,7 +1260,7 @@ const styles = {
     borderRadius: "4px",
     ":hover": {
       backgroundColor: "#f1f5f9",
-      color: "#3b82f6",
+      color: "#2D2D2D",
     },
   },
   pagination: {
@@ -1370,7 +1370,7 @@ const styles = {
   },
   viewButton: {
     padding: "6px 12px",
-    backgroundColor: "#3b82f6",
+    backgroundColor: "#2D2D2D",
     color: "white",
     border: "none",
     borderRadius: "4px",
@@ -1421,7 +1421,7 @@ const styles = {
   englishButton: {
     flex: 1,
     padding: "12px",
-    backgroundColor: "#3b82f6",
+    backgroundColor: "#2D2D2D",
     color: "white",
     border: "none",
     borderRadius: "6px",

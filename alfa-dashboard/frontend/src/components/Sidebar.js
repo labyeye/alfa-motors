@@ -155,7 +155,10 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
             {MENU_ITEMS.map((item) => {
               const isExpanded = !!expandedMenus[item.name];
               return (
-                <li key={item.name} style={{ ...styles.menuListItem, marginBottom: ITEM_GAP }}>
+                <li
+                  key={item.name}
+                  style={{ ...styles.menuListItem, marginBottom: ITEM_GAP }}
+                >
                   <div
                     role="button"
                     tabIndex={0}
@@ -186,7 +189,9 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
                       <ChevronDown
                         size={14}
                         style={{
-                          transform: isExpanded ? "rotate(0deg)" : "rotate(-90deg)",
+                          transform: isExpanded
+                            ? "rotate(0deg)"
+                            : "rotate(-90deg)",
                         }}
                       />
                     )}
@@ -197,14 +202,23 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
                         ...styles.submenu,
                         marginTop: isExpanded ? `${ITEM_GAP}px` : "0px",
                         padding: isExpanded ? "4px 0 4px 12px" : "0px 0 0 12px",
-                        maxHeight: isExpanded ? `${item.submenu.length * 40}px` : "0px",
+                        maxHeight: isExpanded
+                          ? `${item.submenu.length * 40}px`
+                          : "0px",
                         overflow: "hidden",
-                        transition: "max-height 220ms ease, margin-top 180ms ease, padding 180ms ease",
+                        transition:
+                          "max-height 220ms ease, margin-top 180ms ease, padding 180ms ease",
                       }}
                       aria-hidden={!isExpanded}
                     >
                       {item.submenu.map((sub) => (
-                        <li key={sub.name} style={{ ...styles.submenuItem, marginBottom: isExpanded ? 6 : 0 }}>
+                        <li
+                          key={sub.name}
+                          style={{
+                            ...styles.submenuItem,
+                            marginBottom: isExpanded ? 6 : 0,
+                          }}
+                        >
                           <button
                             type="button"
                             onClick={() => handleNavigate(sub.name, sub.path)}

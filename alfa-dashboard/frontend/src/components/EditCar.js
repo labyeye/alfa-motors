@@ -35,7 +35,7 @@ const EditCar = () => {
     chassisNo: "",
     engineNo: "",
     kmDriven: "",
-    ownership: "1st Owner",
+    ownership: "1st Own",
     daysOld: "",
     buyingPrice: "",
     quotingPrice: "",
@@ -86,7 +86,7 @@ const EditCar = () => {
           chassisNo: car.chassisNo || "",
           engineNo: car.engineNo || "",
           kmDriven: car.kmDriven || "",
-          ownership: car.ownership || "1st Owner",
+          ownership: car.ownership || "1st Own",
           daysOld: car.daysOld || "",
           buyingPrice: car.buyingPrice || "",
           quotingPrice: car.quotingPrice || "",
@@ -409,10 +409,10 @@ const EditCar = () => {
                     style={styles.select}
                     required
                   >
-                    <option value="1st Owner">1st Owner</option>
-                    <option value="2nd Owner">2nd Owner</option>
-                    <option value="3rd Owner">3rd Owner</option>
-                    <option value="4th Owner or more">4th Owner or more</option>
+                    <option value="1st Own">1st Own</option>
+                    <option value="2nd Own">2nd Own</option>
+                    <option value="3rd Own">3rd Own</option>
+                    <option value="4th Own">4th Own</option>
                   </select>
                 </div>
 

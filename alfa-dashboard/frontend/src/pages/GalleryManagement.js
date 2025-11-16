@@ -665,7 +665,7 @@ const styles = {
   },
   loadingSpinner: {
     border: "4px solid rgba(0, 0, 0, 0.1)",
-    borderLeftColor: "#3b82f6",
+    borderLeftColor: "#2D2D2D",
     borderRadius: "50%",
     width: "40px",
     height: "40px",
@@ -705,7 +705,7 @@ const styles = {
   },
   menuItemActive: {
     backgroundColor: "#334155",
-    borderRight: "3px solid #3b82f6",
+    borderRight: "3px solid #2D2D2D",
     color: "#ffffff",
   },
   menuItemContent: {
@@ -835,7 +835,7 @@ const styles = {
     alignItems: "center",
     gap: "6px",
     padding: "8px 12px",
-    backgroundColor: "#3b82f6",
+    backgroundColor: "#2D2D2D",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -874,7 +874,7 @@ const styles = {
   smallButton: {
     padding: "6px 10px",
     marginRight: 8,
-    backgroundColor: "#3b82f6",
+    backgroundColor: "#2D2D2D",
     color: "#fff",
     border: "none",
     borderRadius: 6,
@@ -919,7 +919,7 @@ const styles = {
     alignItems: "center",
     gap: "8px",
     padding: "10px 16px",
-    backgroundColor: "#3b82f6",
+    backgroundColor: "#2D2D2D",
     color: "white",
     textDecoration: "none",
     borderRadius: "6px",

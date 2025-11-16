@@ -17,7 +17,7 @@ const Car = sequelize.define(
     engineNo: { type: DataTypes.STRING, allowNull: false },
     kmDriven: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
     ownership: {
-      type: DataTypes.ENUM("1st Owner", "2nd Owner", "3rd Owner", "4th Owner or more"),
+      type: DataTypes.ENUM("1st Own", "2nd Own", "3rd Own", "4th Own"),
       allowNull: false,
     },
     daysOld: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },

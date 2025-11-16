@@ -274,7 +274,7 @@ const AdminPage = () => {
           <button
             onClick={fetchDashboardData}
             style={{
-              backgroundColor: "#3b82f6",
+              backgroundColor: "#2D2D2D",
               color: "white",
               border: "none",
               padding: "8px 16px",

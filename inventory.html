@@ -204,6 +204,60 @@
             } catch (e) {}
           });
         }
+        // Compute counts for each brand from allCars and attach/update badges
+        function updateBrandCounts() {
+          try {
+            const counts = (allCars || []).reduce((acc, car) => {
+              const key = normalizeBrandKey(car.brand || car.make || "");
+              if (!key) return acc;
+              acc[key] = (acc[key] || 0) + 1;
+              return acc;
+            }, {});
+
+            // Debug: log computed brand counts (remove in production)
+            console.debug("updateBrandCounts: computed counts=", counts);
+
+            // Determine label dynamically (falls back to 'Cars')
+            let label = "Cars";
+            const allBtn = document.querySelector(
+              '.filter-btn[data-filter="all"]'
+            );
+            if (allBtn) {
+              const txt = allBtn.textContent || "";
+              if (/bike/i.test(txt)) label = "Bikes";
+              else if (/car/i.test(txt)) label = "Cars";
+            }
+
+            document.querySelectorAll(".brand-logo").forEach((el) => {
+              const brandKey = el.dataset.brand || "";
+              const brandKeyNormalized = normalizeBrandKey(brandKey);
+              const count = counts[brandKeyNormalized] || 0;
+              let badge = el.querySelector(".brand-count");
+              if (count > 0) {
+                if (!badge) {
+                  badge = document.createElement("span");
+                  badge.className = "brand-count";
+                  el.appendChild(badge);
+                  console.debug(
+                    `updateBrandCounts: created badge for ${brandKey}`
+                  );
+                }
+                // Use two-line badge (number + label) to match bike-style UI
+                badge.innerHTML = `<div class="count-number">${count}</div><div class="count-label">${label}</div>`;
+                // Ensure badge is visible during debug
+                badge.style.display = "flex";
+              } else {
+                if (badge) badge.remove();
+                if (badge)
+                  console.debug(
+                    `updateBrandCounts: removed badge for ${brandKey}`
+                  );
+              }
+            });
+          } catch (err) {
+            console.warn("error updating brand counts", err);
+          }
+        }
         if (document.readyState === "loading")
           document.addEventListener("DOMContentLoaded", enhanceImages);
         else enhanceImages();
@@ -389,11 +443,37 @@
                       />
                     </div>
                     <div class="price-presets">
-                      <button class="price-preset" data-min="0" data-max="50000">Under ₹50,000</button>
-                      <button class="price-preset" data-min="50000" data-max="100000">₹50,000 - ₹100,000</button>
-                      <button class="price-preset" data-min="100000" data-max="200000">₹100,000 - ₹200,000</button>
-                      <button class="price-preset" data-min="200000" data-max="500000">₹200,000 - ₹500,000</button>
-                      <button class="price-preset" data-min="500000">₹500,000+</button>
+                      <button
+                        class="price-preset"
+                        data-min="0"
+                        data-max="50000"
+                      >
+                        Under ₹50,000
+                      </button>
+                      <button
+                        class="price-preset"
+                        data-min="50000"
+                        data-max="100000"
+                      >
+                        ₹50,000 - ₹100,000
+                      </button>
+                      <button
+                        class="price-preset"
+                        data-min="100000"
+                        data-max="200000"
+                      >
+                        ₹100,000 - ₹200,000
+                      </button>
+                      <button
+                        class="price-preset"
+                        data-min="200000"
+                        data-max="500000"
+                      >
+                        ₹200,000 - ₹500,000
+                      </button>
+                      <button class="price-preset" data-min="500000">
+                        ₹500,000+
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -601,14 +681,12 @@
                 <div class="filter-dropdown" id="owner-dropdown">
                   <div class="filter-options ownership-options">
                     <button class="filter-option" data-owner="1">
-                      1st Owner
+                      1st Own
                     </button>
                     <button class="filter-option" data-owner="2">
-                      2nd Owner
+                      2nd Own
                     </button>
-                    <button class="filter-option" data-owner="3">
-                      3+ Owner
-                    </button>
+                    <button class="filter-option" data-owner="3">3+ Own</button>
                   </div>
                 </div>
               </div>
@@ -644,66 +722,6 @@
                     placeholder="Search Cars by brand or model..."
                   />
                   <button id="search-btn"><i class="fas fa-search"></i></button>
-                </div>
-
-                <div class="sort-dropdown">
-                  <button class="sort-btn">
-                    <span id="sort-text" data-translate="Sort: Default"
-                      >Sort: Default</span
-                    >
-                    <i class="fas fa-chevron-down"></i>
-                  </button>
-                  <div class="sort-options">
-                    <button class="sort-option" data-sort="default">
-                      <span data-translate="Default">Default</span>
-                    </button>
-                    <button class="sort-option" data-sort="price-low">
-                      <span data-translate="Price: Low to High"
-                        >Price: Low to High</span
-                      >
-                    </button>
-                    <button class="sort-option" data-sort="price-high">
-                      <span data-translate="Price: High to Low"
-                        >Price: High to Low</span
-                      >
-                    </button>
-                    <button class="sort-option" data-sort="year-new">
-                      <span data-translate="Year: Newest First"
-                        >Year: Newest First</span
-                      >
-                    </button>
-                    <button class="sort-option" data-sort="year-old">
-                      <!-- 5-star social-like icon that opens review modal -->
-                      <a
-                        href="#leave-review"
-                        class="footer-stars"
-                        role="button"
-                        title="Leave a review"
-                        aria-label="Leave a review"
-                      >
-                        <i
-                          class="fa-solid fa-star"
-                          style="color: #f59e0b; margin-right: 2px"
-                        ></i>
-                        <i
-                          class="fa-solid fa-star"
-                          style="color: #f59e0b; margin-right: 2px"
-                        ></i>
-                        <i
-                          class="fa-solid fa-star"
-                          style="color: #f59e0b; margin-right: 2px"
-                        ></i>
-                        <i
-                          class="fa-solid fa-star"
-                          style="color: #f59e0b; margin-right: 2px"
-                        ></i>
-                        <i class="fa-solid fa-star" style="color: #f59e0b"></i>
-                      </a>
-                      <span data-translate="Year: Oldest First"
-                        >Year: Oldest First</span
-                      >
-                    </button>
-                  </div>
                 </div>
               </div>
               <h2 id="filtered-count">0 Cars Available</h2>
@@ -919,6 +937,8 @@
                 </div>
               </div>
             </div>
+            <!-- Placeholder div requested: only 'NA' shown after brand logos -->
+            <div class="brand-na" aria-hidden="true">NA</div>
             <div class="car-grid"></div>
           </div>
         </div>
@@ -1119,7 +1139,6 @@
             "KM Driven": "KM Driven",
             Ownership: "Ownership",
             "Fuel Type": "Fuel Type",
-            "Sort: Default": "Sort: Default",
             Default: "Default",
             "Price: Low to High": "Price: Low to High",
             "Price: High to Low": "Price: High to Low",
@@ -1130,67 +1149,15 @@
             "1L-2L": "1L-2L",
             "2L-5L": "2L-5L",
             "5L+": "5L+",
-            "1st Owner": "1st Owner",
-            "2nd Owner": "2nd Owner",
-            "3+ Owner": "3+ Owner",
+            "1st Owner": "1st Own",
+            "2nd Owner": "2nd Own",
+            "3+ Owner": "3rd Own",
             Petrol: "Petrol",
             Electric: "Electric",
             "Showing results for:": "Showing results for:",
             "Clear search": "Clear search",
             "Cars Available": "Cars Available",
             "Fuel Type": "Fuel Type",
-            "Sort: Default": "Sort: Default",
-            "Price: Low to High": "Price: Low to High",
-            "Price: High to Low": "Price: High to Low",
-            "Year: Newest First": "Year: Newest First",
-            "Year: Oldest First": "Year: Oldest First",
-            "Under 50K": "Under 50K",
-            "50K-1L": "50K-1L",
-          },
-          hi: {
-            "Alfa Motors World | Premium Pre-Owned Motorcycles in India":
-              "बाइक बिल्डर्स | भारत में प्रीमियम सेकेंड हैंड बाइक्स",
-            Home: "होम",
-            Updates: "अपडेट्स",
-            "Buy Car": "बाइक खरीदें",
-            "Sell Your Car": "बाइक बेचें",
-            "About Us": "हमारे बारे में",
-            Contact: "संपर्क करें",
-            "Get the Quote": "कीमत पता करें",
-            Filters: "फिल्टर",
-            "All Cars": "सभी बाइक",
-            Price: "कीमत",
-            Brand: "ब्रांड",
-            Year: "वर्ष",
-            "KM Driven": "किलोमीटर",
-            Ownership: "मालिकाना हक",
-            "Fuel Type": "ईंधन प्रकार",
-            "Sort: Default": "क्रम: डिफ़ॉल्ट",
-            Default: "डिफ़ॉल्ट",
-            "Price: Low to High": "कीमत: कम से ज्यादा",
-            "Price: High to Low": "कीमत: ज्यादा से कम",
-            "Year: Newest First": "वर्ष: नए से पुराने",
-            "Year: Oldest First": "वर्ष: पुराने से नए",
-            "Under 50K": "50K से कम",
-            "50K-1L": "50K-1L",
-            "1L-2L": "1L-2L",
-            "2L-5L": "2L-5L",
-            "5L+": "5L+",
-            "1st Owner": "पहला मालिक",
-            "2nd Owner": "दूसरा मालिक",
-            "3+ Owner": "तीसरा या अधिक मालिक",
-            Petrol: "पेट्रोल",
-            Electric: "इलेक्ट्रिक",
-            "Showing results for:": "खोज परिणाम:",
-            "Clear search": "खोज साफ करें",
-            "Cars Available": "बाइक उपलब्ध",
-            "Fuel Type": "ईंधन प्रकार",
-            "Sort: Default": "क्रम: डिफ़ॉल्ट",
-            "Price: Low to High": "कीमत: कम से ज्यादा",
-            "Price: High to Low": "कीमत: ज्यादा से कम",
-            "Year: Newest First": "वर्ष: नए से पुराने",
-            "Year: Oldest First": "वर्ष: पुराने से नए",
-            "Under 50K": "50K से कम",
             "50K-1L": "50K-1L",
           },
         };
@@ -1234,7 +1201,8 @@
           // Normalize different stored shapes: array, JSON string, single filename or full URL
 
           // If passed an array, use the first element
-          if (Array.isArray(imagePath) && imagePath.length > 0) imagePath = imagePath[0];
+          if (Array.isArray(imagePath) && imagePath.length > 0)
+            imagePath = imagePath[0];
 
           // If it's a JSON-encoded array string, try to parse
           if (typeof imagePath === "string") {
@@ -1242,7 +1210,8 @@
             if (raw.startsWith("[")) {
               try {
                 const parsed = JSON.parse(raw);
-                if (Array.isArray(parsed) && parsed.length) imagePath = parsed[0];
+                if (Array.isArray(parsed) && parsed.length)
+                  imagePath = parsed[0];
               } catch (e) {}
             }
           }
@@ -1251,7 +1220,12 @@
           const p = imagePath.trim();
 
           // Prefer absolute URLs (Cloudinary / CDN) or data URIs
-          if (p.startsWith("http://") || p.startsWith("https://") || p.startsWith("data:")) return p;
+          if (
+            p.startsWith("http://") ||
+            p.startsWith("https://") ||
+            p.startsWith("data:")
+          )
+            return p;
 
           // Remove any leading slashes
           const cleaned = p.replace(/^\/+/, "");
@@ -1260,7 +1234,9 @@
           if (cleaned.startsWith("assets/")) return cleaned;
 
           // If already contains carimages/, strip it and construct URL
-          const filename = cleaned.startsWith("carimages/") ? cleaned.replace(/^carimages\//, "") : cleaned;
+          const filename = cleaned.startsWith("carimages/")
+            ? cleaned.replace(/^carimages\//, "")
+            : cleaned;
 
           // Fallback to IMAGE_BASE for legacy/local filenames
           return `${IMAGE_BASE}/${filename}`;
@@ -1270,23 +1246,37 @@
         function normalizePhotos(photosField) {
           if (!photosField) return [];
           if (Array.isArray(photosField)) return photosField;
-          if (typeof photosField === 'string') {
+          if (typeof photosField === "string") {
             const raw = photosField.trim();
-            if (raw.startsWith('[')) {
+            if (raw.startsWith("[")) {
               try {
                 const parsed = JSON.parse(raw);
                 if (Array.isArray(parsed)) return parsed;
               } catch (e) {}
             }
-            if (raw.includes(',')) return raw.split(',').map(s => s.trim()).filter(Boolean);
+            if (raw.includes(","))
+              return raw
+                .split(",")
+                .map((s) => s.trim())
+                .filter(Boolean);
             return [raw];
           }
           return [];
         }
 
+        // Normalize brand string to a canonical key for matching (remove non-alphanum, lowercase)
+        function normalizeBrandKey(str) {
+          if (!str) return "";
+          return str
+            .toString()
+            .trim()
+            .toLowerCase()
+            .replace(/[^a-z0-9]/g, "");
+        }
+
         let allCars = [];
         let currentFilters = {
-          brand: null,
+          make: null,
           minPrice: 0,
           maxPrice: Infinity,
           minYear: 0,
@@ -1308,10 +1298,6 @@
               return response.json();
             })
             .then((data) => {
-              console.log("Loaded cars data:", data); // Inspect the data structure
-
-              // Backends sometimes return an array directly, or an object like { success: true, data: [...] }.
-              // Accept both shapes for robustness.
               let carsArray = [];
               if (Array.isArray(data)) {
                 carsArray = data;
@@ -1325,8 +1311,15 @@
                   // Normalize photos column so downstream code always gets an array
                   photos: normalizePhotos(car.photos),
                   make: car.make || car.brand || car.make, // support both keys
-                  brand: (car.make || car.brand || "").toString().trim(), // Ensure brand is trimmed
+                  // Keep original brand string but also ensure it's a trimmed string
+                  brand: (car.make || car.brand || "").toString().trim(),
                 }));
+                // Update brand counts badges whenever the full list is loaded
+                try {
+                  updateBrandCounts();
+                } catch (e) {
+                  console.warn("updateBrandCounts failed:", e);
+                }
                 applyAllFilters();
               } else {
                 showErrorMessage("No cars found or invalid data format");
@@ -1439,8 +1432,6 @@
 
           carGrid.innerHTML = "";
 
-          console.log("Displaying cars:", cars);
-
           if (cars.length === 0) {
             showNoCarsMessage();
             return;
@@ -1471,6 +1462,27 @@
 
           initImageSliders();
           addCarCardClickListeners();
+        }
+
+        // Abbreviate kilometers display for mobile (e.g., 68000 -> 68K, 150000 -> 1.5L)
+        function abbreviateKm(km) {
+          const n = Number(km) || 0;
+          if (n === 0) return "0";
+
+          // Lakhs (>=100000) -> show in L with one decimal when needed (e.g., 150000 -> 1.5L)
+          if (n >= 100000) {
+            const l = Math.round((n / 100000) * 10) / 10;
+            return l.toString().replace(/\.0$/, "") + "L";
+          }
+
+          // Thousands -> show in K. Use one decimal place when not an exact thousand.
+          if (n >= 1000) {
+            const k = n / 1000;
+            const rounded = Math.round(k * 10) / 10;
+            return rounded.toString().replace(/\.0$/, "") + "K";
+          }
+
+          return n.toString();
         }
 
         function createCarCard(car) {
@@ -1542,37 +1554,39 @@
           carCard.dataset.CarData = JSON.stringify(car);
 
           carCard.innerHTML = `
-  <div class="image-container">
-  ${imageHTML}
-  <div class="status-badge ${statusClass}" data-translate="${
+          <div class="image-container">
+          ${imageHTML}
+          <div class="status-badge ${statusClass}" data-translate="${
             car.status || "Available"
           }">${car.status || "Available"}</div>
-    </div>
-    <div class="card-content">
-      <h3>${car.make || "Unknown Brand"} ${car.model || "Unknown Model"}</h3>
-      <span class="model">${
-        car.modelYear || new Date().getFullYear()
-      } Model</span>
-      <div class="details">
-        <div class="detail-item">
-          <i class="fas fa-tachometer-alt"></i>
-          <span>${(car.kmDriven || 0).toLocaleString('en-IN')} km</span>
-        </div>
-        <div class="detail-item">
-          <i class="fas fa-user"></i>
-          <span>${formatOwnership(car.ownership || "1")}</span>
-        </div>
-        <div class="detail-item">
-          <i class="fas fa-gas-pump"></i>
-          <span>${car.fuelType || "Petrol"}</span>
-        </div>
-        <div class="detail-item">
-          <i class="fas fa-calendar-alt"></i>
-          <span>${formatAge(car.daysOld || 0)}</span>
-        </div>
-      </div>
-      <div class="price-container">
-  <div class="price">₹${(car.sellingPrice || 0).toLocaleString('en-IN')}</div>
+            </div>
+          <div class="card-content">
+            <h3>${car.modelYear} ${car.make || "Unknown Brand"} ${
+            car.model || "Unknown Model"
+          }</h3>
+            
+            <div class="details">
+              <div class="detail-item">
+                <span><i class="fas fa-tachometer-alt" aria-hidden="true"></i></span>
+                <div>
+                  ${abbreviateKm(car.kmDriven || 0)}
+                  </div>
+              </div>
+              <div class="detail-item">
+                <span><i class="fas fa-user" aria-hidden="true"></i></span>
+                <div>${formatOwnership(car.ownership || "1")}</div>
+              </div>
+              <div class="detail-item">
+                <span><i class="fas fa-gas-pump" aria-hidden="true"></i></span>
+                <div>${car.fuelType || "Petrol"}</div>
+              </div>
+              <div class="detail-item">
+                <span><i class="fas fa-calendar-alt" aria-hidden="true"></i></span>
+                <div>${formatAge(car.daysOld || 0)}</div>
+              </div>
+            </div>
+            <div class="price-container">
+  <div class="price">₹${(car.sellingPrice || 0).toLocaleString("en-IN")}</div>
         
         <div class="button-group">
           <button class="contact-btn" data-translate="Contact Seller" ${
@@ -1594,10 +1608,10 @@
 
         // Helper function to format ownership
         function formatOwnership(owner) {
-          if (owner === "1" || owner.includes("1st")) return "1st Owner";
-          if (owner === "2" || owner.includes("2nd")) return "2nd Owner";
+          if (owner === "1" || owner.includes("1st")) return "1st Own";
+          if (owner === "2" || owner.includes("2nd")) return "2nd Own";
           if (owner === "3" || owner.includes("3+") || owner.includes("3rd"))
-            return "3+ Owner";
+            return "3rd Own";
           return owner;
         }
 
@@ -1622,23 +1636,23 @@
               viewDetailsBtn.addEventListener("click", goToDetails);
             }
 
-              // make the whole card clickable (but preserve button and slider behavior)
-              card.addEventListener("click", (e) => {
-                // ignore clicks originating from buttons, slider controls or dots (they have their own handlers)
-                const target = e.target;
-                if (
-                  !target ||
-                  target.closest(".contact-btn") ||
-                  target.closest(".view-details-btn") ||
-                  target.closest(".slider-prev") ||
-                  target.closest(".slider-next") ||
-                  target.closest(".dot") ||
-                  target.closest(".slider-images") ||
-                  target.closest(".car-slider")
-                )
-                  return;
-                goToDetails(e);
-              });
+            // make the whole card clickable (but preserve button and slider behavior)
+            card.addEventListener("click", (e) => {
+              // ignore clicks originating from buttons, slider controls or dots (they have their own handlers)
+              const target = e.target;
+              if (
+                !target ||
+                target.closest(".contact-btn") ||
+                target.closest(".view-details-btn") ||
+                target.closest(".slider-prev") ||
+                target.closest(".slider-next") ||
+                target.closest(".dot") ||
+                target.closest(".slider-images") ||
+                target.closest(".car-slider")
+              )
+                return;
+              goToDetails(e);
+            });
 
             if (contactBtn && !contactBtn.disabled) {
               contactBtn.addEventListener("click", (e) => {
@@ -1673,7 +1687,7 @@
             mainImg.src = getImageUrl(images[idx]);
             mainImg.alt = `${car.make} ${car.model} ${idx + 1}`;
             Array.from(thumbnailsContainer.children).forEach((thumb, i) => {
-              thumb.style.border = i === idx ? "2px solid #3b82f6" : "none";
+              thumb.style.border = i === idx ? "2px solid #2D2D2D" : "none";
             });
           }
           images.forEach((img, idx) => {
@@ -1702,7 +1716,7 @@
           } Model`;
           document.getElementById("popup-Car-km").textContent = `${(
             car.kmDriven || 0
-          ).toLocaleString('en-IN')} km`;
+          ).toLocaleString("en-IN")} km`;
           document.getElementById("popup-Car-owner").textContent =
             typeof formatOwnership === "function"
               ? formatOwnership(car.ownership || "1")
@@ -1715,7 +1729,7 @@
               : car.daysOld || 0;
           document.getElementById("popup-Car-price").textContent = `₹${(
             car.sellingPrice || 0
-          ).toLocaleString('en-IN')}`;
+          ).toLocaleString("en-IN")}`;
 
           // Contact Seller button navigation
           const contactBtn = popup.querySelector(".contact-btn");
@@ -2039,26 +2053,42 @@
             applyAllFilters();
           }
         }
-        // Mobile filter functionality
+        // Mobile filter functionality - creates bottom tab nav (Sort / Filters)
         function initMobileFilters() {
-          const mobileFilterBtn = document.createElement("button");
-          mobileFilterBtn.className = "mobile-filter-btn";
-          mobileFilterBtn.innerHTML = '<i class="fas fa-filter"></i> Filters';
-
-          // Add the button to the search container
-          const searchContainer = document.querySelector(".search-container");
-          if (searchContainer) {
-            searchContainer.appendChild(mobileFilterBtn);
-          }
-
-          // Mobile filter toggle
+          // Mobile filters container and close button
           const mobileFiltersContainer = document.querySelector(
             ".mobile-filters-container"
           );
           const closeFiltersBtn = document.querySelector(".close-filters-btn");
 
-          if (mobileFilterBtn && mobileFiltersContainer && closeFiltersBtn) {
-            mobileFilterBtn.addEventListener("click", function () {
+          // Create bottom tab navigation for mobile
+          const bottomNav = document.createElement("div");
+          bottomNav.className = "bottom-tab-nav";
+          bottomNav.innerHTML = `
+            <button class="bottom-tab bottom-tab-sort" aria-label="Sort">
+              <i class="fas fa-sort-amount-down"></i>
+              <span>Sort</span>
+            </button>
+            <button class="bottom-tab bottom-tab-filter" aria-label="Filters">
+              <i class="fas fa-filter"></i>
+              <span>Filters</span>
+            </button>
+          `;
+          document.body.appendChild(bottomNav);
+
+          const sortBtn = document.querySelector(".sort-btn");
+          const bottomSort = bottomNav.querySelector(".bottom-tab-sort");
+          const bottomFilter = bottomNav.querySelector(".bottom-tab-filter");
+
+          if (bottomSort && sortBtn) {
+            bottomSort.addEventListener("click", function () {
+              // Trigger the existing sort button to open options
+              sortBtn.click();
+            });
+          }
+
+          if (bottomFilter && mobileFiltersContainer && closeFiltersBtn) {
+            bottomFilter.addEventListener("click", function () {
               mobileFiltersContainer.style.display = "block";
               document.body.style.overflow = "hidden";
             });
@@ -2180,13 +2210,17 @@
 
           if (kmMin && kmMax) {
             kmMin.addEventListener("input", function () {
-              kmMinValue.textContent = parseInt(this.value).toLocaleString('en-IN');
+              kmMinValue.textContent = parseInt(this.value).toLocaleString(
+                "en-IN"
+              );
               currentFilters.minKm = parseInt(this.value);
               applyAllFilters();
             });
 
             kmMax.addEventListener("input", function () {
-              kmMaxValue.textContent = parseInt(this.value).toLocaleString('en-IN');
+              kmMaxValue.textContent = parseInt(this.value).toLocaleString(
+                "en-IN"
+              );
               currentFilters.maxKm = parseInt(this.value);
               applyAllFilters();
             });
@@ -2327,13 +2361,17 @@
 
           if (kmMin && kmMax) {
             kmMin.addEventListener("input", function () {
-              kmMinValue.textContent = parseInt(this.value).toLocaleString('en-IN');
+              kmMinValue.textContent = parseInt(this.value).toLocaleString(
+                "en-IN"
+              );
               currentFilters.minKm = parseInt(this.value);
               applyAllFilters();
             });
 
             kmMax.addEventListener("input", function () {
-              kmMaxValue.textContent = parseInt(this.value).toLocaleString('en-IN');
+              kmMaxValue.textContent = parseInt(this.value).toLocaleString(
+                "en-IN"
+              );
               currentFilters.maxKm = parseInt(this.value);
               applyAllFilters();
             });
@@ -2394,29 +2432,13 @@
         }
 
         function applyAllFilters() {
-          console.log("Current filters:", currentFilters);
-          console.log("All cars:", allCars);
-
           const filteredCars = allCars.filter((car) => {
-            console.log("Checking car:", car);
-
             const price = car.sellingPrice || 0;
             const year = car.modelYear || new Date().getFullYear();
             const km = car.kmDriven || 0;
             const brand = (car.make || "").toLowerCase();
             const owner = car.ownership || "";
             const fuel = car.fuelType || "";
-
-            console.log(`Car ${car.make} ${car.model}:`);
-            console.log(
-              `Year: ${year} (filter: ${currentFilters.minYear}-${currentFilters.maxYear})`
-            );
-            console.log(
-              `Price: ${price} (filter: ${currentFilters.minPrice}-${currentFilters.maxPrice})`
-            );
-            console.log(
-              `KM: ${km} (filter: ${currentFilters.minKm}-${currentFilters.maxKm})`
-            );
 
             const priceMatch =
               price >= currentFilters.minPrice &&
@@ -2430,7 +2452,6 @@
               car.make
                 .toLowerCase()
                 .includes(currentFilters.make.toLowerCase());
-            console.log(`Brand match for ${car.make}: ${brandMatch}`);
 
             const ownerMatch =
               !currentFilters.owner || owner.includes(currentFilters.owner);
@@ -2444,12 +2465,9 @@
               brandMatch &&
               ownerMatch &&
               fuelMatch;
-            console.log(`Car matches filters: ${isMatch}`);
 
             return isMatch;
           });
-
-          console.log("Filtered cars:", filteredCars);
           displayCars(filteredCars);
         }
 
@@ -2954,7 +2972,7 @@
             <button
               class="contact-btn"
               style="
-                background: #3b82f6;
+                background: #2d2d2d;
                 color: #fff;
                 border: none;
                 border-radius: 8px;
@@ -3028,11 +3046,33 @@
                   />
                 </div>
                 <div class="price-presets">
-                  <button class="price-preset" data-min="0" data-max="50000">Under ₹50,000</button>
-                  <button class="price-preset" data-min="50000" data-max="100000">₹50,000 - ₹100,000</button>
-                  <button class="price-preset" data-min="100000" data-max="200000">₹100,000 - ₹200,000</button>
-                  <button class="price-preset" data-min="200000" data-max="500000">₹200,000 - ₹500,000</button>
-                  <button class="price-preset" data-min="500000">₹500,000+</button>
+                  <button class="price-preset" data-min="0" data-max="50000">
+                    Under ₹50,000
+                  </button>
+                  <button
+                    class="price-preset"
+                    data-min="50000"
+                    data-max="100000"
+                  >
+                    ₹50,000 - ₹100,000
+                  </button>
+                  <button
+                    class="price-preset"
+                    data-min="100000"
+                    data-max="200000"
+                  >
+                    ₹100,000 - ₹200,000
+                  </button>
+                  <button
+                    class="price-preset"
+                    data-min="200000"
+                    data-max="500000"
+                  >
+                    ₹200,000 - ₹500,000
+                  </button>
+                  <button class="price-preset" data-min="500000">
+                    ₹500,000+
+                  </button>
                 </div>
               </div>
             </div>
@@ -3191,9 +3231,9 @@
             </button>
             <div class="filter-dropdown" id="owner-dropdown-mobile">
               <div class="filter-options ownership-options">
-                <button class="filter-option" data-owner="1">1st Owner</button>
-                <button class="filter-option" data-owner="2">2nd Owner</button>
-                <button class="filter-option" data-owner="3">3+ Owner</button>
+                <button class="filter-option" data-owner="1">1st Own</button>
+                <button class="filter-option" data-owner="2">2nd Own</button>
+                <button class="filter-option" data-owner="3">3+ Own</button>
               </div>
             </div>
           </div>

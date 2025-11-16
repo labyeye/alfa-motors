@@ -202,6 +202,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
   border: 2px solid transparent;
+  position: relative; /* allow absolute-positioned badge */
 }
 
 .brand-logo:hover {
@@ -220,6 +221,44 @@
   height: 90%;
   object-fit: contain;
   transition: all 0.2s ease;
+}
+
+/* Brand count badge */
+.brand-logo .brand-count {
+  position: absolute;
+  /* place badge centered below the logo so it's clearly visible */
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ff8a00;
+  color: #fff;
+  font-size: 14px;
+  line-height: 1;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 4px solid #fff;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  min-width: 88px;
+  text-align: center;
+  font-weight: 700;
+  z-index: 20; /* ensure badge is above the logo image */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.brand-logo .brand-count .count-number {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.brand-logo .brand-count .count-label {
+  font-size: 12px;
+  opacity: 0.95;
+  line-height: 1;
+  margin-top: 2px;
+  font-weight: 800;
 }
 
 .brand-logo:hover img,
@@ -810,12 +849,15 @@
 .card-content .detail-item {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  font-size: 13px;
-  color: #777;
+  height:30px;
+  font-size: 12px;
+  color: #0D1B2A;
+  background-color: #ECEEF4;
+  border-radius: 50px;
   word-break: break-word;
 }
-
 .card-content .detail-item i {
   color: var(--primary-color);
   font-size: 14px;
@@ -835,6 +877,15 @@
   font-size: 13px;
   color: #777;
   margin: 5px 0;
+}
+
+@media (max-width: 480px) {
+  .card-content .details {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 15px;
+  }
 }
 
 @media (max-width: 1200px) {
@@ -1124,7 +1175,7 @@ body {
   margin: 15px 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 12px;
 }
 
 .Car-card .detail-item {
@@ -1135,9 +1186,71 @@ body {
   font-size: 0.85rem;
 }
 
-.Car-card .detail-item i {
-  color: var(--primary-color);
-  font-size: 0.9rem;
+/* Icon styling inside the detail pill */
+.Car-card .detail-item span i {
+  margin-right: 8px;
+  color: #0f172a; /* darker icon for better contrast */
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+/* Make the small spans inside detail items more compact */
+.Car-card .detail-item span {
+  font-size: 13px;
+  color: #0f172a;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid rgba(15,23,42,0.06);
+  padding: 6px 10px;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(15,23,42,0.03);
+}
+
+/* Pill/badge styling for detail spans to match Cars24-like small boxes */
+.Car-card .details {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.Car-card .details .detail-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Car-card .details .detail-item span {
+  display: inline-block;
+  background: #f3f4f6; /* light gray */
+  border: 1px solid #e5e7eb;
+  color: #0f172a; /* dark text */
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(15,23,42,0.03);
+}
+
+@media (max-width: 768px) {
+  /* On compact mobile cards, distribute the badges evenly across the available width */
+  .Car-card .card-content {
+    width: calc(100% - 140px); /* allow space for price column */
+  }
+
+  .Car-card .details {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .Car-card .details .detail-item span {
+    padding: 6px 8px;
+    font-size: 13px;
+  }
 }
 
 .Car-card .price-container {
@@ -1433,7 +1546,7 @@ body {
 
   /* Button group in cards */
   .button-group {
-    flex-direction: column;
+    flex-direction: row;
     gap: 8px;
   }
 
@@ -1474,7 +1587,7 @@ body {
 }
 
 /* Make filters sticky on mobile */
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .sidebar-filters {
     position: sticky;
     top: 0;
@@ -1541,6 +1654,9 @@ body {
   min-width: 150px;
   justify-content: space-between;
 }
+
+/* Hide the top sort button visually; bottom-tab will still trigger sorting via JS */
+.sort-btn { display: none !important; }
 
 .sort-btn:hover {
   background: #333;
@@ -1741,6 +1857,46 @@ body {
 
   .section-header h2 {
     margin-top: 15px;
+  }
+
+  /* Bottom tab nav for mobile (Sort / Filters) */
+  .bottom-tab-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+    padding: 12px; /* give some breathing room */
+    z-index: 1200;
+    pointer-events: auto;
+    box-sizing: border-box;
+    background: transparent;
+  }
+
+  .bottom-tab {
+    flex: 1 1 0;
+    background: #ECEEF4; /* requested button color */
+    color: #0f172a; /* dark text for contrast */
+    border: none;
+    padding: 12px 14px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 15px;
+    box-shadow: 0 6px 18px rgba(15,23,42,0.08);
+  }
+
+  .bottom-tab i {
+    font-size: 16px;
+  }
+
+  /* Make sure it doesn't overlap floating buttons too much */
+  .floating-buttons { /* existing selector, ensure top spacing */
+    margin-bottom: 100px;
   }
 }
 

@@ -217,7 +217,7 @@
                   <i class="fas fa-user"></i>
                   <span>Ownership</span>
                 </div>
-                <div class="detail-value" id="vehicleOwner">1st Owner</div>
+                <div class="detail-value" id="vehicleOwner">1st Own</div>
               </div>
               <div class="vehicle-detail-item">
                 <div class="detail-label">
@@ -343,10 +343,10 @@
 
       // Helper Functions
       function formatOwnership(owner) {
-        if (owner === "1" || owner.includes("1st")) return "1st Owner";
-        if (owner === "2" || owner.includes("2nd")) return "2nd Owner";
+        if (owner === "1" || owner.includes("1st")) return "1st Own";
+        if (owner === "2" || owner.includes("2nd")) return "2nd Own";
         if (owner === "3" || owner.includes("3+") || owner.includes("3rd"))
-          return "3+ Owner";
+          return "3rd Own";
         return owner;
       }
 

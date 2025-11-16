@@ -173,7 +173,7 @@ const StaffPage = () => {
               style={{
                 ...styles.card,
                 borderLeft: `4px solid ${
-                  ["#3b82f6", "#10b981", "#8b5cf6", "#f59e0b"][index]
+                  ["#2D2D2D", "#10b981", "#8b5cf6", "#f59e0b"][index]
                 }`,
                 opacity: 0.7,
               }}
@@ -208,7 +208,7 @@ const StaffPage = () => {
           ))
       ) : (
         <>
-          <div style={{ ...styles.card, borderLeft: "4px solid #3b82f6" }}>
+          <div style={{ ...styles.card, borderLeft: "4px solid #2D2D2D" }}>
             <div style={styles.cardContent}>
               <div>
                 <p style={styles.cardLabel}>
@@ -469,7 +469,7 @@ const StaffPage = () => {
                 <button
                   onClick={toggleOwnerView}
                   style={{
-                    backgroundColor: isOwnerView ? "#10b981" : "#3b82f6",
+                    backgroundColor: isOwnerView ? "#10b981" : "#2D2D2D",
                     color: "white",
                     border: "none",
                     borderRadius: "6px",

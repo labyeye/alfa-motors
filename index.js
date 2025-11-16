@@ -398,10 +398,32 @@ function initializeCarSlider() {
   });
 }
 
+// Simple API/image base for development: always use localhost:2500 unless overridden
+const API_BASE_URL = window.API_BASE || "https://alfa-motors-5yfh.vercel.app";
+const IMAGE_BASE = `${API_BASE_URL}/carimages`;
+
+// Debug helpers (exposed to window for quick inspection in DevTools)
+try {
+  console.debug(
+    "[config] API_BASE_URL=",
+    API_BASE_URL,
+    "IMAGE_BASE=",
+    IMAGE_BASE
+  );
+  window.__API_BASE_URL = API_BASE_URL;
+  window.__IMAGE_BASE = IMAGE_BASE;
+} catch (e) {}
+
 // Helper to normalize image paths (used by featured cars)
 function getImageUrl(imagePath) {
-  if (!imagePath) return "https://via.placeholder.com/300x200?text=No+Image";
-  if (Array.isArray(imagePath) && imagePath.length > 0) imagePath = imagePath[0];
+  // Normalize different stored shapes: array, JSON string, single filename or full URL
+  if (!imagePath) return "assets/placeholder.png";
+
+  // If passed an array, use the first element
+  if (Array.isArray(imagePath) && imagePath.length > 0)
+    imagePath = imagePath[0];
+
+  // If it's a JSON-encoded array string, try to parse
   if (typeof imagePath === "string") {
     const raw = imagePath.trim();
     if (raw.startsWith("[")) {
@@ -411,17 +433,57 @@ function getImageUrl(imagePath) {
       } catch (e) {}
     }
   }
-  if (typeof imagePath !== "string") return "https://via.placeholder.com/300x200?text=No+Image";
+
+  if (typeof imagePath !== "string") return "assets/placeholder.png";
   const p = imagePath.trim();
-  if (p.startsWith("http://") || p.startsWith("https://") || p.startsWith("data:")) return p;
+
+  // Prefer absolute URLs (Cloudinary / CDN) or data URIs
+  if (
+    p.startsWith("http://") ||
+    p.startsWith("https://") ||
+    p.startsWith("data:")
+  )
+    return p;
+
+  // Remove any leading slashes
   const cleaned = p.replace(/^\/+/, "");
+
+  // If it's an assets path, return as-is
   if (cleaned.startsWith("assets/")) return cleaned;
-  const filename = cleaned.startsWith("carimages/") ? cleaned.replace(/^carimages\//, "") : cleaned;
-  return `https://alfa-motors-5yfh.vercel.app/carimages/${filename}`;
+
+  // If already contains carimages/, strip it and construct URL
+  const filename = cleaned.startsWith("carimages/")
+    ? cleaned.replace(/^carimages\//, "")
+    : cleaned;
+
+  // Fallback to IMAGE_BASE for legacy/local filenames
+  return `${IMAGE_BASE}/${filename}`;
+}
+
+// Normalize photos field from DB: may be an array, JSON string, or single filename
+function normalizePhotos(photosField) {
+  if (!photosField) return [];
+  if (Array.isArray(photosField)) return photosField;
+  if (typeof photosField === "string") {
+    const raw = photosField.trim();
+    if (raw.startsWith("[")) {
+      try {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) return parsed;
+      } catch (e) {}
+    }
+    if (raw.includes(","))
+      return raw
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+    return [raw];
+  }
+  return [];
 }
 
 function fetchFeaturedCars() {
-  fetch("https://alfa-motors-5yfh.vercel.app/api/cars?limit=10")
+  fetch(`${API_BASE_URL}/api/cars?limit=10`)
     .then((response) => response.json())
     .then((payload) => displayFeaturedCars(payload))
     .catch((error) => {
@@ -474,7 +536,9 @@ function displayFeaturedCars(Cars) {
 
     // Normalize image source (accept array/JSON/full URL/local assets)
     const imgSrc = getImageUrl(
-      Array.isArray(Car.photos) && Car.photos.length > 0 ? Car.photos[0] : (Car.imageUrl || null)
+      Array.isArray(Car.photos) && Car.photos.length > 0
+        ? Car.photos[0]
+        : Car.imageUrl || null
     );
 
     CarCard.innerHTML = `
@@ -525,7 +589,9 @@ function displayFeaturedCars(Cars) {
       CarCard.querySelector(".view-details-btn").addEventListener(
         "click",
         () => {
-          window.location.href = `https://www.alfamotorworld.com/inventory.html#${Car._id || ""}`;
+          window.location.href = `https://www.alfamotorworld.com/inventory.html#${
+            Car._id || ""
+          }`;
         }
       );
     }
@@ -549,9 +615,9 @@ function showFeaturedCarsError() {
 }
 
 function formatOwnership(owner) {
-  if (owner === "1") return "1st Owner";
-  if (owner === "2") return "2nd Owner";
-  if (owner === "3") return "3+ Owner";
+  if (owner === "1") return "1st Own";
+  if (owner === "2") return "2nd Own";
+  if (owner === "3") return "3rd Own";
   return owner;
 }
 
@@ -591,8 +657,7 @@ const translations = {
     "Prepare Your Car for Sale": "Prepare Your Car for Sale",
     "Market Your Car Effectively": "Market Your Car Effectively",
     "Negotiate the Best Price": "Negotiate the Best Price",
-    "Best Second hand car in Bengaluru":
-      "Best Second hand car in Bengaluru",
+    "Best Second hand car in Bengaluru": "Best Second hand car in Bengaluru",
     "Find your perfect pre-owned Car from our certified collection with warranty.":
       "Find your perfect pre-owned Car from our certified collection with warranty.",
     Explore: "Explore",
@@ -634,7 +699,7 @@ const translations = {
     "View Luxury Cars": "View Luxury Cars",
     "Featured Cars": "Featured Cars",
     "View All": "View All",
-    "1st Owner": "1st Owner",
+    "1st Owner": "1st Own",
     Petrol: "Petrol",
     "6 months old": "6 months old",
     "2 months old": "2 months old",

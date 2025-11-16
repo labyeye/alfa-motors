@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-// AuthContext not required in this component
 import Sidebar from "./Sidebar";
 
 const API_BASE =
@@ -20,13 +19,19 @@ export default function AdvancePaymentForm() {
   });
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => { fetchSellLetters(); }, []);
+  useEffect(() => {
+    fetchSellLetters();
+  }, []);
 
   const fetchSellLetters = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/api/sell-letters`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+      const res = await axios.get(`${API_BASE}/api/sell-letters`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setSellLetters(res.data || res.data.data || []);
-    } catch (err) { console.error(err); }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const submit = async () => {
@@ -64,7 +69,7 @@ export default function AdvancePaymentForm() {
 
         <div style={styles.card}>
           <div style={styles.formRow}>
-            <label style={styles.label}>Sell Letter (optional)</label>
+            <label style={styles.label}>Sell Letter</label>
             <select
               value={form.sellLetter}
               onChange={(e) =>
@@ -175,7 +180,7 @@ const styles = {
     padding: 20,
     borderRadius: 12,
     boxShadow: "0 6px 20px rgba(2,6,23,0.06)",
-    maxWidth: 820,
+    maxWidth: "100%",
   },
   formRow: { marginBottom: 14, display: "flex", flexDirection: "column" },
   label: { marginBottom: 8, color: "#334155", fontWeight: 600 },
@@ -206,7 +211,7 @@ const styles = {
   actions: { marginTop: 8 },
   saveButton: {
     padding: "10px 16px",
-    background: "#3b82f6",
+    background: "#2D2D2D",
     color: "#fff",
     border: "none",
     borderRadius: 8,
