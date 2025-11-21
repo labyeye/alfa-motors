@@ -57,6 +57,64 @@
         "image": ["https://www.alfamotorworld.com/assets/relogo.png"],
         "url": "https://www.alfamotorworld.com/vehicledetail.html"
       }
+      
+      // Add left/right arrow buttons for the Other Cars slider and wire scroll handlers.
+      function addOtherCarsArrows() {
+        try {
+          const row = document.getElementById('otherCarsRow');
+          if (!row) return;
+          const section = row.closest('.other-cars-section') || document.querySelector('.other-cars-section');
+          if (!section) return;
+          // avoid duplicates
+          if (section.querySelector('.other-cars-btn')) return;
+
+          const prev = document.createElement('button');
+          prev.className = 'other-cars-btn prev';
+          prev.type = 'button';
+          prev.innerHTML = '<i class="fas fa-chevron-left" aria-hidden="true"></i>';
+          prev.setAttribute('aria-label', 'Scroll left');
+
+          const next = document.createElement('button');
+          next.className = 'other-cars-btn next';
+          next.type = 'button';
+          next.innerHTML = '<i class="fas fa-chevron-right" aria-hidden="true"></i>';
+          next.setAttribute('aria-label', 'Scroll right');
+
+          // ensure parent won't clip buttons
+          try { section.style.overflow = 'visible'; } catch (e) {}
+          section.appendChild(prev);
+          section.appendChild(next);
+
+          const getAmount = () => Math.max(260, Math.min(row.clientWidth * 0.75, 900));
+
+          prev.addEventListener('click', (e) => {
+            e.stopPropagation();
+            row.scrollBy({ left: -getAmount(), behavior: 'smooth' });
+          });
+
+          next.addEventListener('click', (e) => {
+            e.stopPropagation();
+            row.scrollBy({ left: getAmount(), behavior: 'smooth' });
+          });
+
+          // accessibility: keyboard keys
+          prev.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); row.scrollBy({ left: -getAmount(), behavior: 'smooth' }); } });
+          next.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); row.scrollBy({ left: getAmount(), behavior: 'smooth' }); } });
+        } catch (err) {
+          console.error('Error adding other-cars arrows', err);
+        }
+      }
+
+      // Wait until the otherCarsRow is populated (fetch is async) and then add arrows.
+      (function waitAndAttachArrows(attempts = 0) {
+        const row = document.getElementById('otherCarsRow');
+        if (row && row.children && row.children.length) {
+          addOtherCarsArrows();
+          return;
+        }
+        if (attempts >= 16) return; // give up after a few seconds
+        setTimeout(() => waitAndAttachArrows(attempts + 1), 250);
+      })();
     </script>
     <!-- Accessibility & performance helper: ensure images have alt, lazy loading and async decoding -->
     <script>
@@ -539,10 +597,12 @@
               }, 0);
 
               otherCarsRow.appendChild(card);
-            });
+              });
 
-            // Enable auto-scroll for other cars
-            enableAutoSlider();
+              // Enable auto-scroll for other cars
+              enableAutoSlider();
+              // Ensure arrow buttons are attached after population
+              try { if (typeof addOtherCarsArrows === 'function') addOtherCarsArrows(); } catch (e) {}
             // Translate newly added dynamic content to preferred language
             try {
               const preferred =

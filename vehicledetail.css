@@ -43,9 +43,9 @@ body {
   background: #f8f9fa;
   border-radius: 12px;
   padding: 24px;
-  flex: 0 0 58%;
-  /* occupy ~58% of row */
-  max-width: 58%;
+  flex: 0 0 65%;
+  /* occupy ~65% of row to give larger image area */
+  max-width: 65%;
   order: 1;
 }
 
@@ -137,9 +137,9 @@ body {
   border-radius: 12px;
   padding: 32px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  flex: 0 0 42%;
-  /* occupy ~42% of row */
-  max-width: 42%;
+  flex: 0 0 35%;
+  /* occupy ~35% of row (reduced to allow larger image block) */
+  max-width: 35%;
   order: 2;
 }
 
@@ -192,13 +192,11 @@ body {
   display: flex;
   align-items: center;
   flex-direction: row;
-  margin-left: 20px;
   gap: 8px;
 }
 
 .vehicle-detail-item .detail-value {
   font-size: 1rem;
-  margin-left: 20px;
   color: #0f172a;
   font-weight: 600;
 }
@@ -311,15 +309,15 @@ body {
   }
 
   .vehicle-image-block {
-    flex: 0 0 59%;
-    max-width: 59%;
-    padding: 20px;
+    flex: 0 0 66%;
+    max-width: 66%;
+    padding: 18px;
   }
 
   .vehicle-details-block {
-    flex: 0 0 41%;
-    max-width: 41%;
-    padding: 24px;
+    flex: 0 0 34%;
+    max-width: 34%;
+    padding: 20px;
   }
 
   .vehicle-main-img {
@@ -512,19 +510,6 @@ body {
   cursor: not-allowed;
 }
 
-.mobile-menu-toggle {
-  display: none;
-  background: none;
-  border: none;
-  /* Use a dark default color so the icon is visible on light nav backgrounds */
-  color: #0f172a;
-  font-size: 2rem;
-  cursor: pointer;
-  z-index: 1001;
-  position: absolute;
-  right: 5%;
-  top: 25px;
-}
 
 .mobile-menu {
   position: fixed;
@@ -570,35 +555,6 @@ body {
   padding: 8px 0;
 }
 
-/* hide desktop nav on small screens */
-@media (max-width: 900px) {
-  .mobile-menu-toggle {
-    display: block;
-  }
-
-  /* Ensure the hamburger is visible on this page even if other stylesheets
-     (e.g., inventory.css/style.css) are loaded after and override basic rules.
-     Use higher specificity and !important so the button shows on mobile. */
-  .hero-section header .navbar .mobile-menu-toggle {
-    display: block !important;
-    color: white !important;
-    /* dark icon on light background */
-    right: 5% !important;
-    top: 32px !important;
-    z-index: 9999 !important;
-    font-size: 1.9rem !important;
-  }
-
-  .navbar .nav-links,
-  .navbar .login-btn {
-    display: none;
-  }
-
-  .vehicle-main-section {
-    padding: 16px;
-    margin: 16px auto 0 auto;
-  }
-}
 
 /* Consolidated mobile rules: stack columns and reduce sizes for smaller screens */
 @media (max-width: 900px) {
@@ -651,7 +607,7 @@ body {
 
   /* Detail column adjustments */
   .vehicle-details-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     padding: 16px;
   }
 
@@ -694,19 +650,6 @@ body {
     width: 100%;
     padding: 14px 16px;
     font-size: 1rem;
-  }
-
-  /* Mobile menu */
-  .mobile-menu-toggle {
-    display: block;
-    z-index: 9999;
-  }
-
-  .hero-section header .navbar .mobile-menu-toggle {
-    display: block !important;
-    color: #0f172a !important;
-    right: 5% !important;
-    top: 32px !important;
   }
 }
 
@@ -779,6 +722,48 @@ body {
 
   .why-choose-item {
     font-size: 0.95rem;
+  }
+
+  .vehicle-content-row {
+    flex-direction: column;
+  }
+
+  .vehicle-details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vehicle-detail-item {
+    color: #334155;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #ffffff;
+    border-radius: 50px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f1f5f9;
+  }
+
+  .vehicle-detail-item .detail-label {
+    font-size: 0.85rem;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .vehicle-detail-item .detail-value {
+    font-size: 1.2rem;
+    color: #0f172a;
+    font-weight: 600;
+  }
+
+  .vehicle-detail-item i {
+    color: var(--primary-color);
+    font-size: 1.1em;
   }
 }
 
@@ -874,8 +859,8 @@ body {
   }
 
   .vehicle-image-block {
-    flex: 0 0 100%;
-    max-width: 50%;
+    flex: 0 0 65%;
+    max-width: 65%;
     padding: 24px 16px;
     position: relative;
     background: transparent;
@@ -904,8 +889,8 @@ body {
   }
 
   .vehicle-details-block {
-    flex: 0 0 40%;
-    max-width: 100%;
+    flex: 0 0 35%;
+    max-width: 35%;
     align-self: flex-start;
   }
 
@@ -921,4 +906,59 @@ body {
 
 .vehicle-thumbnails img {
   scroll-snap-align: center;
+}
+
+/* Arrow buttons for Other Cars slider */
+.other-cars-section {
+  position: relative;
+}
+
+/* Ensure the section doesn't clip absolutely positioned arrows */
+.other-cars-section {
+  overflow: visible !important;
+}
+
+.other-cars-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.95);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  z-index: 99999 !important; /* very high z-index to avoid being hidden */
+  box-shadow: 0 6px 18px rgba(2,6,23,0.18);
+  transition: transform 160ms ease, opacity 160ms ease;
+}
+
+.other-cars-btn.prev {
+  left: 12px;
+}
+
+.other-cars-btn.next {
+  right: 12px;
+}
+
+.other-cars-btn:hover {
+  transform: translateY(-50%) scale(1.05);
+}
+
+@media (max-width: 480px) {
+  /* Show touch-friendly slider arrow buttons on very small screens
+     Make them slightly smaller and inset so they don't block card content. */
+  .other-cars-btn {
+    display: flex;
+    width: 36px;
+    height: 36px;
+    opacity: 0.98;
+  }
+
+  .other-cars-btn.prev { left: 8px; }
+  .other-cars-btn.next { right: 8px; }
 }
