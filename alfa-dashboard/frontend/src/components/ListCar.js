@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { formatIndian } from "../utils/formatIndian";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Edit, Trash2 } from "lucide-react";
@@ -109,25 +110,13 @@ const  API_BASE = "https://alfa-motors-5yfh.vercel.app";
                           : "-"}
                       </td>
                       <td style={styles.td}>
-                        ₹
-                        {car.buyingPrice !== undefined &&
-                        car.buyingPrice !== null
-                          ? Number(car.buyingPrice).toLocaleString()
-                          : "-"}
+                        ₹{formatIndian(car.buyingPrice)}
                       </td>
                       <td style={styles.td}>
-                        ₹
-                        {car.quotingPrice !== undefined &&
-                        car.quotingPrice !== null
-                          ? Number(car.quotingPrice).toLocaleString()
-                          : "-"}
+                        ₹{formatIndian(car.quotingPrice)}
                       </td>
                       <td style={styles.td}>
-                        ₹
-                        {car.sellingPrice !== undefined &&
-                        car.sellingPrice !== null
-                          ? Number(car.sellingPrice).toLocaleString()
-                          : "-"}
+                        ₹{formatIndian(car.sellingPrice)}
                       </td>
 
                       <td style={styles.td}>

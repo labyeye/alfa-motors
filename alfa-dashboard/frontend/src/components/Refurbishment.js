@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
+import { formatIndian } from "../utils/formatIndian";
 import AuthContext from "../context/AuthContext";
 import Sidebar from "./Sidebar";
 import { Trash, PlusCircle } from "lucide-react";
@@ -274,9 +275,7 @@ export default function Refurbishment() {
                       }}
                     >
                       ₹
-                      {(
-                        (Number(it.quantity) || 0) * (Number(it.rate) || 0)
-                      ).toLocaleString()}
+                      {formatIndian((Number(it.quantity) || 0) * (Number(it.rate) || 0))}
                     </div>
                     <button
                       onClick={() => removeItem(idx)}
@@ -345,7 +344,7 @@ export default function Refurbishment() {
                   textAlign: isMobile ? "center" : "left",
                 }}
               >
-                Total: <strong>₹{totalCost().toLocaleString()}</strong>
+                Total: <strong>₹{formatIndian(totalCost())}</strong>
               </div>
               <button
                 onClick={submit}
@@ -446,21 +445,16 @@ export default function Refurbishment() {
                             </div>
                             <div>
                               ₹
-                              {(
-                                it.amount || it.quantity * it.rate
-                              ).toLocaleString()}
+                              {formatIndian(it.amount || it.quantity * it.rate)}
                             </div>
                           </div>
                         ))}
                         <div style={{ marginTop: 6, fontWeight: 600 }}>
                           Total: ₹
-                          {(
+                          {formatIndian(
                             r.totalCost ||
-                            r.items.reduce(
-                              (s, it) => s + it.quantity * it.rate,
-                              0
-                            )
-                          ).toLocaleString()}
+                            r.items.reduce((s, it) => s + it.quantity * it.rate, 0)
+                          )}
                         </div>
                       </div>
                     </div>

@@ -416,10 +416,6 @@ try {
 
 // Helper to normalize image paths (used by featured cars)
 function getImageUrl(imagePath) {
-  // Normalize different stored shapes: array, JSON string, single filename or full URL
-  if (!imagePath) return "assets/placeholder.png";
-
-  // If passed an array, use the first element
   if (Array.isArray(imagePath) && imagePath.length > 0)
     imagePath = imagePath[0];
 
@@ -459,8 +455,6 @@ function getImageUrl(imagePath) {
   // Fallback to IMAGE_BASE for legacy/local filenames
   return `${IMAGE_BASE}/${filename}`;
 }
-
-// Normalize photos field from DB: may be an array, JSON string, or single filename
 function normalizePhotos(photosField) {
   if (!photosField) return [];
   if (Array.isArray(photosField)) return photosField;
@@ -480,6 +474,138 @@ function normalizePhotos(photosField) {
     return [raw];
   }
   return [];
+}
+
+// Abbreviate kilometers display for small cards (e.g., 68000 -> 68K, 150000 -> 1.5L)
+function abbreviateKm(km) {
+  const n = Number(km) || 0;
+  if (n === 0) return "0";
+  if (n >= 100000) {
+    return `${(n / 100000).toFixed(n % 100000 === 0 ? 0 : 1)}L`;
+  }
+  if (n >= 1000) {
+    return `${(n / 1000).toFixed(n % 1000 === 0 ? 0 : 1)}K`;
+  }
+  return n.toString();
+}
+
+function formatAge(days) {
+  const d = Number(days) || 0;
+  if (d <= 0) return "Fresh";
+  if (d < 30) return `${d}d old`;
+  if (d < 365) return `${Math.round(d / 30)}m old`;
+  return `${Math.round(d / 365)}y old`;
+}
+
+// More robust ownership formatter (matches inventory page)
+function formatOwnership(owner) {
+  if (!owner) return "1st Own";
+  const s = owner.toString().toLowerCase();
+  if (s === "1" || s.includes("1st")) return "1st Own";
+  if (s === "2" || s.includes("2nd")) return "2nd Own";
+  if (s === "3" || s.includes("3+") || s.includes("3rd")) return "3rd Own";
+  return owner;
+}
+
+// Create a featured car card similar to inventory page, adapted for index slider
+function createCarCard(car) {
+  const carCard = document.createElement("div");
+  // add both class names so styles from inventory and index match
+  carCard.className = "Car-card car-card";
+
+  // Set data attributes for potential filtering
+  carCard.dataset.brand = car.make || "";
+  carCard.dataset.sellingPrice = car.sellingPrice || 0;
+  carCard.dataset.year = car.modelYear || new Date().getFullYear();
+  carCard.dataset.km = car.kmDriven || 0;
+  carCard.dataset.owner = car.ownership || "1";
+  carCard.dataset.fuel = car.fuelType || "Petrol";
+
+  const statusClass =
+    car.status === "Available"
+      ? "status-available"
+      : car.status === "Sold Out"
+      ? "status-sold"
+      : car.status === "Coming Soon"
+      ? "status-coming-soon"
+      : "status-available";
+
+  // Build image HTML
+  let imageHTML = "";
+  if (Array.isArray(car.photos) && car.photos.length > 0) {
+    if (car.photos.length > 1) {
+      imageHTML = `
+        <div class="car-slider">
+          <div class="slider-images">
+            ${car.photos
+              .map(
+                (img) => `
+              <img src="${getImageUrl(img)}" 
+                   alt="${car.make || car.brand || ""} ${car.model || ""}"
+                   onerror="this.onerror=null;this.src='assets/placeholder.png'">
+            `
+              )
+              .join("")}
+          </div>
+          <div class="slider-dots">
+            ${car.photos
+              .map((_, index) => `
+              <span class="dot" data-index="${index}"></span>
+            `)
+              .join("")}
+          </div>
+          <button class="slider-prev">&lt;</button>
+          <button class="slider-next">&gt;</button>
+        </div>
+      `;
+    } else {
+      imageHTML = `
+  <img src="${getImageUrl(car.photos[0])}" 
+    alt="${car.make || car.brand || ""} ${car.model || ""}" 
+    onerror="this.onerror=null;this.src='assets/placeholder.png'">
+  `;
+    }
+  }
+
+  carCard.dataset.CarData = JSON.stringify(car);
+
+  carCard.innerHTML = `
+    <div class="image-container">
+      ${imageHTML}
+      <div class="status-badge ${statusClass}" data-translate="${car.status || "Available"}">${car.status || "Available"}</div>
+    </div>
+    <div class="card-content">
+      <div class="title">
+        <h3>${car.modelYear || ''} ${car.make || "Unknown Brand"} ${car.model || "Unknown Model"}</h3>
+      </div>
+      <div class="details">
+        <div class="detail-item">
+          <span><i class="fas fa-tachometer-alt" aria-hidden="true"></i></span>
+          <div>${abbreviateKm(car.kmDriven || 0)}</div>
+        </div>
+        <div class="detail-item">
+          <span><i class="fas fa-user" aria-hidden="true"></i></span>
+          <div>${formatOwnership(car.ownership || "1")}</div>
+        </div>
+        <div class="detail-item">
+          <span><i class="fas fa-gas-pump" aria-hidden="true"></i></span>
+          <div>${car.fuelType || "Petrol"}</div>
+        </div>
+        <div class="detail-item">
+          <span><i class="fas fa-calendar-alt" aria-hidden="true"></i></span>
+          <div>${formatAge(car.daysOld || 0)}</div>
+        </div>
+      </div>
+      <div class="price-container">
+        <div class="price">₹${(car.sellingPrice || 0).toLocaleString("en-IN")}</div>
+        <div>
+          <button class="view-details-btn" data-translate="View Details" ${car.status !== "Available" ? "disabled" : ""}>View Details</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  return carCard;
 }
 
 function fetchFeaturedCars() {
@@ -517,84 +643,66 @@ function displayFeaturedCars(Cars) {
   }
 
   items.forEach((Car) => {
-    const CarCard = document.createElement("div");
-    CarCard.className = "Car-card";
+    // Ensure photos normalized so createCarCard can render sliders
+    Car.photos = normalizePhotos(Car.photos || Car.photos || Car.images || []);
 
-    let statusClass = "status-available";
-    let statusText = "Available";
-    let isDisabled = false;
+    const card = createCarCard(Car);
+    CarSlider.appendChild(card);
 
-    if (Car.status === "Sold Out") {
-      statusClass = "status-sold";
-      statusText = "Sold Out";
-      isDisabled = true;
-    } else if (Car.status === "Coming Soon") {
-      statusClass = "status-coming-soon";
-      statusText = "Coming Soon";
-      isDisabled = true;
-    }
+    // Wire up view details button to inventory page anchor
+    try {
+      const viewBtn = card.querySelector('.view-details-btn');
+      if (viewBtn && !viewBtn.disabled) {
+        viewBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          try {
+            const q = encodeURIComponent(JSON.stringify(Car));
+            window.location.href = `vehicledetail.html?car=${q}`;
+          } catch (err) {
+            // fallback to inventory anchor if encoding fails
+            window.location.href = `https://www.alfamotorworld.com/inventory.html#${Car._id || ''}`;
+          }
+        });
+      }
+      // Make the whole card clickable (but preserve button and slider behavior)
+      try {
+        card.tabIndex = 0; // make focusable for keyboard users
+        card.setAttribute('role', 'link');
 
-    // Normalize image source (accept array/JSON/full URL/local assets)
-    const imgSrc = getImageUrl(
-      Array.isArray(Car.photos) && Car.photos.length > 0
-        ? Car.photos[0]
-        : Car.imageUrl || null
-    );
-
-    CarCard.innerHTML = `
-      <div class="image-container">
-        <img src="${imgSrc}" 
-            alt="${Car.make} ${Car.model}" 
-            onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
-        <div class="status-badge ${statusClass}">${statusText}</div>
-      </div>
-      <div class="card-content">
-        <h3>${Car.make} ${Car.model}</h3>
-        <span class="model">${Car.modelYear} Model</span>
-        <div class="details">
-          <div class="detail-item">
-            <i class="fas fa-tachometer-alt"></i>
-            <span>${(Car.kmDriven || 0).toLocaleString()} km</span>
-          </div>
-          <div class="detail-item">
-            <i class="fas fa-user"></i>
-            <span title="${formatOwnership(
-              Car.ownership || "1"
-            )}">${formatOwnership(Car.ownership || "1")}</span>
-          </div>
-          <div class="detail-item">
-            <i class="fas fa-gas-pump"></i>
-            <span>${Car.fuelType || "Petrol"}</span>
-          </div>
-          <div class="detail-item">
-            <i class="fas fa-calendar-alt"></i>
-            <span>${Car.year || "N/A"}</span>
-          </div>
-        </div>
-        <div class="price-container">
-          <div class="price">₹${(Car.sellingPrice || 0).toLocaleString()}</div>
-          <div class="emi">Down: ₹${(
-            Car.downPayment || 0
-          ).toLocaleString()} | EMI: ₹${Math.round(
-      ((Car.sellingPrice || 0) - (Car.downPayment || 0)) / 36
-    ).toLocaleString()}/month</div>
-          <button class="view-details-btn" ${isDisabled ? "disabled" : ""}>
-            ${isDisabled ? Car.status : "View Details"}
-          </button>
-        </div>
-      </div>
-    `;
-    CarSlider.appendChild(CarCard);
-    if (!isDisabled) {
-      CarCard.querySelector(".view-details-btn").addEventListener(
-        "click",
-        () => {
-          window.location.href = `https://www.alfamotorworld.com/inventory.html#${
-            Car._id || ""
-          }`;
+        function goToDetailsFromCard(e) {
+          if (e && e.stopPropagation) e.stopPropagation();
+          try {
+            const CarData = JSON.parse(card.dataset.CarData || "{}");
+            const q = encodeURIComponent(JSON.stringify(CarData));
+            window.location.href = `vehicledetail.html?car=${q}`;
+          } catch (err) {
+            console.error('Failed to open details', err);
+          }
         }
-      );
-    }
+
+        card.addEventListener('click', (e) => {
+          const target = e.target;
+          // allow image clicks to navigate — but ignore clicks on explicit controls
+          if (
+            !target ||
+            target.closest('.contact-btn') ||
+            target.closest('.view-details-btn') ||
+            target.closest('.slider-prev') ||
+            target.closest('.slider-next') ||
+            target.closest('.dot')
+          )
+            return;
+          goToDetailsFromCard(e);
+        });
+
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            goToDetailsFromCard(e);
+          }
+        });
+      } catch (e) {}
+    } catch (e) {}
   });
   // Notify slider that cards have been rendered so it can compute widths
   const event = new Event("featuredCarsRendered");

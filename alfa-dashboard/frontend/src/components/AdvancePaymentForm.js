@@ -79,7 +79,7 @@ export default function AdvancePaymentForm() {
             >
               <option value="">-- not linked --</option>
               {sellLetters.map((s) => (
-                <option key={s._id} value={s._id}>
+                  <option key={s._id} value={s._id}>
                   {s.buyerName} - ₹{s.saleAmount}
                 </option>
               ))}
@@ -97,8 +97,7 @@ export default function AdvancePaymentForm() {
                       <strong>Buyer:</strong> {sel.buyerName}
                     </div>
                     <div>
-                      <strong>Sale Amount:</strong> ₹
-                      {sel.saleAmount?.toLocaleString()}
+                      <strong>Sale Amount:</strong> ₹{sel.saleAmount?.toString()}
                     </div>
                     <div>
                       <strong>Registration:</strong>{" "}

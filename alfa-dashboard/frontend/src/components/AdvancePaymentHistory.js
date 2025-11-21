@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import Sidebar from "./Sidebar";
+import { formatIndian } from "../utils/formatIndian";
 import AuthContext from "../context/AuthContext";
 import { Trash, Eye } from "lucide-react";
 
@@ -84,7 +85,7 @@ export default function AdvancePaymentHistory() {
                         ? `${p.sellLetter.buyerName} - ₹${p.sellLetter.saleAmount}`
                         : "—"}
                     </td>
-                    <td style={{ padding: 8 }}>₹{p.amount.toLocaleString()}</td>
+                    <td style={{ padding: 8 }}>₹{formatIndian(p.amount)}</td>
                     <td style={{ padding: 8 }}>{p.paymentMethod}</td>
                     <td style={{ padding: 8 }}>
                       {new Date(p.createdAt).toLocaleString()}
@@ -134,7 +135,7 @@ export default function AdvancePaymentHistory() {
             }}
           >
             <h3>Payment Details</h3>
-            <div>Amount: ₹{selected.amount.toLocaleString()}</div>
+            <div>Amount: ₹{formatIndian(selected.amount)}</div>
             <div>Method: {selected.paymentMethod}</div>
             <div>Note: {selected.note || "—"}</div>
             <div style={{ marginTop: 8 }}>

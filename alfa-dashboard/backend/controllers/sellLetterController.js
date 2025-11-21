@@ -1,9 +1,10 @@
 const { SellLetter } = require('../models_sql/SellLetterSQL');
+const { formatObjectPrices } = require('../utils/formatIndian');
 
 exports.createSellLetter = async (req, res) => {
   try {
     const created = await SellLetter.create({ ...req.body, createdBy: req.user.id });
-    res.status(201).json(created);
+    res.status(201).json(formatObjectPrices(created.get ? created.get({ plain: true }) : created));
   } catch (error) {
     console.error('Detailed error:', error);
     res.status(500).json({ message: 'Server Error', error: error.message });
@@ -13,7 +14,7 @@ exports.createSellLetter = async (req, res) => {
 exports.getSellLetters = async (req, res) => {
   try {
     const sellLetters = await SellLetter.findAll({ order: [['createdAt', 'DESC']] });
-    res.json(sellLetters);
+    res.json((sellLetters || []).map(sl => formatObjectPrices(sl.get ? sl.get({ plain: true }) : sl)));
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
@@ -38,7 +39,7 @@ exports.getMySellLetters = async (req, res) => {
     const where = {};
     if (req.user.role !== 'admin') where.createdBy = req.user.id;
     const sellLetters = await SellLetter.findAll({ where, order: [['createdAt', 'DESC']] });
-    res.json(sellLetters);
+    res.json((sellLetters || []).map(sl => formatObjectPrices(sl.get ? sl.get({ plain: true }) : sl)));
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
@@ -53,7 +54,7 @@ exports.getSellLetterById = async (req, res) => {
     if (req.user.role !== 'admin' && String(sellLetter.createdBy) !== String(req.user.id)) {
       return res.status(403).json({ message: 'Not authorized' });
     }
-    res.json(sellLetter);
+    res.json(formatObjectPrices(sellLetter.get ? sellLetter.get({ plain: true }) : sellLetter));
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
@@ -66,7 +67,7 @@ exports.updateSellLetter = async (req, res) => {
     const sellLetter = await SellLetter.findByPk(req.params.id);
     if (!sellLetter) return res.status(404).json({ message: 'Sell letter not found' });
     await sellLetter.update(req.body);
-    res.json(sellLetter);
+    res.json(formatObjectPrices(sellLetter.get ? sellLetter.get({ plain: true }) : sellLetter));
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });

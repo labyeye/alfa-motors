@@ -283,7 +283,10 @@ img {
   background: white;
   border-radius: 12px;
   overflow: hidden;
-
+  /* allow absolutely positioned button inside */
+  position: relative;
+  /* ensure there's space at the bottom for an anchored button inside the card */
+  padding-bottom: 84px;
   transition: all 0.3s ease;
   border: 1px solid #eee;
 }
@@ -305,6 +308,11 @@ img {
 
 .Car-slider .card-content {
   padding: 20px;
+  width: auto;
+  height: 150px;
+}
+.Car-slider .title {
+  height:50px
 }
 
 .Car-slider .Car-card h3 {
@@ -342,6 +350,7 @@ img {
 
 .Car-slider .Car-card .price-container {
   margin-top: 15px;
+
 }
 
 .Car-slider .Car-card .price {
@@ -355,22 +364,33 @@ img {
   color: #666;
   margin: 5px 0;
 }
-
+/* View Details Button - anchored and aligned with card padding */
 .Car-slider .Car-card .view-details-btn {
+  position: absolute;
+  left: 20px;
+  right: 40px;
+  bottom: 20px;
   background: var(--primary-color);
+  width: 10px;
   color: white;
   border: none;
-  padding: 12px;
+  padding: 12px 16px;
   border-radius: 6px;
-  width: 100%;
   cursor: pointer;
   font-weight: bold;
   transition: all 0.2s ease;
-  margin-top: 10px;
+  display: block;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  box-sizing: border-box;
 }
 
 .Car-slider .Car-card .view-details-btn:hover {
   background: #e05d00;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .Car-slider .Car-card .status-badge {
@@ -406,7 +426,7 @@ img {
   border: none;
   padding: 12px;
   border-radius: 6px;
-  width: 100%;
+  width: 82%;
   cursor: pointer;
   font-weight: bold;
   transition: all 0.2s ease;
@@ -451,6 +471,12 @@ img {
 
   .Car-slider-container {
     padding: 0 30px;
+  }
+  /* Slightly reduce button inset on small screens to maintain visual balance */
+  .Car-slider .Car-card .view-details-btn {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
   }
 }
 
@@ -1494,9 +1520,6 @@ h2 {
   right: -50%;
   width: 80%;
   height: 200%;
-  background: radial-gradient(circle,
-      rgba(163, 41, 25, 0.1) 0%,
-      transparent 70%);
   z-index: 0;
 }
 

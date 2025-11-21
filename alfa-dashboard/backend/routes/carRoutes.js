@@ -3,11 +3,11 @@ const router = express.Router();
 const Car = require("../models/Car");
 const Gallery = require("../models/Gallery");
 const { protect } = require("../middleware/auth");
-const uploadLocal = require("../utils/fileUploadLocal");
 const { upload } = require("../utils/multerMemory");
 const { uploadBufferToXOZZ } = require('../utils/xozzUpload');
 const path = require("path");
 const fs = require("fs");
+const { formatCarInstance } = require("../utils/formatIndian");
 
 // Helper to check if we're in production
 const isProduction =
@@ -70,7 +70,7 @@ router.post("/", protect, upload.array("photos", 12), async (req, res) => {
 
     res.status(201).json({
       success: true,
-      data: car,
+      data: formatCarInstance(car),
     });
   } catch (err) {
     console.error("Error adding car:", err);
@@ -103,7 +103,7 @@ router.get("/", async (req, res) => {
     const cars = await Car.find(filter).populate("addedBy", "username");
     res.status(200).json({
       success: true,
-      data: cars,
+      data: (cars || []).map(formatCarInstance),
     });
   } catch (err) {
     res.status(500).json({
@@ -128,7 +128,7 @@ router.get("/:id", async (req, res) => {
     }
     res.status(200).json({
       success: true,
-      data: car,
+      data: formatCarInstance(car),
     });
   } catch (err) {
     res.status(500).json({
@@ -260,7 +260,7 @@ router.get("/:id", async (req, res) => {
     if (!car) {
       return res.status(404).json({ success: false, error: "Car not found" });
     }
-    res.status(200).json(car);
+    res.status(200).json(formatCarInstance(car));
   } catch (err) {
     console.error("Error fetching car by ID:", err);
     res.status(500).json({ success: false, error: "Server error" });
@@ -316,7 +316,7 @@ router.put("/:id", protect, async (req, res) => {
     }
     res.status(200).json({
       success: true,
-      data: car,
+      data: formatCarInstance(car),
     });
   } catch (err) {
     console.error("Error updating car:", err);

@@ -27,7 +27,11 @@
       href="https://www.alfamotorworld.com/inventory.html"
       hreflang="hi"
     />
-    <link rel="preconnect" href="https://alfa-motors-5yfh.vercel.app" crossorigin />
+    <link
+      rel="preconnect"
+      href="https://alfa-motors-5yfh.vercel.app"
+      crossorigin
+    />
     <link
       rel="preconnect"
       href="https://alfa-motors-o5cm.vercel.app"
@@ -73,6 +77,49 @@
             }
           }
         } catch (e) {}
+      })();
+    </script>
+
+    <!-- Small helper to format numbers in Indian numbering system for this page -->
+    <script>
+      (function () {
+        function _formatIndianRaw(value) {
+          if (value === undefined || value === null || value === "") return "0";
+          // If already contains comma and digits, return as-is
+          try {
+            var s = value;
+            if (typeof s !== "string") s = String(s);
+            // remove currency and spaces when parsing
+            var cleaned = s.replace(/[₹,\s]/g, '').replace(/[^0-9.\-]/g, '');
+            if (cleaned === '') return s;
+            var n = Number(cleaned);
+            if (!isFinite(n)) return s;
+            var parts = n.toString().split('.');
+            var intPart = parts[0];
+            var decPart = parts.length > 1 ? parts.slice(1).join('.') : null;
+            var sign = '';
+            if (intPart.startsWith('-')) {
+              sign = '-';
+              intPart = intPart.slice(1);
+            }
+            if (intPart.length <= 3) {
+              return decPart != null ? sign + intPart + '.' + decPart : sign + intPart;
+            }
+            var lastThree = intPart.slice(-3);
+            var rest = intPart.slice(0, -3);
+            rest = rest.replace(/\B(?=(\d{2})+(?!\d))/g, ",");
+            var formatted = sign + rest + ',' + lastThree;
+            return decPart != null ? formatted + '.' + decPart : formatted;
+          } catch (e) {
+            return value;
+          }
+        }
+        window.formatIndian = function (v) {
+          if (v === undefined || v === null) return '0';
+          // If already appears formatted (has comma) assume ok
+          if (typeof v === 'string' && v.indexOf(',') !== -1) return v;
+          return _formatIndianRaw(v);
+        };
       })();
     </script>
 
@@ -1198,9 +1245,6 @@
         // Helper function to get the correct image URL
         // After migrating photos to Cloudinary this should mainly return absolute URLs.
         function getImageUrl(imagePath) {
-          // Normalize different stored shapes: array, JSON string, single filename or full URL
-
-          // If passed an array, use the first element
           if (Array.isArray(imagePath) && imagePath.length > 0)
             imagePath = imagePath[0];
 
@@ -1586,8 +1630,8 @@
               </div>
             </div>
             <div class="price-container">
-  <div class="price">₹${(car.sellingPrice || 0).toLocaleString("en-IN")}</div>
-        
+              <div class="price">₹${formatIndian(car.sellingPrice || 0)}</div>
+              </div>
         <div class="button-group">
           <button class="contact-btn" data-translate="Contact Seller" ${
             car.status !== "Available" ? "disabled" : ""
@@ -1636,9 +1680,9 @@
               viewDetailsBtn.addEventListener("click", goToDetails);
             }
 
-            // make the whole card clickable (but preserve button and slider behavior)
+            // make the whole card clickable (but preserve button and slider control behavior)
             card.addEventListener("click", (e) => {
-              // ignore clicks originating from buttons, slider controls or dots (they have their own handlers)
+              // allow clicks on images to navigate; ignore only explicit controls and buttons
               const target = e.target;
               if (
                 !target ||
@@ -1646,9 +1690,7 @@
                 target.closest(".view-details-btn") ||
                 target.closest(".slider-prev") ||
                 target.closest(".slider-next") ||
-                target.closest(".dot") ||
-                target.closest(".slider-images") ||
-                target.closest(".car-slider")
+                target.closest(".dot")
               )
                 return;
               goToDetails(e);

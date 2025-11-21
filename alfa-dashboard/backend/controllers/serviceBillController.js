@@ -4,6 +4,7 @@ const { generateServiceBillPDF } = require('../utils/pdfGenerator');
 const fs = require('fs');
 const path = require('path');
 const { Op } = require('sequelize');
+const { formatIndianNumber, formatObjectPrices } = require('../utils/formatIndian');
 
 // Create a new service bill
 exports.createServiceBill = async (req, res) => {
@@ -122,7 +123,7 @@ exports.createServiceBill = async (req, res) => {
       // non-fatal: continue returning created record
       console.warn('PDF generation failed:', pdfErr.message || pdfErr);
     }
-    res.status(201).json({ success: true, data: serviceBill });
+    res.status(201).json({ success: true, data: formatObjectPrices(serviceBill.get ? serviceBill.get({ plain: true }) : serviceBill) });
   } catch (error) {
     res.status(400).json({
       success: false,
@@ -137,7 +138,7 @@ exports.getServiceBills = async (req, res) => {
     const where = {};
     if (req.user.role !== 'admin') where.createdBy = req.user.id;
     const serviceBills = await ServiceBill.findAll({ where, order: [['createdAt', 'DESC']] });
-    res.status(200).json({ success: true, count: serviceBills.length, data: serviceBills });
+    res.status(200).json({ success: true, count: serviceBills.length, data: (serviceBills || []).map(sb => formatObjectPrices(sb.get ? sb.get({ plain: true }) : sb)) });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Server Error' });
   }
@@ -190,7 +191,7 @@ exports.getServiceBill = async (req, res) => {
     if (!serviceBill) return res.status(404).json({ success: false, message: 'Service bill not found' });
     if (req.user.role !== 'admin' && String(serviceBill.createdBy) !== String(req.user.id))
       return res.status(403).json({ success: false, message: 'Not authorized' });
-    res.status(200).json({ success: true, data: serviceBill });
+    res.status(200).json({ success: true, data: formatObjectPrices(serviceBill.get ? serviceBill.get({ plain: true }) : serviceBill) });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Server Error' });
   }
@@ -227,7 +228,7 @@ exports.updateServiceBill = async (req, res) => {
       }
     }
 
-    res.status(200).json({ success: true, data: serviceBill });
+    res.status(200).json({ success: true, data: formatObjectPrices(serviceBill.get ? serviceBill.get({ plain: true }) : serviceBill) });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }

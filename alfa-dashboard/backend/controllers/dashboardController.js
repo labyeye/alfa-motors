@@ -10,6 +10,7 @@ const monthNames = [
   "", "Jan", "Feb", "Mar", "Apr", "May", "Jun",
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 ];
+const { formatIndianNumber, formatObjectPrices } = require("../utils/formatIndian");
 
 // Helper: monthly aggregation using saleDate / createdAt
 // amountField: which numeric column to SUM (defaults to 'saleAmount')
@@ -57,24 +58,38 @@ exports.getOwnerDashboardStats = async (req, res) => {
       SellLetter.sum('saleAmount', { where: { createdBy: ownerId } }).catch(() => 0),
     ]);
 
-    const monthlySellData = await getMonthlyAggregation(SellLetter, 'saleDate', { createdBy: ownerId });
-    const recentSell = await getRecent(SellLetter, { createdBy: ownerId }, 3);
-    const recentService = await getRecent(ServiceBill, { createdBy: ownerId }, 3);
+    const monthlySellData = (await getMonthlyAggregation(SellLetter, 'saleDate', { createdBy: ownerId })) || [];
+    const recentSell = (await getRecent(SellLetter, { createdBy: ownerId }, 3)) || [];
+    const recentService = (await getRecent(ServiceBill, { createdBy: ownerId }, 3)) || [];
+
+    // Format numeric amounts for API response
+    const monthlySellDataFormatted = monthlySellData.map((r) => ({
+      ...r,
+      totalAmount: formatIndianNumber(Number(r.totalAmount || 0)),
+    }));
+    const recentSellFormatted = recentSell.map((s) => ({
+      ...s,
+      saleAmount: s.saleAmount !== undefined && s.saleAmount !== null ? formatIndianNumber(Number(s.saleAmount)) : s.saleAmount,
+    }));
+    const recentServiceFormatted = recentService.map((s) => ({
+      ...s,
+      total: s.total !== undefined && s.total !== null ? formatIndianNumber(Number(s.total)) : s.total,
+    }));
 
     res.status(200).json({
       success: true,
       data: {
         totalSellLetters: totalSellLetters || 0,
-        totalBuyValue: 0, // legacy field; migration didn't map purchases separately
-        totalSellValue: Number(totalSellValue || 0),
-        profit: Number(totalSellValue || 0),
+        totalBuyValue: 0,
+        totalSellValue: formatIndianNumber(Number(totalSellValue || 0)),
+        profit: formatIndianNumber(Number(totalSellValue || 0)),
         ownerName: req.user.name,
         recentTransactions: {
           buy: [],
-          sell: recentSell,
-          service: recentService,
+          sell: recentSellFormatted,
+          service: recentServiceFormatted,
         },
-        monthlyData: monthlySellData,
+        monthlyData: monthlySellDataFormatted,
       },
     });
   } catch (err) {
@@ -122,15 +137,28 @@ exports.getDashboardStats = async (req, res) => {
 
     const carData = (carStatsArr && carStatsArr[0]) || { totalCars: 0, soldCars: 0, availableCars: 0 };
 
+    const monthlySellData2 = (monthlySellData || []).map((r) => ({
+      ...r,
+      totalAmount: formatIndianNumber(Number(r.totalAmount || 0)),
+    }));
+    const recentSell2 = (recentSell || []).map((s) => ({
+      ...s,
+      saleAmount: s.saleAmount !== undefined && s.saleAmount !== null ? formatIndianNumber(Number(s.saleAmount)) : s.saleAmount,
+    }));
+    const recentService2 = (recentService || []).map((s) => ({
+      ...s,
+      total: s.total !== undefined && s.total !== null ? formatIndianNumber(Number(s.total)) : s.total,
+    }));
+
     res.status(200).json({
       success: true,
       data: {
         totalSellLetters: totalSellLetters || 0,
         totalBuyValue: 0,
-        totalSellValue: Number(totalSaleValue || 0),
-        profit: Number((totalSaleValue || 0) - (0)),
-        recentTransactions: { buy: [], sell: recentSell || [], service: recentService || [] },
-        monthlyData: monthlySellData,
+        totalSellValue: formatIndianNumber(Number(totalSaleValue || 0)),
+        profit: formatIndianNumber(Number((totalSaleValue || 0) - (0))),
+        recentTransactions: { buy: [], sell: recentSell2 || [], service: recentService2 || [] },
+        monthlyData: monthlySellData2,
         carStats: {
           totalCars: carData.totalCars || 0,
           soldCars: carData.soldCars || 0,

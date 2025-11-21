@@ -6,6 +6,7 @@ const fs = require('fs');
 
 const SellRequest = require('../models/SellRequest');
 const { protect } = require('../middleware/auth');
+const { formatIndianNumber, formatObjectPrices } = require('../utils/formatIndian');
 
 const uploadsDir = path.join(__dirname, '..', 'public', 'uploads');
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
@@ -41,7 +42,7 @@ router.post('/', upload.array('images', 5), async (req, res) => {
 
     await sellRequest.save();
 
-    return res.status(201).json({ message: 'Sell request submitted successfully! We will contact you shortly.', request: sellRequest });
+    return res.status(201).json({ message: 'Sell request submitted successfully! We will contact you shortly.', request: formatObjectPrices(sellRequest.toObject()) });
   } catch (err) {
     console.error('Error submitting sell request:', err);
     return res.status(500).json({ error: 'Failed to submit sell request. Please try again.' });
@@ -51,7 +52,7 @@ router.post('/', upload.array('images', 5), async (req, res) => {
 router.get('/', protect, async (req, res) => {
   try {
     const requests = await SellRequest.find().sort({ createdAt: -1 });
-    return res.json(requests);
+    return res.json((requests || []).map((r) => formatObjectPrices(r.toObject())));
   } catch (err) {
     console.error('Error fetching sell requests:', err);
     return res.status(500).json({ error: 'Error loading sell requests' });
@@ -70,8 +71,7 @@ router.patch('/:id/status', protect, async (req, res) => {
     if (!updatedRequest) {
       return res.status(404).json({ error: 'Sell request not found' });
     }
-
-    return res.json(updatedRequest);
+    return res.json(formatObjectPrices(updatedRequest.toObject()));
   } catch (err) {
     console.error('Error updating sell request:', err);
     return res.status(500).json({ error: 'Error updating sell request' });
@@ -82,7 +82,7 @@ router.get('/:id', protect, async (req, res) => {
   try {
     const request = await SellRequest.findById(req.params.id);
     if (!request) return res.status(404).json({ error: 'Sell request not found' });
-    return res.json(request);
+    return res.json(formatObjectPrices(request.toObject()));
   } catch (err) {
     console.error('Error fetching sell request:', err);
     return res.status(500).json({ error: 'Error loading sell request' });

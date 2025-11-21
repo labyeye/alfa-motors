@@ -11,6 +11,7 @@ import {
   RefreshCw,
   Trash,
 } from "lucide-react";
+import { formatIndian } from "../utils/formatIndian";
 import AuthContext from "../context/AuthContext";
 import Sidebar from "./Sidebar";
 
@@ -328,7 +329,7 @@ const SellRequests = () => {
                         <td style={styles.tableCell}>{request.sellerPhone}</td>
                         <td style={styles.tableCell}>{request.sellerEmail}</td>
                         <td style={styles.tableCell}>
-                          ₹{request.expectedPrice?.toLocaleString()}
+                          ₹{formatIndian(request.expectedPrice)}
                         </td>
                         <td style={styles.tableCell}>
                           <span
@@ -448,9 +449,7 @@ const SellRequests = () => {
                   </div>
                   <div style={styles.detailItem}>
                     <span style={styles.detailLabel}>Expected Price:</span>
-                    <span>
-                      ₹{selectedRequest.expectedPrice?.toLocaleString()}
-                    </span>
+                    <span>₹{formatIndian(selectedRequest.expectedPrice)}</span>
                   </div>
                 </div>
 

@@ -1,5 +1,6 @@
 const { AdvancePayment } = require('../models_sql/AdvancePaymentSQL');
 const { SellLetter } = require('../models_sql/SellLetterSQL');
+const { formatObjectPrices, formatIndianNumber } = require('../utils/formatIndian');
 
 exports.createPayment = async (req, res) => {
   try {
@@ -17,7 +18,7 @@ exports.createPayment = async (req, res) => {
       note,
       paidBy: req.user.id,
     });
-    res.status(201).json({ success: true, data: payment });
+    res.status(201).json({ success: true, data: formatObjectPrices(payment.get ? payment.get({ plain: true }) : payment) });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: 'Server Error' });
@@ -30,7 +31,7 @@ exports.getPayments = async (req, res) => {
     if (req.query.sellLetter) where.sellLetterId = req.query.sellLetter;
     if (req.user.role !== 'admin') where.paidBy = req.user.id;
     const payments = await AdvancePayment.findAll({ where, order: [['createdAt', 'DESC']] });
-    res.status(200).json({ success: true, count: payments.length, data: payments });
+    res.status(200).json({ success: true, count: payments.length, data: (payments || []).map(p => formatObjectPrices(p.get ? p.get({ plain: true }) : p)) });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: 'Server Error' });
@@ -43,7 +44,7 @@ exports.getPayment = async (req, res) => {
     if (!payment) return res.status(404).json({ success: false, message: 'Not found' });
     if (req.user.role !== 'admin' && String(payment.paidBy) !== String(req.user.id))
       return res.status(403).json({ success: false, message: 'Not authorized' });
-    res.status(200).json({ success: true, data: payment });
+    res.status(200).json({ success: true, data: formatObjectPrices(payment.get ? payment.get({ plain: true }) : payment) });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: 'Server Error' });

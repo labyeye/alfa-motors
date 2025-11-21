@@ -7,6 +7,7 @@ const { uploadBufferToXOZZ } = require('../utils/xozzUpload');
 
 const path = require("path");
 const fs = require("fs");
+const { formatCarInstance } = require("../utils/formatIndian");
 
 const isProduction =
   process.env.NODE_ENV === "production" || process.env.VERCEL;
@@ -88,7 +89,7 @@ router.get("/", async (req, res) => {
     const opts = { where, order: [["createdAt", "DESC"]] };
     if (req.query.limit) opts.limit = Number(req.query.limit);
     const cars = await Car.findAll(opts);
-    res.json(cars);
+    res.json({ success: true, data: (cars || []).map(formatCarInstance) });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
@@ -100,7 +101,7 @@ router.get("/:id", async (req, res) => {
   try {
     const car = await Car.findByPk(req.params.id);
     if (!car) return res.status(404).json({ message: "Car not found" });
-    res.json(car);
+    res.json(formatCarInstance(car));
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
@@ -143,7 +144,7 @@ router.post("/", protect, upload.array("photos", 12), async (req, res) => {
     payload = sanitizeNumericFields(payload);
 
     const created = await Car.create(payload);
-    res.status(201).json({ success: true, data: created });
+    res.status(201).json({ success: true, data: formatCarInstance(created) });
   } catch (err) {
     console.error(err);
     res.status(400).json({ message: "Bad request", error: err.message });
@@ -158,7 +159,7 @@ router.put("/:id", protect, async (req, res) => {
   // sanitize numeric fields in incoming update payload
   const sanitized = sanitizeNumericFields(req.body);
   await car.update(sanitized);
-    res.json({ success: true, data: car });
+    res.json({ success: true, data: formatCarInstance(car) });
   } catch (err) {
     console.error(err);
     res.status(400).json({ message: "Bad request", error: err.message });
@@ -218,7 +219,7 @@ router.put(
         car.photos = [...existing, ...photoPaths];
       }
       await car.save();
-      res.json({ success: true, data: car });
+      res.json({ success: true, data: formatCarInstance(car) });
     } catch (err) {
       console.error("Error updating car photos:", err);
       res.status(500).json({ message: "Server error" });
@@ -244,7 +245,7 @@ router.post("/:id/photo", protect, upload.single("photo"), async (req, res) => {
     if (!photo) return res.status(400).json({ message: 'No photo provided' });
     car.photos = [...normalizePhotos(car.photos), photo];
     await car.save();
-    res.json({ success: true, data: car });
+    res.json({ success: true, data: formatCarInstance(car) });
   } catch (err) {
     console.error("Error adding photo:", err);
     res.status(500).json({ message: "Server error" });
@@ -265,7 +266,6 @@ router.delete("/:id/photo", protect, async (req, res) => {
     );
     car.photos = updated;
     await car.save();
-
     // Note: XOZZ currently doesn't provide a delete API here. We remove the reference
     // from the DB row only. If you have a delete endpoint for XOZZ, implement it here.
     try {
