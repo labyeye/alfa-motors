@@ -380,14 +380,26 @@
           return;
         }
 
-        // Populate car details
-        document.getElementById("vehicleTitle").textContent = `${car.modelYear || ""} ${car.brand || car.make || ""} ${car.model || ""}`;
-  document.getElementById("vehicleKm").textContent = `${(car.kmDriven || 0).toLocaleString('en-IN')} km`;
-        document.getElementById("vehicleOwner").textContent = formatOwnership(car.ownership || "1");
-        document.getElementById("vehicleFuel").textContent = car.fuelType || "Petrol";
-        document.getElementById("vehicleColor").textContent = car.color || "";
-  document.getElementById("vehiclePrice").textContent = `₹${(car.sellingPrice || car.price || 0).toLocaleString('en-IN')}`;
-  document.getElementById("vehicleEmi").textContent = `Down: ₹${(car.downPayment || 0).toLocaleString('en-IN')} | EMI: ₹${Math.round(((car.sellingPrice || car.price || 0) - (car.downPayment || 0)) / 36).toLocaleString('en-IN')}/month`;
+        // Populate car details (use guarded setters to avoid errors when elements are missing)
+        function setText(id, value) {
+          try {
+            const el = document.getElementById(id);
+            if (el) el.textContent = value;
+          } catch (e) {
+            // swallow errors to avoid uncaught exceptions from optional elements
+          }
+        }
+
+        setText("vehicleTitle", `${car.modelYear || ""} ${car.brand || car.make || ""} ${car.model || ""}`);
+        setText("vehicleKm", `${(car.kmDriven || 0).toLocaleString('en-IN')} km`);
+        setText("vehicleOwner", formatOwnership(car.ownership || "1"));
+        setText("vehicleFuel", car.fuelType || "Petrol");
+        setText("vehicleColor", car.color || "");
+        setText("vehiclePrice", `₹${(car.sellingPrice || car.price || 0).toLocaleString('en-IN')}`);
+        setText(
+          "vehicleEmi",
+          `Down: ₹${(car.downPayment || 0).toLocaleString('en-IN')} | EMI: ₹${Math.round(((car.sellingPrice || car.price || 0) - (car.downPayment || 0)) / 36).toLocaleString('en-IN')}/month`
+        );
 
         // Handle images (normalize photos stored in DB)
         let images = normalizePhotos(car.photos);
