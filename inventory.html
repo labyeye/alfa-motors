@@ -27,11 +27,7 @@
       href="https://www.alfamotorworld.com/inventory.html"
       hreflang="hi"
     />
-    <link
-      rel="preconnect"
-      href="https://alfa-motors-5yfh.vercel.app"
-      crossorigin
-    />
+    <link rel="preconnect" href="https://alfa-motors-5yfh.vercel.app" crossorigin />
     <link
       rel="preconnect"
       href="https://alfa-motors-o5cm.vercel.app"
@@ -90,34 +86,36 @@
             var s = value;
             if (typeof s !== "string") s = String(s);
             // remove currency and spaces when parsing
-            var cleaned = s.replace(/[₹,\s]/g, '').replace(/[^0-9.\-]/g, '');
-            if (cleaned === '') return s;
+            var cleaned = s.replace(/[₹,\s]/g, "").replace(/[^0-9.\-]/g, "");
+            if (cleaned === "") return s;
             var n = Number(cleaned);
             if (!isFinite(n)) return s;
-            var parts = n.toString().split('.');
+            var parts = n.toString().split(".");
             var intPart = parts[0];
-            var decPart = parts.length > 1 ? parts.slice(1).join('.') : null;
-            var sign = '';
-            if (intPart.startsWith('-')) {
-              sign = '-';
+            var decPart = parts.length > 1 ? parts.slice(1).join(".") : null;
+            var sign = "";
+            if (intPart.startsWith("-")) {
+              sign = "-";
               intPart = intPart.slice(1);
             }
             if (intPart.length <= 3) {
-              return decPart != null ? sign + intPart + '.' + decPart : sign + intPart;
+              return decPart != null
+                ? sign + intPart + "." + decPart
+                : sign + intPart;
             }
             var lastThree = intPart.slice(-3);
             var rest = intPart.slice(0, -3);
             rest = rest.replace(/\B(?=(\d{2})+(?!\d))/g, ",");
-            var formatted = sign + rest + ',' + lastThree;
-            return decPart != null ? formatted + '.' + decPart : formatted;
+            var formatted = sign + rest + "," + lastThree;
+            return decPart != null ? formatted + "." + decPart : formatted;
           } catch (e) {
             return value;
           }
         }
         window.formatIndian = function (v) {
-          if (v === undefined || v === null) return '0';
+          if (v === undefined || v === null) return "0";
           // If already appears formatted (has comma) assume ok
-          if (typeof v === 'string' && v.indexOf(',') !== -1) return v;
+          if (typeof v === "string" && v.indexOf(",") !== -1) return v;
           return _formatIndianRaw(v);
         };
       })();

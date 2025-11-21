@@ -173,11 +173,12 @@ body {
   font-size: 0.95rem;
   color: #334155;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 6px;
   padding: 16px;
+  align-items: center;
   background: #ffffff;
-  border-radius: 8px;
+  border-radius: 50px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   border: 1px solid #f1f5f9;
 }
@@ -190,11 +191,14 @@ body {
   letter-spacing: 0.5px;
   display: flex;
   align-items: center;
+  flex-direction: row;
+  margin-left: 20px;
   gap: 8px;
 }
 
 .vehicle-detail-item .detail-value {
   font-size: 1rem;
+  margin-left: 20px;
   color: #0f172a;
   font-weight: 600;
 }
@@ -208,8 +212,7 @@ body {
   font-size: 2.2rem;
   font-weight: 800;
   color: var(--primary-color);
-  margin-bottom: 8px;
-  background: linear-gradient(135deg, var(--primary-color) 0%, #e55a00 100%);
+  background: var(--primary-color);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -856,7 +859,7 @@ body {
 /* Desktop: clear two-column layout using flex to keep image and details aligned */
 @media (min-width: 900px) {
   .vehicle-main-section {
-    max-width: 1920px;
+    max-width: 100%;
     margin: 84px auto;
     display: block;
     background-color: #F9FAFB;
@@ -871,15 +874,15 @@ body {
   }
 
   .vehicle-image-block {
-    flex: 0 0 60%;
-    max-width: 60%;
+    flex: 0 0 100%;
+    max-width: 50%;
     padding: 24px 16px;
     position: relative;
     background: transparent;
   }
 
   .vehicle-main-img {
-    width: 100%;
+    width: 95%;
     aspect-ratio: 5 / 3;
     max-height: 720px;
     object-fit: cover;
@@ -902,8 +905,7 @@ body {
 
   .vehicle-details-block {
     flex: 0 0 40%;
-    max-width: 40%;
-    padding: 32px;
+    max-width: 100%;
     align-self: flex-start;
   }
 

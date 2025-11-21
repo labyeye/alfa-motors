@@ -203,55 +203,33 @@
           </div>
           <div class="vehicle-details-block">
             <div class="vehicle-title" id="vehicleTitle">Car Brand Model</div>
-            <div class="vehicle-model" id="vehicleModel">2022 Model</div>
             <div class="vehicle-details-grid">
               <div class="vehicle-detail-item">
                 <div class="detail-label">
                   <i class="fas fa-tachometer-alt"></i>
-                  <span>Vehicle Driven</span>
                 </div>
                 <div class="detail-value" id="vehicleKm">0 km</div>
               </div>
               <div class="vehicle-detail-item">
                 <div class="detail-label">
                   <i class="fas fa-user"></i>
-                  <span>Ownership</span>
                 </div>
                 <div class="detail-value" id="vehicleOwner">1st Own</div>
               </div>
               <div class="vehicle-detail-item">
                 <div class="detail-label">
                   <i class="fas fa-gas-pump"></i>
-                  <span>Fuel Type</span>
                 </div>
                 <div class="detail-value" id="vehicleFuel">Petrol</div>
               </div>
               <div class="vehicle-detail-item">
                 <div class="detail-label">
                   <i class="fas fa-palette"></i>
-                  <span>Vehicle Color</span>
                 </div>
                 <div class="detail-value" id="vehicleColor">Color</div>
               </div>
-              <div class="vehicle-detail-item">
-                <div class="detail-label">
-                  <i class="fas fa-id-card"></i>
-                  <span>Registration Year</span>
-                </div>
-                <div class="detail-value" id="vehicleRegYear">Reg Year</div>
-              </div>
-              <div class="vehicle-detail-item">
-                <div class="detail-label">
-                  <i class="fas fa-calendar-alt"></i>
-                  <span>Model Year</span>
-                </div>
-                <div class="detail-value" id="vehicleModelYear">Model Year</div>
-              </div>
             </div>
             <div class="vehicle-price" id="vehiclePrice">₹0</div>
-            <div class="vehicle-emi" id="vehicleEmi">
-              Down: ₹0 | EMI: ₹0/month
-            </div>
             <button
               class="add-to-cart-btn"
               onclick="window.location.href='https://www.alfamotorworld.com/contact.html'"
@@ -403,13 +381,11 @@
         }
 
         // Populate car details
-        document.getElementById("vehicleTitle").textContent = `${car.brand || car.make || ""} ${car.model || ""}`;
-        document.getElementById("vehicleModel").textContent = `${car.modelYear || ""} Model`;
+        document.getElementById("vehicleTitle").textContent = `${car.modelYear || ""} ${car.brand || car.make || ""} ${car.model || ""}`;
   document.getElementById("vehicleKm").textContent = `${(car.kmDriven || 0).toLocaleString('en-IN')} km`;
         document.getElementById("vehicleOwner").textContent = formatOwnership(car.ownership || "1");
         document.getElementById("vehicleFuel").textContent = car.fuelType || "Petrol";
         document.getElementById("vehicleColor").textContent = car.color || "";
-        document.getElementById("vehicleRegYear").textContent = car.registrationYear || "";
   document.getElementById("vehiclePrice").textContent = `₹${(car.sellingPrice || car.price || 0).toLocaleString('en-IN')}`;
   document.getElementById("vehicleEmi").textContent = `Down: ₹${(car.downPayment || 0).toLocaleString('en-IN')} | EMI: ₹${Math.round(((car.sellingPrice || car.price || 0) - (car.downPayment || 0)) / 36).toLocaleString('en-IN')}/month`;
 
