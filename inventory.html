@@ -303,6 +303,10 @@
             console.warn("error updating brand counts", err);
           }
         }
+        // Expose for other scripts that may run in a different scope
+        try {
+          window.updateBrandCounts = updateBrandCounts;
+        } catch (e) {}
         if (document.readyState === "loading")
           document.addEventListener("DOMContentLoaded", enhanceImages);
         else enhanceImages();
@@ -1309,6 +1313,25 @@
             .toLowerCase()
             .replace(/[^a-z0-9]/g, "");
         }
+        // Parse price strings like "3,95,000.00" or "395000" into Number
+        function parsePriceString(p) {
+          try {
+            if (p === undefined || p === null) return 0;
+            if (typeof p === "number") return p || 0;
+            var s = String(p).trim();
+            // strip currency symbols, commas and whitespace
+            s = s.replace(/[^0-9.\-]/g, "");
+            if (s === "" || s === "NaN") return 0;
+            var n = parseFloat(s);
+            return isFinite(n) ? n : 0;
+          } catch (e) {
+            return 0;
+          }
+        }
+        // expose helper globally so other inline scripts can call it
+        try {
+          window.normalizeBrandKey = normalizeBrandKey;
+        } catch (e) {}
 
         let allCars = [];
         let currentFilters = {
@@ -1336,11 +1359,20 @@
               return response.json();
             })
             .then((data) => {
+              console.debug('loadCars: raw response data=', data);
+                // Show a small debug panel when running on localhost to help diagnose data shape
+                
               let carsArray = [];
               if (Array.isArray(data)) {
                 carsArray = data;
               } else if (data && Array.isArray(data.data)) {
                 carsArray = data.data;
+              } else if (data && Array.isArray(data.cars)) {
+                carsArray = data.cars;
+              } else if (data && Array.isArray(data.items)) {
+                carsArray = data.items;
+              } else if (data && Array.isArray(data.rows)) {
+                carsArray = data.rows;
               }
 
               if (carsArray.length > 0) {
@@ -1351,7 +1383,15 @@
                   make: car.make || car.brand || car.make, // support both keys
                   // Keep original brand string but also ensure it's a trimmed string
                   brand: (car.make || car.brand || "").toString().trim(),
+                  // Normalize selling price to a Number so filtering/sorting works
+                  sellingPrice: parsePriceString(car.sellingPrice),
+                  buyingPrice: parsePriceString(car.buyingPrice),
+                  quotingPrice: parsePriceString(car.quotingPrice),
                 }));
+                // Keep a reference on the global object for other scopes
+                try {
+                  window.allCars = allCars;
+                } catch (e) {}
                 // Update brand counts badges whenever the full list is loaded
                 try {
                   updateBrandCounts();
@@ -1857,19 +1897,7 @@
         }
 
         // Show error message
-        function showErrorMessage() {
-          const CarGrid = document.querySelector(".car-grid");
-          CarGrid.innerHTML = `
-      <div class="error-message" style="grid-column: 1 / -1; text-align: center; padding: 60px 20px;">
-        <i class="fas fa-exclamation-triangle" style="font-size: 4rem; color: #ff6b00; margin-bottom: 20px;"></i>
-        <h3 style="color: #666; margin-bottom: 10px;">Failed to Load Cars</h3>
-        <p style="color: #999; margin-bottom: 20px;">Please check your connection and try again.</p>
-        <button onclick="location.reload()" style="background: #ff6b00; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
-          Retry
-        </button>
-      </div>
-    `;
-        }
+        /* Duplicate showErrorMessage removed to avoid shadowing the message-taking version defined earlier. */
 
         // Update Car count
         function updateCarCount(count) {
@@ -2467,8 +2495,11 @@
           return urlParams.get("search")?.toLowerCase() || "";
         }
 
+        
+
+        // Apply sorting and update count before displaying
         function applyAllFilters() {
-          const filteredCars = allCars.filter((car) => {
+          let filteredCars = allCars.filter((car) => {
             const price = car.sellingPrice || 0;
             const year = car.modelYear || new Date().getFullYear();
             const km = car.kmDriven || 0;
@@ -2481,38 +2512,39 @@
               price <= currentFilters.maxPrice;
             const yearMatch =
               year >= currentFilters.minYear && year <= currentFilters.maxYear;
-            const kmMatch =
-              km >= currentFilters.minKm && km <= currentFilters.maxKm;
+            const kmMatch = km >= currentFilters.minKm && km <= currentFilters.maxKm;
             const brandMatch =
               !currentFilters.make ||
               car.make
                 .toLowerCase()
                 .includes(currentFilters.make.toLowerCase());
 
-            const ownerMatch =
-              !currentFilters.owner || owner.includes(currentFilters.owner);
-            const fuelMatch =
-              !currentFilters.fuel || fuel === currentFilters.fuel;
+            const ownerMatch = !currentFilters.owner || owner.includes(currentFilters.owner);
+            const fuelMatch = !currentFilters.fuel || fuel === currentFilters.fuel;
 
-            const isMatch =
-              priceMatch &&
-              yearMatch &&
-              kmMatch &&
-              brandMatch &&
-              ownerMatch &&
-              fuelMatch;
-
-            return isMatch;
+            return priceMatch && yearMatch && kmMatch && brandMatch && ownerMatch && fuelMatch;
           });
+
+          // Sort using currentSort (ensure use of sellingPrice)
+          try {
+            filteredCars = sortCars(
+              filteredCars,
+              currentSort
+            ).map((c) => c);
+          } catch (e) {
+            console.warn('sortCars failed', e);
+          }
+
+          updateCarCount(filteredCars.length);
           displayCars(filteredCars);
         }
 
         function sortCars(Cars, sortType) {
           switch (sortType) {
             case "price-low":
-              return [...Cars].sort((a, b) => (a.price || 0) - (b.price || 0));
+              return [...Cars].sort((a, b) => (a.sellingPrice || 0) - (b.sellingPrice || 0));
             case "price-high":
-              return [...Cars].sort((a, b) => (b.price || 0) - (a.price || 0));
+              return [...Cars].sort((a, b) => (b.sellingPrice || 0) - (a.sellingPrice || 0));
             case "year-new":
               return [...Cars].sort(
                 (a, b) => (b.modelYear || 0) - (a.modelYear || 0)

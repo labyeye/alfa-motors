@@ -230,26 +230,25 @@
   bottom: -18px;
   left: 50%;
   transform: translateX(-50%);
-  background: #ff8a00;
+  background: var(--primary-color);
   color: #fff;
-  font-size: 14px;
+  font-size: 8px;
   line-height: 1;
   padding: 8px 14px;
   border-radius: 999px;
-  border: 4px solid #fff;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-  min-width: 88px;
+  min-width: 8px;
+  height: 10px;
   text-align: center;
   font-weight: 700;
   z-index: 20; /* ensure badge is above the logo image */
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
 }
 
 .brand-logo .brand-count .count-number {
-  font-size: 18px;
+  font-size: 12px;
   line-height: 1;
 }
 
