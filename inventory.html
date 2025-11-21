@@ -1228,17 +1228,11 @@
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         // API Configuration - update this for production
-        const API_BASE_URL =
-          window.location.hostname === "localhost"
-            ? "https://alfa-motors-5yfh.vercel.app"
-            : "https://alfa-motors-5yfh.vercel.app"; // Replace with your Vercel backend URL
+        const API_BASE_URL = "https://alfa-motors-5yfh.vercel.app"; 
 
         // Image base: in production use the public Xozz/DirectAdmin folder (/car-images)
         // In development, fall back to the backend static route that serves /carimages
-        const IMAGE_BASE =
-          window.location.hostname === "localhost"
-            ? `${API_BASE_URL}/carimages`
-            : `${window.location.protocol}//${window.location.hostname}/car-images`;
+        const IMAGE_BASE = `${API_BASE_URL}/carimages`;
 
         // Helper function to get the correct image URL
         // After migrating photos to Cloudinary this should mainly return absolute URLs.
@@ -1332,7 +1326,9 @@
 
         function loadCars() {
           // Use the SQL-backed API endpoint
-          fetch(`${API_BASE_URL}/api/cars`)
+          // Add a timestamp and no-store cache to avoid 304 Not Modified empty responses from the backend
+          const carsUrl = `${API_BASE_URL}/api/cars?ts=${Date.now()}`;
+          fetch(carsUrl, { cache: "no-store", headers: { Accept: "application/json" } })
             .then((response) => {
               if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
