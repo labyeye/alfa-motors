@@ -53,7 +53,7 @@
       title="Sitemap"
       href="/sitemap.xml"
     />
-    <link rel="canonical" href="https://www.alfamotorworld.com" />
+    <link rel="canonical" href="https://www.alfamotorworld.com/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Alfa Motors World" />
     <meta property="og:locale" content="en_IN" />
@@ -229,7 +229,21 @@
         "description": "Certified pre-owned cars and motorcycles across India with inspection reports and warranty.",
         "potentialAction": {
           "@type": "SearchAction",
-          "target": "https://www.alfamotorworld.com/https://www.alfamotorworld.com/inventory.html?search={search_term_string}",
+          "target": "https://www.alfamotorworld.com/inventory.html?search={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "url": "https://www.alfamotorworld.com/",
+        "name": "Alfa Motors World",
+        "description": "Certified pre-owned cars and motorcycles across India with inspection reports and warranty.",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://www.alfamotorworld.com/inventory.html?search={search_term_string}",
           "query-input": "required name=search_term_string"
         }
       }
@@ -249,7 +263,7 @@
             "@type": "ListItem",
             "position": 2,
             "name": "Inventory",
-            "item": "https://www.alfamotorworld.com/https://www.alfamotorworld.com/inventory.html"
+            "item": "https://www.alfamotorworld.com/inventory.html"
           }
         ]
       }
