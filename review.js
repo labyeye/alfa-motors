@@ -271,8 +271,17 @@
 
         const h3 = document.createElement("h3");
         h3.className = "user-name";
-        h3.setAttribute("itemprop", "author");
-        h3.textContent = reviewerName;
+
+        // Structured data: author should be a Person object, not a plain string.
+        const authorScope = document.createElement("span");
+        authorScope.setAttribute("itemprop", "author");
+        authorScope.setAttribute("itemscope", "");
+        authorScope.setAttribute("itemtype", "https://schema.org/Person");
+        const authorName = document.createElement("span");
+        authorName.setAttribute("itemprop", "name");
+        authorName.textContent = reviewerName;
+        authorScope.appendChild(authorName);
+        h3.appendChild(authorScope);
 
         const loc = document.createElement("p");
         loc.className = "user-location";
@@ -305,9 +314,15 @@
         footer.appendChild(proof);
 
         // metadata
-        const metaReviewed = document.createElement("meta");
-        metaReviewed.setAttribute("itemprop", "itemReviewed");
-        metaReviewed.content = "Alfa Motors World";
+        // itemReviewed must be an object (Thing) — represent as Organization with a name
+        const reviewedDiv = document.createElement("div");
+        reviewedDiv.setAttribute("itemprop", "itemReviewed");
+        reviewedDiv.setAttribute("itemscope", "");
+        reviewedDiv.setAttribute("itemtype", "https://schema.org/Organization");
+        const reviewedName = document.createElement("meta");
+        reviewedName.setAttribute("itemprop", "name");
+        reviewedName.content = "Alfa Motors World";
+        reviewedDiv.appendChild(reviewedName);
 
         const metaDate = document.createElement("meta");
         metaDate.setAttribute("itemprop", "datePublished");
