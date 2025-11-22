@@ -962,3 +962,68 @@ body {
   .other-cars-btn.prev { left: 8px; }
   .other-cars-btn.next { right: 8px; }
 }
+
+/* Loading overlay for Other Cars */
+.other-cars-overlay {
+  /* Full viewport overlay so it covers entire screen rather than just the section */
+  position: fixed;
+  inset: 0;
+  display: none; /* controlled by JS */
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.92);
+  z-index: 100000;
+  pointer-events: auto; /* block interactions while loading */
+  flex-direction: column;
+  gap: 10px;
+  text-align: center;
+}
+
+.other-cars-overlay .loader {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 4px solid rgba(15,23,42,0.12);
+  border-top-color: var(--primary-color);
+  animation: spin 1s linear infinite;
+}
+
+.other-cars-overlay .loader-text {
+  color: #0f172a;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Global fixed loading overlay (fallback) */
+.global-loading-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.92);
+  z-index: 100000 !important;
+  pointer-events: none;
+  flex-direction: column;
+  gap: 10px;
+  text-align: center;
+}
+
+.global-loading-overlay .loader {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 5px solid rgba(15,23,42,0.08);
+  border-top-color: var(--primary-color);
+  animation: spin 1s linear infinite;
+}
+
+.global-loading-overlay .loader-text {
+  color: #0f172a;
+  font-weight: 700;
+  font-size: 15px;
+}

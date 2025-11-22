@@ -273,32 +273,7 @@
               else if (/car/i.test(txt)) label = "Cars";
             }
 
-            document.querySelectorAll(".brand-logo").forEach((el) => {
-              const brandKey = el.dataset.brand || "";
-              const brandKeyNormalized = normalizeBrandKey(brandKey);
-              const count = counts[brandKeyNormalized] || 0;
-              let badge = el.querySelector(".brand-count");
-              if (count > 0) {
-                if (!badge) {
-                  badge = document.createElement("span");
-                  badge.className = "brand-count";
-                  el.appendChild(badge);
-                  console.debug(
-                    `updateBrandCounts: created badge for ${brandKey}`
-                  );
-                }
-                // Use two-line badge (number + label) to match bike-style UI
-                badge.innerHTML = `<div class="count-number">${count}</div><div class="count-label">${label}</div>`;
-                // Ensure badge is visible during debug
-                badge.style.display = "flex";
-              } else {
-                if (badge) badge.remove();
-                if (badge)
-                  console.debug(
-                    `updateBrandCounts: removed badge for ${brandKey}`
-                  );
-              }
-            });
+            
           } catch (err) {
             console.warn("error updating brand counts", err);
           }
@@ -989,6 +964,11 @@
             <!-- Placeholder div requested: only 'NA' shown after brand logos -->
             <div class="brand-na" aria-hidden="true">NA</div>
             <div class="car-grid"></div>
+            <!-- Static overlay element for loading state (matches vehicledetail spinner) -->
+            <div class="inventory-cars-overlay" style="display:none;" aria-hidden="true">
+              <div class="loader" aria-hidden="true"></div>
+              <div class="loader-text">Loading Cars</div>
+            </div>
           </div>
         </div>
       </section>
@@ -1347,11 +1327,51 @@
         };
         let currentSort = "default"; // Declare this ONCE at the top level
 
+        // Loading overlay helpers (mirror vehicledetail behaviour)
+        function hideInventoryLoading() {
+          try {
+            const ov = document.querySelector('.inventory-cars-overlay');
+            if (ov) ov.style.display = 'none';
+          } catch (e) {}
+        }
+
+        function showInventoryLoading(text = 'Loading Cars') {
+          try {
+            let ov = document.querySelector('.inventory-cars-overlay');
+            if (!ov) {
+              // If overlay is missing, try to attach it near the grid
+              const grid = document.querySelector('.car-grid');
+              if (grid && grid.parentNode) {
+                ov = document.createElement('div');
+                ov.className = 'inventory-cars-overlay';
+                ov.style.display = 'flex';
+                ov.innerHTML = '<div class="loader" aria-hidden="true"></div><div class="loader-text">' + text + '</div>';
+                grid.parentNode.appendChild(ov);
+              }
+            }
+            if (ov) {
+              ov.style.display = 'flex';
+              const txt = ov.querySelector('.loader-text');
+              if (txt) txt.textContent = text;
+            }
+          } catch (e) {}
+        }
+
+        function fetchWithTimeout(url, opts = {}, timeout = 8000) {
+          return Promise.race([
+            fetch(url, opts),
+            new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), timeout)),
+          ]);
+        }
+
         function loadCars() {
           // Use the SQL-backed API endpoint
           // Add a timestamp and no-store cache to avoid 304 Not Modified empty responses from the backend
           const carsUrl = `${API_BASE_URL}/api/cars?ts=${Date.now()}`;
-          fetch(carsUrl, { cache: "no-store", headers: { Accept: "application/json" } })
+          // show spinner while attempting to load
+          showInventoryLoading('Loading Cars');
+
+          fetchWithTimeout(carsUrl, { cache: "no-store", headers: { Accept: "application/json" } }, 8000)
             .then((response) => {
               if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -1359,6 +1379,8 @@
               return response.json();
             })
             .then((data) => {
+              // hide loader on success
+              hideInventoryLoading();
               console.debug('loadCars: raw response data=', data);
                 // Show a small debug panel when running on localhost to help diagnose data shape
                 
@@ -1405,7 +1427,8 @@
             })
             .catch((error) => {
               console.error("Error loading cars:", error);
-              showErrorMessage(`Failed to load cars: ${error.message}`);
+              // Keep the spinner visible to indicate backend didn't respond (mirrors vehicledetail behaviour)
+              try { showInventoryLoading('Loading Cars'); } catch (e) {}
             });
         }
 

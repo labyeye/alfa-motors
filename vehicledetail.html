@@ -314,6 +314,11 @@
       <div class="other-cars-section">
         <h2 class="other-cars-title">Other Cars You May Like</h2>
         <div class="other-cars-row" id="otherCarsRow"></div>
+        <!-- Static overlay element for loading state (CSS handles appearance) -->
+        <div class="other-cars-overlay" style="display:none;" aria-hidden="true">
+          <div class="loader" aria-hidden="true"></div>
+          <div class="loader-text">Loading Cars</div>
+        </div>
       </div>
     </div>
     <script>
@@ -521,12 +526,80 @@
         }
       )();
         // Fetch other cars from backend and show in slider (SQL endpoint)
-      fetch(`${API_BASE_URL}/api/cars`)
-        .then((response) => {
-          if (!response.ok) throw new Error(`HTTP ${response.status}`);
-          return response.json();
-        })
-        .then((data) => {
+      // Helper: show/hide a loading overlay for the other-cars section
+      function createOtherCarsOverlay() {
+        try {
+          const section = document.querySelector('.other-cars-section');
+          if (!section) return null;
+          let ov = section.querySelector('.other-cars-overlay');
+          if (!ov) {
+            ov = document.createElement('div');
+            ov.className = 'other-cars-overlay';
+            ov.innerHTML = '<div class="loader" aria-hidden="true"></div><div class="loader-text">Loading Cars</div>';
+            // ensure overlay doesn't get clipped and is positioned relative to the parent
+            section.style.overflow = 'visible';
+            // If the section has the default static position, set it to relative so absolute overlay aligns to it
+            try {
+              const pos = window.getComputedStyle(section).position;
+              if (!pos || pos === 'static') section.style.position = 'relative';
+            } catch (e) {}
+            section.appendChild(ov);
+          }
+          return ov;
+        } catch (e) { return null; }
+      }
+
+      function showOtherCarsLoading(text) {
+        let ov = createOtherCarsOverlay();
+        // fallback: create a global overlay appended to body so it's always visible
+        if (!ov) {
+          try {
+            ov = document.querySelector('.global-loading-overlay');
+            if (!ov) {
+              ov = document.createElement('div');
+              ov.className = 'global-loading-overlay';
+              ov.innerHTML = '<div class="loader" aria-hidden="true"></div><div class="loader-text">' + (text || 'Loading') + '</div>';
+              document.body.appendChild(ov);
+            }
+          } catch (e) { ov = null; }
+        }
+        if (!ov) return;
+        try {
+          const txt = ov.querySelector('.loader-text');
+          if (txt && text) txt.textContent = text;
+        } catch (e) {}
+        ov.style.display = 'flex';
+      }
+
+      function hideOtherCarsLoading() {
+        try {
+          const ov = document.querySelector('.other-cars-overlay');
+          if (ov) ov.style.display = 'none';
+        } catch (e) {}
+        try {
+          const gov = document.querySelector('.global-loading-overlay');
+          if (gov) gov.style.display = 'none';
+        } catch (e) {}
+      }
+
+      function fetchWithTimeout(url, opts = {}, timeout = 8000) {
+        return Promise.race([
+          fetch(url, opts),
+          new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), timeout)),
+        ]);
+      }
+
+      // Fetch other cars after DOM is ready so overlays can be created
+      function loadOtherCarsWithOverlay() {
+        try { showOtherCarsLoading('Loading Cars'); } catch (e) {}
+
+        fetchWithTimeout(`${API_BASE_URL}/api/cars`, {}, 8000)
+          .then((response) => {
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            return response.json();
+          })
+          .then((data) => {
+            hideOtherCarsLoading();
           // Support both response shapes: an array or { success, data }
           const cars = Array.isArray(data) ? data : (data && Array.isArray(data.data) ? data.data : []);
           const otherCarsRow = document.getElementById("otherCarsRow");
@@ -599,10 +672,13 @@
               otherCarsRow.appendChild(card);
               });
 
-              // Enable auto-scroll for other cars
-              enableAutoSlider();
-              // Ensure arrow buttons are attached after population
-              try { if (typeof addOtherCarsArrows === 'function') addOtherCarsArrows(); } catch (e) {}
+                // Enable auto-scroll for other cars
+                enableAutoSlider();
+                // Ensure arrow buttons are attached after population
+                try { if (typeof addOtherCarsArrows === 'function') addOtherCarsArrows(); } catch (e) {}
+            
+              // hide loader (already hidden on success) but keep safe
+              try { hideOtherCarsLoading(); } catch (e) {}
             // Translate newly added dynamic content to preferred language
             try {
               const preferred =
@@ -623,7 +699,19 @@
                 });
               }
             } catch (e) {}
-        });
+        })
+          .catch((err) => {
+            // keep the spinner visible and update the message
+            console.error('Error loading other cars:', err);
+            try { showOtherCarsLoading('Loading Cars'); } catch (e) {}
+          });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', loadOtherCarsWithOverlay);
+      } else {
+        loadOtherCarsWithOverlay();
+      }
 
       // Auto-scroll functionality
       function enableAutoSlider() {
