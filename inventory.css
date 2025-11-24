@@ -85,9 +85,8 @@
   margin: 0 15px;
 }
 
-
 .nav-links a::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 0;
   height: 2px;
@@ -136,7 +135,6 @@
   list-style: none;
   padding: 0;
 }
-
 
 .mobile-menu .login-btn {
   margin-top: auto;
@@ -222,7 +220,6 @@
   object-fit: contain;
   transition: all 0.2s ease;
 }
-
 
 .brand-logo:hover img,
 .brand-logo.active img {
@@ -406,7 +403,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255,255,255,0.92);
+  background: rgba(255, 255, 255, 0.92);
   z-index: 99990;
   pointer-events: none;
   flex-direction: column;
@@ -418,7 +415,7 @@
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  border: 4px solid rgba(15,23,42,0.12);
+  border: 4px solid rgba(15, 23, 42, 0.12);
   border-top-color: var(--primary-color);
   animation: spin 1s linear infinite;
 }
@@ -430,7 +427,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .price-container .price {
@@ -578,7 +577,7 @@
 
 .sidebar-filters {
   width: 300px;
-  padding-left: 20px;
+  padding-left: 0px;
   box-sizing: border-box;
 }
 
@@ -626,7 +625,6 @@
   border-color: var(--primary-color);
   color: white;
   padding: 12px 20px;
-
 }
 
 .filter-btn:hover {
@@ -769,7 +767,7 @@
   flex-grow: 1;
   padding-right: 20px;
   box-sizing: border-box;
-  width: calc(100% - 330px);
+  width: 80%;
 }
 
 .section-header {
@@ -848,10 +846,10 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  height:30px;
+  height: 30px;
   font-size: 12px;
-  color: #0D1B2A;
-  background-color: #ECEEF4;
+  color: #0d1b2a;
+  background-color: #eceef4;
   border-radius: 50px;
   word-break: break-word;
 }
@@ -1085,7 +1083,7 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 30px;
-  max-width: 1200px;
+  max-width: 1920px;
   margin: 0 auto;
 }
 
@@ -1105,13 +1103,17 @@ body {
 }
 
 .Car-card::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, rgba(163, 41, 25, 0.1) 0%, transparent 50%);
+  background: linear-gradient(
+    135deg,
+    rgba(163, 41, 25, 0.1) 0%,
+    transparent 50%
+  );
   z-index: -1;
 }
 
@@ -1148,7 +1150,7 @@ body {
 }
 
 .Car-card h3::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -8px;
   left: 0;
@@ -1200,10 +1202,10 @@ body {
   align-items: center;
   gap: 8px;
   background: #ffffff;
-  border: 1px solid rgba(15,23,42,0.06);
+  border: 1px solid rgba(15, 23, 42, 0.06);
   padding: 6px 10px;
   border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(15,23,42,0.03);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
 }
 
 /* Pill/badge styling for detail spans to match Cars24-like small boxes */
@@ -1230,7 +1232,7 @@ body {
   font-size: 13px;
   font-weight: 500;
   white-space: nowrap;
-  box-shadow: 0 1px 2px rgba(15,23,42,0.03);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
 }
 
 @media (max-width: 768px) {
@@ -1285,13 +1287,18 @@ body {
 }
 
 .Car-card button::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: left 0.7s ease;
 }
 
@@ -1438,7 +1445,6 @@ body {
 
 /* Mobile-specific improvements */
 @media (max-width: 768px) {
-
   /* Filter container adjustments */
   .filters-container {
     padding: 15px;
@@ -1554,7 +1560,6 @@ body {
 
 /* Extra small devices */
 @media (max-width: 480px) {
-
   /* Even smaller filter buttons */
   .filter-btn {
     padding: 8px 12px;
@@ -1653,7 +1658,9 @@ body {
 }
 
 /* Hide the top sort button visually; bottom-tab will still trigger sorting via JS */
-.sort-btn { display: none !important; }
+.sort-btn {
+  display: none !important;
+}
 
 .sort-btn:hover {
   background: #333;
@@ -1824,7 +1831,6 @@ body {
     flex: 1;
   }
 
-
   /* Mobile Filter Button */
   .mobile-filter-btn {
     display: none;
@@ -1874,7 +1880,7 @@ body {
 
   .bottom-tab {
     flex: 1 1 0;
-    background: #ECEEF4; /* requested button color */
+    background: #eceef4; /* requested button color */
     color: #0f172a; /* dark text for contrast */
     border: none;
     padding: 12px 14px;
@@ -1884,7 +1890,7 @@ body {
     justify-content: center;
     gap: 8px;
     font-size: 15px;
-    box-shadow: 0 6px 18px rgba(15,23,42,0.08);
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
   }
 
   .bottom-tab i {
@@ -1892,7 +1898,8 @@ body {
   }
 
   /* Make sure it doesn't overlap floating buttons too much */
-  .floating-buttons { /* existing selector, ensure top spacing */
+  .floating-buttons {
+    /* existing selector, ensure top spacing */
     margin-bottom: 100px;
   }
 }

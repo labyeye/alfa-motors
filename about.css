@@ -371,9 +371,6 @@
   text-align: center;
 }
 
-.values-section .section-header h2 {
-  color: white;
-}
 
 .values-section .section-header p {
   color: var(--light-gray);
@@ -409,7 +406,7 @@
   margin: 0 auto 20px;
   background: linear-gradient(
     135deg,
-    rgba(163, 41, 25, 0.2) 0%,
+    var(--primary-color) 0%,
     transparent 100%
   );
   border-radius: 50%;

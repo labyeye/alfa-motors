@@ -332,42 +332,23 @@
             <div class="mega-menu">
               <div class="mega-menu-content">
                 <div class="mega-menu-column">
-                  <h3>Categories</h3>
-                  <a
-                    href="https://www.alfamotorworld.com/inventory.html?category=suv"
-                    >SUV</a
-                  >
-                  <a
-                    href="https://www.alfamotorworld.com/inventory.html?category=sedan"
-                    >Sedan</a
-                  >
-                  <a
-                    href="https://www.alfamotorworld.com/inventory.html?category=hatchback"
-                    >Hatchback</a
-                  >
-                  <a
-                    href="https://www.alfamotorworld.com/inventory.html?category=luxury"
-                    >Luxury</a
-                  >
-                  <a
-                    href="https://www.alfamotorworld.com/inventory.html?category=electric"
-                    >Electric</a
-                  >
-                </div>
-                <div class="mega-menu-column">
                   <h3>Popular Brands</h3>
-                  <a
-                    href="https://www.alfamotorworld.com/inventory.html?brand=bmw"
-                    >BMW</a
-                  >
-                  <a
-                    href="https://www.alfamotorworld.com/inventory.html?brand=audi"
-                    >Audi</a
-                  >
-                  <a
-                    href="https://www.alfamotorworld.com/inventory.html?brand=mercedes"
-                    >Mercedes</a
-                  >
+                  <a href="https://www.alfamotorworld.com/inventory.html?brand=bmw">BMW</a>
+                  <a href="https://www.alfamotorworld.com/inventory.html?brand=audi">Audi</a>
+                  <a href="https://www.alfamotorworld.com/inventory.html?brand=mercedes">Mercedes</a>
+                  <a href="https://www.alfamotorworld.com/inventory.html?brand=toyota">Toyota</a>
+                  <a href="https://www.alfamotorworld.com/inventory.html?brand=honda">Honda</a>
+                  <a href="https://www.alfamotorworld.com/inventory.html?brand=hyundai">Hyundai</a>
+                  <a href="https://www.alfamotorworld.com/inventory.html?brand=kia">Kia</a>
+                  <a href="https://www.alfamotorworld.com/inventory.html?brand=ford">Ford</a>
+                  <a href="https://www.alfamotorworld.com/inventory.html?brand=nissan">Nissan</a>
+                  <a href="https://www.alfamotorworld.com/inventory.html?brand=volkswagen">Volkswagen</a>
+                  <a href="https://www.alfamotorworld.com/inventory.html?brand=volvo">Volvo</a>
+                  <a href="https://www.alfamotorworld.com/inventory.html?brand=skoda">Skoda</a>
+                  <a href="https://www.alfamotorworld.com/inventory.html?brand=tata">Tata</a>
+                  <a href="https://www.alfamotorworld.com/inventory.html?brand=mahindra">Mahindra</a>
+                  <a href="https://www.alfamotorworld.com/inventory.html?brand=porsche">Porsche</a>
+                  <a href="https://www.alfamotorworld.com/inventory.html?brand=jaguar">Jaguar</a>
                   <a
                     href="https://www.alfamotorworld.com/inventory.html?brand=toyota"
                     >Toyota</a
@@ -2139,6 +2120,9 @@
         }
         // Mobile filter functionality - creates bottom tab nav (Sort / Filters)
         function initMobileFilters() {
+          // Prevent initializing mobile-only UI on desktop widths
+          if (typeof window !== 'undefined' && window.innerWidth >= 480) return;
+
           // Mobile filters container and close button
           const mobileFiltersContainer = document.querySelector(
             ".mobile-filters-container"
@@ -3343,5 +3327,46 @@
         </div>
       </div>
     </div>
+    <script>
+      (function () {
+        // breakpoint for desktop mode - hide mobile-only UI when width >= 480px
+        const DESKTOP_BREAKPOINT = 480; // px
+
+        function toggleMobileFilters() {
+          const hide = window.innerWidth >= DESKTOP_BREAKPOINT;
+          const selectors = [
+            '.mobile-filters-container',
+            '.mobile-filters',
+            '.mobile-filters-inner',
+            '.close-filters-btn',
+            '.filter-btn',
+            '.filter-dropdown',
+            '.bottom-tab-nav'
+          ];
+
+          selectors.forEach((sel) => {
+            document.querySelectorAll(sel).forEach((el) => {
+              try {
+                // Only target mobile-specific containers — avoid hiding desktop filters by checking ancestor
+                // If the element is inside `.mobile-filters-container` then treat it as mobile-only
+                if (el.closest && el.closest('.mobile-filters-container')) {
+                  el.style.display = hide ? 'none' : '';
+                } else if (sel === '.mobile-filters-container') {
+                  el.style.display = hide ? 'none' : '';
+                }
+              } catch (e) {}
+            });
+          });
+        }
+
+        // Run on load and on resize
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', toggleMobileFilters);
+        } else {
+          toggleMobileFilters();
+        }
+        window.addEventListener('resize', toggleMobileFilters);
+      })();
+    </script>
   </body>
 </html>
