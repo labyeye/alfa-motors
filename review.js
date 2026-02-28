@@ -1,6 +1,6 @@
 // review.js - handles opening modal, collecting form data and submitting to backend
 (function () {
-  const API_BASE ="https://alfa-motors-5yfh.vercel.app/api/reviews";
+  const API_BASE ="https://alfa-motors-9bk6.vercel.app/api/reviews";
 
   function createModal() {
     if (document.getElementById("review-modal")) return;

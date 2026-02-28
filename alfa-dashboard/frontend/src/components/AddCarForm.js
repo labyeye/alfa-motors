@@ -33,7 +33,7 @@ const AddCarForm = () => {
 
   const getId = (obj) => (obj && (obj.id || obj._id)) || null;
 
-  const API_BASE = "https://alfa-motors-5yfh.vercel.app";
+  const API_BASE = "https://alfa-motors-9bk6.vercel.app";
 
   const handleChange = (e) => {
     const { name, value } = e.target;

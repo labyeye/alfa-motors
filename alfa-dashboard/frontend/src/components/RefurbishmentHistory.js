@@ -8,8 +8,8 @@ import { formatIndian } from "../utils/formatIndian";
 const API_BASE =
   window.API_BASE ||
   (window.location.hostname === "localhost"
-    ? "https://alfa-motors-5yfh.vercel.app"
-    : "https://alfa-motors-5yfh.vercel.app");
+    ? "https://alfa-motors-9bk6.vercel.app"
+    : "https://alfa-motors-9bk6.vercel.app");
 
 export default function RefurbishmentHistory() {
   const { user } = useContext(AuthContext);

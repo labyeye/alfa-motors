@@ -15,8 +15,8 @@ import Sidebar from "./Sidebar";
 const API_BASE = (function () {
   const host = window.location.hostname;
   if (host === "localhost" || host.startsWith("127."))
-    return "https://alfa-motors-5yfh.vercel.app";
-  return "https://alfa-motors-5yfh.vercel.app";
+    return "https://alfa-motors-9bk6.vercel.app";
+  return "https://alfa-motors-9bk6.vercel.app";
 })();
 
 const EditCar = () => {

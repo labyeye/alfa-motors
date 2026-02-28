@@ -399,7 +399,7 @@ function initializeCarSlider() {
 }
 
 // Simple API/image base for development: always use localhost:2500 unless overridden
-const API_BASE_URL =  "https://alfa-motors-5yfh.vercel.app";
+const API_BASE_URL =  "https://alfa-motors-9bk6.vercel.app";
 const IMAGE_BASE = `${API_BASE_URL}/carimages`;
 
 // Debug helpers (exposed to window for quick inspection in DevTools)

@@ -56,7 +56,7 @@ const RcEntryPage = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `https://alfa-motors-5yfh.vercel.app/api/rc/${id}`,
+        `https://alfa-motors-9bk6.vercel.app/api/rc/${id}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
@@ -158,7 +158,7 @@ const RcEntryPage = () => {
       };
 
       if (isEditMode && rcId) {
-        response = await fetch(`https://alfa-motors-5yfh.vercel.app/api/rc/${rcId}`, {
+        response = await fetch(`https://alfa-motors-9bk6.vercel.app/api/rc/${rcId}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -167,7 +167,7 @@ const RcEntryPage = () => {
           body: JSON.stringify(payload),
         });
       } else {
-        response = await fetch("https://alfa-motors-5yfh.vercel.app/api/rc", {
+        response = await fetch("https://alfa-motors-9bk6.vercel.app/api/rc", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -232,7 +232,7 @@ const RcEntryPage = () => {
     fd.append("pdf", pdfFile);
 
     try {
-      const response = await fetch(`https://alfa-motors-5yfh.vercel.app/api/rc/${id}/upload`, {
+      const response = await fetch(`https://alfa-motors-9bk6.vercel.app/api/rc/${id}/upload`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
@@ -279,7 +279,7 @@ const RcEntryPage = () => {
       return;
     }
     // otherwise assume it's a path on our server
-    const API_BASE = process.env.REACT_APP_API_BASE_URL || 'https://alfa-motors-5yfh.vercel.app';
+    const API_BASE = process.env.REACT_APP_API_BASE_URL || 'https://alfa-motors-9bk6.vercel.app';
     window.open(`${API_BASE}${url}`, '_blank');
   };
 

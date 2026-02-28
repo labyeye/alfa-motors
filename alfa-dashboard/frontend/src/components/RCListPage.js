@@ -246,7 +246,7 @@ const RcListPage = () => {
     },
   };
   const API_BASE_URL =
-    process.env.REACT_APP_API_BASE_URL || "https://alfa-motors-5yfh.vercel.app";
+    process.env.REACT_APP_API_BASE_URL || "https://alfa-motors-9bk6.vercel.app";
 
   useEffect(() => {
     const fetchRcEntries = async () => {
@@ -862,7 +862,7 @@ function handleViewPdf(record) {
     return;
   }
   const API_BASE =
-    process.env.REACT_APP_API_BASE_URL || "https://alfa-motors-5yfh.vercel.app";
+    process.env.REACT_APP_API_BASE_URL || "https://alfa-motors-9bk6.vercel.app";
   window.open(`${API_BASE}${url}`, "_blank");
 }
 export default RcListPage;

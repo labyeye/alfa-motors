@@ -21,8 +21,8 @@ import Sidebar from "./Sidebar";
 const API_BASE =
   window.API_BASE ||
   (window.location.hostname === "localhost"
-    ? "https://alfa-motors-5yfh.vercel.app"
-    : "https://alfa-motors-5yfh.vercel.app");
+    ? "https://alfa-motors-9bk6.vercel.app"
+    : "https://alfa-motors-9bk6.vercel.app");
 
 const SellLetterForm = () => {
   const [showLanguageModal, setShowLanguageModal] = useState(false);
@@ -736,7 +736,7 @@ const SellLetterForm = () => {
       setIsSaving(true);
 
       const existingLetter = await axios.get(
-        `https://alfa-motors-5yfh.vercel.app/api/sell-letters/by-registration?registrationNumber=${formData.registrationNumber}`,
+        `https://alfa-motors-9bk6.vercel.app/api/sell-letters/by-registration?registrationNumber=${formData.registrationNumber}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
