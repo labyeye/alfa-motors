@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { Car } = require("../models_sql/CarSQL");
+const { connectDB } = require("../db");
 const { protect } = require("../middleware/auth");
 const { upload } = require("../utils/multerMemory");
 const { uploadBufferToXOZZ } = require('../utils/xozzUpload');
@@ -99,12 +100,13 @@ router.get("/", async (req, res) => {
 // GET /api/cars/:id -> get single car
 router.get("/:id", async (req, res) => {
   try {
+    await connectDB();
     const car = await Car.findByPk(req.params.id);
     if (!car) return res.status(404).json({ message: "Car not found" });
     res.json(formatCarInstance(car));
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    console.error("[carSqlRoutes] GET /api/cars/:id error:", err.message || err);
+    res.status(500).json({ message: "Server error", error: err.message || String(err) });
   }
 });
 
@@ -112,6 +114,7 @@ router.get("/:id", async (req, res) => {
 // Create new car (supports multipart file upload)
 router.post("/", protect, upload.array("photos", 12), async (req, res) => {
   try {
+    await connectDB();
     let photoPaths = [];
     if (req.files && req.files.length) {
       const uploaded = [];
@@ -154,6 +157,7 @@ router.post("/", protect, upload.array("photos", 12), async (req, res) => {
 // PUT /api/cars/:id -> update car
 router.put("/:id", protect, async (req, res) => {
   try {
+    await connectDB();
     const car = await Car.findByPk(req.params.id);
     if (!car) return res.status(404).json({ message: "Car not found" });
   // sanitize numeric fields in incoming update payload
@@ -169,6 +173,7 @@ router.put("/:id", protect, async (req, res) => {
 // DELETE /api/cars/:id -> delete car
 router.delete("/:id", async (req, res) => {
   try {
+    await connectDB();
     const car = await Car.findByPk(req.params.id);
     if (!car) return res.status(404).json({ message: "Car not found" });
     await car.destroy();
