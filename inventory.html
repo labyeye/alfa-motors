@@ -27,7 +27,7 @@
       href="https://www.alfamotorworld.com/inventory.html"
       hreflang="hi"
     />
-    <link rel="preconnect" href="https://alfa-motors-9bk6.vercel.app" crossorigin />
+    <link rel="preconnect" href="http://localhost:2500" crossorigin />
     <link
       rel="preconnect"
       href="https://alfa-motors-o5cm.vercel.app"
@@ -611,24 +611,24 @@
                       <input
                         type="range"
                         id="year-min"
-                        min="2015"
-                        max="2024"
-                        value="2015"
+                        min="2000"
+                        max="2026"
+                        value="2000"
                         step="1"
                       />
                       <input
                         type="range"
                         id="year-max"
-                        min="2015"
-                        max="2024"
-                        value="2024"
+                        min="2000"
+                        max="2026"
+                        value="2026"
                         step="1"
                       />
                     </div>
                     <div class="year-values">
-                      <span id="year-min-value">2015</span>
+                      <span id="year-min-value">2000</span>
                       <span>to</span>
-                      <span id="year-max-value">2024</span>
+                      <span id="year-max-value">2026</span>
                     </div>
                   </div>
                 </div>
@@ -649,23 +649,23 @@
                         type="range"
                         id="km-min"
                         min="0"
-                        max="50000"
+                        max="200000"
                         value="0"
-                        step="500"
+                        step="1000"
                       />
                       <input
                         type="range"
                         id="km-max"
                         min="0"
-                        max="50000"
-                        value="50000"
-                        step="500"
+                        max="200000"
+                        value="200000"
+                        step="1000"
                       />
                     </div>
                     <div class="km-values">
                       <span id="km-min-value">0</span>
                       <span>to</span>
-                      <span id="km-max-value">50,000</span>
+                      <span id="km-max-value">2,00,000</span>
                       <span>km</span>
                     </div>
                   </div>
@@ -716,17 +716,57 @@
           </div>
           <div class="car-grid-container">
             <div class="section-header">
-              <div class="search-container">
+              <!-- Search bar -->
+              <div class="search-sort-row">
                 <div class="search-box">
                   <input
                     type="text"
                     id="inventory-search"
-                    placeholder="Search Cars by brand or model..."
+                    placeholder="Search by brand, model or year..."
                   />
                   <button id="search-btn"><i class="fas fa-search"></i></button>
                 </div>
+                <!-- Desktop sort dropdown (hidden on mobile) -->
+                <div class="sort-dropdown desktop-sort-only">
+                  <button class="sort-btn" id="sort-btn-main">
+                    <i class="fas fa-sort-amount-down"></i>
+                    <span id="sort-text">Sort</span>
+                    <i class="fas fa-chevron-down"></i>
+                  </button>
+                  <div class="sort-options" id="sort-options-main">
+                    <button class="sort-option" data-sort="default">Relevance</button>
+                    <button class="sort-option" data-sort="price-low">Price: Low to High</button>
+                    <button class="sort-option" data-sort="price-high">Price: High to Low</button>
+                    <button class="sort-option" data-sort="year-new">Year: Newest First</button>
+                    <button class="sort-option" data-sort="year-old">Year: Oldest First</button>
+                    <button class="sort-option" data-sort="km-low">KM: Lowest First</button>
+                  </div>
+                </div>
               </div>
-              <h2 id="filtered-count">0 Cars Available</h2>
+
+              <!-- Cars24-style horizontal filter pill strip (mobile only) -->
+              <div class="c24-pill-strip" id="c24-pill-strip">
+                <div class="c24-pills-scroll">
+                  <button class="c24-pill c24-pill-icon" id="c24-filter-pill">
+                    <i class="fas fa-sliders-h"></i> Filters
+                    <span class="c24-badge" id="c24-badge" style="display:none">0</span>
+                    <i class="fas fa-chevron-down c24-chevron"></i>
+                  </button>
+                  <button class="c24-pill" id="c24-sort-pill">
+                    <i class="fas fa-sort-amount-down"></i>
+                    <span id="c24-sort-label">Sort by</span>
+                    <i class="fas fa-chevron-down c24-chevron"></i>
+                  </button>
+                  <button class="c24-pill" data-c24="brand" id="c24-brand-pill">Make &amp; Model <i class="fas fa-chevron-down c24-chevron"></i></button>
+                  <button class="c24-pill" data-c24="price" id="c24-budget-pill">Budget <i class="fas fa-chevron-down c24-chevron"></i></button>
+                  <button class="c24-pill" data-c24="year" id="c24-year-pill">Year <i class="fas fa-chevron-down c24-chevron"></i></button>
+                  <button class="c24-pill" data-c24="fuel" id="c24-fuel-pill">Fuel <i class="fas fa-chevron-down c24-chevron"></i></button>
+                  <button class="c24-pill" data-c24="owner" id="c24-owner-pill">Ownership <i class="fas fa-chevron-down c24-chevron"></i></button>
+                </div>
+                <!-- Active filter chips (shown when filters are applied) -->
+                <div class="c24-active-chips" id="c24-active-chips"></div>
+              </div>
+
             </div>
             <div class="brand-logos-container">
               <div class="brand-logos">
@@ -1190,7 +1230,7 @@
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         // API Configuration - update this for production
-        const API_BASE_URL = "https://alfa-motors-9bk6.vercel.app"; 
+        const API_BASE_URL = "http://localhost:2500"; 
 
         // Image base: in production use the public Xozz/DirectAdmin folder (/car-images)
         // In development, fall back to the backend static route that serves /carimages
@@ -1296,12 +1336,13 @@
           make: null,
           minPrice: 0,
           maxPrice: Infinity,
-          minYear: 0,
-          maxYear: 2024,
+          minYear: 2000,
+          maxYear: 2026,
           minKm: 0,
           maxKm: Infinity,
           owner: null,
           fuel: null,
+          search: "",
         };
         let currentSort = "default"; // Declare this ONCE at the top level
 
@@ -1431,35 +1472,41 @@
 
         // Initialize sort dropdown function - moved to top level
         function initSortDropdown() {
-          const sortBtn = document.querySelector(".sort-btn");
-          const sortOptions = document.querySelector(".sort-options");
+          const sortBtn = document.getElementById("sort-btn-main");
+          const sortOptions = document.getElementById("sort-options-main");
 
           if (!sortBtn || !sortOptions) return; // Safety check
 
           sortBtn.addEventListener("click", function (e) {
             e.stopPropagation();
-            sortOptions.style.display =
-              sortOptions.style.display === "block" ? "none" : "block";
+            const isOpen = sortOptions.style.display === "block";
+            sortOptions.style.display = isOpen ? "none" : "block";
+            sortBtn.classList.toggle("active", !isOpen);
           });
 
           document.addEventListener("click", function (e) {
             if (!e.target.closest(".sort-dropdown")) {
               sortOptions.style.display = "none";
+              sortBtn.classList.remove("active");
             }
           });
 
-          document.querySelectorAll(".sort-option").forEach((option) => {
+          sortOptions.querySelectorAll(".sort-option").forEach((option) => {
             option.addEventListener("click", function () {
               const sortType = this.dataset.sort;
-              currentSort = sortType; // This now references the top-level variable
+              currentSort = sortType;
+
+              // Update active state
+              sortOptions.querySelectorAll(".sort-option").forEach((o) => o.classList.remove("active"));
+              this.classList.add("active");
 
               // Update the sort button text
-              document.getElementById(
-                "sort-text"
-              ).textContent = `Sort: ${this.textContent}`;
+              const sortTextEl = document.getElementById("sort-text");
+              if (sortTextEl) sortTextEl.textContent = this.textContent;
 
               // Close the dropdown
               sortOptions.style.display = "none";
+              sortBtn.classList.remove("active");
 
               // Apply filters with new sorting
               applyAllFilters();
@@ -1902,9 +1949,8 @@
 
         // Update Car count
         function updateCarCount(count) {
-          document.getElementById("filtered-count").textContent = `${count} ${
-            count === 1 ? "Car" : "Cars"
-          } Available`;
+          const el = document.getElementById("filtered-count");
+          if (el) el.textContent = `${count} ${count === 1 ? "Car" : "Cars"} Available`;
         }
 
         // Filter functionality
@@ -1931,9 +1977,11 @@
 
               // If "All Cars" was clicked
               if (filterType === "all") {
+                currentSort = "default";
+                const sortTextEl = document.getElementById("sort-text");
+                if (sortTextEl) sortTextEl.textContent = "Sort";
                 resetFilters();
-                displayCars(allCars);
-                updateCarCount(allCars.length);
+                applyAllFilters();
                 return;
               }
 
@@ -2063,8 +2111,11 @@
             minPriceInput.addEventListener("input", applyPriceFilter);
             maxPriceInput.addEventListener("input", applyPriceFilter);
 
-            document.querySelectorAll(".price-preset").forEach((preset) => {
+            // Only match the desktop sidebar presets (not mobile)
+            document.querySelectorAll("#price-dropdown .price-preset").forEach((preset) => {
               preset.addEventListener("click", function () {
+                document.querySelectorAll("#price-dropdown .price-preset").forEach((p) => p.classList.remove("active"));
+                this.classList.add("active");
                 minPriceInput.value = this.dataset.min;
                 maxPriceInput.value = this.dataset.max || "";
                 applyPriceFilter();
@@ -2078,36 +2129,20 @@
           const searchInput = document.getElementById("inventory-search");
           const searchBtn = document.getElementById("search-btn");
 
-          // Handle search button click
-          searchBtn.addEventListener("click", () => {
-            const searchTerm = searchInput.value.trim();
-            if (searchTerm) {
-              // Update URL with search parameter
-              window.history.pushState(
-                {},
-                "",
-                `https://www.alfamotorworld.com/inventory.html?search=${encodeURIComponent(
-                  searchTerm
-                )}`
-              );
-              applyAllFilters();
-            }
-          });
+          function doSearch() {
+            currentFilters.search = searchInput.value.trim().toLowerCase();
+            applyAllFilters();
+          }
 
+          // Live search on every keystroke
+          searchInput.addEventListener("input", doSearch);
+
+          // Handle search button click
+          searchBtn.addEventListener("click", doSearch);
+
+          // Enter key
           searchInput.addEventListener("keypress", (e) => {
-            if (e.key === "Enter") {
-              const searchTerm = searchInput.value.trim();
-              if (searchTerm) {
-                window.history.pushState(
-                  {},
-                  "",
-                  `https://www.alfamotorworld.com/inventory.html?search=${encodeURIComponent(
-                    searchTerm
-                  )}`
-                );
-                applyAllFilters();
-              }
-            }
+            if (e.key === "Enter") doSearch();
           });
 
           // Check for search term in URL on page load
@@ -2115,283 +2150,507 @@
           const searchTerm = urlParams.get("search");
           if (searchTerm) {
             searchInput.value = searchTerm;
+            currentFilters.search = searchTerm.toLowerCase();
             applyAllFilters();
           }
         }
-        // Mobile filter functionality - creates bottom tab nav (Sort / Filters)
+        // ================================================================
+        // AMAZON-STYLE MOBILE FILTER / SORT — Bottom Sheet Implementation
+        // ================================================================
         function initMobileFilters() {
-          // Prevent initializing mobile-only UI on desktop widths
-          if (typeof window !== 'undefined' && window.innerWidth >= 480) return;
+          // Only mount mobile UI on tablet/phone (≤ 768px)
+          // We use CSS to show/hide .mob-bottom-bar, but we still need to
+          // wire up JS regardless of current width so resize works.
 
-          // Mobile filters container and close button
-          const mobileFiltersContainer = document.querySelector(
-            ".mobile-filters-container"
-          );
-          const closeFiltersBtn = document.querySelector(".close-filters-btn");
+          /* ---- helpers ---- */
+          function openSheet(sheetEl) {
+            sheetEl.classList.add("open");
+            sheetEl.setAttribute("aria-hidden", "false");
+            document.body.style.overflow = "hidden";
+          }
+          function closeSheet(sheetEl) {
+            sheetEl.classList.remove("open");
+            sheetEl.setAttribute("aria-hidden", "true");
+            document.body.style.overflow = "";
+          }
 
-          // Create bottom tab navigation for mobile
-          const bottomNav = document.createElement("div");
-          bottomNav.className = "bottom-tab-nav";
-          bottomNav.innerHTML = `
-            <button class="bottom-tab bottom-tab-sort" aria-label="Sort">
-              <i class="fas fa-sort-amount-down"></i>
-              <span>Sort</span>
-            </button>
-            <button class="bottom-tab bottom-tab-filter" aria-label="Filters">
-              <i class="fas fa-filter"></i>
-              <span>Filters</span>
-            </button>
-          `;
-          document.body.appendChild(bottomNav);
+          /* ---- elements ---- */
+          const sortSheet    = document.getElementById("mob-sort-sheet");
+          const filterSheet  = document.getElementById("mob-filter-sheet");
+          const sortOpenBtn  = document.getElementById("mob-sort-btn");
+          const filterOpenBtn= document.getElementById("mob-filter-btn");
+          const sortClose    = document.getElementById("mob-sort-close");
+          const filterClose  = document.getElementById("mob-filter-close");
+          const sortBackdrop = document.getElementById("mob-sort-backdrop");
+          const filterBackdrop = document.getElementById("mob-filter-backdrop");
+          const applyBtn     = document.getElementById("mob-filter-apply");
+          const clearBtn     = document.getElementById("mob-filter-clear");
+          const badge        = document.getElementById("mob-filter-badge");
 
-          const sortBtn = document.querySelector(".sort-btn");
-          const bottomSort = bottomNav.querySelector(".bottom-tab-sort");
-          const bottomFilter = bottomNav.querySelector(".bottom-tab-filter");
+          if (!sortSheet || !filterSheet) return; // HTML not present
 
-          if (bottomSort && sortBtn) {
-            bottomSort.addEventListener("click", function () {
-              // Trigger the existing sort button to open options
-              sortBtn.click();
+          /* ---- open / close wiring ---- */
+          sortOpenBtn.addEventListener("click",  () => { openSheet(sortSheet);   syncSortUI(); });
+          filterOpenBtn.addEventListener("click",() => { openSheet(filterSheet); syncFilterUI(); });
+          sortClose.addEventListener("click",    () => closeSheet(sortSheet));
+          filterClose.addEventListener("click",  () => closeSheet(filterSheet));
+          sortBackdrop.addEventListener("click",  () => closeSheet(sortSheet));
+          filterBackdrop.addEventListener("click",() => closeSheet(filterSheet));
+
+          /* ---- SORT SHEET ---- */
+          function syncSortUI() {
+            document.querySelectorAll(".mob-sort-opt").forEach((btn) => {
+              btn.classList.toggle("active", btn.dataset.sort === currentSort);
             });
           }
 
-          if (bottomFilter && mobileFiltersContainer && closeFiltersBtn) {
-            bottomFilter.addEventListener("click", function () {
-              mobileFiltersContainer.style.display = "block";
-              document.body.style.overflow = "hidden";
+          document.querySelectorAll(".mob-sort-opt").forEach((btn) => {
+            btn.addEventListener("click", function () {
+              currentSort = this.dataset.sort;
+              syncSortUI();
+              sortCars();
+              renderCars(filteredCars);
+              closeSheet(sortSheet);
+              // Also sync desktop sort dropdown active state
+              document.querySelectorAll("#sort-options-main .sort-option").forEach((o) => {
+                o.classList.toggle("active", o.dataset.sort === currentSort);
+              });
             });
+          });
 
-            closeFiltersBtn.addEventListener("click", function () {
-              mobileFiltersContainer.style.display = "none";
-              document.body.style.overflow = "";
+          /* ---- FILTER SHEET — category switching ---- */
+          const catBtns = document.querySelectorAll(".mob-cat-btn");
+          const panes   = document.querySelectorAll(".mob-filter-pane");
+
+          catBtns.forEach((btn) => {
+            btn.addEventListener("click", function () {
+              catBtns.forEach((b) => b.classList.remove("active"));
+              this.classList.add("active");
+              const cat = this.dataset.cat;
+              panes.forEach((p) => {
+                p.style.display = p.id === "mob-pane-" + cat ? "" : "none";
+              });
             });
+          });
 
-            mobileFiltersContainer.addEventListener("click", function (e) {
-              if (e.target === mobileFiltersContainer) {
-                mobileFiltersContainer.style.display = "none";
-                document.body.style.overflow = "";
+          /* ---- PRICE ---- */
+          const mobMinPrice = document.getElementById("mob-min-price");
+          const mobMaxPrice = document.getElementById("mob-max-price");
+
+          // Store pending price edits (applied only on "Apply Filters")
+          let pendingMinPrice = currentFilters.minPrice || 0;
+          let pendingMaxPrice = currentFilters.maxPrice === Infinity ? "" : (currentFilters.maxPrice || "");
+
+          function syncPriceInputs() {
+            mobMinPrice.value = currentFilters.minPrice > 0 ? currentFilters.minPrice : "";
+            mobMaxPrice.value = currentFilters.maxPrice === Infinity ? "" : currentFilters.maxPrice || "";
+          }
+
+          document.querySelectorAll(".mob-price-preset").forEach((preset) => {
+            preset.addEventListener("click", function () {
+              document.querySelectorAll(".mob-price-preset").forEach((p) => p.classList.remove("active"));
+              this.classList.add("active");
+              mobMinPrice.value = this.dataset.min || "";
+              mobMaxPrice.value = this.dataset.max || "";
+            });
+          });
+
+          /* ---- BRAND CHIPS ---- */
+          document.querySelectorAll("#mob-brand-chips .mob-chip").forEach((chip) => {
+            chip.addEventListener("click", function () {
+              const brand = this.dataset.brand;
+              const already = currentFilters.make === brand;
+              // Allow only one brand at a time (toggle off if same)
+              document.querySelectorAll("#mob-brand-chips .mob-chip").forEach((c) => c.classList.remove("active"));
+              if (!already) {
+                this.classList.add("active");
+                currentFilters.make = brand;
+              } else {
+                currentFilters.make = null;
               }
             });
+          });
+
+          /* ---- YEAR RANGE ---- */
+          const mobYearMin     = document.getElementById("mob-year-min");
+          const mobYearMax     = document.getElementById("mob-year-max");
+          const mobYearMinDisp = document.getElementById("mob-year-min-disp");
+          const mobYearMaxDisp = document.getElementById("mob-year-max-disp");
+
+          function updateYearDisp() {
+            mobYearMinDisp.textContent = mobYearMin.value;
+            mobYearMaxDisp.textContent = mobYearMax.value;
           }
 
-          // Initialize mobile filter controls
-          initMobilePriceFilter();
-          initMobileBrandFilter();
-          initMobileYearFilter();
-          initMobileKmFilter();
-          initMobileOwnerFilter();
-          initMobileFuelFilter();
+          mobYearMin.addEventListener("input", function () {
+            if (parseInt(this.value) > parseInt(mobYearMax.value)) this.value = mobYearMax.value;
+            updateYearDisp();
+          });
+          mobYearMax.addEventListener("input", function () {
+            if (parseInt(this.value) < parseInt(mobYearMin.value)) this.value = mobYearMin.value;
+            updateYearDisp();
+          });
+
+          /* ---- KM RANGE ---- */
+          const mobKmMin     = document.getElementById("mob-km-min");
+          const mobKmMax     = document.getElementById("mob-km-max");
+          const mobKmMinDisp = document.getElementById("mob-km-min-disp");
+          const mobKmMaxDisp = document.getElementById("mob-km-max-disp");
+
+          function fmtKm(v) { return parseInt(v).toLocaleString("en-IN"); }
+
+          function updateKmDisp() {
+            mobKmMinDisp.textContent = fmtKm(mobKmMin.value);
+            const maxVal = parseInt(mobKmMax.value);
+            mobKmMaxDisp.textContent = maxVal >= 200000 ? "2,00,000+" : fmtKm(maxVal);
+          }
+
+          mobKmMin.addEventListener("input", function () {
+            if (parseInt(this.value) > parseInt(mobKmMax.value)) this.value = mobKmMax.value;
+            updateKmDisp();
+          });
+          mobKmMax.addEventListener("input", function () {
+            if (parseInt(this.value) < parseInt(mobKmMin.value)) this.value = mobKmMin.value;
+            updateKmDisp();
+          });
+
+          /* ---- OWNERSHIP CHIPS ---- */
+          document.querySelectorAll("#mob-owner-chips .mob-chip").forEach((chip) => {
+            chip.addEventListener("click", function () {
+              const owner = this.dataset.owner;
+              const already = currentFilters.owner === owner;
+              document.querySelectorAll("#mob-owner-chips .mob-chip").forEach((c) => c.classList.remove("active"));
+              if (!already) {
+                this.classList.add("active");
+                currentFilters.owner = owner;
+              } else {
+                currentFilters.owner = null;
+              }
+            });
+          });
+
+          /* ---- FUEL CHIPS ---- */
+          document.querySelectorAll("#mob-fuel-chips .mob-chip").forEach((chip) => {
+            chip.addEventListener("click", function () {
+              const fuel = this.dataset.fuel;
+              const already = currentFilters.fuel === fuel;
+              document.querySelectorAll("#mob-fuel-chips .mob-chip").forEach((c) => c.classList.remove("active"));
+              if (!already) {
+                this.classList.add("active");
+                currentFilters.fuel = fuel;
+              } else {
+                currentFilters.fuel = null;
+              }
+            });
+          });
+
+          /* ---- APPLY button ---- */
+          applyBtn.addEventListener("click", function () {
+            // Commit price
+            const minP = mobMinPrice.value;
+            const maxP = mobMaxPrice.value;
+            currentFilters.minPrice = minP !== "" ? parseInt(minP) : 0;
+            currentFilters.maxPrice = maxP !== "" ? parseInt(maxP) : Infinity;
+
+            // Commit year
+            currentFilters.minYear = parseInt(mobYearMin.value);
+            currentFilters.maxYear = parseInt(mobYearMax.value);
+
+            // Commit km
+            currentFilters.minKm = parseInt(mobKmMin.value);
+            currentFilters.maxKm = parseInt(mobKmMax.value) >= 200000 ? Infinity : parseInt(mobKmMax.value);
+
+            // brand / owner / fuel already written on chip click
+            applyAllFilters();
+            updateBadge();
+            closeSheet(filterSheet);
+          });
+
+          /* ---- CLEAR button ---- */
+          clearBtn.addEventListener("click", function () {
+            resetFilters();
+            applyAllFilters();
+            // Reset sheet UI
+            syncFilterUI();
+            updateBadge();
+            if (typeof window.updateC24Pills === "function") window.updateC24Pills();
+          });
+
+          /* ---- Badge counter (active filter count) ---- */
+          function updateBadge() {
+            let count = 0;
+            if (currentFilters.minPrice > 0 || currentFilters.maxPrice < Infinity) count++;
+            if (currentFilters.make) count++;
+            if (currentFilters.minYear > 2000 || currentFilters.maxYear < 2026) count++;
+            if (currentFilters.minKm > 0 || currentFilters.maxKm < Infinity) count++;
+            if (currentFilters.owner) count++;
+            if (currentFilters.fuel) count++;
+            badge.style.display = count > 0 ? "inline-flex" : "none";
+            badge.textContent = count;
+          }
+
+          /* ---- Sync filter sheet UI to currentFilters state ---- */
+          function syncFilterUI() {
+            // Price
+            syncPriceInputs();
+            document.querySelectorAll(".mob-price-preset").forEach((p) => p.classList.remove("active"));
+
+            // Brand
+            document.querySelectorAll("#mob-brand-chips .mob-chip").forEach((c) => {
+              c.classList.toggle("active", c.dataset.brand === currentFilters.make);
+            });
+
+            // Year
+            mobYearMin.value = currentFilters.minYear || 2000;
+            mobYearMax.value = currentFilters.maxYear || 2026;
+            updateYearDisp();
+
+            // KM
+            mobKmMin.value = currentFilters.minKm || 0;
+            mobKmMax.value = currentFilters.maxKm === Infinity ? 200000 : (currentFilters.maxKm || 200000);
+            updateKmDisp();
+
+            // Owner
+            document.querySelectorAll("#mob-owner-chips .mob-chip").forEach((c) => {
+              c.classList.toggle("active", c.dataset.owner === currentFilters.owner);
+            });
+
+            // Fuel
+            document.querySelectorAll("#mob-fuel-chips .mob-chip").forEach((c) => {
+              c.classList.toggle("active", c.dataset.fuel === currentFilters.fuel);
+            });
+          }
+
+          // Update badge whenever filters change (hook into applyAllFilters)
+          const _origApply = applyAllFilters;
+          // We can't easily monkey-patch here since applyAllFilters is called directly;
+          // instead we call updateBadge after applyBtn and clearBtn.
+          updateBadge(); // initial state
         }
 
-        // Mobile price filter
-        function initMobilePriceFilter() {
-          const minPriceInput = document.getElementById("min-price-mobile");
-          const maxPriceInput = document.getElementById("max-price-mobile");
+        // ---- Stubs kept for backward compatibility (no-ops now) ----
+        function initMobilePriceFilter() {}
+        function applyPriceFilterMobile() {}
+        function initMobileBrandFilter() {}
+        function initMobileYearFilter() {}
+        function initMobileKmFilter() {}
+        function initMobileOwnerFilter() {}
+        function initMobileFuelFilter() {}
 
-          if (minPriceInput && maxPriceInput) {
-            minPriceInput.addEventListener("input", applyPriceFilterMobile);
-            maxPriceInput.addEventListener("input", applyPriceFilterMobile);
+        // ================================================================
+        // CARS24-STYLE PILL STRIP — horizontal scrollable filter chips
+        // Wires the pill strip buttons to open the bottom sheets and
+        // renders active-filter chips with × to clear individual filters.
+        // ================================================================
+        function initC24PillStrip() {
+          const sortSheet   = document.getElementById("mob-sort-sheet");
+          const filterSheet = document.getElementById("mob-filter-sheet");
+          if (!sortSheet || !filterSheet) return; // bottom sheets not mounted
 
-            document
-              .querySelectorAll("#price-dropdown-mobile .price-preset")
-              .forEach((preset) => {
-                preset.addEventListener("click", function () {
-                  minPriceInput.value = this.dataset.min;
-                  maxPriceInput.value = this.dataset.max || "";
-                  applyPriceFilterMobile();
+          function openSheet(el) {
+            el.classList.add("open");
+            el.setAttribute("aria-hidden","false");
+            document.body.style.overflow = "hidden";
+          }
+
+          // Sort pill → open sort sheet
+          const sortPill = document.getElementById("c24-sort-pill");
+          if (sortPill) {
+            sortPill.addEventListener("click", function () {
+              // sync active state in sort sheet
+              document.querySelectorAll(".mob-sort-opt").forEach((btn) => {
+                btn.classList.toggle("active", btn.dataset.sort === currentSort);
+              });
+              openSheet(sortSheet);
+            });
+          }
+
+          // Filters pill → open filter sheet at "price" category
+          const filterPill = document.getElementById("c24-filter-pill");
+          if (filterPill) {
+            filterPill.addEventListener("click", function () {
+              switchMobCat("price");
+              openSheet(filterSheet);
+            });
+          }
+
+          // Individual category pills → open filter sheet at that category
+          ["brand","price","year","fuel","owner"].forEach(function (cat) {
+            const pill = document.querySelector('[data-c24="'+cat+'"]');
+            if (pill) {
+              pill.addEventListener("click", function () {
+                switchMobCat(cat);
+                openSheet(filterSheet);
+              });
+            }
+          });
+
+          // Helper: switch mobile filter sheet to a given category
+          function switchMobCat(cat) {
+            document.querySelectorAll(".mob-cat-btn").forEach((b) => {
+              b.classList.toggle("active", b.dataset.cat === cat);
+            });
+            document.querySelectorAll(".mob-filter-pane").forEach((p) => {
+              p.style.display = p.id === "mob-pane-" + cat ? "" : "none";
+            });
+          }
+
+          // Update pill strip after every applyAllFilters + after clear
+          // We hook into the global updateC24Pills so resetFilters/applyBtn can call it
+          window.updateC24Pills = function () {
+            const badge    = document.getElementById("c24-badge");
+            const fPill    = document.getElementById("c24-filter-pill");
+            const sLabel   = document.getElementById("c24-sort-label");
+            const chipsCon = document.getElementById("c24-active-chips");
+
+            // Sort label
+            const sortLabels = {
+              "default":    "Sort by",
+              "price-low":  "Price ↑",
+              "price-high": "Price ↓",
+              "year-new":   "Year ↓",
+              "year-old":   "Year ↑",
+              "km-low":     "KM ↑"
+            };
+            if (sLabel) {
+              sLabel.textContent = sortLabels[currentSort] || "Sort by";
+              const sp = document.getElementById("c24-sort-pill");
+              if (sp) sp.classList.toggle("active", currentSort !== "default");
+            }
+
+            // Count active filters
+            let count = 0;
+            const chips = [];
+
+            if (currentFilters.make) {
+              count++;
+              chips.push({ label: currentFilters.make, clear: function(){ currentFilters.make=null; applyAllFilters(); window.updateC24Pills(); } });
+            }
+            if (currentFilters.minPrice > 0 || currentFilters.maxPrice < Infinity) {
+              count++;
+              const lo = currentFilters.minPrice > 0 ? "₹"+currentFilters.minPrice.toLocaleString("en-IN") : "₹0";
+              const hi = currentFilters.maxPrice < Infinity ? "–₹"+currentFilters.maxPrice.toLocaleString("en-IN") : "+";
+              chips.push({ label: "Budget: "+lo+hi, clear: function(){ currentFilters.minPrice=0; currentFilters.maxPrice=Infinity; applyAllFilters(); window.updateC24Pills(); } });
+            }
+            if (currentFilters.minYear > 2000 || currentFilters.maxYear < 2026) {
+              count++;
+              chips.push({ label: currentFilters.minYear+"–"+currentFilters.maxYear, clear: function(){ currentFilters.minYear=2000; currentFilters.maxYear=2026; applyAllFilters(); window.updateC24Pills(); } });
+            }
+            if (currentFilters.minKm > 0 || currentFilters.maxKm < Infinity) {
+              count++;
+              const lo2 = currentFilters.minKm.toLocaleString("en-IN")+" km";
+              const hi2 = currentFilters.maxKm < Infinity ? "–"+currentFilters.maxKm.toLocaleString("en-IN")+" km" : "+";
+              chips.push({ label: "KM: "+lo2+hi2, clear: function(){ currentFilters.minKm=0; currentFilters.maxKm=Infinity; applyAllFilters(); window.updateC24Pills(); } });
+            }
+            if (currentFilters.owner) {
+              count++;
+              const ownerMap = {"1":"1st Owner","2":"2nd Owner","3":"3+ Owner"};
+              const ol = ownerMap[currentFilters.owner] || currentFilters.owner;
+              chips.push({ label: ol, clear: function(){ currentFilters.owner=null; applyAllFilters(); window.updateC24Pills(); } });
+            }
+            if (currentFilters.fuel) {
+              count++;
+              chips.push({ label: currentFilters.fuel, clear: function(){ currentFilters.fuel=null; applyAllFilters(); window.updateC24Pills(); } });
+            }
+
+            // Badge
+            if (badge) {
+              badge.textContent = count;
+              badge.style.display = count > 0 ? "inline-flex" : "none";
+            }
+            if (fPill) fPill.classList.toggle("has-filters", count > 0);
+
+            // Update pill-level active states
+            const brandPill = document.getElementById("c24-brand-pill");
+            const budgetPill = document.getElementById("c24-budget-pill");
+            const yearPill = document.getElementById("c24-year-pill");
+            const fuelPill = document.getElementById("c24-fuel-pill");
+            const ownerPill = document.getElementById("c24-owner-pill");
+            if (brandPill) brandPill.classList.toggle("active", !!currentFilters.make);
+            if (budgetPill) budgetPill.classList.toggle("active", currentFilters.minPrice > 0 || currentFilters.maxPrice < Infinity);
+            if (yearPill) yearPill.classList.toggle("active", currentFilters.minYear > 2000 || currentFilters.maxYear < 2026);
+            if (fuelPill) fuelPill.classList.toggle("active", !!currentFilters.fuel);
+            if (ownerPill) ownerPill.classList.toggle("active", !!currentFilters.owner);
+
+            // Render active chips
+            if (chipsCon) {
+              chipsCon.innerHTML = "";
+              if (chips.length > 0) {
+                // "Clear all" button
+                const clearAll = document.createElement("button");
+                clearAll.className = "c24-clear-all visible";
+                clearAll.textContent = "Clear all ×";
+                clearAll.addEventListener("click", function () {
+                  resetFilters();
+                  applyAllFilters();
+                  window.updateC24Pills();
                 });
+                chipsCon.appendChild(clearAll);
+              }
+              chips.forEach(function (chip) {
+                const el = document.createElement("div");
+                el.className = "c24-active-chip";
+                el.innerHTML = '<span>'+chip.label+'</span>';
+                const x = document.createElement("button");
+                x.innerHTML = "&#x2715;";
+                x.setAttribute("aria-label", "Remove filter");
+                x.addEventListener("click", chip.clear);
+                el.appendChild(x);
+                chipsCon.appendChild(el);
               });
-          }
-        }
+            }
 
-        function applyPriceFilterMobile() {
-          const minPrice =
-            parseInt(document.getElementById("min-price-mobile").value) || 0;
-          const maxPrice =
-            parseInt(document.getElementById("max-price-mobile").value) ||
-            Infinity;
+            // Sync mob-filter-badge in bottom bar too
+            const mobBadge = document.getElementById("mob-filter-badge");
+            if (mobBadge) {
+              mobBadge.textContent = count;
+              mobBadge.style.display = count > 0 ? "inline-flex" : "none";
+            }
+          };
 
-          currentFilters.minPrice = minPrice;
-          currentFilters.maxPrice = maxPrice;
-
-          applyAllFilters();
-          document.querySelector(".mobile-filters-container").style.display =
-            "none";
-          document.body.style.overflow = "";
-        }
-
-        // Mobile brand filter
-        function initMobileBrandFilter() {
-          document
-            .querySelectorAll("#brand-dropdown-mobile .filter-option")
-            .forEach((option) => {
-              option.addEventListener("click", function () {
-                const brand = this.dataset.brand;
-                currentFilters.make =
-                  brand === currentFilters.make ? null : brand;
-                applyAllFilters();
-
-                // Update button text
-                const brandBtn = document.querySelector(
-                  '[data-filter="brand"]'
-                );
-                brandBtn.innerHTML = currentFilters.make
-                  ? `${brand} <i class="fas fa-chevron-down"></i>`
-                  : `Brand <i class="fas fa-chevron-down"></i>`;
-
-                document.querySelector(
-                  ".mobile-filters-container"
-                ).style.display = "none";
-                document.body.style.overflow = "";
-              });
-            });
-        }
-
-        // Mobile year filter
-        function initMobileYearFilter() {
-          const yearMin = document.getElementById("year-min-mobile");
-          const yearMax = document.getElementById("year-max-mobile");
-          const yearMinValue = document.getElementById("year-min-value-mobile");
-          const yearMaxValue = document.getElementById("year-max-value-mobile");
-
-          if (yearMin && yearMax) {
-            yearMin.addEventListener("input", function () {
-              yearMinValue.textContent = this.value;
-              currentFilters.minYear = parseInt(this.value);
-              applyAllFilters();
-            });
-
-            yearMax.addEventListener("input", function () {
-              yearMaxValue.textContent = this.value;
-              currentFilters.maxYear = parseInt(this.value);
-              applyAllFilters();
-            });
-          }
-        }
-
-        // Mobile km filter
-        function initMobileKmFilter() {
-          const kmMin = document.getElementById("km-min-mobile");
-          const kmMax = document.getElementById("km-max-mobile");
-          const kmMinValue = document.getElementById("km-min-value-mobile");
-          const kmMaxValue = document.getElementById("km-max-value-mobile");
-
-          if (kmMin && kmMax) {
-            kmMin.addEventListener("input", function () {
-              kmMinValue.textContent = parseInt(this.value).toLocaleString(
-                "en-IN"
-              );
-              currentFilters.minKm = parseInt(this.value);
-              applyAllFilters();
-            });
-
-            kmMax.addEventListener("input", function () {
-              kmMaxValue.textContent = parseInt(this.value).toLocaleString(
-                "en-IN"
-              );
-              currentFilters.maxKm = parseInt(this.value);
-              applyAllFilters();
-            });
-          }
-        }
-
-        // Mobile owner filter
-        function initMobileOwnerFilter() {
-          document
-            .querySelectorAll("#owner-dropdown-mobile .filter-option")
-            .forEach((option) => {
-              option.addEventListener("click", function () {
-                const owner = this.dataset.owner;
-                currentFilters.owner =
-                  owner === currentFilters.owner ? null : owner;
-                applyAllFilters();
-
-                // Update button text if needed
-                const ownerBtn = document.querySelector(
-                  '[data-filter="owner"]'
-                );
-                if (ownerBtn) {
-                  ownerBtn.innerHTML = currentFilters.owner
-                    ? `${formatOwnership(
-                        owner
-                      )} <i class="fas fa-chevron-down"></i>`
-                    : `Ownership <i class="fas fa-chevron-down"></i>`;
-                }
-
-                document.querySelector(
-                  ".mobile-filters-container"
-                ).style.display = "none";
-                document.body.style.overflow = "";
-              });
-            });
-        }
-
-        // Mobile fuel filter
-        function initMobileFuelFilter() {
-          document
-            .querySelectorAll("#fuel-dropdown-mobile .filter-option")
-            .forEach((option) => {
-              option.addEventListener("click", function () {
-                const fuel = this.dataset.fuel;
-                currentFilters.fuel =
-                  fuel === currentFilters.fuel ? null : fuel;
-                applyAllFilters();
-
-                // Update button text if needed
-                const fuelBtn = document.querySelector('[data-filter="fuel"]');
-                if (fuelBtn) {
-                  fuelBtn.innerHTML = currentFilters.fuel
-                    ? `${fuel} <i class="fas fa-chevron-down"></i>`
-                    : `Fuel Type <i class="fas fa-chevron-down"></i>`;
-                }
-
-                document.querySelector(
-                  ".mobile-filters-container"
-                ).style.display = "none";
-                document.body.style.overflow = "";
-              });
-            });
+          // Call on init
+          window.updateC24Pills();
         }
 
         function applyPriceFilter() {
-          const minPrice =
-            parseInt(document.getElementById("min-price").value) || 0;
-          const maxPrice =
-            parseInt(document.getElementById("max-price").value) || Infinity;
-
-          currentFilters.minPrice = minPrice;
-          currentFilters.maxPrice = maxPrice;
-
+          const minVal = document.getElementById("min-price").value;
+          const maxVal = document.getElementById("max-price").value;
+          currentFilters.minPrice = minVal !== "" ? parseInt(minVal) : 0;
+          currentFilters.maxPrice = maxVal !== "" ? parseInt(maxVal) : Infinity;
           applyAllFilters();
         }
 
         // Brand filter
         function initBrandFilter() {
           document
-            .querySelectorAll(".brand-options .filter-option")
+            .querySelectorAll("#brand-dropdown .brand-options .filter-option")
             .forEach((option) => {
               option.addEventListener("click", function () {
                 const brand = this.dataset.brand;
-                currentFilters.make =
-                  brand === currentFilters.make ? null : brand;
+                const isAlreadySelected = currentFilters.make === brand;
+                currentFilters.make = isAlreadySelected ? null : brand;
+
+                // Toggle active state on options
+                document.querySelectorAll("#brand-dropdown .brand-options .filter-option").forEach((o) => o.classList.remove("active"));
+                if (!isAlreadySelected) this.classList.add("active");
+
                 applyAllFilters();
 
                 // Update button text
-                const brandBtn = document.querySelector(
-                  '[data-filter="brand"]'
-                );
-                brandBtn.innerHTML = currentFilters.make
-                  ? `${brand} <i class="fas fa-chevron-down"></i>`
-                  : `Brand <i class="fas fa-chevron-down"></i>`;
+                const brandBtn = document.querySelector('[data-filter="brand"]');
+                if (brandBtn) {
+                  brandBtn.innerHTML = currentFilters.make
+                    ? `${currentFilters.make} <i class="fas fa-chevron-down"></i>`
+                    : `Brand <i class="fas fa-chevron-down"></i>`;
+                }
 
                 // Update brand logos
                 document.querySelectorAll(".brand-logo").forEach((logo) => {
-                  logo.classList.remove("active");
-                  if (
-                    currentFilters.make &&
-                    logo.dataset.brand === currentFilters.make
-                  ) {
-                    logo.classList.add("active");
+                  logo.classList.remove("active", "brand-selected");
+                  logo.setAttribute("aria-pressed", "false");
+                  if (currentFilters.make && logo.dataset.brand === currentFilters.make) {
+                    logo.classList.add("active", "brand-selected");
+                    logo.setAttribute("aria-pressed", "true");
                   }
                 });
               });
@@ -2407,12 +2666,20 @@
 
           if (yearMin && yearMax) {
             yearMin.addEventListener("input", function () {
+              // Prevent min from exceeding max
+              if (parseInt(this.value) > parseInt(yearMax.value)) {
+                this.value = yearMax.value;
+              }
               yearMinValue.textContent = this.value;
               currentFilters.minYear = parseInt(this.value);
               applyAllFilters();
             });
 
             yearMax.addEventListener("input", function () {
+              // Prevent max from going below min
+              if (parseInt(this.value) < parseInt(yearMin.value)) {
+                this.value = yearMin.value;
+              }
               yearMaxValue.textContent = this.value;
               currentFilters.maxYear = parseInt(this.value);
               applyAllFilters();
@@ -2429,18 +2696,17 @@
 
           if (kmMin && kmMax) {
             kmMin.addEventListener("input", function () {
-              kmMinValue.textContent = parseInt(this.value).toLocaleString(
-                "en-IN"
-              );
+              if (parseInt(this.value) > parseInt(kmMax.value)) this.value = kmMax.value;
+              kmMinValue.textContent = parseInt(this.value).toLocaleString("en-IN");
               currentFilters.minKm = parseInt(this.value);
               applyAllFilters();
             });
 
             kmMax.addEventListener("input", function () {
-              kmMaxValue.textContent = parseInt(this.value).toLocaleString(
-                "en-IN"
-              );
-              currentFilters.maxKm = parseInt(this.value);
+              if (parseInt(this.value) < parseInt(kmMin.value)) this.value = kmMin.value;
+              kmMaxValue.textContent = parseInt(this.value).toLocaleString("en-IN");
+              // If slider is at max, treat as Infinity so cars with higher km are shown
+              currentFilters.maxKm = parseInt(this.value) >= 200000 ? Infinity : parseInt(this.value);
               applyAllFilters();
             });
           }
@@ -2449,23 +2715,24 @@
         // Owner filter
         function initOwnerFilter() {
           document
-            .querySelectorAll(".ownership-options .filter-option")
+            .querySelectorAll("#owner-dropdown .ownership-options .filter-option")
             .forEach((option) => {
               option.addEventListener("click", function () {
                 const owner = this.dataset.owner;
-                currentFilters.owner =
-                  owner === currentFilters.owner ? null : owner;
+                const isAlreadySelected = currentFilters.owner === owner;
+                currentFilters.owner = isAlreadySelected ? null : owner;
+
+                // Toggle active state
+                document.querySelectorAll("#owner-dropdown .ownership-options .filter-option").forEach((o) => o.classList.remove("active"));
+                if (!isAlreadySelected) this.classList.add("active");
+
                 applyAllFilters();
 
-                // Update button text if needed
-                const ownerBtn = document.querySelector(
-                  '[data-filter="owner"]'
-                );
+                // Update button text
+                const ownerBtn = document.querySelector('[data-filter="owner"]');
                 if (ownerBtn) {
                   ownerBtn.innerHTML = currentFilters.owner
-                    ? `${formatOwnership(
-                        owner
-                      )} <i class="fas fa-chevron-down"></i>`
+                    ? `${formatOwnership(owner)} <i class="fas fa-chevron-down"></i>`
                     : `Ownership <i class="fas fa-chevron-down"></i>`;
                 }
               });
@@ -2475,19 +2742,24 @@
         // Fuel filter
         function initFuelFilter() {
           document
-            .querySelectorAll(".fuel-options .filter-option")
+            .querySelectorAll("#fuel-dropdown .fuel-options .filter-option")
             .forEach((option) => {
               option.addEventListener("click", function () {
                 const fuel = this.dataset.fuel;
-                currentFilters.fuel =
-                  fuel === currentFilters.fuel ? null : fuel;
+                const isAlreadySelected = currentFilters.fuel === fuel;
+                currentFilters.fuel = isAlreadySelected ? null : fuel;
+
+                // Toggle active state
+                document.querySelectorAll("#fuel-dropdown .fuel-options .filter-option").forEach((o) => o.classList.remove("active"));
+                if (!isAlreadySelected) this.classList.add("active");
+
                 applyAllFilters();
 
-                // Update button text if needed
+                // Update button text
                 const fuelBtn = document.querySelector('[data-filter="fuel"]');
                 if (fuelBtn) {
                   fuelBtn.innerHTML = currentFilters.fuel
-                    ? `${fuel} <i class="fas fa-chevron-down"></i>`
+                    ? `${currentFilters.fuel} <i class="fas fa-chevron-down"></i>`
                     : `Fuel Type <i class="fas fa-chevron-down"></i>`;
                 }
               });
@@ -2501,13 +2773,24 @@
 
         
 
+        // Normalize ownership value to a canonical number string ("1", "2", "3")
+        function normalizeOwner(ownerVal) {
+          if (!ownerVal) return "";
+          const s = String(ownerVal).trim().toLowerCase();
+          if (s === "1" || s.startsWith("1st") || s.includes("first")) return "1";
+          if (s === "2" || s.startsWith("2nd") || s.includes("second")) return "2";
+          if (s === "3" || s.startsWith("3") || s.includes("third") || s.includes("3+")) return "3";
+          return s;
+        }
+
         // Apply sorting and update count before displaying
         function applyAllFilters() {
+          const searchTerm = (currentFilters.search || "").toLowerCase();
+
           let filteredCars = allCars.filter((car) => {
             const price = car.sellingPrice || 0;
-            const year = car.modelYear || new Date().getFullYear();
-            const km = car.kmDriven || 0;
-            const brand = (car.make || "").toLowerCase();
+            const year = parseInt(car.modelYear) || new Date().getFullYear();
+            const km = parseInt(car.kmDriven) || 0;
             const owner = car.ownership || "";
             const fuel = car.fuelType || "";
 
@@ -2515,32 +2798,45 @@
               price >= currentFilters.minPrice &&
               price <= currentFilters.maxPrice;
             const yearMatch =
-              year >= currentFilters.minYear && year <= currentFilters.maxYear;
-            const kmMatch = km >= currentFilters.minKm && km <= currentFilters.maxKm;
+              !currentFilters.minYear || !currentFilters.maxYear ||
+              (year >= currentFilters.minYear && year <= currentFilters.maxYear);
+            const kmMatch =
+              km >= currentFilters.minKm &&
+              (currentFilters.maxKm === Infinity || km <= currentFilters.maxKm);
             const brandMatch =
               !currentFilters.make ||
-              car.make
-                .toLowerCase()
-                .includes(currentFilters.make.toLowerCase());
+              (car.make || "").toLowerCase().includes(currentFilters.make.toLowerCase());
 
-            const ownerMatch = !currentFilters.owner || owner.includes(currentFilters.owner);
-            const fuelMatch = !currentFilters.fuel || fuel === currentFilters.fuel;
+            // Normalize both sides before comparing ownership
+            const ownerMatch =
+              !currentFilters.owner ||
+              normalizeOwner(owner) === normalizeOwner(currentFilters.owner);
+            const fuelMatch =
+              !currentFilters.fuel ||
+              (fuel || "").toLowerCase() === currentFilters.fuel.toLowerCase();
 
-            return priceMatch && yearMatch && kmMatch && brandMatch && ownerMatch && fuelMatch;
+            // Search filter: match brand, model, or year
+            const searchMatch =
+              !searchTerm ||
+              (car.make || "").toLowerCase().includes(searchTerm) ||
+              (car.model || "").toLowerCase().includes(searchTerm) ||
+              String(car.modelYear || "").includes(searchTerm);
+
+            return priceMatch && yearMatch && kmMatch && brandMatch && ownerMatch && fuelMatch && searchMatch;
           });
 
           // Sort using currentSort (ensure use of sellingPrice)
           try {
-            filteredCars = sortCars(
-              filteredCars,
-              currentSort
-            ).map((c) => c);
+            filteredCars = sortCars(filteredCars, currentSort);
           } catch (e) {
             console.warn('sortCars failed', e);
           }
 
           updateCarCount(filteredCars.length);
           displayCars(filteredCars);
+
+          // Update Cars24 pill strip chips & badges
+          if (typeof window.updateC24Pills === "function") window.updateC24Pills();
         }
 
         function sortCars(Cars, sortType) {
@@ -2550,13 +2846,11 @@
             case "price-high":
               return [...Cars].sort((a, b) => (b.sellingPrice || 0) - (a.sellingPrice || 0));
             case "year-new":
-              return [...Cars].sort(
-                (a, b) => (b.modelYear || 0) - (a.modelYear || 0)
-              );
+              return [...Cars].sort((a, b) => (parseInt(b.modelYear) || 0) - (parseInt(a.modelYear) || 0));
             case "year-old":
-              return [...Cars].sort(
-                (a, b) => (a.modelYear || 0) - (b.modelYear || 0)
-              );
+              return [...Cars].sort((a, b) => (parseInt(a.modelYear) || 0) - (parseInt(b.modelYear) || 0));
+            case "km-low":
+              return [...Cars].sort((a, b) => (parseInt(a.kmDriven) || 0) - (parseInt(b.kmDriven) || 0));
             default:
               return Cars; // Default sorting (original order)
           }
@@ -2600,49 +2894,87 @@
 
         function resetFilters() {
           currentFilters = {
-            brand: null,
+            make: null,
             minPrice: 0,
             maxPrice: Infinity,
-            minYear: 2015,
-            maxYear: 2024,
+            minYear: 2000,
+            maxYear: 2026,
             minKm: 0,
-            maxKm: 50000,
+            maxKm: Infinity,
             owner: null,
             fuel: null,
+            search: "",
           };
 
           // Reset form inputs
-          document.getElementById("min-price").value = "";
-          document.getElementById("max-price").value = "";
-          document.getElementById("year-min").value = "2015";
-          document.getElementById("year-max").value = "2024";
-          document.getElementById("km-min").value = "0";
-          document.getElementById("km-max").value = "50000";
+          const minPriceEl = document.getElementById("min-price");
+          const maxPriceEl = document.getElementById("max-price");
+          if (minPriceEl) minPriceEl.value = "";
+          if (maxPriceEl) maxPriceEl.value = "";
+
+          const yearMinEl = document.getElementById("year-min");
+          const yearMaxEl = document.getElementById("year-max");
+          if (yearMinEl) yearMinEl.value = "2000";
+          if (yearMaxEl) yearMaxEl.value = "2026";
+
+          const kmMinEl = document.getElementById("km-min");
+          const kmMaxEl = document.getElementById("km-max");
+          if (kmMinEl) kmMinEl.value = "0";
+          if (kmMaxEl) kmMaxEl.value = "200000";
 
           // Reset display values
-          document.getElementById("year-min-value").textContent = "2015";
-          document.getElementById("year-max-value").textContent = "2024";
-          document.getElementById("km-min-value").textContent = "0";
-          document.getElementById("km-max-value").textContent = "50,000";
+          const yearMinVal = document.getElementById("year-min-value");
+          const yearMaxVal = document.getElementById("year-max-value");
+          const kmMinVal = document.getElementById("km-min-value");
+          const kmMaxVal = document.getElementById("km-max-value");
+          if (yearMinVal) yearMinVal.textContent = "2000";
+          if (yearMaxVal) yearMaxVal.textContent = "2026";
+          if (kmMinVal) kmMinVal.textContent = "0";
+          if (kmMaxVal) kmMaxVal.textContent = "2,00,000";
 
           // Reset all filter button texts
           const brandBtn = document.querySelector('[data-filter="brand"]');
-          brandBtn.innerHTML = `Brand <i class="fas fa-chevron-down"></i>`;
+          if (brandBtn) brandBtn.innerHTML = `Brand <i class="fas fa-chevron-down"></i>`;
 
           const ownerBtn = document.querySelector('[data-filter="owner"]');
-          if (ownerBtn) {
-            ownerBtn.innerHTML = `Ownership <i class="fas fa-chevron-down"></i>`;
-          }
+          if (ownerBtn) ownerBtn.innerHTML = `Ownership <i class="fas fa-chevron-down"></i>`;
 
           const fuelBtn = document.querySelector('[data-filter="fuel"]');
-          if (fuelBtn) {
-            fuelBtn.innerHTML = `Fuel Type <i class="fas fa-chevron-down"></i>`;
-          }
+          if (fuelBtn) fuelBtn.innerHTML = `Fuel Type <i class="fas fa-chevron-down"></i>`;
+
+          // Reset active states on filter options
+          document.querySelectorAll(".filter-option").forEach((opt) => opt.classList.remove("active"));
+          document.querySelectorAll(".price-preset").forEach((p) => p.classList.remove("active"));
+
+          // Reset mobile sheet chips + sliders
+          document.querySelectorAll(".mob-chip").forEach((c) => c.classList.remove("active"));
+          document.querySelectorAll(".mob-price-preset").forEach((p) => p.classList.remove("active"));
+          const mMinP = document.getElementById("mob-min-price");
+          const mMaxP = document.getElementById("mob-max-price");
+          if (mMinP) mMinP.value = "";
+          if (mMaxP) mMaxP.value = "";
+          const mYrMin = document.getElementById("mob-year-min");
+          const mYrMax = document.getElementById("mob-year-max");
+          if (mYrMin) { mYrMin.value = "2000"; document.getElementById("mob-year-min-disp").textContent = "2000"; }
+          if (mYrMax) { mYrMax.value = "2026"; document.getElementById("mob-year-max-disp").textContent = "2026"; }
+          const mKmMin = document.getElementById("mob-km-min");
+          const mKmMax = document.getElementById("mob-km-max");
+          if (mKmMin) { mKmMin.value = "0"; document.getElementById("mob-km-min-disp").textContent = "0"; }
+          if (mKmMax) { mKmMax.value = "200000"; document.getElementById("mob-km-max-disp").textContent = "2,00,000+"; }
+
+          // Update mobile badge
+          const badge = document.getElementById("mob-filter-badge");
+          if (badge) { badge.style.display = "none"; badge.textContent = "0"; }
 
           // Reset brand logos
           document.querySelectorAll(".brand-logo").forEach((logo) => {
-            logo.classList.remove("active");
+            logo.classList.remove("active", "brand-selected");
+            logo.setAttribute("aria-pressed", "false");
           });
+
+          // Reset search box
+          const searchInput = document.getElementById("inventory-search");
+          if (searchInput) searchInput.value = "";
         }
 
         // Format age for display
@@ -2663,11 +2995,39 @@
         initFilters();
         initSortDropdown(); // Now this will work properly
         initSearch(); // Initialize search functionality
-        initMobileFilters(); // Add this line
+        initMobileFilters(); // Amazon-style bottom sheets
+        initC24PillStrip(); // Cars24-style pill strip
+        initPillDragScroll(); // mouse-drag scroll on pill strip
       });
     </script>
     <script>
-      // Lazy-load images and avoid CLS for dynamically injected car cards
+      // Drag-to-scroll for the pill strip (works on desktop + touch)
+      function initPillDragScroll() {
+        const el = document.getElementById("c24-pill-strip");
+        const scroll = el && el.querySelector(".c24-pills-scroll");
+        if (!scroll) return;
+        let isDown = false, startX, scrollLeft;
+        scroll.addEventListener("mousedown", function (e) {
+          isDown = true;
+          scroll.classList.add("dragging");
+          startX = e.pageX - scroll.offsetLeft;
+          scrollLeft = scroll.scrollLeft;
+        });
+        document.addEventListener("mouseup", function () {
+          isDown = false;
+          scroll.classList.remove("dragging");
+        });
+        scroll.addEventListener("mousemove", function (e) {
+          if (!isDown) return;
+          e.preventDefault();
+          const x = e.pageX - scroll.offsetLeft;
+          scroll.scrollLeft = scrollLeft - (x - startX) * 1.2;
+        });
+        scroll.addEventListener("mouseleave", function () {
+          isDown = false;
+          scroll.classList.remove("dragging");
+        });
+      }
       (function () {
         function safeDecode(img) {
           if (!img) return;
@@ -3087,286 +3447,180 @@
         <i class="fa-solid fa-phone-volume fa-shake"></i>
       </a>
     </div>
-    <div class="mobile-filters-container">
-      <div class="mobile-filters-inner">
-        <button class="close-filters-btn">&times;</button>
-        <div class="filters-container">
-          <h3 data-translate="Filters">Filters</h3>
-          <div class="filter-group">
-            <button class="filter-btn" data-filter="all">All Cars</button>
-          </div>
 
-          <div class="filter-group">
-            <button class="filter-btn" data-filter="price">
-              Price <i class="fas fa-chevron-down"></i>
-            </button>
-            <div class="filter-dropdown" id="price-dropdown-mobile">
-              <div class="price-range">
-                <div class="range-inputs">
-                  <input
-                    type="number"
-                    id="min-price-mobile"
-                    placeholder="Min"
-                    min="0"
-                  />
-                  <span>to</span>
-                  <input
-                    type="number"
-                    id="max-price-mobile"
-                    placeholder="Max"
-                    min="0"
-                  />
-                </div>
-                <div class="price-presets">
-                  <button class="price-preset" data-min="0" data-max="50000">
-                    Under ₹50,000
-                  </button>
-                  <button
-                    class="price-preset"
-                    data-min="50000"
-                    data-max="100000"
-                  >
-                    ₹50,000 - ₹100,000
-                  </button>
-                  <button
-                    class="price-preset"
-                    data-min="100000"
-                    data-max="200000"
-                  >
-                    ₹100,000 - ₹200,000
-                  </button>
-                  <button
-                    class="price-preset"
-                    data-min="200000"
-                    data-max="500000"
-                  >
-                    ₹200,000 - ₹500,000
-                  </button>
-                  <button class="price-preset" data-min="500000">
-                    ₹500,000+
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="filter-group">
-            <button class="filter-btn" data-filter="brand">
-              Brand <i class="fas fa-chevron-down"></i>
-            </button>
-            <div class="filter-dropdown" id="brand-dropdown-mobile">
-              <div class="filter-options brand-options">
-                <button class="filter-option" data-brand="Audi">Audi</button>
-                <button class="filter-option" data-brand="Bentley">
-                  Bentley
-                </button>
-                <button class="filter-option" data-brand="BMW">BMW</button>
-                <button class="filter-option" data-brand="Chevrolet">
-                  Chevrolet
-                </button>
-                <button class="filter-option" data-brand="Chrysler">
-                  Chrysler
-                </button>
-                <button class="filter-option" data-brand="Ferrari">
-                  Ferrari
-                </button>
-                <button class="filter-option" data-brand="FIAT">FIAT</button>
-                <button class="filter-option" data-brand="Ford">Ford</button>
-                <button class="filter-option" data-brand="Honda">Honda</button>
-                <button class="filter-option" data-brand="Hyundai">
-                  Hyundai
-                </button>
-                <button class="filter-option" data-brand="Isuzu">Isuzu</button>
-                <button class="filter-option" data-brand="Jaguar">
-                  Jaguar
-                </button>
-                <button class="filter-option" data-brand="Jeep">Jeep</button>
-                <button class="filter-option" data-brand="Kia">Kia</button>
-                <button class="filter-option" data-brand="Lamborghini">
-                  Lamborghini
-                </button>
-                <button class="filter-option" data-brand="Land Rover">
-                  Land Rover
-                </button>
-                <button class="filter-option" data-brand="Lexus">Lexus</button>
-                <button class="filter-option" data-brand="Lotus">Lotus</button>
-                <button class="filter-option" data-brand="Maybach">
-                  Maybach
-                </button>
-                <button class="filter-option" data-brand="Mazda">Mazda</button>
-                <button class="filter-option" data-brand="McLaren">
-                  McLaren
-                </button>
-                <button class="filter-option" data-brand="Mercedes Benz">
-                  Mercedes Benz
-                </button>
-                <button class="filter-option" data-brand="MINI">MINI</button>
-                <button class="filter-option" data-brand="Mitsubishi">
-                  Mitsubishi
-                </button>
-                <button class="filter-option" data-brand="Nissan">
-                  Nissan
-                </button>
-                <button class="filter-option" data-brand="Porsche">
-                  Porsche
-                </button>
-                <button class="filter-option" data-brand="Rolls-Royce">
-                  Rolls-Royce
-                </button>
-                <button class="filter-option" data-brand="SRT">SRT</button>
-                <button class="filter-option" data-brand="Suzuki">
-                  Suzuki
-                </button>
-                <button class="filter-option" data-brand="Toyota">
-                  Toyota
-                </button>
-                <button class="filter-option" data-brand="Volkswagen">
-                  Volkswagen
-                </button>
-                <button class="filter-option" data-brand="Volvo">Volvo</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Year filter -->
-          <div class="filter-group">
-            <button class="filter-btn" data-filter="year">
-              Year <i class="fas fa-chevron-down"></i>
-            </button>
-            <div class="filter-dropdown" id="year-dropdown-mobile">
-              <div class="year-slider">
-                <div class="slider-container">
-                  <input
-                    type="range"
-                    id="year-min-mobile"
-                    min="2015"
-                    max="2024"
-                    value="2015"
-                    step="1"
-                  />
-                  <input
-                    type="range"
-                    id="year-max-mobile"
-                    min="2015"
-                    max="2024"
-                    value="2024"
-                    step="1"
-                  />
-                </div>
-                <div class="year-values">
-                  <span id="year-min-value-mobile">2015</span>
-                  <span>to</span>
-                  <span id="year-max-value-mobile">2024</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- KM Driven filter -->
-          <div class="filter-group">
-            <button class="filter-btn" data-filter="km">
-              KM Driven <i class="fas fa-chevron-down"></i>
-            </button>
-            <div class="filter-dropdown" id="km-dropdown-mobile">
-              <div class="km-slider">
-                <div class="slider-container">
-                  <input
-                    type="range"
-                    id="km-min-mobile"
-                    min="0"
-                    max="50000"
-                    value="0"
-                    step="500"
-                  />
-                  <input
-                    type="range"
-                    id="km-max-mobile"
-                    min="0"
-                    max="50000"
-                    value="50000"
-                    step="500"
-                  />
-                </div>
-                <div class="km-values">
-                  <span id="km-min-value-mobile">0</span>
-                  <span>to</span>
-                  <span id="km-max-value-mobile">50,000</span>
-                  <span>km</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Ownership filter -->
-          <div class="filter-group">
-            <button class="filter-btn" data-filter="owner">
-              Ownership <i class="fas fa-chevron-down"></i>
-            </button>
-            <div class="filter-dropdown" id="owner-dropdown-mobile">
-              <div class="filter-options ownership-options">
-                <button class="filter-option" data-owner="1">1st Own</button>
-                <button class="filter-option" data-owner="2">2nd Own</button>
-                <button class="filter-option" data-owner="3">3+ Own</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Fuel Type filter -->
-          <div class="filter-group">
-            <button class="filter-btn" data-filter="fuel">
-              Fuel Type <i class="fas fa-chevron-down"></i>
-            </button>
-            <div class="filter-dropdown" id="fuel-dropdown-mobile">
-              <div class="filter-options fuel-options">
-                <button class="filter-option" data-fuel="Petrol">Petrol</button>
-                <button class="filter-option" data-fuel="Electric">
-                  Electric
-                </button>
-              </div>
-            </div>
-          </div>
+    <!-- =============================================
+         AMAZON-STYLE MOBILE SORT BOTTOM SHEET
+         ============================================= -->
+    <div class="mob-sort-sheet" id="mob-sort-sheet" aria-hidden="true">
+      <div class="mob-sheet-backdrop" id="mob-sort-backdrop"></div>
+      <div class="mob-sheet-panel">
+        <div class="mob-sheet-header">
+          <span class="mob-sheet-title">Sort By</span>
+          <button class="mob-sheet-close" id="mob-sort-close" aria-label="Close sort">&#10005;</button>
+        </div>
+        <div class="mob-sort-options">
+          <button class="mob-sort-opt" data-sort="default">Relevance</button>
+          <button class="mob-sort-opt" data-sort="price-low">Price: Low to High</button>
+          <button class="mob-sort-opt" data-sort="price-high">Price: High to Low</button>
+          <button class="mob-sort-opt" data-sort="year-new">Year: Newest First</button>
+          <button class="mob-sort-opt" data-sort="year-old">Year: Oldest First</button>
+          <button class="mob-sort-opt" data-sort="km-low">KM: Lowest First</button>
         </div>
       </div>
     </div>
-    <script>
-      (function () {
-        // breakpoint for desktop mode - hide mobile-only UI when width >= 480px
-        const DESKTOP_BREAKPOINT = 480; // px
 
-        function toggleMobileFilters() {
-          const hide = window.innerWidth >= DESKTOP_BREAKPOINT;
-          const selectors = [
-            '.mobile-filters-container',
-            '.mobile-filters',
-            '.mobile-filters-inner',
-            '.close-filters-btn',
-            '.filter-btn',
-            '.filter-dropdown',
-            '.bottom-tab-nav'
-          ];
+    <!-- =============================================
+         AMAZON-STYLE MOBILE FILTER BOTTOM SHEET
+         ============================================= -->
+    <div class="mob-filter-sheet" id="mob-filter-sheet" aria-hidden="true">
+      <div class="mob-sheet-backdrop" id="mob-filter-backdrop"></div>
+      <div class="mob-sheet-panel mob-filter-panel">
+        <div class="mob-sheet-header">
+          <span class="mob-sheet-title">Filters</span>
+          <button class="mob-sheet-close" id="mob-filter-close" aria-label="Close filters">&#10005;</button>
+        </div>
 
-          selectors.forEach((sel) => {
-            document.querySelectorAll(sel).forEach((el) => {
-              try {
-                // Only target mobile-specific containers — avoid hiding desktop filters by checking ancestor
-                // If the element is inside `.mobile-filters-container` then treat it as mobile-only
-                if (el.closest && el.closest('.mobile-filters-container')) {
-                  el.style.display = hide ? 'none' : '';
-                } else if (sel === '.mobile-filters-container') {
-                  el.style.display = hide ? 'none' : '';
-                }
-              } catch (e) {}
-            });
-          });
-        }
+        <div class="mob-filter-body">
+          <!-- Left: category list -->
+          <div class="mob-filter-cats" id="mob-filter-cats">
+            <button class="mob-cat-btn active" data-cat="price">Price</button>
+            <button class="mob-cat-btn" data-cat="brand">Brand</button>
+            <button class="mob-cat-btn" data-cat="year">Year</button>
+            <button class="mob-cat-btn" data-cat="km">KM</button>
+            <button class="mob-cat-btn" data-cat="owner">Ownership</button>
+            <button class="mob-cat-btn" data-cat="fuel">Fuel</button>
+          </div>
 
-        // Run on load and on resize
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', toggleMobileFilters);
-        } else {
-          toggleMobileFilters();
-        }
-        window.addEventListener('resize', toggleMobileFilters);
-      })();
-    </script>
+          <!-- Right: options for selected category -->
+          <div class="mob-filter-opts" id="mob-filter-opts">
+
+            <!-- Price panel -->
+            <div class="mob-filter-pane" id="mob-pane-price">
+              <p class="mob-filter-section-label">Price Range</p>
+              <div class="mob-price-row">
+                <input type="number" id="mob-min-price" placeholder="Min ₹" min="0" />
+                <span class="mob-price-sep">–</span>
+                <input type="number" id="mob-max-price" placeholder="Max ₹" min="0" />
+              </div>
+              <div class="mob-price-presets">
+                <button class="mob-price-preset" data-min="0" data-max="50000">Under ₹50,000</button>
+                <button class="mob-price-preset" data-min="50000" data-max="100000">₹50,000 – ₹1,00,000</button>
+                <button class="mob-price-preset" data-min="100000" data-max="200000">₹1,00,000 – ₹2,00,000</button>
+                <button class="mob-price-preset" data-min="200000" data-max="500000">₹2,00,000 – ₹5,00,000</button>
+                <button class="mob-price-preset" data-min="500000" data-max="">₹5,00,000+</button>
+              </div>
+            </div>
+
+            <!-- Brand panel -->
+            <div class="mob-filter-pane" id="mob-pane-brand" style="display:none">
+              <p class="mob-filter-section-label">Select Brand</p>
+              <div class="mob-chip-grid" id="mob-brand-chips">
+                <button class="mob-chip" data-brand="Audi">Audi</button>
+                <button class="mob-chip" data-brand="Bentley">Bentley</button>
+                <button class="mob-chip" data-brand="BMW">BMW</button>
+                <button class="mob-chip" data-brand="Chevrolet">Chevrolet</button>
+                <button class="mob-chip" data-brand="Chrysler">Chrysler</button>
+                <button class="mob-chip" data-brand="Ferrari">Ferrari</button>
+                <button class="mob-chip" data-brand="FIAT">FIAT</button>
+                <button class="mob-chip" data-brand="Ford">Ford</button>
+                <button class="mob-chip" data-brand="Honda">Honda</button>
+                <button class="mob-chip" data-brand="Hyundai">Hyundai</button>
+                <button class="mob-chip" data-brand="Isuzu">Isuzu</button>
+                <button class="mob-chip" data-brand="Jaguar">Jaguar</button>
+                <button class="mob-chip" data-brand="Jeep">Jeep</button>
+                <button class="mob-chip" data-brand="Kia">Kia</button>
+                <button class="mob-chip" data-brand="Lamborghini">Lamborghini</button>
+                <button class="mob-chip" data-brand="Land Rover">Land Rover</button>
+                <button class="mob-chip" data-brand="Lexus">Lexus</button>
+                <button class="mob-chip" data-brand="Lotus">Lotus</button>
+                <button class="mob-chip" data-brand="Maybach">Maybach</button>
+                <button class="mob-chip" data-brand="Mazda">Mazda</button>
+                <button class="mob-chip" data-brand="McLaren">McLaren</button>
+                <button class="mob-chip" data-brand="Mercedes Benz">Mercedes Benz</button>
+                <button class="mob-chip" data-brand="MINI">MINI</button>
+                <button class="mob-chip" data-brand="Mitsubishi">Mitsubishi</button>
+                <button class="mob-chip" data-brand="Nissan">Nissan</button>
+                <button class="mob-chip" data-brand="Porsche">Porsche</button>
+                <button class="mob-chip" data-brand="Rolls-Royce">Rolls-Royce</button>
+                <button class="mob-chip" data-brand="SRT">SRT</button>
+                <button class="mob-chip" data-brand="Suzuki">Suzuki</button>
+                <button class="mob-chip" data-brand="Toyota">Toyota</button>
+                <button class="mob-chip" data-brand="Volkswagen">Volkswagen</button>
+                <button class="mob-chip" data-brand="Volvo">Volvo</button>
+              </div>
+            </div>
+
+            <!-- Year panel -->
+            <div class="mob-filter-pane" id="mob-pane-year" style="display:none">
+              <p class="mob-filter-section-label">Year Range</p>
+              <div class="mob-range-wrap">
+                <div class="mob-range-label">
+                  <span>From: <strong id="mob-year-min-disp">2000</strong></span>
+                  <span>To: <strong id="mob-year-max-disp">2026</strong></span>
+                </div>
+                <input type="range" id="mob-year-min" min="2000" max="2026" value="2000" step="1" />
+                <input type="range" id="mob-year-max" min="2000" max="2026" value="2026" step="1" />
+              </div>
+            </div>
+
+            <!-- KM panel -->
+            <div class="mob-filter-pane" id="mob-pane-km" style="display:none">
+              <p class="mob-filter-section-label">KM Driven</p>
+              <div class="mob-range-wrap">
+                <div class="mob-range-label">
+                  <span>From: <strong id="mob-km-min-disp">0</strong></span>
+                  <span>To: <strong id="mob-km-max-disp">2,00,000</strong></span>
+                </div>
+                <input type="range" id="mob-km-min" min="0" max="200000" value="0" step="1000" />
+                <input type="range" id="mob-km-max" min="0" max="200000" value="200000" step="1000" />
+                <p class="mob-range-note">* Max slider at 2,00,000 = "2,00,000+" (no upper limit)</p>
+              </div>
+            </div>
+
+            <!-- Ownership panel -->
+            <div class="mob-filter-pane" id="mob-pane-owner" style="display:none">
+              <p class="mob-filter-section-label">Ownership</p>
+              <div class="mob-chip-grid" id="mob-owner-chips">
+                <button class="mob-chip" data-owner="1">1st Owner</button>
+                <button class="mob-chip" data-owner="2">2nd Owner</button>
+                <button class="mob-chip" data-owner="3">3+ Owner</button>
+              </div>
+            </div>
+
+            <!-- Fuel panel -->
+            <div class="mob-filter-pane" id="mob-pane-fuel" style="display:none">
+              <p class="mob-filter-section-label">Fuel Type</p>
+              <div class="mob-chip-grid" id="mob-fuel-chips">
+                <button class="mob-chip" data-fuel="Petrol">Petrol</button>
+                <button class="mob-chip" data-fuel="Diesel">Diesel</button>
+                <button class="mob-chip" data-fuel="CNG">CNG</button>
+                <button class="mob-chip" data-fuel="Electric">Electric</button>
+                <button class="mob-chip" data-fuel="Hybrid">Hybrid</button>
+              </div>
+            </div>
+
+          </div><!-- /.mob-filter-opts -->
+        </div><!-- /.mob-filter-body -->
+
+        <div class="mob-filter-footer">
+          <button class="mob-filter-clear-btn" id="mob-filter-clear">Clear All</button>
+          <button class="mob-filter-apply-btn" id="mob-filter-apply">Apply Filters</button>
+        </div>
+      </div><!-- /.mob-sheet-panel -->
+    </div><!-- /.mob-filter-sheet -->
+
+    <!-- =============================================
+         STATIC BOTTOM BAR (Sort | Filters)
+         ============================================= -->
+    <div class="mob-bottom-bar" id="mob-bottom-bar">
+      <button class="mob-bar-btn" id="mob-sort-btn">
+        <i class="fas fa-sort-amount-down"></i> Sort
+      </button>
+      <button class="mob-bar-btn" id="mob-filter-btn">
+        <i class="fas fa-sliders-h"></i> Filters
+        <span class="mob-filter-badge" id="mob-filter-badge" style="display:none">0</span>
+      </button>
+    </div>
+
   </body>
 </html>

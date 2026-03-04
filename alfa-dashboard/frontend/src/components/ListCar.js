@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { formatIndian } from "../utils/formatIndian";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Trash2, Car, Fuel, Gauge, Calendar, Tag } from "lucide-react";
 import Sidebar from "./Sidebar";
 
 const ListCar = () => {
@@ -11,7 +11,21 @@ const ListCar = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeMenu, setActiveMenu] = useState("List Car Data");
-const  API_BASE = "https://alfa-motors-9bk6.vercel.app";
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    const handler = (e) => setIsMobile(e.matches);
+    setIsMobile(mq.matches);
+    if (mq.addEventListener) mq.addEventListener("change", handler);
+    else mq.addListener(handler);
+    return () => {
+      if (mq.removeEventListener) mq.removeEventListener("change", handler);
+      else mq.removeListener(handler);
+    };
+  }, []);
+
+  const API_BASE = "http://localhost:2500";
   const getId = (obj) => (obj && (obj.id || obj._id)) || null;
 
   useEffect(() => {
@@ -21,8 +35,8 @@ const  API_BASE = "https://alfa-motors-9bk6.vercel.app";
         const API_BASE =
           window.API_BASE ||
           (window.location.hostname === "localhost"
-            ? "https://alfa-motors-9bk6.vercel.app"
-            : "https://alfa-motors-9bk6.vercel.app");
+            ? "http://localhost:2500"
+            : "http://localhost:2500");
         const response = await axios.get(`${API_BASE}/api/cars`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -68,8 +82,7 @@ const  API_BASE = "https://alfa-motors-9bk6.vercel.app";
     <div style={styles.container}>
       <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
 
-      
-      <div style={styles.mainContent}>
+      <div style={styles.mainContent} className="dashboard-main-content">
         <div style={styles.contentPadding}>
           <div style={styles.header}>
             <h1 style={styles.pageTitle}>Car Inventory</h1>
@@ -82,7 +95,95 @@ const  API_BASE = "https://alfa-motors-9bk6.vercel.app";
             <div style={styles.loading}>Loading cars...</div>
           ) : error ? (
             <div style={styles.error}>{error}</div>
+          ) : isMobile ? (
+            /* ─── MOBILE: card list ─── */
+            <div style={styles.cardList}>
+              {(Array.isArray(cars) ? cars : []).map((car) => {
+                const statusStyle =
+                  car.status === "Available"
+                    ? styles.statusAvailable
+                    : car.status === "Coming Soon"
+                    ? styles.statusComingSoon
+                    : styles.statusSoldOut;
+                return (
+                  <div key={getId(car) || Math.random()} style={styles.mobileCard}>
+                    {/* top row: name + status */}
+                    <div style={styles.mobileCardHeader}>
+                      <div style={styles.mobileCarName}>
+                        <Car size={15} style={{ marginRight: 6, color: "#6b7280" }} />
+                        <span style={styles.mobileCarNameText}>
+                          {car.modelYear} {car.make} {car.model}
+                        </span>
+                      </div>
+                      <span style={{ ...styles.statusBadge, ...statusStyle }}>
+                        {car.status}
+                      </span>
+                    </div>
+
+                    {/* stats row */}
+                    <div style={styles.mobileCardStats}>
+                      <div style={styles.mobileStat}>
+                        <Gauge size={13} color="#9ca3af" />
+                        <span style={styles.mobileStatLabel}>KM</span>
+                        <span style={styles.mobileStatValue}>
+                          {car.kmDriven != null
+                            ? Number(car.kmDriven).toLocaleString()
+                            : "-"}
+                        </span>
+                      </div>
+                      <div style={styles.mobileStat}>
+                        <Fuel size={13} color="#9ca3af" />
+                        <span style={styles.mobileStatLabel}>Fuel</span>
+                        <span style={styles.mobileStatValue}>{car.fuelType || "-"}</span>
+                      </div>
+                      <div style={styles.mobileStat}>
+                        <Tag size={13} color="#9ca3af" />
+                        <span style={styles.mobileStatLabel}>Own</span>
+                        <span style={styles.mobileStatValue}>{car.ownership || "-"}</span>
+                      </div>
+                    </div>
+
+                    {/* prices */}
+                    <div style={styles.mobilePrices}>
+                      <div style={styles.mobilePrice}>
+                        <span style={styles.mobilePriceLabel}>Buying</span>
+                        <span style={styles.mobilePriceValue}>₹{formatIndian(car.buyingPrice)}</span>
+                      </div>
+                      <div style={styles.mobilePriceDivider} />
+                      <div style={styles.mobilePrice}>
+                        <span style={styles.mobilePriceLabel}>Quoting</span>
+                        <span style={styles.mobilePriceValue}>₹{formatIndian(car.quotingPrice)}</span>
+                      </div>
+                      <div style={styles.mobilePriceDivider} />
+                      <div style={styles.mobilePrice}>
+                        <span style={styles.mobilePriceLabel}>Selling</span>
+                        <span style={{ ...styles.mobilePriceValue, color: "#16a34a", fontWeight: 700 }}>
+                          ₹{formatIndian(car.sellingPrice)}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* actions */}
+                    <div style={styles.mobileCardActions}>
+                      <button
+                        onClick={() => handleEdit(getId(car))}
+                        style={styles.mobileEditBtn}
+                      >
+                        <Edit size={14} style={{ marginRight: 4 }} /> Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(getId(car))}
+                        style={styles.mobileDeleteBtn}
+                      >
+                        <Trash2 size={14} style={{ marginRight: 4 }} /> Delete
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           ) : (
+            /* ─── DESKTOP: table ─── */
             <div style={styles.tableContainer}>
               <table style={styles.table}>
                 <thead>
@@ -109,16 +210,9 @@ const  API_BASE = "https://alfa-motors-9bk6.vercel.app";
                           ? Number(car.kmDriven).toLocaleString()
                           : "-"}
                       </td>
-                      <td style={styles.td}>
-                        ₹{formatIndian(car.buyingPrice)}
-                      </td>
-                      <td style={styles.td}>
-                        ₹{formatIndian(car.quotingPrice)}
-                      </td>
-                      <td style={styles.td}>
-                        ₹{formatIndian(car.sellingPrice)}
-                      </td>
-
+                      <td style={styles.td}>₹{formatIndian(car.buyingPrice)}</td>
+                      <td style={styles.td}>₹{formatIndian(car.quotingPrice)}</td>
+                      <td style={styles.td}>₹{formatIndian(car.sellingPrice)}</td>
                       <td style={styles.td}>
                         <span
                           style={{
@@ -339,9 +433,6 @@ const styles = {
     cursor: "pointer",
     padding: "4px 8px",
     marginRight: "8px",
-    ":hover": {
-      color: "#B3B3B3",
-    },
   },
   deleteButton: {
     backgroundColor: "transparent",
@@ -349,9 +440,132 @@ const styles = {
     color: "#ef4444",
     cursor: "pointer",
     padding: "4px 8px",
-    ":hover": {
-      color: "#dc2626",
-    },
+  },
+
+  /* ─── Mobile card list ─── */
+  cardList: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 12,
+  },
+  mobileCard: {
+    backgroundColor: "#fff",
+    borderRadius: 14,
+    boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
+    padding: "14px 16px",
+    border: "1px solid #f0f0f0",
+  },
+  mobileCardHeader: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
+  mobileCarName: {
+    display: "flex",
+    alignItems: "center",
+    flex: 1,
+    minWidth: 0,
+  },
+  mobileCarNameText: {
+    fontSize: 14,
+    fontWeight: 700,
+    color: "#1f2937",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  },
+  mobileCardStats: {
+    display: "flex",
+    gap: 12,
+    marginBottom: 12,
+    padding: "10px 0",
+    borderTop: "1px solid #f3f4f6",
+    borderBottom: "1px solid #f3f4f6",
+  },
+  mobileStat: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 2,
+    flex: 1,
+  },
+  mobileStatLabel: {
+    fontSize: 10,
+    color: "#9ca3af",
+    fontWeight: 500,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  mobileStatValue: {
+    fontSize: 12,
+    color: "#374151",
+    fontWeight: 600,
+  },
+  mobilePrices: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 12,
+    backgroundColor: "#f9fafb",
+    borderRadius: 10,
+    padding: "10px 12px",
+  },
+  mobilePrice: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    flex: 1,
+  },
+  mobilePriceDivider: {
+    width: 1,
+    height: 32,
+    backgroundColor: "#e5e7eb",
+  },
+  mobilePriceLabel: {
+    fontSize: 10,
+    color: "#9ca3af",
+    fontWeight: 500,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+    marginBottom: 2,
+  },
+  mobilePriceValue: {
+    fontSize: 13,
+    color: "#1f2937",
+    fontWeight: 600,
+  },
+  mobileCardActions: {
+    display: "flex",
+    gap: 10,
+  },
+  mobileEditBtn: {
+    display: "flex",
+    alignItems: "center",
+    flex: 1,
+    justifyContent: "center",
+    padding: "8px 0",
+    borderRadius: 8,
+    border: "1.5px solid #d1d5db",
+    backgroundColor: "#fff",
+    color: "#374151",
+    fontSize: 13,
+    fontWeight: 600,
+    cursor: "pointer",
+  },
+  mobileDeleteBtn: {
+    display: "flex",
+    alignItems: "center",
+    flex: 1,
+    justifyContent: "center",
+    padding: "8px 0",
+    borderRadius: 8,
+    border: "1.5px solid #fecaca",
+    backgroundColor: "#fff5f5",
+    color: "#ef4444",
+    fontSize: 13,
+    fontWeight: 600,
+    cursor: "pointer",
   },
 };
 

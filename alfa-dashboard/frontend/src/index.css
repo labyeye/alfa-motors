@@ -10,6 +10,24 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* On mobile, push the main scrollable content below the fixed header */
+@media (max-width: 768px) {
+  .dashboard-main-content {
+    padding-top: 68px !important;
+  }
+
+  /* 2-column card grid on mobile */
+  .dashboard-cards-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  /* Compact cards on mobile */
+  .dashboard-cards-grid > div {
+    padding: 14px !important;
+  }
+}
+
 /* TemplateStyles.css */
 .pdf-field {
   position: absolute;

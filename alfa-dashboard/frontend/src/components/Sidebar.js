@@ -130,15 +130,30 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
 
   return (
     <>
+      {/* ── Mobile top header bar ── */}
       {isMobile && (
-        <button
-          aria-label={mobileOpen ? "Close menu" : "Open menu"}
-          style={styles.hamburgerButton}
-          onClick={() => setMobileOpen((v) => !v)}
-        >
-          <Menu size={20} />
-        </button>
+        <header style={styles.mobileHeader}>
+          <button
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            style={styles.mobileHamburger}
+            onClick={() => setMobileOpen((v) => !v)}
+          >
+            <Menu size={22} color="#fff" />
+          </button>
+
+          <div style={styles.mobileHeaderCenter}>
+            <img src={logo} alt="Alfa Motor World logo" style={styles.mobileHeaderLogo} />
+            <div style={styles.mobileHeaderText}>
+              <span style={styles.mobileHeaderTitle}>ALFA MOTORS</span>
+              <span style={styles.mobileHeaderSub}>WORLD</span>
+            </div>
+          </div>
+
+          {/* right spacer keeps the logo centred */}
+          <div style={{ width: 44 }} />
+        </header>
       )}
+
       {isMobile && mobileOpen && (
         <div style={styles.overlay} onClick={() => setMobileOpen(false)} />
       )}
@@ -336,24 +351,7 @@ const styles = {
     width: "100%",
     borderRadius: 8,
   },
-  hamburgerButton: {
-    position: "fixed",
-    top: 12,
-    left: 12,
-    zIndex: 1003,
-    backgroundColor: "#0f172a",
-    border: "1px solid rgba(255,255,255,0.06)",
-    color: "#ffffff",
-    width: 44,
-    height: 44,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 8,
-    padding: 8,
-    cursor: "pointer",
-    boxShadow: "0 6px 18px rgba(2,6,23,0.35)",
-  },
+
   overlay: {
     position: "fixed",
     inset: 0,
@@ -369,8 +367,72 @@ const styles = {
     width: "240px",
     transform: "translateX(0)",
     transition: "transform 0.28s ease",
+    paddingTop: 68, // clears the fixed mobile header bar
   },
   sidebarHidden: { transform: "translateX(-100%)" },
+
+  // ── Mobile top header bar ──────────────────────────────────────────────
+  mobileHeader: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 68,
+    backgroundColor: "#0f172a",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingLeft: 8,
+    paddingRight: 8,
+    zIndex: 1004,
+    boxShadow: "0 2px 8px rgba(0,0,0,0.45)",
+  },
+  mobileHamburger: {
+    width: 44,
+    height: 44,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    background: "transparent",
+    border: "none",
+    cursor: "pointer",
+    borderRadius: 8,
+    flexShrink: 0,
+  },
+  mobileHeaderCenter: {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    flex: 1,
+    justifyContent: "center",
+  },
+  mobileHeaderLogo: {
+    width: 44,
+    height: 44,
+    objectFit: "contain",
+    borderRadius: 8,
+    background: "#fff",
+    padding: 4,
+  },
+  mobileHeaderText: {
+    display: "flex",
+    flexDirection: "column",
+    lineHeight: 1.1,
+  },
+  mobileHeaderTitle: {
+    fontSize: 17,
+    fontWeight: 800,
+    color: "#facc15",
+    letterSpacing: 1,
+    fontFamily: "'Arial Black', Arial, sans-serif",
+  },
+  mobileHeaderSub: {
+    fontSize: 11,
+    fontWeight: 600,
+    color: "#94a3b8",
+    letterSpacing: 2,
+    textTransform: "uppercase",
+  },
 };
 
 export default Sidebar;

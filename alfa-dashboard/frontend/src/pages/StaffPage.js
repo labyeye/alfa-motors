@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 import logo from "../images/company.png";
 
 import AuthContext from "../context/AuthContext";
-const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'https://alfa-motors-9bk6.vercel.app' : 'https://alfa-motors-9bk6.vercel.app');
+const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'http://localhost:2500' : 'http://localhost:2500');
 
 const StaffPage = () => {
   const { user } = useContext(AuthContext);
@@ -440,7 +440,7 @@ const StaffPage = () => {
       </div>
 
       {/* Main Content */}
-      <div style={styles.mainContent}>
+      <div style={styles.mainContent} className="dashboard-main-content">
         <div style={styles.contentPadding}>
           <div style={styles.header}>
             <div

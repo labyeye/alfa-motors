@@ -7,8 +7,8 @@ import Sidebar from "../components/Sidebar";
 const API_BASE =
   window.API_BASE ||
   (window.location.hostname === "localhost"
-    ? "https://alfa-motors-9bk6.vercel.app"
-    : "https://alfa-motors-9bk6.vercel.app");
+    ? "http://localhost:2500"
+    : "http://localhost:2500");
 
 const GalleryManagement = () => {
   const navigate = useNavigate();
@@ -304,17 +304,20 @@ const GalleryManagement = () => {
       <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
 
       {/* Main Content */}
-      <div style={styles.mainContent}>
+      <div style={styles.mainContent} className="dashboard-main-content">
         <div style={styles.contentPadding}>
           <div style={styles.header}>
-            <h1 style={styles.pageTitle}>Gallery Management</h1>
-            <p style={styles.pageSubtitle}>
-              Manage happy customer gallery and sold car testimonials
-            </p>
+            <div style={styles.headerText}>
+              <h1 style={styles.pageTitle}>Gallery Management</h1>
+              <p style={styles.pageSubtitle}>
+                Manage happy customer gallery and sold car testimonials
+              </p>
+            </div>
             <div style={styles.actionButtons}>
               <a
-                href="/https://www.alfamotorworld.com/happy-customers.html"
+                href="https://www.alfamotorworld.com/happy-customers.html"
                 target="_blank"
+                rel="noreferrer"
                 style={styles.viewGalleryButton}
               >
                 <ExternalLink size={16} />
@@ -364,28 +367,6 @@ const GalleryManagement = () => {
               >
                 Delete All
               </button>
-            </div>
-          </div>
-
-          <div style={styles.statsGrid}>
-            <div style={styles.statCard}>
-              <h3 style={styles.statNumber}>{soldCars.length}</h3>
-              <p style={styles.statLabel}>Cars in Gallery</p>
-            </div>
-            <div style={styles.statCard}>
-              <h3 style={styles.statNumber}>
-                {soldCars.filter((car) => car.sold?.testimonial).length}
-              </h3>
-              <p style={styles.statLabel}>With Testimonials</p>
-            </div>
-            <div style={styles.statCard}>
-              <h3 style={styles.statNumber}>
-                {
-                  soldCars.filter((car) => car.sold?.customerPhotos?.length > 0)
-                    .length
-                }
-              </h3>
-              <p style={styles.statLabel}>With Customer Photos</p>
             </div>
           </div>
 
@@ -460,9 +441,6 @@ const GalleryManagement = () => {
                     <tr>
                       <th style={styles.th}>Preview</th>
                       <th style={styles.th}>Car</th>
-                      <th style={styles.th}>Caption</th>
-                      <th style={styles.th}>Testimonial</th>
-                      <th style={styles.th}>Uploaded By</th>
                       <th style={styles.th}>Actions</th>
                     </tr>
                   </thead>
@@ -486,33 +464,6 @@ const GalleryManagement = () => {
                         </td>
                         <td style={styles.td}>
                           {item.car ? `${item.car}` : "—"}
-                        </td>
-                        <td style={styles.td}>
-                          {editingId === item._id ? (
-                            <input
-                              value={editCaption}
-                              onChange={(e) => setEditCaption(e.target.value)}
-                              style={{ width: "100%" }}
-                            />
-                          ) : (
-                            item.caption || "—"
-                          )}
-                        </td>
-                        <td style={styles.td}>
-                          {editingId === item._id ? (
-                            <input
-                              value={editTestimonial}
-                              onChange={(e) =>
-                                setEditTestimonial(e.target.value)
-                              }
-                              style={{ width: "100%" }}
-                            />
-                          ) : (
-                            item.testimonial || "—"
-                          )}
-                        </td>
-                        <td style={styles.td}>
-                          {item.uploadedBy?.username || "—"}
                         </td>
                         <td style={styles.td}>
                           {editingId === item._id ? (
@@ -555,93 +506,7 @@ const GalleryManagement = () => {
             )}
           </div>
 
-          <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>Happy Customer Gallery</h2>
-            {soldCars.length === 0 ? (
-              <div style={styles.emptyState}>
-                <Camera
-                  size={48}
-                  style={{ color: "#94a3b8", marginBottom: "16px" }}
-                />
-                <h3 style={{ color: "#64748b", margin: "0 0 8px 0" }}>
-                  No sold cars in gallery yet
-                </h3>
-                <p style={{ color: "#94a3b8", margin: 0 }}>
-                  Mark cars as sold and add customer testimonials to build your
-                  gallery
-                </p>
-              </div>
-            ) : (
-              <div style={styles.galleryGrid}>
-                {soldCars.map((car) => (
-                  <div key={car._id} style={styles.galleryCard}>
-                    <div style={styles.cardImage}>
-                      <img
-                        src={buildImageUrl(
-                          (car.sold?.customerPhotos &&
-                            car.sold.customerPhotos[0]) ||
-                            (car.photos && car.photos[0])
-                        )}
-                        alt={`${car.make} ${car.model}`}
-                        style={styles.cardImg}
-                        onError={(e) => {
-                          e.currentTarget.onerror = null;
-                          e.currentTarget.src = "/assets/placeholder.png";
-                        }}
-                      />
-                      <div style={styles.soldBadge}>SOLD</div>
-                    </div>
-                    <div style={styles.cardContent}>
-                      <h3 style={styles.cardTitle}>
-                        {car.make} {car.model} {car.variant} ({car.modelYear})
-                      </h3>
-                      {car.sold?.customerName && (
-                        <p style={styles.customerName}>
-                          👤 {car.sold.customerName}
-                        </p>
-                      )}
-                      {car.sold?.testimonial && (
-                        <p style={styles.testimonial}>
-                          "{car.sold.testimonial}"
-                        </p>
-                      )}
-                      <div style={styles.cardActions}>
-                        <button
-                          style={styles.editButton}
-                          onClick={() => navigate(`/car/edit/${car._id}`)}
-                        >
-                          <Edit size={14} />
-                          Edit Details
-                        </button>
-                        <label style={styles.uploadLabel}>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            style={{ display: "none" }}
-                            onChange={(e) => {
-                              if (e.target.files && e.target.files.length > 0)
-                                handleAddSoldPhotos(car._id, e.target.files);
-                              e.target.value = "";
-                            }}
-                          />
-                          <button
-                            style={styles.uploadButton}
-                            disabled={uploadingIds.includes(car._id)}
-                          >
-                            <Plus size={14} />
-                            {uploadingIds.includes(car._id)
-                              ? "Uploading..."
-                              : "Add Photos"}
-                          </button>
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          
         </div>
       </div>
     </div>
@@ -755,8 +620,12 @@ const styles = {
   header: {
     marginBottom: "32px",
     display: "flex",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
+    flexDirection: "column",
+    gap: "16px",
+  },
+  headerText: {
+    display: "flex",
+    flexDirection: "column",
   },
   section: {
     backgroundColor: "white",
@@ -912,6 +781,7 @@ const styles = {
   },
   actionButtons: {
     display: "flex",
+    flexWrap: "wrap",
     gap: "12px",
   },
   viewGalleryButton: {

@@ -63,7 +63,7 @@ const ServiceBillForm = () => {
   });
 
   const [previewMode, setPreviewMode] = useState(false);
-  const API_BASE_URL = "https://alfa-motors-9bk6.vercel.app/api";
+  const API_BASE_URL = "http://localhost:2500/api";
 
   useEffect(() => {
     fetchAvailableCars();

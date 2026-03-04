@@ -740,7 +740,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 5%;
+  padding: 5px 5%;
   background-color: rgba(13, 27, 42, 0.95);
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;

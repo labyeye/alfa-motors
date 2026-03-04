@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -57,7 +57,7 @@
         "image": ["https://www.alfamotorworld.com/assets/relogo.png"],
         "url": "https://www.alfamotorworld.com/vehicledetail.html"
       }
-      
+
       // Add left/right arrow buttons for the Other Cars slider and wire scroll handlers.
       function addOtherCarsArrows() {
         try {
@@ -125,7 +125,7 @@
               var src = img.getAttribute("src") || "";
               var isDecor =
                 /logo|icon|decor|sprite|background|arrow|dot|star|placeholder/i.test(
-                  src
+                  src,
                 ) ||
                 img.classList.contains("logo-img") ||
                 img.getAttribute("itemprop") === "logo";
@@ -201,45 +201,104 @@
           </a>
           <ul class="nav-links">
             <li>
-              <a href="https://www.alfamotorworld.com/" aria-current="page" data-translate="Home"
+              <a
+                href="https://www.alfamotorworld.com/"
+                aria-current="page"
+                data-translate="Home"
                 >Home</a
               >
             </li>
 
             <li class="mega-menu-trigger">
-              <a href="https://www.alfamotorworld.com/inventory.html" data-translate="Vehicles for Sale"
+              <a
+                href="https://www.alfamotorworld.com/inventory.html"
+                data-translate="Vehicles for Sale"
                 >Vehicles for Sale</a
               >
               <div class="mega-menu">
                 <div class="mega-menu-content">
                   <div class="mega-menu-column">
                     <h3>Categories</h3>
-                    <a href="https://www.alfamotorworld.com/inventory.html?category=suv">SUV</a>
-                    <a href="https://www.alfamotorworld.com/inventory.html?category=sedan">Sedan</a>
-                    <a href="https://www.alfamotorworld.com/inventory.html?category=hatchback">Hatchback</a>
-                    <a href="https://www.alfamotorworld.com/inventory.html?category=luxury">Luxury</a>
-                    <a href="https://www.alfamotorworld.com/inventory.html?category=electric">Electric</a>
+                    <a
+                      href="https://www.alfamotorworld.com/inventory.html?category=suv"
+                      >SUV</a
+                    >
+                    <a
+                      href="https://www.alfamotorworld.com/inventory.html?category=sedan"
+                      >Sedan</a
+                    >
+                    <a
+                      href="https://www.alfamotorworld.com/inventory.html?category=hatchback"
+                      >Hatchback</a
+                    >
+                    <a
+                      href="https://www.alfamotorworld.com/inventory.html?category=luxury"
+                      >Luxury</a
+                    >
+                    <a
+                      href="https://www.alfamotorworld.com/inventory.html?category=electric"
+                      >Electric</a
+                    >
                   </div>
                   <div class="mega-menu-column">
                     <h3>Popular Brands</h3>
-                    <a href="https://www.alfamotorworld.com/inventory.html?brand=bmw">BMW</a>
-                    <a href="https://www.alfamotorworld.com/inventory.html?brand=audi">Audi</a>
-                    <a href="https://www.alfamotorworld.com/inventory.html?brand=mercedes">Mercedes</a>
-                    <a href="https://www.alfamotorworld.com/inventory.html?brand=toyota">Toyota</a>
-                    <a href="https://www.alfamotorworld.com/inventory.html?brand=honda">Honda</a>
+                    <a
+                      href="https://www.alfamotorworld.com/inventory.html?brand=bmw"
+                      >BMW</a
+                    >
+                    <a
+                      href="https://www.alfamotorworld.com/inventory.html?brand=audi"
+                      >Audi</a
+                    >
+                    <a
+                      href="https://www.alfamotorworld.com/inventory.html?brand=mercedes"
+                      >Mercedes</a
+                    >
+                    <a
+                      href="https://www.alfamotorworld.com/inventory.html?brand=toyota"
+                      >Toyota</a
+                    >
+                    <a
+                      href="https://www.alfamotorworld.com/inventory.html?brand=honda"
+                      >Honda</a
+                    >
                   </div>
                 </div>
               </div>
             </li>
             <li>
-              <a href="https://www.alfamotorworld.com/sell.html" data-translate="Sell Your Vehicle"
+              <a
+                href="https://www.alfamotorworld.com/sell.html"
+                data-translate="Sell Your Vehicle"
                 >Sell Your Vehicle</a
               >
             </li>
-            <li><a href="https://www.alfamotorworld.com/happy-customers.html">Happy Customers</a></li>
-            <li><a href="https://www.alfamotorworld.com/finance.html" data-translate="Financing">Financing</a></li>
-            <li><a href="https://www.alfamotorworld.com/about.html" data-translate="About Us">About Us</a></li>
-            <li><a href="https://www.alfamotorworld.com/contact.html" data-translate="Contact">Contact</a></li>
+            <li>
+              <a href="https://www.alfamotorworld.com/happy-customers.html"
+                >Happy Customers</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://www.alfamotorworld.com/finance.html"
+                data-translate="Financing"
+                >Financing</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://www.alfamotorworld.com/about.html"
+                data-translate="About Us"
+                >About Us</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://www.alfamotorworld.com/contact.html"
+                data-translate="Contact"
+                >Contact</a
+              >
+            </li>
           </ul>
           <div class="login-btn">
             <a href="https://www.alfamotorworld.com/getquote.html">
@@ -248,625 +307,469 @@
           </div>
         </nav>
       </header>
-      <div class="vehicle-main-section">
-        <div class="vehicle-content-row">
-          <div class="vehicle-image-block">
+
+      <div class="vehicle-detail-container">
+        <div class="vehicle-gallery">
+          <div class="main-image-container">
             <img
               id="mainVehicleImg"
-              class="vehicle-main-img"
+              class="main-vehicle-image"
               src="assets/owner.png"
               alt="Car"
             />
-            <div class="vehicle-thumbnails" id="vehicleThumbnails"></div>
-          </div>
-          <div class="vehicle-details-block">
-            <div class="vehicle-title" id="vehicleTitle">Car Brand Model</div>
-            <div class="vehicle-details-grid">
-              <div class="vehicle-detail-item">
-                <div class="detail-label">
-                  <i class="fas fa-tachometer-alt"></i>
-                </div>
-                <div class="detail-value" id="vehicleKm">0 km</div>
-              </div>
-              <div class="vehicle-detail-item">
-                <div class="detail-label">
-                  <i class="fas fa-user"></i>
-                </div>
-                <div class="detail-value" id="vehicleOwner">1st Own</div>
-              </div>
-              <div class="vehicle-detail-item">
-                <div class="detail-label">
-                  <i class="fas fa-gas-pump"></i>
-                </div>
-                <div class="detail-value" id="vehicleFuel">Petrol</div>
-              </div>
-              <div class="vehicle-detail-item">
-                <div class="detail-label">
-                  <i class="fas fa-palette"></i>
-                </div>
-                <div class="detail-value" id="vehicleColor">Color</div>
-              </div>
+            <div class="image-counter">
+              <span id="currentImageIndex">1</span>/<span id="totalImages"
+                >36</span
+              >
             </div>
-            <div class="vehicle-price" id="vehiclePrice">₹0</div>
-            <button
-              class="add-to-cart-btn"
-              onclick="window.location.href='https://www.alfamotorworld.com/contact.html'"
-            >
-              Contact Seller
+            <button class="gallery-nav-btn prev-btn" id="prevImageBtn">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="gallery-nav-btn next-btn" id="nextImageBtn">
+              <i class="fas fa-chevron-right"></i>
             </button>
           </div>
         </div>
-      </div>
-      <div class="why-choose-row">
-        <div class="why-choose-item">
-          <i class="fas fa-shield-alt"></i> Verified Documents
-        </div>
-        <div class="why-choose-item">
-          <i class="fas fa-car"></i> Quality Checked
-        </div>
-        <div class="why-choose-item">
-          <i class="fas fa-star"></i> Great Value
-        </div>
-        <div class="why-choose-item">
-          <i class="fas fa-heart"></i> Trusted Seller
+
+        <div class="vehicle-info-section">
+          <div class="stock-badge-link">
+            <span class="stock-label">Alfa Motors</span>
+            <span class="stock-icon"><i class="fas fa-circle"></i></span>
+            <span class="stock-text">Owned stock</span>
+            <i class="fas fa-chevron-right"></i>
+          </div>
+
+          <h1 class="vehicle-title-main" id="vehicleTitle">
+            2019 Hyundai Grand i10 SPORTZ 1.2 KAPPA VTVT
+          </h1>
+
+          <div class="vehicle-location">
+            <i class="fas fa-map-marker-alt"></i>
+            <span id="vehicleLocation">Bellahalli, Bengaluru</span>
+          </div>
+
+          <div class="vehicle-specs-bar">
+            <div class="spec-item">
+              <span id="vehicleKm">25,161 km</span>
+            </div>
+            <div class="spec-divider"></div>
+            <div class="spec-item">
+              <span id="vehicleFuel">Petrol</span>
+            </div>
+            <div class="spec-divider"></div>
+            <div class="spec-item">
+              <span id="vehicleTransmission">Manual</span>
+            </div>
+            <div class="spec-divider"></div>
+            <div class="spec-item">
+              <span id="vehicleOwner">3rd owner</span>
+            </div>
+            <div class="spec-divider"></div>
+            <div class="spec-item">
+              <span id="vehicleRTO">KA-51</span>
+            </div>
+          </div>
+
+          <div class="warranty-badge">
+            <i class="fas fa-shield-alt"></i>
+            <span>Zero Worry Max</span>
+            <i class="fas fa-chevron-right"></i>
+          </div>
+
+          <div class="pricing-section">
+            <div class="emi-info">
+              <span class="emi-label">EMI starts at</span>
+              <div class="emi-amount" id="vehicleEmi">₹7,114/mo</div>
+            </div>
+          </div>
+
+          <div class="price-section">
+            <div class="price-main">
+              <span class="currency">₹</span>
+              <span class="price-value" id="vehiclePrice">4.03</span>
+              <span class="price-unit">lakh</span>
+            </div>
+          </div>
+          <div class="action-buttons">
+            <button class="btn-primary book-test-drive">
+              Book free test drive
+            </button>
+          </div>
+
+          <div class="great-things-section">
+            <h2 class="section-title">Great things about this car</h2>
+            <div class="great-things-grid" id="greatThingsGrid">
+              <div class="great-thing-item">
+                <i class="fas fa-mobile-alt"></i>
+                <div class="thing-content">
+                  <div class="thing-title">Smart connectivity</div>
+                  <div class="thing-desc">
+                    with Apple CarPlay and Android Auto
+                  </div>
+                </div>
+              </div>
+              <div class="great-thing-item">
+                <i class="fas fa-cogs"></i>
+                <div class="thing-content">
+                  <div class="thing-title">Essential features</div>
+                  <div class="thing-desc">AC, power windows, music system</div>
+                </div>
+              </div>
+              <div class="great-thing-item">
+                <i class="fas fa-shield-alt"></i>
+                <div class="thing-content">
+                  <div class="thing-title">2 airbags and ABS</div>
+                  <div class="thing-desc">Superior safety and reliability</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="other-cars-section">
         <h2 class="other-cars-title">Other Cars You May Like</h2>
         <div class="other-cars-row" id="otherCarsRow"></div>
         <!-- Static overlay element for loading state (CSS handles appearance) -->
-        <div class="other-cars-overlay" style="display:none;" aria-hidden="true">
+        <div
+          class="other-cars-overlay"
+          style="display: none"
+          aria-hidden="true"
+        >
           <div class="loader" aria-hidden="true"></div>
           <div class="loader-text">Loading Cars</div>
         </div>
       </div>
-    </div>
-    <script>
-      // API Configuration
-      const API_BASE_URL =
-        window.location.hostname === "localhost"
-          ? "https://alfa-motors-9bk6.vercel.app"
-          : "https://alfa-motors-9bk6.vercel.app"; // Replace with your Vercel backend URL
+      <script>
+        const API_BASE_URL =
+          window.location.hostname === "localhost"
+            ? "http://localhost:2500"
+            : "http://localhost:2500";
 
-      // Image base: in production use the public Xozz/DirectAdmin folder (/car-images)
-      // In development, fall back to the backend static route that serves /carimages
-      const IMAGE_BASE =
-        window.location.hostname === "localhost"
-          ? `${API_BASE_URL}/carimages`
-          : `${window.location.protocol}//${window.location.hostname}/car-images`;
+        const IMAGE_BASE =
+          window.location.hostname === "localhost"
+            ? `${API_BASE_URL}/carimages`
+            : `${window.location.protocol}//${window.location.hostname}/car-images`;
 
-      // Helper function to get the correct image URL (robust)
-      function getImageUrl(imagePath) {
-        if (!imagePath) return "assets/placeholder.png";
-
-        if (Array.isArray(imagePath) && imagePath.length > 0) imagePath = imagePath[0];
-
-        if (typeof imagePath === "string") {
-          const raw = imagePath.trim();
-          if (raw.startsWith("[")) {
-            try {
-              const parsed = JSON.parse(raw);
-              if (Array.isArray(parsed) && parsed.length) imagePath = parsed[0];
-            } catch (e) {}
-          }
-        }
-
-        if (typeof imagePath !== "string") return "assets/placeholder.png";
-        const p = imagePath.trim();
-
-        if (p.startsWith("http://") || p.startsWith("https://") || p.startsWith("data:")) return p;
-
-        const cleaned = p.replace(/^\/+/, "");
-        if (cleaned.startsWith("assets/")) return cleaned;
-
-  const filename = cleaned.startsWith("carimages/") ? cleaned.replace(/^carimages\//, "") : cleaned;
-  // Prefer IMAGE_BASE (production serves files from /car-images). For local/dev use backend /carimages route.
-  return `${IMAGE_BASE}/${filename}`;
-      }
-
-      // Normalize photos field from DB: may be an array, JSON string, or single filename
-      function normalizePhotos(photosField) {
-        if (!photosField) return [];
-        if (Array.isArray(photosField)) return photosField;
-        if (typeof photosField === 'string') {
-          const raw = photosField.trim();
-          if (raw.startsWith('[')) {
-            try {
-              const parsed = JSON.parse(raw);
-              if (Array.isArray(parsed)) return parsed;
-            } catch (e) {}
-          }
-          if (raw.includes(',')) return raw.split(',').map(s => s.trim()).filter(Boolean);
-          return [raw];
-        }
-        return [];
-      }
-
-      // Helper Functions
-      function formatOwnership(owner) {
-        if (owner === "1" || owner.includes("1st")) return "1st Own";
-        if (owner === "2" || owner.includes("2nd")) return "2nd Own";
-        if (owner === "3" || owner.includes("3+") || owner.includes("3rd"))
-          return "3rd Own";
-        return owner;
-      }
-
-      function normalizeImagePath(img) {
-        return getImageUrl(img);
-      }
-
-      function getCarDataFromQuery() {
-        const params = new URLSearchParams(window.location.search);
-        try {
-          return JSON.parse(decodeURIComponent(params.get("car")));
-        } catch {
-          return null;
-        }
-      }
-
-      function carIdFromQuery() {
-        const params = new URLSearchParams(window.location.search);
-        try {
-          const car = JSON.parse(decodeURIComponent(params.get("car")));
-          return car && (car._id || car.id) ? (car._id || car.id) : null;
-        } catch {
-          return null;
-        }
-      }
-
-      // Load Car Data: prefer fetching fresh record from SQL endpoint when an _id is present
-      (async function loadAndRenderCar() {
-  const initialCar = getCarDataFromQuery();
-  const idFromQuery = carIdFromQuery();
-  const carId = idFromQuery || (initialCar && (initialCar._id || initialCar.id)) || null;
-
-        let car = initialCar || null;
-        if (carId) {
-          try {
-            const res = await fetch(`${API_BASE_URL}/api/cars/${carId}`);
-            if (res.ok) {
-              const payload = await res.json();
-              // payload may be { success, data } or the car object itself
-              if (Array.isArray(payload)) car = payload[0] || car;
-              else if (payload && payload.data) car = payload.data || car;
-              else if (payload && (payload._id || payload.id)) car = payload;
-            } else {
-              console.warn('Failed to fetch car by id', res.status);
+        function getImageUrl(imagePath) {
+          if (!imagePath) return "assets/placeholder.png";
+          if (Array.isArray(imagePath) && imagePath.length > 0)
+            imagePath = imagePath[0];
+          if (typeof imagePath === "string") {
+            const raw = imagePath.trim();
+            if (raw.startsWith("[")) {
+              try {
+                const parsed = JSON.parse(raw);
+                if (Array.isArray(parsed) && parsed.length)
+                  imagePath = parsed[0];
+              } catch (e) {}
             }
-          } catch (err) {
-            console.error('Error fetching car by id:', err);
+          }
+          if (typeof imagePath !== "string") return "assets/placeholder.png";
+          const p = imagePath.trim();
+          if (
+            p.startsWith("http://") ||
+            p.startsWith("https://") ||
+            p.startsWith("data:")
+          )
+            return p;
+          const cleaned = p.replace(/^\/+/, "");
+          if (cleaned.startsWith("assets/")) return cleaned;
+          const filename = cleaned.startsWith("carimages/")
+            ? cleaned.replace(/^carimages\//, "")
+            : cleaned;
+          return `${IMAGE_BASE}/${filename}`;
+        }
+
+        function normalizePhotos(photosField) {
+          if (!photosField) return [];
+          if (Array.isArray(photosField)) return photosField;
+          if (typeof photosField === "string") {
+            const raw = photosField.trim();
+            if (raw.startsWith("[")) {
+              try {
+                const parsed = JSON.parse(raw);
+                if (Array.isArray(parsed)) return parsed;
+              } catch (e) {}
+            }
+            if (raw.includes(","))
+              return raw
+                .split(",")
+                .map((s) => s.trim())
+                .filter(Boolean);
+            return [raw];
+          }
+          return [];
+        }
+
+        function formatOwnership(owner) {
+          if (owner === "1" || owner.includes("1st")) return "1st owner";
+          if (owner === "2" || owner.includes("2nd")) return "2nd owner";
+          if (owner === "3" || owner.includes("3+") || owner.includes("3rd"))
+            return "3rd owner";
+          return owner;
+        }
+
+        function formatPrice(price) {
+          if (!price || isNaN(price) || price === 0) return "0";
+          const lakh = price / 100000;
+          return lakh.toFixed(2);
+        }
+
+        function calculateEMI(price) {
+          if (!price || isNaN(price) || price === 0) return 0;
+          const loanAmount = price * 0.9;
+          const months = 36;
+          return Math.round(loanAmount / months);
+        }
+
+        function getCarDataFromQuery() {
+          const params = new URLSearchParams(window.location.search);
+          try {
+            return JSON.parse(decodeURIComponent(params.get("car")));
+          } catch {
+            return null;
           }
         }
 
-        if (!car) {
-          console.warn('No car data available to render');
-          return;
+        function carIdFromQuery() {
+          const params = new URLSearchParams(window.location.search);
+          try {
+            const car = JSON.parse(decodeURIComponent(params.get("car")));
+            return car && (car._id || car.id) ? car._id || car.id : null;
+          } catch {
+            return null;
+          }
         }
 
-        // Populate car details (use guarded setters to avoid errors when elements are missing)
-        function setText(id, value) {
-          try {
+        let currentImageIndex = 0;
+        let allImages = [];
+
+        (async function loadAndRenderCar() {
+          const initialCar = getCarDataFromQuery();
+          const idFromQuery = carIdFromQuery();
+          const carId =
+            idFromQuery ||
+            (initialCar && (initialCar._id || initialCar.id)) ||
+            null;
+
+          let car = initialCar || null;
+          if (carId) {
+            try {
+              const res = await fetch(`${API_BASE_URL}/api/cars/${carId}`);
+              if (res.ok) {
+                const payload = await res.json();
+                if (Array.isArray(payload)) car = payload[0] || car;
+                else if (payload && payload.data) car = payload.data || car;
+                else if (payload && (payload._id || payload.id)) car = payload;
+              }
+            } catch (err) {
+              console.error("Error fetching car:", err);
+            }
+          }
+
+          if (!car) {
+            console.warn("No car data available");
+            setText("vehicleTitle", "Vehicle Details");
+            setText("vehiclePrice", "Contact us for price");
+            setText("vehicleEmi", "Financing available");
+            return;
+          }
+
+          console.log("Car data loaded:", car);
+
+          function setText(id, value) {
             const el = document.getElementById(id);
-            if (el) el.textContent = value;
-          } catch (e) {
-            // swallow errors to avoid uncaught exceptions from optional elements
-          }
-        }
-
-        setText("vehicleTitle", `${car.modelYear || ""} ${car.brand || car.make || ""} ${car.model || ""}`);
-        setText("vehicleKm", `${(car.kmDriven || 0).toLocaleString('en-IN')} km`);
-        setText("vehicleOwner", formatOwnership(car.ownership || "1"));
-        setText("vehicleFuel", car.fuelType || "Petrol");
-        setText("vehicleColor", car.color || "");
-        setText("vehiclePrice", `₹${(car.sellingPrice || car.price || 0).toLocaleString('en-IN')}`);
-        setText(
-          "vehicleEmi",
-          `Down: ₹${(car.downPayment || 0).toLocaleString('en-IN')} | EMI: ₹${Math.round(((car.sellingPrice || car.price || 0) - (car.downPayment || 0)) / 36).toLocaleString('en-IN')}/month`
-        );
-
-        // Handle images (normalize photos stored in DB)
-        let images = normalizePhotos(car.photos);
-        if (!images || images.length === 0) images = ["assets/owner.png"];
-        const mainImg = document.getElementById("mainVehicleImg");
-        const thumbnails = document.getElementById("vehicleThumbnails");
-        thumbnails.innerHTML = "";
-
-        // Mobile Image Layout
-        if (window.innerWidth <= 900) {
-          const container = document.createElement("div");
-          container.className = "vehicle-image-block mobile-image-block";
-
-          // Main image
-          const mainImgMobile = document.createElement("img");
-          mainImgMobile.className = "vehicle-main-img mobile-main-img";
-          mainImgMobile.src = normalizeImagePath(images[0]);
-          mainImgMobile.alt = "Main Car Image";
-          container.appendChild(mainImgMobile);
-
-          // Thumbnails row
-          const thumbRow = document.createElement("div");
-          thumbRow.className = "vehicle-thumbnails mobile-thumbnails";
-
-          images.forEach((img, idx) => {
-            const thumb = document.createElement("img");
-            thumb.src = normalizeImagePath(img);
-            thumb.alt = `Car ${idx + 1}`;
-            thumb.style.border =
-              idx === 0 ? "2px solid #ff6b00" : "2px solid transparent";
-            thumb.onclick = () => {
-              mainImgMobile.src = normalizeImagePath(img);
-              Array.from(thumbRow.children).forEach((t, i) => {
-                t.style.border =
-                  i === idx ? "2px solid #ff6b00" : "2px solid transparent";
-              });
-            };
-            thumbRow.appendChild(thumb);
-          });
-
-          container.appendChild(thumbRow);
-          mainImg.parentNode.replaceChild(container, mainImg);
-        } else {
-          // Desktop Image Layout
-          images.forEach((img, idx) => {
-            const thumb = document.createElement("img");
-            thumb.src = normalizeImagePath(img);
-            thumb.alt = `Car ${idx + 1}`;
-            thumb.onclick = () => {
-              mainImg.src = normalizeImagePath(img);
-              Array.from(thumbnails.children).forEach((t) =>
-                t.classList.remove("selected")
-              );
-              thumb.classList.add("selected");
-            };
-            if (idx === 0) thumb.classList.add("selected");
-            thumbnails.appendChild(thumb);
-          });
-          mainImg.src = normalizeImagePath(images[0]);
-          }
-        }
-      )();
-        // Fetch other cars from backend and show in slider (SQL endpoint)
-      // Helper: show/hide a loading overlay for the other-cars section
-      function createOtherCarsOverlay() {
-        try {
-          const section = document.querySelector('.other-cars-section');
-          if (!section) return null;
-          let ov = section.querySelector('.other-cars-overlay');
-          if (!ov) {
-            ov = document.createElement('div');
-            ov.className = 'other-cars-overlay';
-            ov.innerHTML = '<div class="loader" aria-hidden="true"></div><div class="loader-text">Loading Cars</div>';
-            // ensure overlay doesn't get clipped and is positioned relative to the parent
-            section.style.overflow = 'visible';
-            // If the section has the default static position, set it to relative so absolute overlay aligns to it
-            try {
-              const pos = window.getComputedStyle(section).position;
-              if (!pos || pos === 'static') section.style.position = 'relative';
-            } catch (e) {}
-            section.appendChild(ov);
-          }
-          return ov;
-        } catch (e) { return null; }
-      }
-
-      function showOtherCarsLoading(text) {
-        let ov = createOtherCarsOverlay();
-        // fallback: create a global overlay appended to body so it's always visible
-        if (!ov) {
-          try {
-            ov = document.querySelector('.global-loading-overlay');
-            if (!ov) {
-              ov = document.createElement('div');
-              ov.className = 'global-loading-overlay';
-              ov.innerHTML = '<div class="loader" aria-hidden="true"></div><div class="loader-text">' + (text || 'Loading') + '</div>';
-              document.body.appendChild(ov);
+            if (el) {
+              el.textContent = value;
             }
-          } catch (e) { ov = null; }
-        }
-        if (!ov) return;
-        try {
-          const txt = ov.querySelector('.loader-text');
-          if (txt && text) txt.textContent = text;
-        } catch (e) {}
-        ov.style.display = 'flex';
-      }
+          }
 
-      function hideOtherCarsLoading() {
-        try {
-          const ov = document.querySelector('.other-cars-overlay');
-          if (ov) ov.style.display = 'none';
-        } catch (e) {}
-        try {
-          const gov = document.querySelector('.global-loading-overlay');
-          if (gov) gov.style.display = 'none';
-        } catch (e) {}
-      }
+          const carTitle =
+            `${car.modelYear || ""} ${car.brand || car.make || ""} ${car.model || ""}`.trim();
+          setText("vehicleTitle", carTitle || "Vehicle Details");
+          setText(
+            "vehicleKm",
+            `${(car.kmDriven || 0).toLocaleString("en-IN")} km`,
+          );
+          setText("vehicleOwner", formatOwnership(car.ownership || "1"));
+          setText("vehicleFuel", car.fuelType || "Petrol");
+          setText("vehicleTransmission", car.transmission || "Manual");
+          setText("vehicleRTO", car.rto || "KA-51");
+          setText("vehicleLocation", car.location || "Bellahalli, Bengaluru");
 
-      function fetchWithTimeout(url, opts = {}, timeout = 8000) {
-        return Promise.race([
-          fetch(url, opts),
-          new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), timeout)),
-        ]);
-      }
+          const price = parseInt(car.sellingPrice || car.price || 0);
+          console.log("Car data:", car);
+          console.log("Price:", price);
 
-      // Fetch other cars after DOM is ready so overlays can be created
-      function loadOtherCarsWithOverlay() {
-        try { showOtherCarsLoading('Loading Cars'); } catch (e) {}
+          if (price > 0) {
+            const priceValueEl = document.getElementById("vehiclePrice");
+            if (priceValueEl) {
+              priceValueEl.textContent = formatPrice(price);
+            }
+            const emiEl = document.getElementById("vehicleEmi");
+            if (emiEl) {
+              emiEl.textContent = `₹${calculateEMI(price).toLocaleString("en-IN")}/mo`;
+            }
+            const discount = car.discount || Math.round(price * 0.15);
+            const discountEl = document.getElementById("vehicleDiscount");
+            if (discountEl) {
+              discountEl.textContent = `₹${Math.round(discount / 1000)}K OFF`;
+            }
+          } else {
+            const priceValueEl = document.getElementById("vehiclePrice");
+            if (priceValueEl) {
+              priceValueEl.textContent = "Contact";
+              const priceMain = priceValueEl.closest(".price-main");
+              if (priceMain) {
+                priceMain.querySelector(".currency").style.display = "none";
+                priceMain.querySelector(".price-unit").style.display = "none";
+              }
+            }
+            const emiEl = document.getElementById("vehicleEmi");
+            if (emiEl) {
+              emiEl.textContent = "Contact us";
+            }
+            const discountEl = document.getElementById("vehicleDiscount");
+            if (discountEl) discountEl.style.display = "none";
+          }
 
-        fetchWithTimeout(`${API_BASE_URL}/api/cars`, {}, 8000)
-          .then((response) => {
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            return response.json();
-          })
-          .then((data) => {
-            hideOtherCarsLoading();
-          // Support both response shapes: an array or { success, data }
-          const cars = Array.isArray(data) ? data : (data && Array.isArray(data.data) ? data.data : []);
-          const otherCarsRow = document.getElementById("otherCarsRow");
-          otherCarsRow.innerHTML = "";
+          allImages = normalizePhotos(car.photos);
+          if (!allImages || allImages.length === 0)
+            allImages = ["assets/owner.png"];
 
-            cars.forEach((car) => {
-            const thisId = car && (car._id || car.id);
-            if (thisId && thisId === (carIdFromQuery() || "")) return;
+          const mainImg = document.getElementById("mainVehicleImg");
+          if (mainImg) {
+            mainImg.src = getImageUrl(allImages[0]);
+            currentImageIndex = 0;
+          }
 
-            const firstPhoto = (function(){ const arr = normalizePhotos(car.photos); return (arr && arr.length) ? arr[0] : "assets/owner.png"; })();
-            const imgSrc = getImageUrl(firstPhoto);
+          setText("currentImageIndex", "1");
+          setText("totalImages", allImages.length.toString());
 
-            const statusClass =
-              car.status === "Available"
-                ? "status-available"
-                : car.status === "Sold Out"
-                ? "status-sold"
-                : car.status === "Coming Soon"
-                ? "status-coming-soon"
-                : "status-available";
+          const prevBtn = document.getElementById("prevImageBtn");
+          const nextBtn = document.getElementById("nextImageBtn");
 
-            const ownerText = formatOwnership(car.ownership || "1");
+          if (prevBtn) {
+            prevBtn.addEventListener("click", () => {
+              currentImageIndex =
+                (currentImageIndex - 1 + allImages.length) % allImages.length;
+              updateMainImage();
+            });
+          }
 
-            const card = document.createElement("div");
-            card.className = "other-car-card";
-            card.innerHTML = `
-                <div class="image-container">
-                  <img src="${imgSrc}" alt="${car.brand || car.make || ""} ${car.model || ""}" class="other-car-img" />
-                  <div class="status-badge ${statusClass}" data-translate="${car.status || "Available"}">${car.status || "Available"}</div>
+          if (nextBtn) {
+            nextBtn.addEventListener("click", () => {
+              currentImageIndex = (currentImageIndex + 1) % allImages.length;
+              updateMainImage();
+            });
+          }
+
+          function updateMainImage() {
+            const mainImg = document.getElementById("mainVehicleImg");
+            if (mainImg) {
+              mainImg.src = getImageUrl(allImages[currentImageIndex]);
+            }
+            setText("currentImageIndex", (currentImageIndex + 1).toString());
+          }
+
+          const bookTestDriveBtn = document.querySelector(".book-test-drive");
+          if (bookTestDriveBtn) {
+            bookTestDriveBtn.addEventListener("click", () => {
+              window.location.href =
+                "https://www.alfamotorworld.com/contact.html";
+            });
+          }
+        })();
+
+        (async function loadOtherCars() {
+          try {
+            const response = await fetch(`${API_BASE_URL}/api/cars`);
+            if (!response.ok) throw new Error("Failed to load cars");
+
+            const data = await response.json();
+            const cars = Array.isArray(data)
+              ? data
+              : data && Array.isArray(data.data)
+                ? data.data
+                : [];
+
+            const otherCarsRow = document.getElementById("otherCarsRow");
+            if (!otherCarsRow) return;
+
+            otherCarsRow.innerHTML = "";
+            const currentCarId = carIdFromQuery();
+
+            cars.slice(0, 10).forEach((car) => {
+              const carId = car._id || car.id;
+              if (carId === currentCarId) return;
+
+              const firstPhoto =
+                normalizePhotos(car.photos)[0] || "assets/owner.png";
+              const imgSrc = getImageUrl(firstPhoto);
+
+              const card = document.createElement("div");
+              card.className = "other-car-card";
+              card.innerHTML = `
+              <div class="image-container">
+                <img src="${imgSrc}" alt="${car.brand || car.make || ""} ${car.model || ""}" class="other-car-img" />
+                <div class="status-badge">${car.status || "Available"}</div>
+              </div>
+              <div class="card-content">
+                <h3>${car.brand || car.make || "Unknown"} ${car.model || ""}</h3>
+                <span class="model">${car.modelYear || "-"} Model</span>
+                <div class="details">
+                  <div class="detail-item"><i class="fas fa-tachometer-alt"></i> <span>${(car.kmDriven || 0).toLocaleString()} km</span></div>
+                  <div class="detail-item"><i class="fas fa-user"></i> <span>${formatOwnership(car.ownership || "1")}</span></div>
+                  <div class="detail-item"><i class="fas fa-gas-pump"></i> <span>${car.fuelType || "Petrol"}</span></div>
                 </div>
-                <div class="card-content">
-                  <h3>${car.brand || car.make || "Unknown Brand"} ${car.model || "Unknown Model"}</h3>
-                  <span class="model">${car.modelYear || "-"} Model</span>
-                  <div class="details">
-                    <div class="detail-item"><i class="fas fa-tachometer-alt"></i> <span>${(car.kmDriven || 0).toLocaleString()} km</span></div>
-                    <div class="detail-item"><i class="fas fa-user"></i> <span>${ownerText}</span></div>
-                    <div class="detail-item"><i class="fas fa-gas-pump"></i> <span>${car.fuelType || "Petrol"}</span></div>
-                  </div>
-                  <div class="price-container">
-                    <div class="price">₹${(car.sellingPrice || car.price || 0).toLocaleString()}</div>
-                    <div class="button-group">
-                      <button class="contact-btn" data-translate="Contact Seller" ${car.status !== "Available" ? "disabled" : ""}>Contact Seller</button>
-                      <button class="view-details-btn" data-translate="View Details" ${car.status !== "Available" ? "disabled" : ""}>View Details</button>
-                    </div>
+                <div class="price-container">
+                  <div class="price">₹${(car.sellingPrice || car.price || 0).toLocaleString()}</div>
+                  <div class="button-group">
+                    <button class="contact-btn">Contact</button>
+                    <button class="view-details-btn">View</button>
                   </div>
                 </div>
-              `;
+              </div>
+            `;
 
-            // Add event listeners
-            setTimeout(() => {
-              const viewDetailsBtn = card.querySelector(".view-details-btn");
+              const viewBtn = card.querySelector(".view-details-btn");
               const contactBtn = card.querySelector(".contact-btn");
 
-              if (viewDetailsBtn && !viewDetailsBtn.disabled) {
-                viewDetailsBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    const carQuery = encodeURIComponent(JSON.stringify(car));
-                    window.location.href = `vehicledetail.html?car=${carQuery}`;
-                  };
-                }
-
-                if (contactBtn && !contactBtn.disabled) {
-                  contactBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    window.location.href = "https://www.alfamotorworld.com/contact.html";
-                  };
-                }
-              }, 0);
-
-              otherCarsRow.appendChild(card);
-              });
-
-                // Enable auto-scroll for other cars
-                enableAutoSlider();
-                // Ensure arrow buttons are attached after population
-                try { if (typeof addOtherCarsArrows === 'function') addOtherCarsArrows(); } catch (e) {}
-            
-              // hide loader (already hidden on success) but keep safe
-              try { hideOtherCarsLoading(); } catch (e) {}
-            // Translate newly added dynamic content to preferred language
-            try {
-              const preferred =
-                localStorage.getItem("preferredLanguage") || "en";
-              if (preferred && typeof translatePage === "function") {
-                // translate the section only to avoid re-running across whole page
-                const dynamicElems =
-                  otherCarsRow.querySelectorAll("[data-translate]");
-                dynamicElems.forEach((el) => {
-                  const key = el.getAttribute("data-translate");
-                  if (
-                    translations &&
-                    translations[preferred] &&
-                    translations[preferred][key]
-                  ) {
-                    el.textContent = translations[preferred][key];
-                  }
+              if (viewBtn) {
+                viewBtn.addEventListener("click", () => {
+                  const carQuery = encodeURIComponent(JSON.stringify(car));
+                  window.location.href = `vehicledetail.html?car=${carQuery}`;
                 });
               }
-            } catch (e) {}
-        })
-          .catch((err) => {
-            // keep the spinner visible and update the message
-            console.error('Error loading other cars:', err);
-            try { showOtherCarsLoading('Loading Cars'); } catch (e) {}
-          });
-      }
 
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', loadOtherCarsWithOverlay);
-      } else {
-        loadOtherCarsWithOverlay();
-      }
+              if (contactBtn) {
+                contactBtn.addEventListener("click", () => {
+                  window.location.href =
+                    "https://www.alfamotorworld.com/contact.html";
+                });
+              }
 
-      // Auto-scroll functionality
-      function enableAutoSlider() {
-        const row = document.getElementById("otherCarsRow");
-        if (!row) return;
-
-        let scrollAmount = 0;
-        let maxScroll = row.scrollWidth - row.clientWidth;
-        let direction = 1;
-
-        let interval = setInterval(() => {
-          if (row.scrollWidth <= row.clientWidth) return;
-
-          if (scrollAmount >= maxScroll) direction = -1;
-          if (scrollAmount <= 0) direction = 1;
-
-          scrollAmount += direction * 320;
-          if (scrollAmount < 0) scrollAmount = 0;
-          if (scrollAmount > maxScroll) scrollAmount = maxScroll;
-
-          row.scrollTo({ left: scrollAmount, behavior: "smooth" });
-        }, 3000);
-
-        row.addEventListener("mouseenter", () => clearInterval(interval));
-        row.addEventListener("mouseleave", () => {
-          interval = setInterval(() => {
-            if (row.scrollWidth <= row.clientWidth) return;
-
-            if (scrollAmount >= maxScroll) direction = -1;
-            if (scrollAmount <= 0) direction = 1;
-
-            scrollAmount += direction * 320;
-            if (scrollAmount < 0) scrollAmount = 0;
-            if (scrollAmount > maxScroll) scrollAmount = maxScroll;
-
-            row.scrollTo({ left: scrollAmount, behavior: "smooth" });
-          }, 3000);
-        });
-      }
-      // Duplicate rendering of "other cars" removed. The initial fetch above
-      // already populates `otherCarsRow` and calls `enableAutoSlider()`.
-      // --- THUMBNAIL SLIDER LOGIC ---
-      (function () {
-        const mainImg = document.getElementById("mainVehicleImg");
-        const thumbnails = document.getElementById("vehicleThumbnails");
-        if (!mainImg || !thumbnails) return;
-
-        // Prevent initializing the thumbnail scroll more than once
-        if (
-          thumbnails.dataset.sliderInitialized === "true" ||
-          thumbnails.querySelector(".vehicle-thumbnails-scroll")
-        )
-          return;
-        thumbnails.dataset.sliderInitialized = "true";
-
-        setTimeout(() => {
-          const thumbs = Array.from(thumbnails.querySelectorAll("img"));
-          if (thumbs.length <= 5) return;
-
-          // Wrap thumbnails in scroll container
-          const scrollContainer = document.createElement("div");
-          scrollContainer.className = "vehicle-thumbnails-scroll";
-          scrollContainer.style.overflowX = "auto";
-          scrollContainer.style.whiteSpace = "nowrap";
-          scrollContainer.style.scrollBehavior = "smooth";
-          thumbs.forEach((img) => {
-            img.style.display = "inline-block";
-            img.style.marginRight = "6px";
-            img.style.width = "120px";
-            img.style.height = "110px";
-            scrollContainer.appendChild(img);
-          });
-          thumbnails.appendChild(scrollContainer);
-
-          let currentMainIdx = 0;
-
-          function updateThumbs() {
-            thumbs.forEach((img, idx) => {
-              img.classList.toggle("selected", idx === currentMainIdx);
+              otherCarsRow.appendChild(card);
             });
-            mainImg.src = thumbs[currentMainIdx].src;
-            // Scroll thumbnail strip to keep selected in view
-            const thumbWidth = thumbs[0].offsetWidth + 12;
-            const visibleStart = scrollContainer.scrollLeft;
-            const visibleEnd = visibleStart + scrollContainer.offsetWidth;
-            const thumbLeft = currentMainIdx * thumbWidth;
-            const thumbRight = thumbLeft + thumbWidth;
-            if (thumbLeft < visibleStart) {
-              scrollContainer.scrollLeft = thumbLeft;
-            } else if (thumbRight > visibleEnd) {
-              scrollContainer.scrollLeft =
-                thumbRight - scrollContainer.offsetWidth;
-            }
+          } catch (error) {
+            console.error("Error loading other cars:", error);
           }
-          updateThumbs();
+        })();
+      </script>
+      <script>
+        function initializeMobileMenu() {
+          const toggleBtn = document.createElement("button");
+          toggleBtn.className = "mobile-menu-toggle";
+          toggleBtn.innerHTML =
+            '<i class="fas fa-bars" aria-hidden="true"></i>';
+          toggleBtn.setAttribute("aria-label", "Toggle mobile menu");
 
-          // Clicking a thumbnail changes main image
-          thumbs.forEach((img, idx) => {
-            img.onclick = function () {
-              currentMainIdx = idx;
-              updateThumbs();
-            };
-          });
+          const navbar = document.querySelector(".navbar");
+          navbar.appendChild(toggleBtn);
 
-          // Create slider buttons
-          const prevBtn = document.createElement("button");
-          prevBtn.className = "slider-btn prev";
-          prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
-          prevBtn.onclick = function (e) {
-            e.stopPropagation();
-            if (currentMainIdx > 0) {
-              currentMainIdx--;
-              updateThumbs();
-            }
-          };
-          const nextBtn = document.createElement("button");
-          nextBtn.className = "slider-btn next";
-          nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
-          nextBtn.onclick = function (e) {
-            e.stopPropagation();
-            if (currentMainIdx < thumbs.length - 1) {
-              currentMainIdx++;
-              updateThumbs();
-            }
-          };
-          thumbnails.appendChild(prevBtn);
-          thumbnails.appendChild(nextBtn);
-
-          // Show/hide buttons on main image hover
-          const imageBlock = mainImg.closest(".vehicle-image-block");
-          if (imageBlock) {
-            imageBlock.addEventListener("mouseenter", () => {
-              prevBtn.style.opacity = nextBtn.style.opacity = "1";
-            });
-            imageBlock.addEventListener("mouseleave", () => {
-              prevBtn.style.opacity = nextBtn.style.opacity = "0";
-            });
-            prevBtn.style.opacity = nextBtn.style.opacity = "0";
-          }
-        }, 500);
-      })();
-    </script>
-    <script>
-      function initializeMobileMenu() {
-        const toggleBtn = document.createElement("button");
-        toggleBtn.className = "mobile-menu-toggle";
-        toggleBtn.innerHTML = '<i class="fas fa-bars" aria-hidden="true"></i>';
-        toggleBtn.setAttribute("aria-label", "Toggle mobile menu");
-
-        const navbar = document.querySelector(".navbar");
-        navbar.appendChild(toggleBtn);
-
-        const mobileMenu = document.createElement("div");
-        mobileMenu.className = "mobile-menu";
-        mobileMenu.innerHTML = `
+          const mobileMenu = document.createElement("div");
+          mobileMenu.className = "mobile-menu";
+          mobileMenu.innerHTML = `
     <button class="close-btn" aria-label="Close mobile menu">
       <i class="fas fa-times" aria-hidden="true"></i>
     </button>
@@ -917,187 +820,191 @@
     </div>
   `;
 
-        document.body.appendChild(mobileMenu);
+          document.body.appendChild(mobileMenu);
 
-        toggleBtn.addEventListener("click", function () {
-          mobileMenu.classList.add("active");
-          document.body.style.overflow = "hidden";
-        });
-
-        mobileMenu
-          .querySelector(".close-btn")
-          .addEventListener("click", function () {
-            mobileMenu.classList.remove("active");
-            document.body.style.overflow = "auto";
+          toggleBtn.addEventListener("click", function () {
+            mobileMenu.classList.add("active");
+            document.body.style.overflow = "hidden";
           });
-      }
-    </script>
-    <footer class="footer" itemscope itemtype="https://schema.org/WPFooter">
-      <div class="footer-content">
-        <div
-          class="footer-section"
-          itemscope
-          itemtype="https://schema.org/Organization"
-        >
-          <div class="logo">
-            <img
-              src="./assets/okmotor.png"
-              alt="Alfa Motors World Logo"
-              width="120"
-              height="120"
-              itemprop="logo"
-            />
+
+          mobileMenu
+            .querySelector(".close-btn")
+            .addEventListener("click", function () {
+              mobileMenu.classList.remove("active");
+              document.body.style.overflow = "auto";
+            });
+        }
+      </script>
+      <footer class="footer" itemscope itemtype="https://schema.org/WPFooter">
+        <div class="footer-content">
+          <div
+            class="footer-section"
+            itemscope
+            itemtype="https://schema.org/Organization"
+          >
+            <div class="logo">
+              <img
+                src="./assets/okmotor.png"
+                alt="Alfa Motors World Logo"
+                width="120"
+                height="120"
+                itemprop="logo"
+              />
+            </div>
+            <p itemprop="description">
+              The best second-hand car showroom in Bangalore for luxury and
+              premium cars.
+            </p>
+            <a
+              href="#leave-review"
+              class="footer-stars"
+              role="button"
+              title="Leave a review"
+              aria-label="Leave a review"
+            >
+              <i
+                class="fa-solid fa-star"
+                style="color: #f59e0b; margin-right: 2px"
+              ></i>
+              <i
+                class="fa-solid fa-star"
+                style="color: #f59e0b; margin-right: 2px"
+              ></i>
+              <i
+                class="fa-solid fa-star"
+                style="color: #f59e0b; margin-right: 2px"
+              ></i>
+              <i
+                class="fa-solid fa-star"
+                style="color: #f59e0b; margin-right: 2px"
+              ></i>
+              <i class="fa-solid fa-star" style="color: #f59e0b"></i>
+            </a>
+            <div class="social-icons">
+              <a
+                href="https://www.facebook.com/share/1Ao18FYX8e/"
+                aria-label="Visit our Facebook page"
+                ><i class="fa-brands fa-facebook-f" style="color: #0400ff"></i
+              ></a>
+              <a
+                href="https://www.instagram.com/Carbuilders41?igsh=ZDk5M3NxdmI1Ymhp"
+                aria-label="Visit our Instagram profile"
+                ><img
+                  src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png"
+                  alt="Instagram - Carbuilders41"
+                  style="width: 20px"
+              /></a>
+              <a
+                href="https://wa.me/919036818492"
+                aria-label="Chat with us on WhatsApp"
+                ><i class="fa-brands fa-whatsapp" style="color: #00a841"></i
+              ></a>
+              <a
+                href="https://youtube.com/@Carbuilders-vo2nm?feature=shared"
+                aria-label="Watch on Youtube"
+                ><i class="fa-brands fa-youtube" style="color: #fa0000"></i
+              ></a>
+            </div>
           </div>
-          <p itemprop="description">
-            The best second-hand car showroom in Bangalore for luxury and
-            premium cars.
+          <div class="footer-section">
+            <h3>Quick Links</h3>
+            <ul>
+              <li>
+                <a
+                  href="https://www.alfamotorworld.com/"
+                  aria-label="Home page"
+                  data-translate="Home"
+                  >Home</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://www.alfamotorworld.com/inventory.html"
+                  aria-label="Browse our Car inventory"
+                  data-translate="Buy Car"
+                  >Buy Car</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://www.alfamotorworld.com/sell.html"
+                  aria-label="Sell your Car"
+                  data-translate="Sell Your Car"
+                  >Sell Your Car</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://www.alfamotorworld.com/about.html"
+                  aria-label="About Alfa Motors World"
+                  data-translate="About Us"
+                  >About Us</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://www.alfamotorworld.com/contact.html"
+                  aria-label="Contact us"
+                  data-translate="Contact"
+                  >Contact</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h3>Resources</h3>
+            <ul>
+              <li>
+                <a
+                  href="https://www.alfamotorworld.com/finance.html"
+                  aria-label="Finance options"
+                  data-translate="Finance"
+                  >Finance</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://www.alfamotorworld.com/locations.html"
+                  aria-label="Our Locations"
+                  data-translate="Our Locations"
+                  >Our Locations</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div
+            class="footer-section"
+            itemscope
+            itemtype="https://schema.org/PostalAddress"
+          >
+            <h3>Contact Us</h3>
+            <p itemprop="streetAddress">
+              <i class="fas fa-map-marker-alt" aria-hidden="true"></i> No 97, 2,
+              Bannerghatta Rd, opposite to D-Mart, Bohra Layout, Gottigere,
+              Bengaluru, Karnataka 560083
+            </p>
+            <p>
+              <i class="fas fa-phone" aria-hidden="true"></i>
+              <span itemprop="telephone">+91 9036818492</span>
+            </p>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>
+            &copy; <span itemprop="copyrightYear">2023</span>
+            <span itemprop="copyrightHolder">Alfa Motors World</span>. All
+            rights reserved.
           </p>
           <a
-            href="#leave-review"
-            class="footer-stars"
-            role="button"
-            title="Leave a review"
-            aria-label="Leave a review"
+            href="https://www.pixelatenest.com"
+            style="color: #a9a9a9"
+            aria-label="Website designed by Pixelate Nest"
+            >Designed By Pixelate Nest</a
           >
-            <i
-              class="fa-solid fa-star"
-              style="color: #f59e0b; margin-right: 2px"
-            ></i>
-            <i
-              class="fa-solid fa-star"
-              style="color: #f59e0b; margin-right: 2px"
-            ></i>
-            <i
-              class="fa-solid fa-star"
-              style="color: #f59e0b; margin-right: 2px"
-            ></i>
-            <i
-              class="fa-solid fa-star"
-              style="color: #f59e0b; margin-right: 2px"
-            ></i>
-            <i class="fa-solid fa-star" style="color: #f59e0b"></i>
-          </a>
-          <div class="social-icons">
-            <a
-              href="https://www.facebook.com/share/1Ao18FYX8e/"
-              aria-label="Visit our Facebook page"
-              ><i class="fa-brands fa-facebook-f" style="color: #0400ff"></i
-            ></a>
-            <a
-              href="https://www.instagram.com/Carbuilders41?igsh=ZDk5M3NxdmI1Ymhp"
-              aria-label="Visit our Instagram profile"
-              ><img
-                src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png"
-                alt="Instagram - Carbuilders41"
-                style="width: 20px"
-            /></a>
-            <a
-              href="https://wa.me/919036818492"
-              aria-label="Chat with us on WhatsApp"
-              ><i class="fa-brands fa-whatsapp" style="color: #00a841"></i
-            ></a>
-            <a
-              href="https://youtube.com/@Carbuilders-vo2nm?feature=shared"
-              aria-label="Watch on Youtube"
-              ><i class="fa-brands fa-youtube" style="color: #fa0000"></i
-            ></a>
-          </div>
         </div>
-        <div class="footer-section">
-          <h3>Quick Links</h3>
-          <ul>
-            <li>
-              <a href="https://www.alfamotorworld.com/" aria-label="Home page" data-translate="Home"
-                >Home</a
-              >
-            </li>
-            <li>
-              <a
-                href="https://www.alfamotorworld.com/inventory.html"
-                aria-label="Browse our Car inventory"
-                data-translate="Buy Car"
-                >Buy Car</a
-              >
-            </li>
-            <li>
-              <a
-                href="https://www.alfamotorworld.com/sell.html"
-                aria-label="Sell your Car"
-                data-translate="Sell Your Car"
-                >Sell Your Car</a
-              >
-            </li>
-            <li>
-              <a
-                href="https://www.alfamotorworld.com/about.html"
-                aria-label="About Alfa Motors World"
-                data-translate="About Us"
-                >About Us</a
-              >
-            </li>
-            <li>
-              <a
-                href="https://www.alfamotorworld.com/contact.html"
-                aria-label="Contact us"
-                data-translate="Contact"
-                >Contact</a
-              >
-            </li>
-          </ul>
-        </div>
-        <div class="footer-section">
-          <h3>Resources</h3>
-          <ul>
-            <li>
-              <a
-                href="https://www.alfamotorworld.com/finance.html"
-                aria-label="Finance options"
-                data-translate="Finance"
-                >Finance</a
-              >
-            </li>
-            <li>
-              <a
-                href="https://www.alfamotorworld.com/locations.html"
-                aria-label="Our Locations"
-                data-translate="Our Locations"
-                >Our Locations</a
-              >
-            </li>
-          </ul>
-        </div>
-        <div
-          class="footer-section"
-          itemscope
-          itemtype="https://schema.org/PostalAddress"
-        >
-          <h3>Contact Us</h3>
-          <p itemprop="streetAddress">
-            <i class="fas fa-map-marker-alt" aria-hidden="true"></i> No 97, 2,
-            Bannerghatta Rd, opposite to D-Mart, Bohra Layout, Gottigere,
-            Bengaluru, Karnataka 560083
-          </p>
-          <p>
-            <i class="fas fa-phone" aria-hidden="true"></i>
-            <span itemprop="telephone">+91 9036818492</span>
-          </p>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>
-          &copy; <span itemprop="copyrightYear">2023</span>
-          <span itemprop="copyrightHolder">Alfa Motors World</span>. All rights
-          reserved.
-        </p>
-        <a
-          href="https://www.pixelatenest.com"
-          style="color: #a9a9a9"
-          aria-label="Website designed by Pixelate Nest"
-          >Designed By Pixelate Nest</a
-        >
-      </div>
-    </footer>
-    <script src="/i18n.js"></script>
-    <script src="/vehicledetail.js"></script>
+      </footer>
+      <script src="/i18n.js"></script>
+      <script src="/vehicledetail.js"></script>
+    </div>
   </body>
 </html>

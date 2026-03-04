@@ -26,8 +26,8 @@ import AuthContext from "../context/AuthContext";
 const API_BASE =
   window.API_BASE ||
   (window.location.hostname === "localhost"
-    ? "https://alfa-motors-9bk6.vercel.app"
-    : "https://alfa-motors-9bk6.vercel.app");
+    ? "http://localhost:2500"
+    : "http://localhost:2500");
 
 // Register ChartJS components
 ChartJS.register(
@@ -37,7 +37,7 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  ArcElement
+  ArcElement,
 );
 
 const AdminPage = () => {
@@ -90,7 +90,7 @@ const AdminPage = () => {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(
           errorData.error ||
-            `HTTP error! status: ${response.status} - ${response.statusText}`
+            `HTTP error! status: ${response.status} - ${response.statusText}`,
         );
       }
 
@@ -117,7 +117,7 @@ const AdminPage = () => {
       console.error("Error fetching dashboard data:", error);
       setError(
         error.message ||
-          "Failed to load dashboard data. Please try again later."
+          "Failed to load dashboard data. Please try again later.",
       );
     } finally {
       setLoading(false);
@@ -128,7 +128,6 @@ const AdminPage = () => {
       fetchDashboardData();
     }
   }, [activeMenu, fetchDashboardData]);
-  
 
   // Chart data configuration
   const monthlyChartData = {
@@ -155,7 +154,7 @@ const AdminPage = () => {
         data: dashboardData.monthlyData?.map((item) => item.profit) || [],
         backgroundColor:
           dashboardData.monthlyData?.map((item) =>
-            item.profit >= 0 ? "#B3B3B3" : "#2B2B2B"
+            item.profit >= 0 ? "#B3B3B3" : "#2B2B2B",
           ) || [],
       },
     ],
@@ -203,7 +202,7 @@ const AdminPage = () => {
   };
 
   const DashboardCards = () => (
-    <div style={styles.cardsGrid}>
+    <div style={styles.cardsGrid} className="dashboard-cards-grid">
       {loading ? (
         Array(8)
           .fill()
@@ -212,16 +211,18 @@ const AdminPage = () => {
               key={index}
               style={{
                 ...styles.card,
-                        borderLeft: `4px solid ${[
-                          "#B3B3B3",
-                          "#D4D4D4",
-                          "#B3B3B3",
-                          "#D4D4D4",
-                          "#2B2B2B",
-                          "#B3B3B3",
-                          "#D4D4D4",
-                          "#B3B3B3",
-                        ][index]}`,
+                borderLeft: `4px solid ${
+                  [
+                    "#B3B3B3",
+                    "#D4D4D4",
+                    "#B3B3B3",
+                    "#D4D4D4",
+                    "#2B2B2B",
+                    "#B3B3B3",
+                    "#D4D4D4",
+                    "#B3B3B3",
+                  ][index]
+                }`,
                 opacity: 0.7,
               }}
             >
@@ -233,28 +234,28 @@ const AdminPage = () => {
                 <div
                   style={{
                     ...styles.cardIcon,
-                            backgroundColor: [
-                              "#D4D4D4",
-                              "#D4D4D4",
-                              "#D4D4D4",
-                              "#D4D4D4",
-                              "#D4D4D4",
-                              "#D4D4D4",
-                              "#D4D4D4",
-                              "#D4D4D4",
-                            ][index],
+                    backgroundColor: [
+                      "#D4D4D4",
+                      "#D4D4D4",
+                      "#D4D4D4",
+                      "#D4D4D4",
+                      "#D4D4D4",
+                      "#D4D4D4",
+                      "#D4D4D4",
+                      "#D4D4D4",
+                    ][index],
                   }}
                 >
                   {
                     [
-                              <FileText size={32} color="#2B2B2B" />,
-                              <TrendingUp size={32} color="#2B2B2B" />,
-                              <ShoppingCart size={32} color="#2B2B2B" />,
-                              <Target size={32} color="#2B2B2B" />,
-                              <Car size={32} color="#2B2B2B" />,
-                              <CarFront size={32} color="#2B2B2B" />,
-                              <PenTool size={32} color="#2B2B2B" />,
-                              <Bike size={32} color="#2B2B2B" />,
+                      <FileText size={32} color="#2B2B2B" />,
+                      <TrendingUp size={32} color="#2B2B2B" />,
+                      <ShoppingCart size={32} color="#2B2B2B" />,
+                      <Target size={32} color="#2B2B2B" />,
+                      <Car size={32} color="#2B2B2B" />,
+                      <CarFront size={32} color="#2B2B2B" />,
+                      <PenTool size={32} color="#2B2B2B" />,
+                      <Bike size={32} color="#2B2B2B" />,
                     ][index]
                   }
                 </div>
@@ -288,7 +289,6 @@ const AdminPage = () => {
         </div>
       ) : (
         <>
-          {/* Existing cards */}
           <div style={{ ...styles.card, borderLeft: "4px solid #B3B3B3" }}>
             <div style={styles.cardContent}>
               <div>
@@ -449,54 +449,7 @@ const AdminPage = () => {
       );
     }
 
-    return (
-      <div style={styles.chartsContainer}>
-        <div style={styles.chartCard}>
-          <h3 style={styles.chartTitle}>Monthly Transactions</h3>
-          <div style={styles.chartWrapper}>
-            {dashboardData.monthlyData?.length > 0 ? (
-              <Bar data={monthlyChartData} options={chartOptions} />
-            ) : (
-                <p
-                  style={{
-                    textAlign: "center",
-                    color: "#B3B3B3",
-                    padding: "20px",
-                  }}
-                >
-                No transaction data available
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div style={styles.chartCard}>
-          <h3 style={styles.chartTitle}>Monthly Profit</h3>
-          <div style={styles.chartWrapper}>
-            {dashboardData.monthlyData?.length > 0 ? (
-              <Bar data={profitChartData} options={chartOptions} />
-            ) : (
-                <p
-                  style={{
-                    textAlign: "center",
-                    color: "#B3B3B3",
-                    padding: "20px",
-                  }}
-                >
-                No profit data available
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div style={styles.chartCard}>
-          <h3 style={styles.chartTitle}>Transaction Types</h3>
-          <div style={styles.chartWrapper}>
-            <Pie data={transactionTypeData} options={pieOptions} />
-          </div>
-        </div>
-      </div>
-    );
+    return <div style={styles.chartsContainer}></div>;
   };
 
   return (
@@ -504,7 +457,7 @@ const AdminPage = () => {
       <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
 
       {/* Main Content */}
-      <div style={styles.mainContent}>
+      <div style={styles.mainContent} className="dashboard-main-content">
         <div style={styles.contentPadding}>
           <div style={styles.header}>
             <div
@@ -535,7 +488,6 @@ const AdminPage = () => {
               <DashboardCards />
               {/* <RevenueCard /> */}
               <ChartsSection />
-              
             </>
           )}
 
@@ -732,7 +684,7 @@ const styles = {
   revenueItem: {
     textAlign: "center",
     padding: "16px",
-  backgroundColor: "#FFFFFF",
+    backgroundColor: "#FFFFFF",
     borderRadius: "8px",
     transition: "transform 0.2s",
     ":hover": {
@@ -758,7 +710,7 @@ const styles = {
     marginBottom: "32px",
   },
   chartCard: {
-  backgroundColor: "#FFFFFF",
+    backgroundColor: "#FFFFFF",
     borderRadius: "12px",
     boxShadow:
       "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
@@ -782,7 +734,7 @@ const styles = {
     marginBottom: "32px",
   },
   transactionCard: {
-  backgroundColor: "#FFFFFF",
+    backgroundColor: "#FFFFFF",
     borderRadius: "12px",
     boxShadow:
       "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
@@ -806,7 +758,7 @@ const styles = {
     justifyContent: "space-between",
     alignItems: "center",
     padding: "12px",
-  backgroundColor: "#D4D4D4",
+    backgroundColor: "#D4D4D4",
     borderRadius: "8px",
     transition: "all 0.2s",
     ":hover": {
