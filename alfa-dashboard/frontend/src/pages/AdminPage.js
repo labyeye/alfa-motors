@@ -26,8 +26,8 @@ import AuthContext from "../context/AuthContext";
 const API_BASE =
   window.API_BASE ||
   (window.location.hostname === "localhost"
-    ? "http://localhost:2500"
-    : "http://localhost:2500");
+    ? "https://alfa-motors-9bk6.vercel.app"
+    : "https://alfa-motors-9bk6.vercel.app");
 
 // Register ChartJS components
 ChartJS.register(

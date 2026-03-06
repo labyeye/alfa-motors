@@ -32,7 +32,7 @@ const ALLOWED_ORIGINS = [
   'http://localhost:5502',
   'https://www.alfamotorworld.com',
   'https://alfa-motors-o5cm.vercel.app',
-  'http://localhost:2500',
+  'https://alfa-motors-9bk6.vercel.app',
 ];
 
 const corsOptions = {

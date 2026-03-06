@@ -25,7 +25,7 @@ const ListCar = () => {
     };
   }, []);
 
-  const API_BASE = "http://localhost:2500";
+  const API_BASE = "https://alfa-motors-9bk6.vercel.app";
   const getId = (obj) => (obj && (obj.id || obj._id)) || null;
 
   useEffect(() => {
@@ -35,8 +35,8 @@ const ListCar = () => {
         const API_BASE =
           window.API_BASE ||
           (window.location.hostname === "localhost"
-            ? "http://localhost:2500"
-            : "http://localhost:2500");
+            ? "https://alfa-motors-9bk6.vercel.app"
+            : "https://alfa-motors-9bk6.vercel.app");
         const response = await axios.get(`${API_BASE}/api/cars`, {
           headers: {
             Authorization: `Bearer ${token}`,
