@@ -1,6 +1,6 @@
 // review.js - handles opening modal, collecting form data and submitting to backend
 (function () {
-  const API_BASE ="https://alfa-motors-9bk6.vercel.app/api/reviews";
+  const API_BASE = "https://alfa-motors-9bk6.vercel.app/api/reviews";
 
   function createModal() {
     if (document.getElementById("review-modal")) return;
@@ -305,7 +305,7 @@
 
         const dateSpan = document.createElement("span");
         dateSpan.className = "testimonial-date";
-        
+
         const proof = document.createElement("span");
         proof.className = "social-proof";
 

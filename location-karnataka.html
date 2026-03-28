@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -72,7 +72,7 @@
     <link rel="icon" type="image/svg+xml" href="/assets/okmotor.png" />
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap"
       rel="stylesheet"
     />
     <link
@@ -106,7 +106,10 @@
       rel="preload"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
       as="style"
-      onload="this.onload=null;this.rel='stylesheet'"
+      onload="
+        this.onload = null;
+        this.rel = 'stylesheet';
+      "
     />
     <noscript
       ><link
@@ -116,53 +119,267 @@
   </head>
   <body>
     <nav class="navbar" aria-label="Main navigation">
-      <a href="https://www.alfamotorworld.com/" class="logo-link">
-        <div class="logo">
-          <img
-            src="./assets/okmotor.png"
-            class="logo-img"
-            alt="Alfa Motors World Logo"
-            itemprop="logo"
-            width="160"
-            height="48"
-          />
+      <div class="nav-left">
+        <button class="mobile-menu-toggle mobile-only" aria-label="Open menu">
+          <i class="fas fa-bars"></i>
+        </button>
+        <a href="https://www.alfamotorworld.com/" class="logo-link">
+          <div class="logo">
+            <img
+              src="./assets/okmotor.png"
+              class="logo-img"
+              alt="Alfa Motors World Logo"
+              itemprop="logo"
+              width="160"
+              height="48"
+            />
+          </div>
+        </a>
+        <div class="location-selector desktop-only">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>Bangalore</span>
+          <i class="fas fa-chevron-down"></i>
         </div>
-      </a>
-      <ul class="nav-links">
+      </div>
+
+      <ul class="nav-links desktop-only">
         <li>
-          <a href="https://www.alfamotorworld.com/" aria-current="page">Home</a>
+          <a href="about.html">About Us </a>
         </li>
-        <li class="mega-menu-trigger">
-          <a href="https://www.alfamotorworld.com/inventory.html"
-            >Vehicles for Sale</a
-          >
+        <li class="has-mega-menu">
+          <a href="inventory.html" class="nav-link"
+            >Buy used car <i class="fas fa-chevron-down"></i
+          ></a>
+          <div class="mega-menu">
+            <div class="mega-menu-header">
+              <span class="mega-menu-title">Buy Used Cars in Bangalore</span>
+              <a href="#" class="mega-menu-change-city">Change city</a>
+            </div>
+            <div class="mega-menu-content">
+              <div class="mega-menu-sidebar">
+                <div class="sidebar-item active" data-pane="pane-model">
+                  <span>Browse by Model</span>
+                  <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="sidebar-item" data-pane="pane-make">
+                  <span>Browse by Make</span>
+                  <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="sidebar-item" data-pane="pane-price">
+                  <span>Browse by Price</span>
+                  <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="sidebar-item" data-pane="pane-body">
+                  <span>Browse by Body Type</span>
+                  <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="sidebar-item" data-pane="pane-fuel">
+                  <span>Browse by Fuel Type</span>
+                  <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="sidebar-item" data-pane="pane-transmission">
+                  <span>Browse by Transmission</span>
+                  <i class="fas fa-chevron-right"></i>
+                </div>
+              </div>
+              <div class="mega-menu-main">
+                <!-- Model Pane -->
+                <div id="pane-model" class="mega-menu-content-pane active">
+                  <h4 class="category-title">Browse by Model</h4>
+                  <div class="mega-menu-grid">
+                    <a href="inventory.html"
+                      >Used Hyundai i10 Cars in Bangalore
+                      <i class="fas fa-arrow-right"></i
+                    ></a>
+                    <a href="inventory.html"
+                      >Used Tata NEXON Cars in Bangalore
+                      <i class="fas fa-arrow-right"></i
+                    ></a>
+                    <a href="inventory.html"
+                      >Used Hyundai i20 Cars in Bangalore
+                      <i class="fas fa-arrow-right"></i
+                    ></a>
+                    <a href="inventory.html"
+                      >Used Ford Ecosport Cars in Bangalore
+                      <i class="fas fa-arrow-right"></i
+                    ></a>
+                    <a href="inventory.html"
+                      >Used Renault Kwid Cars in Bangalore
+                      <i class="fas fa-arrow-right"></i
+                    ></a>
+                    <a href="inventory.html"
+                      >Used Honda City Cars in Bangalore
+                      <i class="fas fa-arrow-right"></i
+                    ></a>
+                    <a href="inventory.html"
+                      >Used Maruti Swift Cars in Bangalore
+                      <i class="fas fa-arrow-right"></i
+                    ></a>
+                    <a href="inventory.html"
+                      >Used Hyundai Creta Cars in Bangalore
+                      <i class="fas fa-arrow-right"></i
+                    ></a>
+                    <a href="inventory.html"
+                      >Used Maruti Baleno Cars in Bangalore
+                      <i class="fas fa-arrow-right"></i
+                    ></a>
+                    <a href="inventory.html"
+                      >Used KIA SONET Cars in Bangalore
+                      <i class="fas fa-arrow-right"></i
+                    ></a>
+                  </div>
+                </div>
+
+                <!-- Make Pane -->
+                <div id="pane-make" class="mega-menu-content-pane">
+                  <h4 class="category-title">Browse by Make</h4>
+                  <div class="visual-grid brand-grid">
+                    <a href="inventory.html" class="visual-card brand-card"
+                      ><i class="fas fa-car"></i><span>Maruti</span></a
+                    >
+                    <a href="inventory.html" class="visual-card brand-card"
+                      ><i class="fas fa-car"></i><span>Hyundai</span></a
+                    >
+                    <a href="inventory.html" class="visual-card brand-card"
+                      ><i class="fas fa-car"></i><span>Tata</span></a
+                    >
+                    <a href="inventory.html" class="visual-card brand-card"
+                      ><i class="fas fa-car"></i><span>Mahindra</span></a
+                    >
+                    <a href="inventory.html" class="visual-card brand-card"
+                      ><i class="fas fa-car"></i><span>Kia</span></a
+                    >
+                    <a href="inventory.html" class="visual-card brand-card"
+                      ><i class="fas fa-car"></i><span>Ford</span></a
+                    >
+                    <a href="inventory.html" class="visual-card brand-card"
+                      ><i class="fas fa-car"></i><span>Toyota</span></a
+                    >
+                    <a href="inventory.html" class="visual-card brand-card"
+                      ><i class="fas fa-car"></i><span>Honda</span></a
+                    >
+                    <a href="inventory.html" class="visual-card brand-card"
+                      ><i class="fas fa-car"></i><span>Renault</span></a
+                    >
+                    <a href="inventory.html" class="visual-card brand-card"
+                      ><i class="fas fa-car"></i><span>MG</span></a
+                    >
+                  </div>
+                </div>
+
+                <!-- Price Pane -->
+                <div id="pane-price" class="mega-menu-content-pane">
+                  <h4 class="category-title">Browse by Price</h4>
+                  <div class="mega-menu-grid">
+                    <a href="inventory.html"
+                      >Used Cars Under 2 Lakhs <i class="fas fa-arrow-right"></i
+                    ></a>
+                    <a href="inventory.html"
+                      >Used Cars Under 3 Lakhs <i class="fas fa-arrow-right"></i
+                    ></a>
+                    <a href="inventory.html"
+                      >Used Cars Under 5 Lakhs <i class="fas fa-arrow-right"></i
+                    ></a>
+                    <a href="inventory.html"
+                      >Used Cars Under 8 Lakhs <i class="fas fa-arrow-right"></i
+                    ></a>
+                    <a href="inventory.html"
+                      >Used Cars Under 10 Lakhs
+                      <i class="fas fa-arrow-right"></i
+                    ></a>
+                    <a href="inventory.html"
+                      >Used Cars Under 15 Lakhs
+                      <i class="fas fa-arrow-right"></i
+                    ></a>
+                    <a href="inventory.html"
+                      >Used Cars Under 20 Lakhs
+                      <i class="fas fa-arrow-right"></i
+                    ></a>
+                  </div>
+                </div>
+
+                <!-- Body Type Pane -->
+                <div id="pane-body" class="mega-menu-content-pane">
+                  <h4 class="category-title">Browse by Body Type</h4>
+                  <div class="visual-grid">
+                    <a href="inventory.html" class="visual-card"
+                      ><i class="fas fa-car-side"></i><span>Hatchback</span></a
+                    >
+                    <a href="inventory.html" class="visual-card"
+                      ><i class="fas fa-car"></i><span>SUV</span></a
+                    >
+                    <a href="inventory.html" class="visual-card"
+                      ><i class="fas fa-car"></i><span>Sedan</span></a
+                    >
+                    <a href="inventory.html" class="visual-card"
+                      ><i class="fas fa-shuttle-van"></i><span>MUV</span></a
+                    >
+                    <a href="inventory.html" class="visual-card"
+                      ><i class="fas fa-car"></i><span>Luxury</span></a
+                    >
+                  </div>
+                </div>
+
+                <!-- Fuel Type Pane -->
+                <div id="pane-fuel" class="mega-menu-content-pane">
+                  <h4 class="category-title">Browse by Fuel Type</h4>
+                  <div class="visual-grid">
+                    <a href="inventory.html" class="visual-card"
+                      ><i class="fas fa-gas-pump"></i><span>Petrol</span></a
+                    >
+                    <a href="inventory.html" class="visual-card"
+                      ><i class="fas fa-oil-can"></i><span>Diesel</span></a
+                    >
+                    <a href="inventory.html" class="visual-card"
+                      ><i class="fas fa-burn"></i><span>CNG</span></a
+                    >
+                    <a href="inventory.html" class="visual-card"
+                      ><i class="fas fa-bolt"></i><span>Electric</span></a
+                    >
+                    <a href="inventory.html" class="visual-card"
+                      ><i class="fas fa-battery-half"></i><span>Hybrid</span></a
+                    >
+                  </div>
+                </div>
+
+                <!-- Transmission Pane -->
+                <div id="pane-transmission" class="mega-menu-content-pane">
+                  <h4 class="category-title">Browse by Transmission</h4>
+                  <div class="visual-grid">
+                    <a href="inventory.html" class="visual-card"
+                      ><i class="fas fa-cog"></i><span>Manual</span></a
+                    >
+                    <a href="inventory.html" class="visual-card"
+                      ><i class="fas fa-cogs"></i><span>Automatic</span></a
+                    >
+                  </div>
+                </div>
+
+                <div class="mega-menu-footer">
+                  <a href="inventory.html" class="buy-online-btn"
+                    >Buy cars online <i class="fas fa-arrow-right"></i
+                  ></a>
+                </div>
+              </div>
+            </div>
+          </div>
         </li>
         <li>
-          <a href="https://www.alfamotorworld.com/sell.html"
-            >Sell Your Vehicle</a
-          >
+          <a href="sell.html">Sell car</a>
         </li>
         <li>
-          <a href="https://www.alfamotorworld.com/happy-customers.html"
-            >Happy Customers</a
-          >
+          <a href="finance.html">Car finance</a>
         </li>
         <li>
-          <a href="https://www.alfamotorworld.com/finance.html">Financing</a>
-        </li>
-        <li>
-          <a href="https://www.alfamotorworld.com/about.html">About Us</a>
-        </li>
-        <li>
-          <a href="https://www.alfamotorworld.com/contact.html">Contact</a>
+          <a href="contact.html">Car services</a>
         </li>
       </ul>
-      <div class="login-btn">
-        <a href="https://www.alfamotorworld.com/getquote.html"
-          ><button aria-label="Get a quote for your Car">
-            Get the Quote
-          </button></a
-        >
+
+      <div class="nav-right">
+        <a href="tel:+919036818492" class="nav-action-btn call-us desktop-only">
+          <i class="fas fa-phone-alt"></i>
+          <span>Call us</span>
+        </a>
       </div>
     </nav>
 
@@ -178,16 +395,10 @@
         </header>
 
         <section class="city-actions">
-          <a
-            id="cta-buy"
-            class="cta-btn primary"
-            href="/https://www.alfamotorworld.com/inventory.html"
+          <a id="cta-buy" class="cta-btn primary" href="inventory.html"
             >Buy second hand car in Karnataka</a
           >
-          <a
-            id="cta-sell"
-            class="cta-btn secondary"
-            href="/https://www.alfamotorworld.com/sell.html"
+          <a id="cta-sell" class="cta-btn secondary" href="sell.html"
             >Sell your car</a
           >
         </section>
@@ -308,31 +519,39 @@
       // Load authoritative city data from JSON and apply it to the page (title, meta, OG, canonical, CTAs)
       async function loadCityData() {
         try {
-          const res = await fetch('/assets/data/karnataka-cities.json');
+          const res = await fetch("/assets/data/karnataka-cities.json");
           const cities = await res.json();
 
           const params = new URLSearchParams(location.search);
-          const slug = params.get('city') || params.get('q') || location.hash.replace('#','') || 'bangalore';
-          const city = cities.find(c => c.slug === slug);
+          const slug =
+            params.get("city") ||
+            params.get("q") ||
+            location.hash.replace("#", "") ||
+            "bangalore";
+          const city = cities.find((c) => c.slug === slug);
 
-          const titleEl = document.getElementById('city-title');
-          const descEl = document.getElementById('city-desc');
-          const ctaBuy = document.getElementById('cta-buy');
-          const ctaSell = document.getElementById('cta-sell');
+          const titleEl = document.getElementById("city-title");
+          const descEl = document.getElementById("city-desc");
+          const ctaBuy = document.getElementById("cta-buy");
+          const ctaSell = document.getElementById("cta-sell");
 
           if (city) {
             // Document title and meta
-            document.title = city.title || `Used cars in ${city.name} | Alfa Motor World`;
-            setMeta('description', city.description);
-            setMeta('keywords', city.keywords ? city.keywords.join(', ') : 'used cars');
+            document.title =
+              city.title || `Used cars in ${city.name} | Alfa Motor World`;
+            setMeta("description", city.description);
+            setMeta(
+              "keywords",
+              city.keywords ? city.keywords.join(", ") : "used cars",
+            );
 
             // Open Graph & Twitter
-            setMetaProperty('og:title', city.title);
-            setMetaProperty('og:description', city.description);
-            setMetaProperty('og:url', city.canonical);
-            setMeta('twitter:title', city.title);
-            setMeta('twitter:description', city.description);
-            setMeta('twitter:url', city.canonical);
+            setMetaProperty("og:title", city.title);
+            setMetaProperty("og:description", city.description);
+            setMetaProperty("og:url", city.canonical);
+            setMeta("twitter:title", city.title);
+            setMeta("twitter:description", city.description);
+            setMeta("twitter:url", city.canonical);
 
             // Canonical should point to the city-specific canonical (used-cars page)
             setCanonical(city.canonical);
@@ -341,33 +560,43 @@
             titleEl.textContent = city.title;
             descEl.textContent = city.description;
             ctaBuy.href = city.canonical;
-            ctaBuy.textContent = city.cta || `Buy second hand car in ${city.name}`;
-            ctaSell.href = '/sell.html';
+            ctaBuy.textContent =
+              city.cta || `Buy second hand car in ${city.name}`;
+            ctaSell.href = "/sell.html";
             ctaSell.textContent = `Sell your car in ${city.name}`;
           } else {
             // Fallback — Karnataka overview
-            document.title = 'Used cars in Karnataka | Alfa Motor World';
-            setMeta('description','Find certified used cars across Karnataka with Alfa Motor World. Browse inspected pre-owned cars by city.');
-            setMeta('keywords','used cars karnataka, pre-owned cars karnataka');
-            setCanonical('https://www.alfamotorworld.com/location-karnataka.html');
-            titleEl.textContent = 'Used cars in Karnataka';
-            descEl.textContent = 'Browse certified pre-owned and second hand cars by city.';
-            ctaBuy.href = '/inventory.html';
-            ctaBuy.textContent = 'Buy second hand cars in Karnataka';
-            ctaSell.href = '/sell.html';
-            ctaSell.textContent = 'Sell your car';
+            document.title = "Used cars in Karnataka | Alfa Motor World";
+            setMeta(
+              "description",
+              "Find certified used cars across Karnataka with Alfa Motor World. Browse inspected pre-owned cars by city.",
+            );
+            setMeta(
+              "keywords",
+              "used cars karnataka, pre-owned cars karnataka",
+            );
+            setCanonical(
+              "https://www.alfamotorworld.com/location-karnataka.html",
+            );
+            titleEl.textContent = "Used cars in Karnataka";
+            descEl.textContent =
+              "Browse certified pre-owned and second hand cars by city.";
+            ctaBuy.href = "/inventory.html";
+            ctaBuy.textContent = "Buy second hand cars in Karnataka";
+            ctaSell.href = "/sell.html";
+            ctaSell.textContent = "Sell your car";
           }
         } catch (err) {
-          console.error('Failed to load city data', err);
+          console.error("Failed to load city data", err);
         }
       }
 
       function setMeta(name, content) {
         if (!content) return;
         let m = document.querySelector(`meta[name="${name}"]`);
-        if (m) m.setAttribute('content', content);
+        if (m) m.setAttribute("content", content);
         else {
-          m = document.createElement('meta');
+          m = document.createElement("meta");
           m.name = name;
           m.content = content;
           document.head.appendChild(m);
@@ -377,10 +606,10 @@
       function setMetaProperty(prop, content) {
         if (!content) return;
         let m = document.querySelector(`meta[property="${prop}"]`);
-        if (m) m.setAttribute('content', content);
+        if (m) m.setAttribute("content", content);
         else {
-          m = document.createElement('meta');
-          m.setAttribute('property', prop);
+          m = document.createElement("meta");
+          m.setAttribute("property", prop);
           m.content = content;
           document.head.appendChild(m);
         }
@@ -389,16 +618,16 @@
       function setCanonical(href) {
         if (!href) return;
         let c = document.querySelector('link[rel="canonical"]');
-        if (c) c.setAttribute('href', href);
+        if (c) c.setAttribute("href", href);
         else {
-          c = document.createElement('link');
-          c.rel = 'canonical';
+          c = document.createElement("link");
+          c.rel = "canonical";
           c.href = href;
           document.head.appendChild(c);
         }
       }
 
-      document.addEventListener('DOMContentLoaded', loadCityData);
+      document.addEventListener("DOMContentLoaded", loadCityData);
     </script>
   </body>
 </html>

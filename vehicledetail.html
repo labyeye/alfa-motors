@@ -171,6 +171,10 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
     <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
       rel="preconnect"
       href="https://alfa-motors-o5cm.vercel.app"
       crossorigin
@@ -181,247 +185,425 @@
     <div class="hero-section" id="maincontent">
       <header>
         <nav class="navbar" aria-label="Main navigation">
-          <button
-            class="mobile-menu-toggle"
-            aria-label="Open menu"
-            aria-controls="mobileMenu"
-            aria-expanded="false"
-          >
-            <i class="fas fa-bars" aria-hidden="true"></i>
-          </button>
-          <a href="https://www.alfamotorworld.com/" class="logo-link">
-            <div class="logo">
-              <img
-                src="./assets/okmotor.png"
-                class="logo-img"
-                alt="Alfa Motors World Logo"
-                itemprop="logo"
-              />
-            </div>
-          </a>
-          <ul class="nav-links">
-            <li>
-              <a
-                href="https://www.alfamotorworld.com/"
-                aria-current="page"
-                data-translate="Home"
-                >Home</a
-              >
-            </li>
+          <div class="nav-left">
+            <button
+              class="mobile-menu-toggle mobile-only"
+              aria-label="Open menu"
+            >
+              <i class="fas fa-bars"></i>
+            </button>
+            <a href="https://www.alfamotorworld.com/" class="logo-link">
+              <div class="logo">
+                <img
+                  src="./assets/okmotor.png"
+                  class="logo-img"
+                  alt="Alfa Motors World Logo"
+                  itemprop="logo"
+                />
+              </div>
+            </a>
+          </div>
 
-            <li class="mega-menu-trigger">
+          <ul class="nav-links desktop-only">
+            <li>
+              <a href="https://www.alfamotorworld.com/about.html">About Us</a>
+            </li>
+            <li class="has-mega-menu">
               <a
                 href="https://www.alfamotorworld.com/inventory.html"
-                data-translate="Vehicles for Sale"
-                >Vehicles for Sale</a
-              >
+                class="nav-link"
+                >Buy used car <i class="fas fa-chevron-down"></i
+              ></a>
               <div class="mega-menu">
+                <div class="mega-menu-header">
+                  <span class="mega-menu-title"
+                    >Buy Used Cars in Bangalore</span
+                  >
+                  <a href="#" class="mega-menu-change-city">Change city</a>
+                </div>
                 <div class="mega-menu-content">
-                  <div class="mega-menu-column">
-                    <h3>Categories</h3>
-                    <a
-                      href="https://www.alfamotorworld.com/inventory.html?category=suv"
-                      >SUV</a
-                    >
-                    <a
-                      href="https://www.alfamotorworld.com/inventory.html?category=sedan"
-                      >Sedan</a
-                    >
-                    <a
-                      href="https://www.alfamotorworld.com/inventory.html?category=hatchback"
-                      >Hatchback</a
-                    >
-                    <a
-                      href="https://www.alfamotorworld.com/inventory.html?category=luxury"
-                      >Luxury</a
-                    >
-                    <a
-                      href="https://www.alfamotorworld.com/inventory.html?category=electric"
-                      >Electric</a
-                    >
+                  <div class="mega-menu-sidebar">
+                    <div class="sidebar-item active" data-pane="pane-model">
+                      <span>Browse by Model</span>
+                      <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="sidebar-item" data-pane="pane-make">
+                      <span>Browse by Make</span>
+                      <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="sidebar-item" data-pane="pane-price">
+                      <span>Browse by Price</span>
+                      <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="sidebar-item" data-pane="pane-body">
+                      <span>Browse by Body Type</span>
+                      <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="sidebar-item" data-pane="pane-fuel">
+                      <span>Browse by Fuel Type</span>
+                      <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="sidebar-item" data-pane="pane-transmission">
+                      <span>Browse by Transmission</span>
+                      <i class="fas fa-chevron-right"></i>
+                    </div>
                   </div>
-                  <div class="mega-menu-column">
-                    <h3>Popular Brands</h3>
-                    <a
-                      href="https://www.alfamotorworld.com/inventory.html?brand=bmw"
-                      >BMW</a
-                    >
-                    <a
-                      href="https://www.alfamotorworld.com/inventory.html?brand=audi"
-                      >Audi</a
-                    >
-                    <a
-                      href="https://www.alfamotorworld.com/inventory.html?brand=mercedes"
-                      >Mercedes</a
-                    >
-                    <a
-                      href="https://www.alfamotorworld.com/inventory.html?brand=toyota"
-                      >Toyota</a
-                    >
-                    <a
-                      href="https://www.alfamotorworld.com/inventory.html?brand=honda"
-                      >Honda</a
-                    >
+                  <div class="mega-menu-main">
+                    <!-- Model Pane -->
+                    <div id="pane-model" class="mega-menu-content-pane active">
+                      <h4 class="category-title">Browse by Model</h4>
+                      <div class="mega-menu-grid">
+                        <a href="inventory.html"
+                          >Used Hyundai i10 Cars in Bangalore
+                          <i class="fas fa-arrow-right"></i
+                        ></a>
+                        <a href="inventory.html"
+                          >Used Tata NEXON Cars in Bangalore
+                          <i class="fas fa-arrow-right"></i
+                        ></a>
+                        <a href="inventory.html"
+                          >Used Hyundai i20 Cars in Bangalore
+                          <i class="fas fa-arrow-right"></i
+                        ></a>
+                        <a href="inventory.html"
+                          >Used Ford Ecosport Cars in Bangalore
+                          <i class="fas fa-arrow-right"></i
+                        ></a>
+                        <a href="inventory.html"
+                          >Used Renault Kwid Cars in Bangalore
+                          <i class="fas fa-arrow-right"></i
+                        ></a>
+                        <a href="inventory.html"
+                          >Used Honda City Cars in Bangalore
+                          <i class="fas fa-arrow-right"></i
+                        ></a>
+                        <a href="inventory.html"
+                          >Used Maruti Swift Cars in Bangalore
+                          <i class="fas fa-arrow-right"></i
+                        ></a>
+                        <a href="inventory.html"
+                          >Used Hyundai Creta Cars in Bangalore
+                          <i class="fas fa-arrow-right"></i
+                        ></a>
+                        <a href="inventory.html"
+                          >Used Maruti Baleno Cars in Bangalore
+                          <i class="fas fa-arrow-right"></i
+                        ></a>
+                        <a href="inventory.html"
+                          >Used KIA SONET Cars in Bangalore
+                          <i class="fas fa-arrow-right"></i
+                        ></a>
+                      </div>
+                    </div>
+
+                    <!-- Make Pane -->
+                    <div id="pane-make" class="mega-menu-content-pane">
+                      <h4 class="category-title">Browse by Make</h4>
+                      <div class="visual-grid brand-grid">
+                        <a href="inventory.html" class="visual-card brand-card"
+                          ><i class="fas fa-car"></i><span>Maruti</span></a
+                        >
+                        <a href="inventory.html" class="visual-card brand-card"
+                          ><i class="fas fa-car"></i><span>Hyundai</span></a
+                        >
+                        <a href="inventory.html" class="visual-card brand-card"
+                          ><i class="fas fa-car"></i><span>Tata</span></a
+                        >
+                        <a href="inventory.html" class="visual-card brand-card"
+                          ><i class="fas fa-car"></i><span>Mahindra</span></a
+                        >
+                        <a href="inventory.html" class="visual-card brand-card"
+                          ><i class="fas fa-car"></i><span>Kia</span></a
+                        >
+                        <a href="inventory.html" class="visual-card brand-card"
+                          ><i class="fas fa-car"></i><span>Ford</span></a
+                        >
+                        <a href="inventory.html" class="visual-card brand-card"
+                          ><i class="fas fa-car"></i><span>Toyota</span></a
+                        >
+                        <a href="inventory.html" class="visual-card brand-card"
+                          ><i class="fas fa-car"></i><span>Honda</span></a
+                        >
+                        <a href="inventory.html" class="visual-card brand-card"
+                          ><i class="fas fa-car"></i><span>Renault</span></a
+                        >
+                        <a href="inventory.html" class="visual-card brand-card"
+                          ><i class="fas fa-car"></i><span>MG</span></a
+                        >
+                      </div>
+                    </div>
+
+                    <!-- Price Pane -->
+                    <div id="pane-price" class="mega-menu-content-pane">
+                      <h4 class="category-title">Browse by Price</h4>
+                      <div class="mega-menu-grid">
+                        <a href="inventory.html"
+                          >Used Cars Under 2 Lakhs
+                          <i class="fas fa-arrow-right"></i
+                        ></a>
+                        <a href="inventory.html"
+                          >Used Cars Under 3 Lakhs
+                          <i class="fas fa-arrow-right"></i
+                        ></a>
+                        <a href="inventory.html"
+                          >Used Cars Under 5 Lakhs
+                          <i class="fas fa-arrow-right"></i
+                        ></a>
+                        <a href="inventory.html"
+                          >Used Cars Under 8 Lakhs
+                          <i class="fas fa-arrow-right"></i
+                        ></a>
+                        <a href="inventory.html"
+                          >Used Cars Under 10 Lakhs
+                          <i class="fas fa-arrow-right"></i
+                        ></a>
+                        <a href="inventory.html"
+                          >Used Cars Under 15 Lakhs
+                          <i class="fas fa-arrow-right"></i
+                        ></a>
+                        <a href="inventory.html"
+                          >Used Cars Under 20 Lakhs
+                          <i class="fas fa-arrow-right"></i
+                        ></a>
+                      </div>
+                    </div>
+
+                    <!-- Body Type Pane -->
+                    <div id="pane-body" class="mega-menu-content-pane">
+                      <h4 class="category-title">Browse by Body Type</h4>
+                      <div class="visual-grid">
+                        <a href="inventory.html" class="visual-card"
+                          ><i class="fas fa-car-side"></i
+                          ><span>Hatchback</span></a
+                        >
+                        <a href="inventory.html" class="visual-card"
+                          ><i class="fas fa-car"></i><span>SUV</span></a
+                        >
+                        <a href="inventory.html" class="visual-card"
+                          ><i class="fas fa-car"></i><span>Sedan</span></a
+                        >
+                        <a href="inventory.html" class="visual-card"
+                          ><i class="fas fa-shuttle-van"></i><span>MUV</span></a
+                        >
+                        <a href="inventory.html" class="visual-card"
+                          ><i class="fas fa-car"></i><span>Luxury</span></a
+                        >
+                      </div>
+                    </div>
+
+                    <!-- Fuel Type Pane -->
+                    <div id="pane-fuel" class="mega-menu-content-pane">
+                      <h4 class="category-title">Browse by Fuel Type</h4>
+                      <div class="visual-grid">
+                        <a href="inventory.html" class="visual-card"
+                          ><i class="fas fa-gas-pump"></i><span>Petrol</span></a
+                        >
+                        <a href="inventory.html" class="visual-card"
+                          ><i class="fas fa-oil-can"></i><span>Diesel</span></a
+                        >
+                        <a href="inventory.html" class="visual-card"
+                          ><i class="fas fa-burn"></i><span>CNG</span></a
+                        >
+                        <a href="inventory.html" class="visual-card"
+                          ><i class="fas fa-bolt"></i><span>Electric</span></a
+                        >
+                        <a href="inventory.html" class="visual-card"
+                          ><i class="fas fa-battery-half"></i
+                          ><span>Hybrid</span></a
+                        >
+                      </div>
+                    </div>
+
+                    <!-- Transmission Pane -->
+                    <div id="pane-transmission" class="mega-menu-content-pane">
+                      <h4 class="category-title">Browse by Transmission</h4>
+                      <div class="visual-grid">
+                        <a href="inventory.html" class="visual-card"
+                          ><i class="fas fa-cog"></i><span>Manual</span></a
+                        >
+                        <a href="inventory.html" class="visual-card"
+                          ><i class="fas fa-cogs"></i><span>Automatic</span></a
+                        >
+                      </div>
+                    </div>
+
+                    <div class="mega-menu-footer">
+                      <a href="inventory.html" class="buy-online-btn"
+                        >Buy cars online <i class="fas fa-arrow-right"></i
+                      ></a>
+                    </div>
                   </div>
                 </div>
               </div>
             </li>
             <li>
-              <a
-                href="https://www.alfamotorworld.com/sell.html"
-                data-translate="Sell Your Vehicle"
-                >Sell Your Vehicle</a
-              >
+              <a href="https://www.alfamotorworld.com/sell.html">Sell car </a>
             </li>
             <li>
-              <a href="https://www.alfamotorworld.com/happy-customers.html"
-                >Happy Customers</a
-              >
+              <a href="https://www.alfamotorworld.com/finance.html"
+                >Car finance
+              </a>
             </li>
             <li>
-              <a
-                href="https://www.alfamotorworld.com/finance.html"
-                data-translate="Financing"
-                >Financing</a
-              >
+              <a href="https://www.alfamotorworld.com/inventory.html"
+                >New cars
+              </a>
             </li>
             <li>
-              <a
-                href="https://www.alfamotorworld.com/about.html"
-                data-translate="About Us"
-                >About Us</a
-              >
-            </li>
-            <li>
-              <a
-                href="https://www.alfamotorworld.com/contact.html"
-                data-translate="Contact"
-                >Contact</a
-              >
+              <a href="https://www.alfamotorworld.com/contact.html"
+                >Car services
+              </a>
             </li>
           </ul>
-          <div class="login-btn">
-            <a href="https://www.alfamotorworld.com/getquote.html">
-              <button data-translate="Get the Quote">Get the Quote</button>
+
+          <div class="nav-right">
+            <a
+              href="tel:+919036818492"
+              class="nav-action-btn call-us desktop-only"
+            >
+              <i class="fas fa-phone-alt"></i>
+              <span>Call us</span>
             </a>
           </div>
         </nav>
       </header>
 
       <div class="vehicle-detail-container">
-        <div class="vehicle-gallery">
-          <div class="main-image-container">
-            <img
-              id="mainVehicleImg"
-              class="main-vehicle-image"
-              src="assets/owner.png"
-              alt="Car"
-            />
-            <div class="image-counter">
-              <span id="currentImageIndex">1</span>/<span id="totalImages"
-                >36</span
-              >
+        <div class="vehicle-gallery-section">
+          <div class="gallery-wrapper">
+            <div class="stock-badge-gallery">
+              <span class="stock-label">Alfa Motors</span>
+              <span class="stock-text">Owned stock</span>
             </div>
-            <button class="gallery-nav-btn prev-btn" id="prevImageBtn">
-              <i class="fas fa-chevron-left"></i>
-            </button>
-            <button class="gallery-nav-btn next-btn" id="nextImageBtn">
-              <i class="fas fa-chevron-right"></i>
-            </button>
+            <div class="main-image-container">
+              <img
+                id="mainVehicleImg"
+                class="main-vehicle-image"
+                src="assets/owner.png"
+                alt="Car"
+              />
+              <button class="gallery-nav-btn prev-btn" id="prevImageBtn">
+                <i class="fas fa-chevron-left"></i>
+              </button>
+              <button class="gallery-nav-btn next-btn" id="nextImageBtn">
+                <i class="fas fa-chevron-right"></i>
+              </button>
+            </div>
+            <div class="gallery-tabs">
+              <div class="gallery-tab">
+                <div class="tab-icon locked">
+                  <i class="fas fa-car"></i>
+                </div>
+                <span>Exterior</span>
+              </div>
+              <div class="gallery-tab">
+                <div class="tab-icon locked">
+                  <i class="fas fa-car-side"></i>
+                </div>
+                <span>Interior</span>
+              </div>
+              <div class="gallery-tab">
+                <div class="tab-icon locked">
+                  <i class="fas fa-cogs"></i>
+                </div>
+                <span>Features</span>
+              </div>
+              <div class="gallery-tab">
+                <div class="tab-icon locked">
+                  <i class="fas fa-star"></i>
+                </div>
+                <span>Highlights</span>
+              </div>
+              <div class="gallery-tab">
+                <div class="tab-icon locked">
+                  <i class="fas fa-truck-monster"></i>
+                </div>
+                <span>Tyres</span>
+              </div>
+            </div>
           </div>
         </div>
 
         <div class="vehicle-info-section">
-          <div class="stock-badge-link">
-            <span class="stock-label">Alfa Motors</span>
-            <span class="stock-icon"><i class="fas fa-circle"></i></span>
-            <span class="stock-text">Owned stock</span>
-            <i class="fas fa-chevron-right"></i>
-          </div>
-
-          <h1 class="vehicle-title-main" id="vehicleTitle">
-            2019 Hyundai Grand i10 SPORTZ 1.2 KAPPA VTVT
-          </h1>
-
-          <div class="vehicle-location">
-            <i class="fas fa-map-marker-alt"></i>
-            <span id="vehicleLocation">Bellahalli, Bengaluru</span>
-          </div>
-
-          <div class="vehicle-specs-bar">
-            <div class="spec-item">
-              <span id="vehicleKm">25,161 km</span>
-            </div>
-            <div class="spec-divider"></div>
-            <div class="spec-item">
-              <span id="vehicleFuel">Petrol</span>
-            </div>
-            <div class="spec-divider"></div>
-            <div class="spec-item">
-              <span id="vehicleTransmission">Manual</span>
-            </div>
-            <div class="spec-divider"></div>
-            <div class="spec-item">
-              <span id="vehicleOwner">3rd owner</span>
-            </div>
-            <div class="spec-divider"></div>
-            <div class="spec-item">
-              <span id="vehicleRTO">KA-51</span>
+          <div class="top-header">
+            <div class="stock-badge-link">
+              <span class="stock-label">Alfa Motors</span>
+              <span class="stock-icon"><i class="fas fa-circle"></i></span>
+              <span class="stock-text">Owned stock</span>
+              <i class="fas fa-chevron-right"></i>
             </div>
           </div>
 
-          <div class="warranty-badge">
-            <i class="fas fa-shield-alt"></i>
-            <span>Zero Worry Max</span>
-            <i class="fas fa-chevron-right"></i>
+          <div class="title-row">
+            <h1 class="vehicle-title-main" id="vehicleTitle">
+              2019 Hyundai Grand i10 SPORTZ 1.2 KAPPA VTVT
+            </h1>
+            <button class="btn-favorite" aria-label="Add to favorite">
+              <i class="far fa-heart"></i>
+            </button>
           </div>
 
-          <div class="pricing-section">
-            <div class="emi-info">
-              <span class="emi-label">EMI starts at</span>
-              <div class="emi-amount" id="vehicleEmi">₹7,114/mo</div>
+          <div class="specs-pills">
+            <span class="spec-pill" id="vehicleKm">25,161 km</span>
+            <span class="spec-pill" id="vehicleOwner">3rd owner</span>
+            <span class="spec-pill" id="vehicleTransmission">Manual</span>
+            <span class="spec-pill" id="vehicleFuel">Petrol</span>
+            <span class="spec-pill" id="vehicleRTO">KA-51</span>
+          </div>
+
+          <div class="location-call-row">
+            <div class="vehicle-location">
+              <i class="far fa-paper-plane"></i>
+              <span id="vehicleLocation">Bellahalli, Bengaluru</span>
+            </div>
+            <a
+              href="tel:+919036818492"
+              class="call-us-pill"
+              aria-label="Call us"
+            >
+              <i class="fas fa-phone-alt"></i> Call us
+            </a>
+          </div>
+
+          <div class="price-emi-card">
+            <div class="emi-section">
+              <div class="emi-left">
+                <span class="emi-label">EMI starts at</span>
+                <div class="emi-amount" id="vehicleEmi">₹7,114/mo</div>
+              </div>
+              <div class="emi-right">
+                <a href="#" class="check-eligibility"
+                  >Check eligibility <i class="fas fa-arrow-right"></i
+                ></a>
+              </div>
+            </div>
+            <div class="price-section">
+              <div class="price-left">
+                <div class="price-main">
+                  <span class="currency">₹</span>
+                  <span class="price-value" id="vehiclePrice">4.03</span>
+                  <span class="price-unit">lakh</span>
+                </div>
+              </div>
+              <div class="price-right">
+                <a href="#" class="price-breakup"
+                  >Price breakup <i class="fas fa-arrow-right"></i
+                ></a>
+              </div>
             </div>
           </div>
 
-          <div class="price-section">
-            <div class="price-main">
-              <span class="currency">₹</span>
-              <span class="price-value" id="vehiclePrice">4.03</span>
-              <span class="price-unit">lakh</span>
-            </div>
-          </div>
           <div class="action-buttons">
-            <button class="btn-primary book-test-drive">
+            <button class="btn-primary-orange book-test-drive">
               Book free test drive
             </button>
           </div>
 
-          <div class="great-things-section">
-            <h2 class="section-title">Great things about this car</h2>
-            <div class="great-things-grid" id="greatThingsGrid">
-              <div class="great-thing-item">
-                <i class="fas fa-mobile-alt"></i>
-                <div class="thing-content">
-                  <div class="thing-title">Smart connectivity</div>
-                  <div class="thing-desc">
-                    with Apple CarPlay and Android Auto
-                  </div>
-                </div>
-              </div>
-              <div class="great-thing-item">
-                <i class="fas fa-cogs"></i>
-                <div class="thing-content">
-                  <div class="thing-title">Essential features</div>
-                  <div class="thing-desc">AC, power windows, music system</div>
-                </div>
-              </div>
-              <div class="great-thing-item">
-                <i class="fas fa-shield-alt"></i>
-                <div class="thing-content">
-                  <div class="thing-title">2 airbags and ABS</div>
-                  <div class="thing-desc">Superior safety and reliability</div>
-                </div>
-              </div>
+          <div class="great-things-box">
+            <h2 class="box-title">Great things about this car</h2>
+            <!-- Features could be populated or static for now -->
+            <div style="padding: 24px; color: #666">
+              <p>Excellent condition, non-accidental, and fully inspected.</p>
             </div>
           </div>
         </div>
@@ -502,22 +684,44 @@
         }
 
         function formatOwnership(owner) {
-          if (owner === "1" || owner.includes("1st")) return "1st owner";
-          if (owner === "2" || owner.includes("2nd")) return "2nd owner";
-          if (owner === "3" || owner.includes("3+") || owner.includes("3rd"))
+          if (!owner) return "1st owner";
+          const s = owner.toString().toLowerCase();
+          if (s === "1" || s.includes("1st")) return "1st owner";
+          if (s === "2" || s.includes("2nd")) return "2nd owner";
+          if (s === "3" || s.includes("3+") || s.includes("3rd"))
             return "3rd owner";
           return owner;
         }
 
+        function parsePriceString(p) {
+          try {
+            if (p === undefined || p === null) return 0;
+            if (typeof p === "number") return p || 0;
+            var s = String(p).trim();
+            // strip currency symbols, commas and whitespace
+            s = s.replace(/[^0-9.\-]/g, "");
+            if (s === "" || s === "NaN") return 0;
+            var n = parseFloat(s);
+            return isFinite(n) ? n : 0;
+          } catch (e) {
+            return 0;
+          }
+        }
+
         function formatPrice(price) {
           if (!price || isNaN(price) || price === 0) return "0";
+          // If the price is already small (e.g. 4.50), it might already be in Lakhs.
+          // Full prices are usually > 10,000.
+          if (price < 1000) return price.toString();
           const lakh = price / 100000;
           return lakh.toFixed(2);
         }
 
         function calculateEMI(price) {
           if (!price || isNaN(price) || price === 0) return 0;
-          const loanAmount = price * 0.9;
+          // Scale up if it's already in lakhs (e.g., 4.5)
+          const fullPrice = price < 1000 ? price * 100000 : price;
+          const loanAmount = fullPrice * 0.9;
           const months = 36;
           return Math.round(loanAmount / months);
         }
@@ -597,7 +801,7 @@
           setText("vehicleRTO", car.rto || "KA-51");
           setText("vehicleLocation", car.location || "Bellahalli, Bengaluru");
 
-          const price = parseInt(car.sellingPrice || car.price || 0);
+          const price = parsePriceString(car.sellingPrice || car.price || 0);
           console.log("Car data:", car);
           console.log("Price:", price);
 
@@ -669,7 +873,6 @@
             if (mainImg) {
               mainImg.src = getImageUrl(allImages[currentImageIndex]);
             }
-            setText("currentImageIndex", (currentImageIndex + 1).toString());
           }
 
           const bookTestDriveBtn = document.querySelector(".book-test-drive");
@@ -678,6 +881,125 @@
               window.location.href =
                 "https://www.alfamotorworld.com/contact.html";
             });
+          }
+
+          // Setup Modal Gallery
+          const mainImgEl = document.getElementById("mainVehicleImg");
+          const galleryModal = document.getElementById("galleryModal");
+          const closeModalBtn = document.getElementById("closeModalBtn");
+          const backModalBtn = document.getElementById("backModalBtn");
+          const modalDesktopMainImg = document.getElementById(
+            "modalDesktopMainImg",
+          );
+          const modalPrevBtn = document.getElementById("modalPrevBtn");
+          const modalNextBtn = document.getElementById("modalNextBtn");
+          const modalCurrentIndex =
+            document.getElementById("modalCurrentIndex");
+          const modalTotalImages = document.getElementById("modalTotalImages");
+          const modalThumbnailsRow =
+            document.getElementById("modalThumbnailsRow");
+          const modalMobileView = document.getElementById("modalMobileView");
+
+          let modalIndex = 0;
+
+          function openModal() {
+            if (!allImages || allImages.length === 0) return;
+            galleryModal.classList.add("open");
+            document.body.style.overflow = "hidden"; // Prevent scrolling
+            modalIndex = currentImageIndex;
+            renderModal();
+            renderMobileImages();
+          }
+
+          function closeModal() {
+            galleryModal.classList.remove("open");
+            document.body.style.overflow = "auto";
+          }
+
+          if (mainImgEl && galleryModal) {
+            mainImgEl.style.cursor = "pointer";
+            mainImgEl.addEventListener("click", openModal);
+          }
+          if (closeModalBtn)
+            closeModalBtn.addEventListener("click", closeModal);
+          if (backModalBtn) backModalBtn.addEventListener("click", closeModal);
+
+          function renderModal() {
+            if (modalDesktopMainImg) {
+              modalDesktopMainImg.src = getImageUrl(allImages[modalIndex]);
+            }
+            if (modalCurrentIndex)
+              modalCurrentIndex.textContent = (modalIndex + 1).toString();
+            if (modalTotalImages)
+              modalTotalImages.textContent = allImages.length.toString();
+
+            if (modalThumbnailsRow) {
+              modalThumbnailsRow.innerHTML = "";
+              allImages.forEach((img, idx) => {
+                let thumb = document.createElement("img");
+                thumb.src = getImageUrl(img);
+                thumb.className = "gallery-modal-thumb";
+                if (idx === modalIndex) thumb.classList.add("active");
+                thumb.addEventListener("click", () => {
+                  modalIndex = idx;
+                  renderModal();
+                });
+                modalThumbnailsRow.appendChild(thumb);
+              });
+
+              // Scroll active thumb into view
+              const activeThumb = modalThumbnailsRow.querySelector(".active");
+              if (activeThumb) {
+                activeThumb.scrollIntoView({
+                  behavior: "smooth",
+                  block: "nearest",
+                  inline: "center",
+                });
+              }
+            }
+          }
+
+          if (modalPrevBtn) {
+            modalPrevBtn.addEventListener("click", () => {
+              modalIndex =
+                (modalIndex - 1 + allImages.length) % allImages.length;
+              renderModal();
+            });
+          }
+          if (modalNextBtn) {
+            modalNextBtn.addEventListener("click", () => {
+              modalIndex = (modalIndex + 1) % allImages.length;
+              renderModal();
+            });
+          }
+
+          function renderMobileImages() {
+            if (modalMobileView) {
+              if (modalMobileView.children.length === 0) {
+                modalMobileView.innerHTML = "";
+                allImages.forEach((img, idx) => {
+                  let container = document.createElement("div");
+                  container.className = "mobile-modal-img-container";
+                  let el = document.createElement("img");
+                  el.src = getImageUrl(img);
+                  el.alt = `Car Image ${idx + 1}`;
+
+                  let label = document.createElement("div");
+                  label.className = "mobile-modal-label";
+                  label.textContent =
+                    idx === 0 ? "Front" : "Gallery " + (idx + 1);
+
+                  container.appendChild(el);
+                  container.appendChild(label);
+                  modalMobileView.appendChild(container);
+                });
+              }
+              // Wait briefly and scroll to the clicked index if possible
+              setTimeout(() => {
+                const target = modalMobileView.children[modalIndex];
+                if (target) target.scrollIntoView({ behavior: "smooth" });
+              }, 100);
+            }
           }
         })();
 
@@ -1006,5 +1328,135 @@
       <script src="/i18n.js"></script>
       <script src="/vehicledetail.js"></script>
     </div>
+
+    <!-- FULLSCREEN GALLERY MODAL -->
+    <div id="galleryModal" class="gallery-modal">
+      <div class="gallery-modal-content">
+        <!-- Desktop Header & Close -->
+        <button
+          id="closeModalBtn"
+          class="close-modal-btn desktop-only"
+          aria-label="Close modal"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+
+        <!-- Mobile Header -->
+        <div class="modal-header-mobile mobile-only">
+          <button id="backModalBtn" class="back-modal-btn">
+            <i class="fas fa-chevron-left"></i> Gallery
+          </button>
+        </div>
+
+        <!-- Modal Top Tabs -->
+        <div class="modal-gallery-tabs">
+          <div class="modal-tab">
+            <div class="tab-icon locked">
+              <i class="fas fa-car"></i>
+            </div>
+            <span>Exterior</span>
+          </div>
+          <div class="modal-tab">
+            <div class="tab-icon locked">
+              <i class="fas fa-car-side"></i>
+            </div>
+            <span>Interior</span>
+          </div>
+          <div class="modal-tab">
+            <div class="modal-tab-icon locked"><i class="fas fa-lock"></i></div>
+            <span>Features</span>
+          </div>
+          <div class="modal-tab">
+            <div class="modal-tab-icon locked"><i class="fas fa-star"></i></div>
+            <span>Highlights</span>
+          </div>
+          <div class="modal-tab">
+            <div class="modal-tab-icon locked">
+              <i class="fas fa-truck-monster"></i>
+            </div>
+            <span>Tyres</span>
+          </div>
+        </div>
+
+        <!-- Desktop View: Sliders -->
+        <div class="modal-desktop-view desktop-only">
+          <button class="modal-nav-btn prev" id="modalPrevBtn">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+
+          <div class="modal-main-image-container">
+            <img
+              id="modalDesktopMainImg"
+              src="assets/placeholder.png"
+              alt="Main View"
+            />
+            <div class="modal-image-counter">
+              <span id="modalCurrentIndex">1</span>/<span id="modalTotalImages"
+                >46</span
+              >
+            </div>
+          </div>
+
+          <button class="modal-nav-btn next" id="modalNextBtn">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+
+          <div class="modal-thumbnails" id="modalThumbnailsRow"></div>
+        </div>
+
+        <!-- Mobile View: Vertical Sticky List -->
+        <div class="modal-mobile-view mobile-only" id="modalMobileView">
+          <!-- Populated from JS -->
+        </div>
+
+        <!-- Mobile Bottom Action Bar -->
+        <div class="modal-mobile-bottom-bar mobile-only">
+          <div class="warranty-text">Eligible for lifetime warranty</div>
+          <div class="mobile-bottom-actions">
+            <button
+              class="btn-book-now"
+              onclick="window.location.href = '/contact.html'"
+            >
+              Book Now <br /><span>100% REFUNDABLE</span>
+            </button>
+            <button
+              class="btn-free-test"
+              onclick="window.location.href = '/contact.html'"
+            >
+              Free test drive
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      // Mega Menu Sidebar Switcher
+      document.querySelectorAll(".sidebar-item").forEach((item) => {
+        item.addEventListener("mouseenter", function () {
+          const container = this.closest(".mega-menu-content");
+          if (!container) return;
+
+          // Remove active class from all sidebar items in this menu
+          container
+            .querySelectorAll(".sidebar-item")
+            .forEach((s) => s.classList.remove("active"));
+          // Add active class to current sidebar item
+          this.classList.add("active");
+
+          // Get the target pane ID from data attribute
+          const targetId = this.getAttribute("data-pane");
+
+          // Hide all panes
+          container
+            .querySelectorAll(".mega-menu-content-pane")
+            .forEach((p) => p.classList.remove("active"));
+          // Show the target pane
+          const targetPane = document.getElementById(targetId);
+          if (targetPane) {
+            targetPane.classList.add("active");
+          }
+        });
+      });
+    </script>
   </body>
 </html>

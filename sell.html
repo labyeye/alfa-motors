@@ -46,65 +46,191 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <div class="hero-section sell-hero">
-      <nav class="navbar">
-        <a href="https://www.alfamotorworld.com/" class="logo-link"
-          ><div class="logo">
-            <img
-              src="./assets/okmotor.png"
-              class="logo-img"
-              alt="Alfa Motors World Logo"
-              itemprop="logo"
-            /></div
-        ></a>
-        <ul class="nav-links">
-          <li>
-            <a
-              href="https://www.alfamotorworld.com/"
-              aria-current="page"
-              data-translate="Home"
-              >Home</a
-            >
+      <nav class="navbar" aria-label="Main navigation">
+        <div class="nav-left">
+          <button
+            class="mobile-menu-toggle mobile-only"
+            aria-label="Open menu"
+          >
+            <i class="fas fa-bars"></i>
+          </button>
+          <a href="https://www.alfamotorworld.com/" class="logo-link">
+            <div class="logo">
+              <img
+                src="./assets/okmotor.png"
+                class="logo-img"
+                alt="Alfa Motors World Logo"
+                itemprop="logo"
+                width="160"
+                height="48"
+              />
+            </div>
+          </a>
           
-          <li class="mega-menu-trigger">
-            <a href="https://www.alfamotorworld.com/inventory.html" data-translate="Vehicles for Sale">Vehicles for Sale</a>
+        </div>
+
+        <ul class="nav-links desktop-only">
+          <li>
+            <a href="https://www.alfamotorworld.com/about.html"
+              >About Us </a>
+          </li>
+          <li class="has-mega-menu">
+            <a href="https://www.alfamotorworld.com/inventory.html" class="nav-link"
+              >Buy used car <i class="fas fa-chevron-down"></i
+            ></a>
             <div class="mega-menu">
+              <div class="mega-menu-header">
+                <span class="mega-menu-title">Buy Used Cars in Bangalore</span>
+                <a href="#" class="mega-menu-change-city">Change city</a>
+              </div>
               <div class="mega-menu-content">
-                <div class="mega-menu-column">
-                  <h3>Popular Brands</h3>
-                  <a href="https://www.alfamotorworld.com/inventory.html?brand=bmw">BMW</a>
-                  <a href="https://www.alfamotorworld.com/inventory.html?brand=audi">Audi</a>
-                  <a href="https://www.alfamotorworld.com/inventory.html?brand=mercedes">Mercedes</a>
-                  <a href="https://www.alfamotorworld.com/inventory.html?brand=toyota">Toyota</a>
-                  <a href="https://www.alfamotorworld.com/inventory.html?brand=honda">Honda</a>
-                  <a href="https://www.alfamotorworld.com/inventory.html?brand=hyundai">Hyundai</a>
-                  <a href="https://www.alfamotorworld.com/inventory.html?brand=kia">Kia</a>
-                  <a href="https://www.alfamotorworld.com/inventory.html?brand=ford">Ford</a>
-                  <a href="https://www.alfamotorworld.com/inventory.html?brand=nissan">Nissan</a>
-                  <a href="https://www.alfamotorworld.com/inventory.html?brand=volkswagen">Volkswagen</a>
-                  <a href="https://www.alfamotorworld.com/inventory.html?brand=volvo">Volvo</a>
-                  <a href="https://www.alfamotorworld.com/inventory.html?brand=skoda">Skoda</a>
-                  <a href="https://www.alfamotorworld.com/inventory.html?brand=tata">Tata</a>
-                  <a href="https://www.alfamotorworld.com/inventory.html?brand=mahindra">Mahindra</a>
+                <div class="mega-menu-sidebar">
+                  <div class="sidebar-item active" data-pane="pane-model">
+                    <span>Browse by Model</span>
+                    <i class="fas fa-chevron-right"></i>
+                  </div>
+                  <div class="sidebar-item" data-pane="pane-make">
+                    <span>Browse by Make</span>
+                    <i class="fas fa-chevron-right"></i>
+                  </div>
+                  <div class="sidebar-item" data-pane="pane-price">
+                    <span>Browse by Price</span>
+                    <i class="fas fa-chevron-right"></i>
+                  </div>
+                  <div class="sidebar-item" data-pane="pane-body">
+                    <span>Browse by Body Type</span>
+                    <i class="fas fa-chevron-right"></i>
+                  </div>
+                  <div class="sidebar-item" data-pane="pane-fuel">
+                    <span>Browse by Fuel Type</span>
+                    <i class="fas fa-chevron-right"></i>
+                  </div>
+                  <div class="sidebar-item" data-pane="pane-transmission">
+                    <span>Browse by Transmission</span>
+                    <i class="fas fa-chevron-right"></i>
+                  </div>
+                </div>
+                <div class="mega-menu-main">
+                  <!-- Model Pane -->
+                  <div id="pane-model" class="mega-menu-content-pane active">
+                    <h4 class="category-title">Browse by Model</h4>
+                    <div class="mega-menu-grid">
+                      <a href="inventory.html">Used Hyundai i10 Cars in Bangalore <i class="fas fa-arrow-right"></i></a>
+                      <a href="inventory.html">Used Tata NEXON Cars in Bangalore <i class="fas fa-arrow-right"></i></a>
+                      <a href="inventory.html">Used Hyundai i20 Cars in Bangalore <i class="fas fa-arrow-right"></i></a>
+                      <a href="inventory.html">Used Ford Ecosport Cars in Bangalore <i class="fas fa-arrow-right"></i></a>
+                      <a href="inventory.html">Used Renault Kwid Cars in Bangalore <i class="fas fa-arrow-right"></i></a>
+                      <a href="inventory.html">Used Honda City Cars in Bangalore <i class="fas fa-arrow-right"></i></a>
+                      <a href="inventory.html">Used Maruti Swift Cars in Bangalore <i class="fas fa-arrow-right"></i></a>
+                      <a href="inventory.html">Used Hyundai Creta Cars in Bangalore <i class="fas fa-arrow-right"></i></a>
+                      <a href="inventory.html">Used Maruti Baleno Cars in Bangalore <i class="fas fa-arrow-right"></i></a>
+                      <a href="inventory.html">Used KIA SONET Cars in Bangalore <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                  </div>
+
+                  <!-- Make Pane -->
+                  <div id="pane-make" class="mega-menu-content-pane">
+                    <h4 class="category-title">Browse by Make</h4>
+                    <div class="visual-grid brand-grid">
+                      <a href="inventory.html" class="visual-card brand-card"><i class="fas fa-car"></i><span>Maruti</span></a>
+                      <a href="inventory.html" class="visual-card brand-card"><i class="fas fa-car"></i><span>Hyundai</span></a>
+                      <a href="inventory.html" class="visual-card brand-card"><i class="fas fa-car"></i><span>Tata</span></a>
+                      <a href="inventory.html" class="visual-card brand-card"><i class="fas fa-car"></i><span>Mahindra</span></a>
+                      <a href="inventory.html" class="visual-card brand-card"><i class="fas fa-car"></i><span>Kia</span></a>
+                      <a href="inventory.html" class="visual-card brand-card"><i class="fas fa-car"></i><span>Ford</span></a>
+                      <a href="inventory.html" class="visual-card brand-card"><i class="fas fa-car"></i><span>Toyota</span></a>
+                      <a href="inventory.html" class="visual-card brand-card"><i class="fas fa-car"></i><span>Honda</span></a>
+                      <a href="inventory.html" class="visual-card brand-card"><i class="fas fa-car"></i><span>Renault</span></a>
+                      <a href="inventory.html" class="visual-card brand-card"><i class="fas fa-car"></i><span>MG</span></a>
+                    </div>
+                  </div>
+
+                  <!-- Price Pane -->
+                  <div id="pane-price" class="mega-menu-content-pane">
+                    <h4 class="category-title">Browse by Price</h4>
+                    <div class="mega-menu-grid">
+                      <a href="inventory.html">Used Cars Under 2 Lakhs <i class="fas fa-arrow-right"></i></a>
+                      <a href="inventory.html">Used Cars Under 3 Lakhs <i class="fas fa-arrow-right"></i></a>
+                      <a href="inventory.html">Used Cars Under 5 Lakhs <i class="fas fa-arrow-right"></i></a>
+                      <a href="inventory.html">Used Cars Under 8 Lakhs <i class="fas fa-arrow-right"></i></a>
+                      <a href="inventory.html">Used Cars Under 10 Lakhs <i class="fas fa-arrow-right"></i></a>
+                      <a href="inventory.html">Used Cars Under 15 Lakhs <i class="fas fa-arrow-right"></i></a>
+                      <a href="inventory.html">Used Cars Under 20 Lakhs <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                  </div>
+
+                  <!-- Body Type Pane -->
+                  <div id="pane-body" class="mega-menu-content-pane">
+                    <h4 class="category-title">Browse by Body Type</h4>
+                    <div class="visual-grid">
+                      <a href="inventory.html" class="visual-card"><i class="fas fa-car-side"></i><span>Hatchback</span></a>
+                      <a href="inventory.html" class="visual-card"><i class="fas fa-car"></i><span>SUV</span></a>
+                      <a href="inventory.html" class="visual-card"><i class="fas fa-car"></i><span>Sedan</span></a>
+                      <a href="inventory.html" class="visual-card"><i class="fas fa-shuttle-van"></i><span>MUV</span></a>
+                      <a href="inventory.html" class="visual-card"><i class="fas fa-car"></i><span>Luxury</span></a>
+                    </div>
+                  </div>
+
+                  <!-- Fuel Type Pane -->
+                  <div id="pane-fuel" class="mega-menu-content-pane">
+                    <h4 class="category-title">Browse by Fuel Type</h4>
+                    <div class="visual-grid">
+                      <a href="inventory.html" class="visual-card"><i class="fas fa-gas-pump"></i><span>Petrol</span></a>
+                      <a href="inventory.html" class="visual-card"><i class="fas fa-oil-can"></i><span>Diesel</span></a>
+                      <a href="inventory.html" class="visual-card"><i class="fas fa-burn"></i><span>CNG</span></a>
+                      <a href="inventory.html" class="visual-card"><i class="fas fa-bolt"></i><span>Electric</span></a>
+                      <a href="inventory.html" class="visual-card"><i class="fas fa-battery-half"></i><span>Hybrid</span></a>
+                    </div>
+                  </div>
+
+                  <!-- Transmission Pane -->
+                  <div id="pane-transmission" class="mega-menu-content-pane">
+                    <h4 class="category-title">Browse by Transmission</h4>
+                    <div class="visual-grid">
+                      <a href="inventory.html" class="visual-card"><i class="fas fa-cog"></i><span>Manual</span></a>
+                      <a href="inventory.html" class="visual-card"><i class="fas fa-cogs"></i><span>Automatic</span></a>
+                    </div>
+                  </div>
+
+                  <div class="mega-menu-footer">
+                    <a href="inventory.html" class="buy-online-btn">Buy cars online <i class="fas fa-arrow-right"></i></a>
+                  </div>
                 </div>
               </div>
             </div>
           </li>
           <li>
-            <a href="https://www.alfamotorworld.com/sell.html"  
-               data-translate="Sell Your Vehicle">Sell Your Vehicle</a>
+            <a href="https://www.alfamotorworld.com/sell.html"
+              >Sell car</a>
           </li>
-          <li><a href="https://www.alfamotorworld.com/happy-customers.html" data-translate="Happy Customers">Happy Customers</a></li>
-          <li><a href="https://www.alfamotorworld.com/finance.html" data-translate="Financing">Financing</a></li>
-          <li><a href="https://www.alfamotorworld.com/about.html" data-translate="About Us">About Us</a></li>
-          <li><a href="https://www.alfamotorworld.com/contact.html" data-translate="Contact">Contact</a></li>
+          <li>
+            <a href="https://www.alfamotorworld.com/finance.html"
+              >Car finance</a>
+          </li>
+          <li>
+            <a href="https://www.alfamotorworld.com/inventory.html"
+              >New cars</a>
+          </li>
+          <li>
+            <a href="https://www.alfamotorworld.com/contact.html"
+              >Car services</a>
+          </li>
         </ul>
-        <div class="login-btn">
-          <a href="https://www.alfamotorworld.com/getquote.html">
-            <button data-translate="Get the Quote">Get the Quote</button>
+
+        <div class="nav-right">
+          <a href="tel:+919036818492" class="nav-action-btn call-us desktop-only">
+            <i class="fas fa-phone-alt"></i>
+            <span>Call us</span>
           </a>
+          
+          
         </div>
       </nav>
       <section class="sell-section">
@@ -980,5 +1106,30 @@
       </a>
     </div>
     <script src="/review.js"></script>
+    <script>
+      // Mega Menu Sidebar Switcher
+      document.querySelectorAll('.sidebar-item').forEach(item => {
+        item.addEventListener('mouseenter', function() {
+          const container = this.closest('.mega-menu-content');
+          if (!container) return;
+
+          // Remove active class from all sidebar items in this menu
+          container.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+          // Add active class to current sidebar item
+          this.classList.add('active');
+
+          // Get the target pane ID from data attribute
+          const targetId = this.getAttribute('data-pane');
+          
+          // Hide all panes
+          container.querySelectorAll('.mega-menu-content-pane').forEach(p => p.classList.remove('active'));
+          // Show the target pane
+          const targetPane = document.getElementById(targetId);
+          if (targetPane) {
+            targetPane.classList.add('active');
+          }
+        });
+      });
+    </script>
   </body>
 </html>

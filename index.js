@@ -43,14 +43,14 @@ function initializeSearchFeatures() {
     searchInput.addEventListener("input", (e) => {
       const value = e.target.value.toLowerCase();
       const filtered = suggestions.filter((suggestion) =>
-        suggestion.toLowerCase().includes(value)
+        suggestion.toLowerCase().includes(value),
       );
 
       if (value && filtered.length > 0) {
         suggestionsContainer.innerHTML = filtered
           .slice(0, 5)
           .map(
-            (suggestion) => `<div class="suggestion-item">${suggestion}</div>`
+            (suggestion) => `<div class="suggestion-item">${suggestion}</div>`,
           )
           .join("");
         suggestionsContainer.style.display = "block";
@@ -263,7 +263,7 @@ function initializeLazyLoading() {
 
     let lazyImageObserver = new IntersectionObserver(function (
       entries,
-      observer
+      observer,
     ) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
@@ -325,7 +325,7 @@ function initializeStatsObserver() {
         }
       });
     },
-    { threshold: 0.5 }
+    { threshold: 0.5 },
   );
 
   observer.observe(document.querySelector(".stats-section"));
@@ -399,7 +399,7 @@ function initializeCarSlider() {
 }
 
 // Simple API/image base for development: always use localhost:2500 unless overridden
-const API_BASE_URL =  "https://alfa-motors-9bk6.vercel.app";
+const API_BASE_URL = "https://alfa-motors-9bk6.vercel.app";
 const IMAGE_BASE = `${API_BASE_URL}/carimages`;
 
 // Debug helpers (exposed to window for quick inspection in DevTools)
@@ -408,7 +408,7 @@ try {
     "[config] API_BASE_URL=",
     API_BASE_URL,
     "IMAGE_BASE=",
-    IMAGE_BASE
+    IMAGE_BASE,
   );
   window.__API_BASE_URL = API_BASE_URL;
   window.__IMAGE_BASE = IMAGE_BASE;
@@ -476,6 +476,21 @@ function normalizePhotos(photosField) {
   return [];
 }
 
+function parsePriceString(p) {
+  try {
+    if (p === undefined || p === null) return 0;
+    if (typeof p === "number") return p || 0;
+    var s = String(p).trim();
+    // strip currency symbols, commas and whitespace
+    s = s.replace(/[^0-9.\-]/g, "");
+    if (s === "" || s === "NaN") return 0;
+    var n = parseFloat(s);
+    return isFinite(n) ? n : 0;
+  } catch (e) {
+    return 0;
+  }
+}
+
 // Abbreviate kilometers display for small cards (e.g., 68000 -> 68K, 150000 -> 1.5L)
 function abbreviateKm(km) {
   const n = Number(km) || 0;
@@ -525,10 +540,10 @@ function createCarCard(car) {
     car.status === "Available"
       ? "status-available"
       : car.status === "Sold Out"
-      ? "status-sold"
-      : car.status === "Coming Soon"
-      ? "status-coming-soon"
-      : "status-available";
+        ? "status-sold"
+        : car.status === "Coming Soon"
+          ? "status-coming-soon"
+          : "status-available";
 
   // Build image HTML
   let imageHTML = "";
@@ -543,15 +558,17 @@ function createCarCard(car) {
               <img src="${getImageUrl(img)}" 
                    alt="${car.make || car.brand || ""} ${car.model || ""}"
                    onerror="this.onerror=null;this.src='assets/placeholder.png'">
-            `
+            `,
               )
               .join("")}
           </div>
           <div class="slider-dots">
             ${car.photos
-              .map((_, index) => `
+              .map(
+                (_, index) => `
               <span class="dot" data-index="${index}"></span>
-            `)
+            `,
+              )
               .join("")}
           </div>
           <button class="slider-prev">&lt;</button>
@@ -576,7 +593,7 @@ function createCarCard(car) {
     </div>
     <div class="card-content">
       <div class="title">
-        <h3>${car.modelYear || ''} ${car.make || "Unknown Brand"} ${car.model || "Unknown Model"}</h3>
+        <h3>${car.modelYear || ""} ${car.make || "Unknown Brand"} ${car.model || "Unknown Model"}</h3>
       </div>
       <div class="details">
         <div class="detail-item">
@@ -597,7 +614,7 @@ function createCarCard(car) {
         </div>
       </div>
       <div class="price-container">
-        <div class="price">₹${(car.sellingPrice || 0).toLocaleString("en-IN")}</div>
+        <div class="price">₹${parsePriceString(car.sellingPrice || 0).toLocaleString("en-IN")}</div>
         <div>
           <button class="view-details-btn" data-translate="View Details" ${car.status !== "Available" ? "disabled" : ""}>View Details</button>
         </div>
@@ -651,23 +668,23 @@ function displayFeaturedCars(Cars) {
 
     // Wire up view details button to inventory page anchor
     try {
-      const viewBtn = card.querySelector('.view-details-btn');
+      const viewBtn = card.querySelector(".view-details-btn");
       if (viewBtn && !viewBtn.disabled) {
-        viewBtn.addEventListener('click', (e) => {
+        viewBtn.addEventListener("click", (e) => {
           e.stopPropagation();
           try {
             const q = encodeURIComponent(JSON.stringify(Car));
             window.location.href = `vehicledetail.html?car=${q}`;
           } catch (err) {
             // fallback to inventory anchor if encoding fails
-            window.location.href = `https://www.alfamotorworld.com/inventory.html#${Car._id || ''}`;
+            window.location.href = `https://www.alfamotorworld.com/inventory.html#${Car._id || ""}`;
           }
         });
       }
       // Make the whole card clickable (but preserve button and slider behavior)
       try {
         card.tabIndex = 0; // make focusable for keyboard users
-        card.setAttribute('role', 'link');
+        card.setAttribute("role", "link");
 
         function goToDetailsFromCard(e) {
           if (e && e.stopPropagation) e.stopPropagation();
@@ -676,27 +693,27 @@ function displayFeaturedCars(Cars) {
             const q = encodeURIComponent(JSON.stringify(CarData));
             window.location.href = `vehicledetail.html?car=${q}`;
           } catch (err) {
-            console.error('Failed to open details', err);
+            console.error("Failed to open details", err);
           }
         }
 
-        card.addEventListener('click', (e) => {
+        card.addEventListener("click", (e) => {
           const target = e.target;
           // allow image clicks to navigate — but ignore clicks on explicit controls
           if (
             !target ||
-            target.closest('.contact-btn') ||
-            target.closest('.view-details-btn') ||
-            target.closest('.slider-prev') ||
-            target.closest('.slider-next') ||
-            target.closest('.dot')
+            target.closest(".contact-btn") ||
+            target.closest(".view-details-btn") ||
+            target.closest(".slider-prev") ||
+            target.closest(".slider-next") ||
+            target.closest(".dot")
           )
             return;
           goToDetailsFromCard(e);
         });
 
-        card.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
+        card.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
             goToDetailsFromCard(e);
           }
@@ -1094,7 +1111,7 @@ function translatePage(language) {
       document.body,
       NodeFilter.SHOW_TEXT,
       null,
-      false
+      false,
     );
     const nodesToUpdate = [];
     while (walker.nextNode()) {
@@ -1202,7 +1219,7 @@ function initializeStylesCarousel() {
     const promises = imgs.map((img) => {
       if (img.complete) return Promise.resolve();
       return new Promise((res) =>
-        img.addEventListener("load", res, { once: true })
+        img.addEventListener("load", res, { once: true }),
       );
     });
     return Promise.all(promises);
