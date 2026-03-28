@@ -953,9 +953,10 @@ body {
   display: block;
   background: none;
   border: none;
-  font-size: 20px;
-  color: #1a1a1a;
+  font-size: 24px;
+  color: #1a1a1a !important; /* Force visible color on mobile */
   cursor: pointer;
+  z-index: 1001;
 }
 
 /* Cars24 Style Mega Menu */
@@ -1575,7 +1576,12 @@ h2 {
 }
 
 .brand-card {
-  background: rgba(255, 255, 255, 0.08); /* slightly more visible glass backdrop */
+  background: rgba(
+    255,
+    255,
+    255,
+    0.08
+  ); /* slightly more visible glass backdrop */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-radius: 12px;
@@ -3223,7 +3229,6 @@ input[type="range"]::-webkit-slider-thumb {
   z-index: 1001;
   position: absolute;
   right: 5%;
-  top: 25px;
 }
 
 .mobile-menu {
@@ -3283,11 +3288,11 @@ input[type="range"]::-webkit-slider-thumb {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    min-height: 60vh;
+    justify-content: flex-start; /* Push from top instead of centering large block */
+    min-height: auto;
     text-align: center;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 100px 20px 40px; /* Leave room for 70px fixed navbar */
   }
 
   .hero-content h1 {
@@ -3296,12 +3301,15 @@ input[type="range"]::-webkit-slider-thumb {
   }
 
   .hero-line {
-    font-size: 2rem;
+    font-size: 1.2rem; /* Even smaller to be safe */
+    letter-spacing: 1px;
+    margin-bottom: 5px;
   }
 
   .hero-line.highlight {
-    font-size: 3.5rem;
-    margin-top: -5px;
+    font-size: 2.8rem; /* Scaled down further */
+    margin-top: 0;
+    line-height: 1.1;
   }
 
   .hero-line.subtitle {
@@ -3358,8 +3366,8 @@ input[type="range"]::-webkit-slider-thumb {
   }
 
   .hero-line.highlight {
-    font-size: 3.8rem;
-    margin-top: 70px;
+    font-size: 2.5rem; /* For very small screens */
+    margin-top: 5px;
   }
 
   .hero-line.subtitle {

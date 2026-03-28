@@ -1971,8 +1971,8 @@ body {
 
   .bottom-tab {
     flex: 1 1 0;
-    background: #eceef4; /* requested button color */
-    color: #0f172a; /* dark text for contrast */
+    background: #eceef4;
+    color: #0f172a;
     border: none;
     padding: 12px 14px;
     border-radius: 8px;
