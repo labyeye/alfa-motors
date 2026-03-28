@@ -1,5 +1,5 @@
-import { createContext, useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
+import { createContext, useState, useEffect, useCallback } from "react";
+import axios from "axios";
 
 axios.defaults.withCredentials = true;
 
@@ -16,9 +16,9 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const checkUserLoggedIn = useCallback(async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (token) {
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         const res = await axios.get(`${API_BASE}/api/auth/me`);
         setUser(res.data);
       }
@@ -35,20 +35,24 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-  const res = await axios.post(`${API_BASE}/api/auth/login`, { email, password });
-      localStorage.setItem('token', res.data.token);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
+      const res = await axios.post(`${API_BASE}/api/auth/login`, {
+        email,
+        password,
+      });
+      localStorage.setItem("token", res.data.token);
+      axios.defaults.headers.common["Authorization"] =
+        `Bearer ${res.data.token}`;
       setUser(res.data);
       return res.data;
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
       throw error;
     }
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    delete axios.defaults.headers.common['Authorization'];
+    localStorage.removeItem("token");
+    delete axios.defaults.headers.common["Authorization"];
     setUser(null);
   };
 

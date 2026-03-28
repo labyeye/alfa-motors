@@ -36,7 +36,7 @@ const GalleryManagement = () => {
     console.log(
       "Gallery items state changed:",
       galleryItems.length,
-      galleryItems
+      galleryItems,
     );
   }, [galleryItems]);
 
@@ -49,7 +49,7 @@ const GalleryManagement = () => {
       console.log(
         "Gallery items fetched:",
         galleryItemsData.length,
-        galleryItemsData
+        galleryItemsData,
       );
       setGalleryItems(galleryItemsData);
 
@@ -119,8 +119,8 @@ const GalleryManagement = () => {
                       ],
                     },
                   }
-                : c
-            )
+                : c,
+            ),
           );
           setGalleryItems((prev) => [galleryItem, ...prev]);
         }
@@ -128,7 +128,7 @@ const GalleryManagement = () => {
       } catch (err) {
         console.warn(
           "Gallery upload failed, trying fallback:",
-          err?.response?.status
+          err?.response?.status,
         );
         try {
           // Fallback to existing endpoint for backward compatibility
@@ -140,13 +140,13 @@ const GalleryManagement = () => {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "multipart/form-data",
               },
-            }
+            },
           );
           const updatedSold = res2.data?.data?.sold;
           setSoldCars((prev) =>
             prev.map((c) =>
-              getId(c) === carId ? { ...c, sold: updatedSold } : c
-            )
+              getId(c) === carId ? { ...c, sold: updatedSold } : c,
+            ),
           );
           successCount++;
         } catch (err2) {
@@ -161,7 +161,7 @@ const GalleryManagement = () => {
       alert(`All ${totalFiles} photo(s) uploaded successfully for this car!`);
     } else if (successCount > 0) {
       alert(
-        `${successCount} of ${totalFiles} photo(s) uploaded successfully. ${failCount} failed.`
+        `${successCount} of ${totalFiles} photo(s) uploaded successfully. ${failCount} failed.`,
       );
     } else {
       alert(`Failed to upload all ${totalFiles} photo(s). Please try again.`);
@@ -190,11 +190,11 @@ const GalleryManagement = () => {
         { caption: editCaption, testimonial: editTestimonial },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
+        },
       );
       const updated = res.data.data;
       setGalleryItems((prev) =>
-        prev.map((it) => (getId(it) === id ? updated : it))
+        prev.map((it) => (getId(it) === id ? updated : it)),
       );
       // Also update soldCars testimonial if present
       setSoldCars((prev) =>
@@ -204,8 +204,8 @@ const GalleryManagement = () => {
                 ...c,
                 sold: { ...(c.sold || {}), testimonial: updated.testimonial },
               }
-            : c
-        )
+            : c,
+        ),
       );
       cancelEdit();
       alert("Gallery item updated");
@@ -218,7 +218,7 @@ const GalleryManagement = () => {
   const deleteItem = async (id) => {
     if (
       !window.confirm(
-        "Delete this gallery item? This will remove the image file and detach it from any car."
+        "Delete this gallery item? This will remove the image file and detach it from any car.",
       )
     )
       return;
@@ -276,7 +276,7 @@ const GalleryManagement = () => {
       alert(`All ${totalFiles} photo(s) uploaded successfully!`);
     } else if (successCount > 0) {
       alert(
-        `${successCount} of ${totalFiles} photo(s) uploaded successfully. ${failCount} failed.`
+        `${successCount} of ${totalFiles} photo(s) uploaded successfully. ${failCount} failed.`,
       );
     } else {
       alert(`Failed to upload all ${totalFiles} photo(s). Please try again.`);
@@ -333,7 +333,7 @@ const GalleryManagement = () => {
                 onClick={async () => {
                   if (
                     !window.confirm(
-                      "Delete ALL gallery images and testimonials? This cannot be undone."
+                      "Delete ALL gallery images and testimonials? This cannot be undone.",
                     )
                   )
                     return;
@@ -341,7 +341,7 @@ const GalleryManagement = () => {
                     const resp = await axios.delete(`${API_BASE}/api/gallery`, {
                       headers: {
                         Authorization: `Bearer ${localStorage.getItem(
-                          "token"
+                          "token",
                         )}`,
                       },
                     });
@@ -350,7 +350,7 @@ const GalleryManagement = () => {
                       // Refresh soldCars to remove references
                       fetchData();
                       alert(
-                        `Deleted ${resp.data.deletedCount || 0} gallery files`
+                        `Deleted ${resp.data.deletedCount || 0} gallery files`,
                       );
                     } else {
                       alert("Failed to delete all gallery items");
@@ -360,7 +360,7 @@ const GalleryManagement = () => {
                     alert(
                       err.response?.data?.message ||
                         err.response?.data?.error ||
-                        "Failed to delete all gallery items"
+                        "Failed to delete all gallery items",
                     );
                   }
                 }}
@@ -505,8 +505,6 @@ const GalleryManagement = () => {
               </div>
             )}
           </div>
-
-          
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 // pages/buy/history/[id].js
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import BuyLetterPDF from '../../../components/BuyLetterPDF';
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import BuyLetterPDF from "../../../components/BuyLetterPDF";
 
 export default function BuyLetterDetailPage() {
   const router = useRouter();
@@ -13,14 +13,18 @@ export default function BuyLetterDetailPage() {
     if (id) {
       const fetchLetter = async () => {
         try {
-          const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'https://alfa-motors-9bk6.vercel.app' : 'https://alfa-motors-9bk6.vercel.app');
+          const API_BASE =
+            window.API_BASE ||
+            (window.location.hostname === "localhost"
+              ? "https://alfa-motors-9bk6.vercel.app"
+              : "https://alfa-motors-9bk6.vercel.app");
           const response = await fetch(`${API_BASE}/api/buy-letter/${id}`);
           if (response.ok) {
             const data = await response.json();
             setLetterData(data);
           }
         } catch (error) {
-          console.error('Error fetching letter:', error);
+          console.error("Error fetching letter:", error);
         } finally {
           setLoading(false);
         }

@@ -17,7 +17,11 @@ import { useNavigate } from "react-router-dom";
 import logo from "../images/company.png";
 
 import AuthContext from "../context/AuthContext";
-const API_BASE = window.API_BASE || (window.location.hostname === 'localhost' ? 'https://alfa-motors-9bk6.vercel.app' : 'https://alfa-motors-9bk6.vercel.app');
+const API_BASE =
+  window.API_BASE ||
+  (window.location.hostname === "localhost"
+    ? "https://alfa-motors-9bk6.vercel.app"
+    : "https://alfa-motors-9bk6.vercel.app");
 
 const StaffPage = () => {
   const { user } = useContext(AuthContext);
@@ -76,7 +80,6 @@ const StaffPage = () => {
       fetchDashboardData();
     }
   }, [activeMenu, fetchDashboardData]);
-  
 
   const formatCurrency = (amount) => {
     if (isNaN(amount)) return "₹0";
@@ -119,7 +122,7 @@ const StaffPage = () => {
       icon: LayoutDashboard,
       path: "/admin",
     },
-    
+
     {
       name: "Sell",
       icon: TrendingUp,
@@ -360,7 +363,7 @@ const StaffPage = () => {
                 >
                   {dashboardData.profit >= 0 ? "Profit" : "Loss"}:{" "}
                   {Math.abs(
-                    (dashboardData.profit / dashboardData.totalBuyValue) * 100
+                    (dashboardData.profit / dashboardData.totalBuyValue) * 100,
                   ).toFixed(2)}
                   %
                 </span>

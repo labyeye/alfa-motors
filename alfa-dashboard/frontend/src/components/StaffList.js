@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import {
-  User,
-  Trash2,
-  UserPlus,
-} from "lucide-react";
+import { User, Trash2, UserPlus } from "lucide-react";
 import Sidebar from "./Sidebar";
 import logo from "../images/company.png";
 const API_BASE =
@@ -32,7 +28,7 @@ const StaffList = () => {
       } catch (err) {
         setError(
           err.response?.data?.message ||
-            "Failed to fetch staff. Please try again."
+            "Failed to fetch staff. Please try again.",
         );
       } finally {
         setLoading(false);
@@ -50,14 +46,13 @@ const StaffList = () => {
       } catch (err) {
         setError(
           err.response?.data?.message ||
-            "Failed to delete staff. Please try again."
+            "Failed to delete staff. Please try again.",
         );
       }
     }
   };
   return (
     <div style={styles.container}>
-      
       <div style={styles.sidebar}>
         <div style={styles.sidebarHeader}>
           <img
@@ -71,7 +66,6 @@ const StaffList = () => {
         <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
       </div>
 
-      
       <div style={styles.mainContent}>
         <div style={styles.contentPadding}>
           <div style={styles.header}>

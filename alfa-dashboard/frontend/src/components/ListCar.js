@@ -42,9 +42,9 @@ const ListCar = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-  // response.data.data may be undefined depending on API response shape;
-  // ensure we always store an array to avoid `.map` on undefined.
-  setCars(response.data?.data || response.data || []);
+        // response.data.data may be undefined depending on API response shape;
+        // ensure we always store an array to avoid `.map` on undefined.
+        setCars(response.data?.data || response.data || []);
         setLoading(false);
       } catch (err) {
         setError(err.response?.data?.message || "Failed to fetch cars");
@@ -70,7 +70,9 @@ const ListCar = () => {
         });
         // use functional update and guard against undefined/current not being an array
         setCars((current) =>
-          Array.isArray(current) ? current.filter((car) => getId(car) !== carId) : []
+          Array.isArray(current)
+            ? current.filter((car) => getId(car) !== carId)
+            : [],
         );
       } catch (err) {
         setError(err.response?.data?.message || "Failed to delete car");
@@ -103,14 +105,20 @@ const ListCar = () => {
                   car.status === "Available"
                     ? styles.statusAvailable
                     : car.status === "Coming Soon"
-                    ? styles.statusComingSoon
-                    : styles.statusSoldOut;
+                      ? styles.statusComingSoon
+                      : styles.statusSoldOut;
                 return (
-                  <div key={getId(car) || Math.random()} style={styles.mobileCard}>
+                  <div
+                    key={getId(car) || Math.random()}
+                    style={styles.mobileCard}
+                  >
                     {/* top row: name + status */}
                     <div style={styles.mobileCardHeader}>
                       <div style={styles.mobileCarName}>
-                        <Car size={15} style={{ marginRight: 6, color: "#6b7280" }} />
+                        <Car
+                          size={15}
+                          style={{ marginRight: 6, color: "#6b7280" }}
+                        />
                         <span style={styles.mobileCarNameText}>
                           {car.modelYear} {car.make} {car.model}
                         </span>
@@ -134,12 +142,16 @@ const ListCar = () => {
                       <div style={styles.mobileStat}>
                         <Fuel size={13} color="#9ca3af" />
                         <span style={styles.mobileStatLabel}>Fuel</span>
-                        <span style={styles.mobileStatValue}>{car.fuelType || "-"}</span>
+                        <span style={styles.mobileStatValue}>
+                          {car.fuelType || "-"}
+                        </span>
                       </div>
                       <div style={styles.mobileStat}>
                         <Tag size={13} color="#9ca3af" />
                         <span style={styles.mobileStatLabel}>Own</span>
-                        <span style={styles.mobileStatValue}>{car.ownership || "-"}</span>
+                        <span style={styles.mobileStatValue}>
+                          {car.ownership || "-"}
+                        </span>
                       </div>
                     </div>
 
@@ -147,17 +159,27 @@ const ListCar = () => {
                     <div style={styles.mobilePrices}>
                       <div style={styles.mobilePrice}>
                         <span style={styles.mobilePriceLabel}>Buying</span>
-                        <span style={styles.mobilePriceValue}>₹{formatIndian(car.buyingPrice)}</span>
+                        <span style={styles.mobilePriceValue}>
+                          ₹{formatIndian(car.buyingPrice)}
+                        </span>
                       </div>
                       <div style={styles.mobilePriceDivider} />
                       <div style={styles.mobilePrice}>
                         <span style={styles.mobilePriceLabel}>Quoting</span>
-                        <span style={styles.mobilePriceValue}>₹{formatIndian(car.quotingPrice)}</span>
+                        <span style={styles.mobilePriceValue}>
+                          ₹{formatIndian(car.quotingPrice)}
+                        </span>
                       </div>
                       <div style={styles.mobilePriceDivider} />
                       <div style={styles.mobilePrice}>
                         <span style={styles.mobilePriceLabel}>Selling</span>
-                        <span style={{ ...styles.mobilePriceValue, color: "#16a34a", fontWeight: 700 }}>
+                        <span
+                          style={{
+                            ...styles.mobilePriceValue,
+                            color: "#16a34a",
+                            fontWeight: 700,
+                          }}
+                        >
                           ₹{formatIndian(car.sellingPrice)}
                         </span>
                       </div>
@@ -210,9 +232,15 @@ const ListCar = () => {
                           ? Number(car.kmDriven).toLocaleString()
                           : "-"}
                       </td>
-                      <td style={styles.td}>₹{formatIndian(car.buyingPrice)}</td>
-                      <td style={styles.td}>₹{formatIndian(car.quotingPrice)}</td>
-                      <td style={styles.td}>₹{formatIndian(car.sellingPrice)}</td>
+                      <td style={styles.td}>
+                        ₹{formatIndian(car.buyingPrice)}
+                      </td>
+                      <td style={styles.td}>
+                        ₹{formatIndian(car.quotingPrice)}
+                      </td>
+                      <td style={styles.td}>
+                        ₹{formatIndian(car.sellingPrice)}
+                      </td>
                       <td style={styles.td}>
                         <span
                           style={{
@@ -220,8 +248,8 @@ const ListCar = () => {
                             ...(car.status === "Available"
                               ? styles.statusAvailable
                               : car.status === "Coming Soon"
-                              ? styles.statusComingSoon
-                              : styles.statusSoldOut),
+                                ? styles.statusComingSoon
+                                : styles.statusSoldOut),
                           }}
                         >
                           {car.status}

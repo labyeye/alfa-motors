@@ -1,12 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import {
-  FileText,
-  Search,
-  Download,
-  Trash2,
-  Edit,
-} from "lucide-react";
+import { FileText, Search, Download, Trash2, Edit } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import logo from "../images/company.png";
@@ -45,7 +39,7 @@ const ServiceHistory = () => {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-          }
+          },
         );
         setServiceBills(serviceResponse.data.data || serviceResponse.data);
         setTotalPages(serviceResponse.data.totalPages || 1);
@@ -88,13 +82,13 @@ const ServiceHistory = () => {
 
     return {
       purchase: purchaseHistory.filter((item) =>
-        item.registrationNumber?.toLowerCase().includes(lowerSearchTerm)
+        item.registrationNumber?.toLowerCase().includes(lowerSearchTerm),
       ),
       sell: sellHistory.filter((item) =>
-        item.registrationNumber?.toLowerCase().includes(lowerSearchTerm)
+        item.registrationNumber?.toLowerCase().includes(lowerSearchTerm),
       ),
       service: serviceBills.filter((item) =>
-        item.registrationNumber?.toLowerCase().includes(lowerSearchTerm)
+        item.registrationNumber?.toLowerCase().includes(lowerSearchTerm),
       ),
     };
   };
@@ -110,7 +104,7 @@ const ServiceHistory = () => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        }
+        },
       );
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -141,10 +135,8 @@ const ServiceHistory = () => {
     }
   };
 
-
   return (
     <div style={styles.container}>
-    
       <div style={styles.sidebar}>
         <div style={styles.sidebarHeader}>
           <img
@@ -158,7 +150,6 @@ const ServiceHistory = () => {
         <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
       </div>
 
-      
       <div style={styles.mainContent}>
         <div style={styles.contentPadding}>
           <div style={styles.header}>
@@ -344,8 +335,8 @@ const ServiceHistory = () => {
                                   ...(bill.paymentStatus === "paid"
                                     ? styles.statusPaid
                                     : bill.paymentStatus === "partial"
-                                    ? styles.statusPartial
-                                    : styles.statusPending),
+                                      ? styles.statusPartial
+                                      : styles.statusPending),
                                 }}
                               >
                                 {bill.paymentStatus}
@@ -432,8 +423,8 @@ const ServiceHistory = () => {
                               ...(bill.paymentStatus === "paid"
                                 ? styles.statusPaid
                                 : bill.paymentStatus === "partial"
-                                ? styles.statusPartial
-                                : styles.statusPending),
+                                  ? styles.statusPartial
+                                  : styles.statusPending),
                             }}
                           >
                             {bill.paymentStatus}

@@ -67,15 +67,15 @@ const SellRequests = () => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        }
+        },
       );
 
       setRequests(
         requests.map((request) =>
-          request._id === id ? response.data : request
-        )
+          request._id === id ? response.data : request,
+        ),
       );
-      
+
       const statusMsg = status === "Approved" ? "approved" : "rejected";
       alert(`Request ${statusMsg} successfully!`);
     } catch (err) {
@@ -86,7 +86,7 @@ const SellRequests = () => {
 
   const deleteRequest = async (id) => {
     const ok = window.confirm(
-      "Are you sure you want to delete this sell request? This action cannot be undone."
+      "Are you sure you want to delete this sell request? This action cannot be undone.",
     );
     if (!ok) return;
 
@@ -184,7 +184,6 @@ const SellRequests = () => {
 
       <div style={styles.mainContent}>
         <div style={styles.contentPadding}>
-          
           <div style={styles.header}>
             <div>
               <h1 style={styles.pageTitle}>Sell Queries</h1>
@@ -194,7 +193,6 @@ const SellRequests = () => {
             </div>
           </div>
 
-          
           <div style={styles.statsGrid}>
             <div style={styles.statCard}>
               <h3 style={styles.statNumber}>{requests.length}</h3>
@@ -220,7 +218,6 @@ const SellRequests = () => {
             </div>
           </div>
 
-          
           <div style={styles.filtersContainer}>
             <div style={styles.searchContainer}>
               <Search size={20} style={styles.searchIcon} />
@@ -247,7 +244,6 @@ const SellRequests = () => {
             </div>
           </div>
 
-          
           <div style={styles.section}>
             {filteredRequests.length === 0 ? (
               <div style={styles.emptyState}>
@@ -303,7 +299,7 @@ const SellRequests = () => {
                                 onClick={() =>
                                   window.open(
                                     buildImageUrl(request.images[0]),
-                                    "_blank"
+                                    "_blank",
                                   )
                                 }
                               />

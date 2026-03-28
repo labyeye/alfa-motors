@@ -136,7 +136,7 @@ const ServiceBillForm = () => {
     } catch (error) {
       console.error("Error fetching cars:", error);
       alert(
-        "Failed to load vehicle data. You can still enter details manually."
+        "Failed to load vehicle data. You can still enter details manually.",
       );
     } finally {
       setIsLoadingCars(false);
@@ -197,7 +197,7 @@ const ServiceBillForm = () => {
   const calculateAmounts = (data) => {
     const totalAmount = (data.serviceItems || []).reduce(
       (sum, item) => sum + (item.quantity || 0) * (item.rate || 0),
-      0
+      0,
     );
     const taxAmount = data.taxEnabled
       ? ((data.taxRate || 0) / 100) * totalAmount
@@ -292,7 +292,7 @@ const ServiceBillForm = () => {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
             },
-          }
+          },
         );
       } else {
         saveResponse = await axios.post(
@@ -303,7 +303,7 @@ const ServiceBillForm = () => {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
             },
-          }
+          },
         );
       }
 
@@ -329,7 +329,7 @@ const ServiceBillForm = () => {
             Authorization: `Bearer ${token}`,
             Accept: "application/pdf",
           },
-        }
+        },
       );
 
       if (!pdfResponse.data) {
@@ -376,7 +376,7 @@ const ServiceBillForm = () => {
     try {
       const templateUrl = "/templates/service-bill.pdf";
       const existingPdfBytes = await fetch(templateUrl).then((res) =>
-        res.arrayBuffer()
+        res.arrayBuffer(),
       );
       const pdfDoc = await PDFDocument.load(existingPdfBytes);
       const page = pdfDoc.getPages()[0];
@@ -535,7 +535,7 @@ const ServiceBillForm = () => {
       const pdfBytes = await pdfDoc.save();
       saveAs(
         new Blob([pdfBytes], { type: "application/pdf" }),
-        `service-bill-${new Date().getTime()}.pdf`
+        `service-bill-${new Date().getTime()}.pdf`,
       );
     } catch (error) {
       console.error("Error generating PDF:", error);
@@ -932,7 +932,7 @@ const ServiceBillForm = () => {
                   onClick={addServiceItem}
                   style={styles.addItemButton}
                 >
-                   Add Service Item
+                  Add Service Item
                 </button>
               </div>
             </div>
@@ -1289,9 +1289,8 @@ const styles = {
     marginTop: "12px",
     width: "20%",
     height: "40px",
-
   },
-  removeItemButton:{
+  removeItemButton: {
     cursor: "pointer",
     color: "#2D2D2Dff",
     fontWeight: "600",
@@ -1489,7 +1488,6 @@ const styles = {
     borderRadius: "8px",
     cursor: "pointer",
     transition: "all 0.2s ease",
-    
   },
   saveButton: {
     backgroundColor: "#2D2D2D",
@@ -1499,7 +1497,6 @@ const styles = {
     borderRadius: "8px",
     cursor: "pointer",
     transition: "all 0.2s ease",
-    
   },
   downloadButton: {
     backgroundColor: "#2D2D2D",
@@ -1509,7 +1506,6 @@ const styles = {
     borderRadius: "8px",
     cursor: "pointer",
     transition: "all 0.2s ease",
-    
   },
   buttonIcon: {
     marginRight: "8px",

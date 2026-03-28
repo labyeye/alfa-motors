@@ -230,7 +230,7 @@ const SellLetterHistory = () => {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-          }
+          },
         );
         setSellLetters(response.data);
 
@@ -251,7 +251,7 @@ const SellLetterHistory = () => {
       letter.registrationNumber
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
-      letter.buyerName.toLowerCase().includes(searchTerm.toLowerCase())
+      letter.buyerName.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const handleDownload = (letter) => {
@@ -263,7 +263,7 @@ const SellLetterHistory = () => {
     try {
       const templateUrl = "/templates/sellletter.pdf";
       const existingPdfBytes = await fetch(templateUrl).then((res) =>
-        res.arrayBuffer()
+        res.arrayBuffer(),
       );
       const pdfDoc = await PDFDocument.load(existingPdfBytes);
 
@@ -285,10 +285,10 @@ const SellLetterHistory = () => {
         todayDate: formatDate(letter.todayDate || new Date()),
         todayTime: formatTime(letter.todayTime || "12:00"),
         previousDate: formatDate(
-          letter.previousDate || letter.todayDate || new Date()
+          letter.previousDate || letter.todayDate || new Date(),
         ),
         previousTime: formatTime(
-          letter.previousTime || letter.todayTime || "12:00"
+          letter.previousTime || letter.todayTime || "12:00",
         ),
         sellerphone: letter.sellerphone || "9876543210",
         selleraadhar: letter.selleraadhar || "764465626571",
@@ -324,7 +324,7 @@ const SellLetterHistory = () => {
     try {
       const templateUrl = "/templates/englishsell.pdf";
       const existingPdfBytes = await fetch(templateUrl).then((res) =>
-        res.arrayBuffer()
+        res.arrayBuffer(),
       );
       const pdfDoc = await PDFDocument.load(existingPdfBytes);
 
@@ -346,10 +346,10 @@ const SellLetterHistory = () => {
         todayDate: formatDate(letter.todayDate || new Date()),
         todayTime: formatTime(letter.todayTime || "12:00"),
         previousDate: formatDate(
-          letter.previousDate || letter.todayDate || new Date()
+          letter.previousDate || letter.todayDate || new Date(),
         ),
         previousTime: formatTime(
-          letter.previousTime || letter.todayTime || "12:00"
+          letter.previousTime || letter.todayTime || "12:00",
         ),
         sellerphone: letter.sellerphone || "9876543210",
         selleraadhar: letter.selleraadhar || "764465626571",
@@ -357,7 +357,7 @@ const SellLetterHistory = () => {
 
       // Fill sell letter fields
       for (const [fieldName, position] of Object.entries(
-        englishFieldPositions
+        englishFieldPositions,
       )) {
         if (formattedLetter[fieldName]) {
           pdfDoc.getPages()[0].drawText(String(formattedLetter[fieldName]), {
@@ -389,7 +389,7 @@ const SellLetterHistory = () => {
     const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
     const logoUrl = logo1; // Use your imported logo
     const logoImageBytes = await fetch(logoUrl).then((res) =>
-      res.arrayBuffer()
+      res.arrayBuffer(),
     );
     const logoImage = await pdfDoc.embedPng(logoImageBytes); // or embedJpg if using JPEG
 
@@ -428,7 +428,7 @@ const SellLetterHistory = () => {
         size: 8,
         color: rgb(0.8, 0.8, 0.8),
         font: font,
-      }
+      },
     );
 
     // Invoice header with accent color
@@ -450,7 +450,7 @@ const SellLetterHistory = () => {
 
     // Invoice details section
     const invoiceNumber = `INV-${new Date().getFullYear()}-${Math.floor(
-      Math.random() * 10000
+      Math.random() * 10000,
     )
       .toString()
       .padStart(4, "0")}`;
@@ -625,7 +625,7 @@ const SellLetterHistory = () => {
         size: 10,
         color: rgb(0.2, 0.2, 0.2),
         font: font,
-      }
+      },
     );
 
     // Terms and Conditions section
@@ -724,7 +724,7 @@ const SellLetterHistory = () => {
         size: 8,
         color: rgb(0.5, 0.5, 0.5),
         font: font,
-      }
+      },
     );
   };
 
@@ -737,7 +737,7 @@ const SellLetterHistory = () => {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-          }
+          },
         );
         setSellLetters(sellLetters.filter((letter) => letter._id !== id));
       } catch (error) {
@@ -759,12 +759,12 @@ const SellLetterHistory = () => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        }
+        },
       );
       setSellLetters(
         sellLetters.map((letter) =>
-          letter._id === updatedLetter._id ? response.data : letter
-        )
+          letter._id === updatedLetter._id ? response.data : letter,
+        ),
       );
       setEditingLetter(null);
     } catch (error) {
@@ -776,7 +776,6 @@ const SellLetterHistory = () => {
     <div style={styles.container}>
       <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
 
-      
       <div style={styles.mainContent}>
         <div style={styles.contentPadding}>
           <div style={styles.header}>
@@ -809,7 +808,6 @@ const SellLetterHistory = () => {
           {loading ? (
             <div style={styles.loadingContainer}>
               <p>Loading sell letters...</p>
-                
             </div>
           ) : filteredLetters.length === 0 ? (
             <div style={styles.emptyState}>

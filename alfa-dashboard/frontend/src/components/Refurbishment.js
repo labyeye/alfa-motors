@@ -73,7 +73,7 @@ export default function Refurbishment() {
   const totalCost = () =>
     form.items.reduce(
       (s, it) => s + (Number(it.quantity) || 0) * (Number(it.rate) || 0),
-      0
+      0,
     );
 
   const submit = async () => {
@@ -275,7 +275,9 @@ export default function Refurbishment() {
                       }}
                     >
                       ₹
-                      {formatIndian((Number(it.quantity) || 0) * (Number(it.rate) || 0))}
+                      {formatIndian(
+                        (Number(it.quantity) || 0) * (Number(it.rate) || 0),
+                      )}
                     </div>
                     <button
                       onClick={() => removeItem(idx)}
@@ -453,7 +455,10 @@ export default function Refurbishment() {
                           Total: ₹
                           {formatIndian(
                             r.totalCost ||
-                            r.items.reduce((s, it) => s + it.quantity * it.rate, 0)
+                              r.items.reduce(
+                                (s, it) => s + it.quantity * it.rate,
+                                0,
+                              ),
                           )}
                         </div>
                       </div>

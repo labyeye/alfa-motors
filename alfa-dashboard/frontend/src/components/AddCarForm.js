@@ -44,7 +44,7 @@ const AddCarForm = () => {
     const files = Array.from(e.target.files || []);
     if (files.length > 12) {
       setError(
-        "You can upload a maximum of 12 photos. Extra files were ignored."
+        "You can upload a maximum of 12 photos. Extra files were ignored.",
       );
     }
     const limitedFiles = files.slice(0, 12);
@@ -52,7 +52,7 @@ const AddCarForm = () => {
     const compressAll = async (fileList) => {
       try {
         const compressed = await Promise.all(
-          fileList.map((f) => compressImageFile(f, 1200, 0.8))
+          fileList.map((f) => compressImageFile(f, 1200, 0.8)),
         );
         setFormData((prev) => ({ ...prev, photos: compressed }));
       } catch (err) {
@@ -83,7 +83,7 @@ const AddCarForm = () => {
             resolve(newFile);
           },
           "image/jpeg",
-          quality
+          quality,
         );
       };
       img.onerror = () => resolve(file);
@@ -131,7 +131,7 @@ const AddCarForm = () => {
         err.response?.data?.message ||
           err.response?.data?.error?.join(", ") ||
           err.message ||
-          "An error occurred"
+          "An error occurred",
       );
     } finally {
       setIsSubmitting(false);
@@ -457,7 +457,13 @@ const AddCarForm = () => {
                   </div>
                 </div>
 
-                <div style={{ display: "flex", justifyContent: "flex-start", gap: "10px" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-start",
+                    gap: "10px",
+                  }}
+                >
                   <button
                     type="button"
                     className="btn btn-outlined"

@@ -416,7 +416,7 @@ const RcListPage = () => {
             Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
           },
           body: JSON.stringify(updateData),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -450,8 +450,8 @@ const RcListPage = () => {
 
       setRcEntries((prevEntries) =>
         prevEntries.map((entry) =>
-          entry._id === currentRecord._id ? normalizedUpdated : entry
-        )
+          entry._id === currentRecord._id ? normalizedUpdated : entry,
+        ),
       );
       setIsEditModalVisible(false);
       setCurrentRecord(null);
@@ -520,7 +520,7 @@ const RcListPage = () => {
 
       if (error.message.includes("fetch")) {
         message.error(
-          "Network error. Please check your connection and try again."
+          "Network error. Please check your connection and try again.",
         );
       } else {
         message.error(error.message || "Failed to delete RC entry");

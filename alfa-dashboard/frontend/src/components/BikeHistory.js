@@ -37,7 +37,7 @@ const BikeHistory = () => {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-          }
+          },
         ),
         axios.get(
           `${API_BASE}/api/sell-letters/by-registration?registrationNumber=${searchTerm}`,
@@ -45,7 +45,7 @@ const BikeHistory = () => {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-          }
+          },
         ),
         axios.get(
           `${API_BASE}/api/service-bills/by-registration?registrationNumber=${searchTerm}`,
@@ -53,11 +53,10 @@ const BikeHistory = () => {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-          }
+          },
         ),
       ]);
 
-      
       const buyData =
         buyLetters.status === 200
           ? Array.isArray(buyLetters.data)
@@ -75,8 +74,8 @@ const BikeHistory = () => {
           ? Array.isArray(serviceBills.data?.data)
             ? serviceBills.data.data
             : Array.isArray(serviceBills.data)
-            ? serviceBills.data
-            : []
+              ? serviceBills.data
+              : []
           : [];
 
       if (

@@ -242,7 +242,7 @@ const SellLetterForm = () => {
           size: 10,
           font: fontNormal,
           color: rgb(0.06, 0.06, 0.06),
-        }
+        },
       );
       page.drawText(
         `Time : ${formatTime(formData.todayTime || formData.saleTime)}`,
@@ -252,7 +252,7 @@ const SellLetterForm = () => {
           size: 10,
           font: fontNormal,
           color: rgb(0.06, 0.06, 0.06),
-        }
+        },
       );
 
       // Address line under header
@@ -265,7 +265,7 @@ const SellLetterForm = () => {
           size: 9,
           font: fontNormal,
           color: rgb(0.06, 0.06, 0.06),
-        }
+        },
       );
 
       // Customer lines: Name, Address, Id Number and Contact No
@@ -442,7 +442,7 @@ const SellLetterForm = () => {
               Number(formData.saleValue || formData.saleAmount || 0) +
                 Number(formData.commission || 0) +
                 Number(formData.rtoCharges || 0) +
-                Number(formData.otherCharges || 0)
+                Number(formData.otherCharges || 0),
           )}`,
         ],
         ["", "Advance", `Rs. ${formatRupee(formData.advanceAmount || 0)}`],
@@ -452,7 +452,7 @@ const SellLetterForm = () => {
           `Rs. ${formatRupee(
             formData.balanceAmount ||
               Number(formData.totalAmount || 0) -
-                Number(formData.advanceAmount || 0)
+                Number(formData.advanceAmount || 0),
           )}`,
         ],
       ];
@@ -530,7 +530,7 @@ const SellLetterForm = () => {
           size: 8,
           font: fontNormal,
           color: rgb(0.06, 0.06, 0.06),
-        }
+        },
       );
 
       // Signature lines
@@ -662,7 +662,7 @@ const SellLetterForm = () => {
 
       if (missingFields.length > 0) {
         alert(
-          `Please fill in all required fields: ${missingFields.join(", ")}`
+          `Please fill in all required fields: ${missingFields.join(", ")}`,
         );
         setIsSaving(false);
         return false;
@@ -676,7 +676,7 @@ const SellLetterForm = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        }
+        },
       );
 
       if (response.data) {
@@ -699,13 +699,13 @@ const SellLetterForm = () => {
                 headers: {
                   Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
-              }
+              },
             );
           }
         } catch (err) {
           console.warn(
             "Advance payment creation failed:",
-            err?.response?.data || err.message || err
+            err?.response?.data || err.message || err,
           );
         }
 
@@ -741,7 +741,7 @@ const SellLetterForm = () => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        }
+        },
       );
 
       if (existingLetter.data && existingLetter.data.length > 0) {
@@ -761,12 +761,12 @@ const SellLetterForm = () => {
                 headers: {
                   Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
-              }
+              },
             );
           } catch (err) {
             console.warn(
               "Advance payment creation failed for existing letter:",
-              err?.response?.data || err.message || err
+              err?.response?.data || err.message || err,
             );
           }
         }

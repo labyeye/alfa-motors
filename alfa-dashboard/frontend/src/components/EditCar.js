@@ -100,7 +100,7 @@ const EditCar = () => {
       } catch (error) {
         console.error("Error fetching car data:", error);
         alert(
-          "Failed to load car data. Please check your connection and try again."
+          "Failed to load car data. Please check your connection and try again.",
         );
         navigate("/car/list");
       }
@@ -125,7 +125,7 @@ const EditCar = () => {
     }
     const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
     const invalidFiles = files.filter(
-      (file) => !validTypes.includes(file.type)
+      (file) => !validTypes.includes(file.type),
     );
     if (invalidFiles.length > 0) {
       alert("Please select only image files (JPEG, JPG, PNG, WEBP).");
@@ -145,16 +145,12 @@ const EditCar = () => {
         formData.append("photos", file);
       }
 
-      await axios.put(
-        `${API_BASE}/api/cars/${id}/photos`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      await axios.put(`${API_BASE}/api/cars/${id}/photos`, formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       // Refresh car data after upload
       const updatedResponse = await axios.get(`${API_BASE}/api/cars/${id}`, {
@@ -635,7 +631,7 @@ const EditCar = () => {
                               onClick={() => {
                                 if (
                                   window.confirm(
-                                    "Delete this photo from server? This cannot be undone."
+                                    "Delete this photo from server? This cannot be undone.",
                                   )
                                 ) {
                                   handleDeletePhoto(photo);
@@ -646,7 +642,7 @@ const EditCar = () => {
                             </button>
                           </div>
                         );
-                      }
+                      },
                     )}
                   </div>
                 )}

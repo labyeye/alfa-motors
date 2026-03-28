@@ -47,7 +47,7 @@ const CreateStaff = () => {
     } catch (err) {
       setError(
         err.response?.data?.message ||
-          "Failed to create staff. Please try again."
+          "Failed to create staff. Please try again.",
       );
     } finally {
       setIsSubmitting(false);
