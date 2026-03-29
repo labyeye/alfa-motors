@@ -297,6 +297,8 @@ const RcListPage = () => {
                 rtoFeesPaid: false,
                 returnedToDealer: false,
               },
+            submittedDate: e.submittedDate || "",
+            receivedDate: e.receivedDate || "",
           });
         });
         setRcEntries(normalized);
@@ -394,6 +396,12 @@ const RcListPage = () => {
       rcTransferred: Boolean(record.status?.rcTransferred),
       rtoFeesPaid: Boolean(record.status?.rtoFeesPaid),
       returnedToDealer: Boolean(record.status?.returnedToDealer),
+      submittedDate: record.submittedDate
+        ? record.submittedDate.split("T")[0]
+        : "",
+      receivedDate: record.receivedDate
+        ? record.receivedDate.split("T")[0]
+        : "",
     });
     setIsEditModalVisible(true);
   };
@@ -416,6 +424,8 @@ const RcListPage = () => {
           rtoFeesPaid: Boolean(values.rtoFeesPaid),
           returnedToDealer: Boolean(values.returnedToDealer),
         },
+        submittedDate: values.submittedDate || null,
+        receivedDate: values.receivedDate || null,
       };
 
       const response = await fetch(
@@ -457,6 +467,8 @@ const RcListPage = () => {
           rtoFeesPaid: false,
           returnedToDealer: false,
         },
+        submittedDate: updatedEntryRaw.submittedDate || "",
+        receivedDate: updatedEntryRaw.receivedDate || "",
       });
 
       setRcEntries((prevEntries) =>
@@ -603,6 +615,22 @@ const RcListPage = () => {
       sorter: (a, b) => (a.remarks || "").localeCompare(b.remarks || ""),
     },
     {
+      title: "Submitted Date",
+      dataIndex: "submittedDate",
+      key: "submittedDate",
+      render: (text) => (text ? new Date(text).toLocaleDateString() : "-"),
+      sorter: (a, b) =>
+        (a.submittedDate || "").localeCompare(b.submittedDate || ""),
+    },
+    {
+      title: "Received Date",
+      dataIndex: "receivedDate",
+      key: "receivedDate",
+      render: (text) => (text ? new Date(text).toLocaleDateString() : "-"),
+      sorter: (a, b) =>
+        (a.receivedDate || "").localeCompare(b.receivedDate || ""),
+    },
+    {
       title: "Status",
       key: "status",
       render: (_, record) => (
@@ -737,6 +765,14 @@ const RcListPage = () => {
 
             <Form.Item name="returnedToDealer" valuePropName="checked">
               <Checkbox>Returned To Dealer</Checkbox>
+            </Form.Item>
+
+            <Form.Item name="submittedDate" label="Submitted Date">
+              <Input type="date" />
+            </Form.Item>
+
+            <Form.Item name="receivedDate" label="Received Date">
+              <Input type="date" />
             </Form.Item>
           </div>
         </div>

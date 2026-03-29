@@ -31,6 +31,8 @@ const Car = sequelize.define(
     soldCustomerPhotos: { type: DataTypes.JSON, allowNull: true, defaultValue: [] },
     status: { type: DataTypes.ENUM("Available", "Coming Soon", "Sold Out"), allowNull: false, defaultValue: "Available" },
     addedBy: { type: DataTypes.INTEGER.UNSIGNED, allowNull: false },
+    rcSubmittedDate: { type: DataTypes.DATEONLY, allowNull: true },
+    rcReceivedDate: { type: DataTypes.DATEONLY, allowNull: true },
     createdAt: { type: DataTypes.DATE, defaultValue: Sequelize.literal("CURRENT_TIMESTAMP") },
   },
   {

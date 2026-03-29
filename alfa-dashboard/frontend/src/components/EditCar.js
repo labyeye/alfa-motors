@@ -40,11 +40,12 @@ const EditCar = () => {
     buyingPrice: "",
     quotingPrice: "",
     sellingPrice: "",
-    photos: [],
+    cover: null,
+    interior: [],
+    exterior: [],
     status: "Available",
     sold: {},
   });
-  const [replacePhotos, setReplacePhotos] = useState(false);
 
   useEffect(() => {
     const fetchCarData = async () => {
@@ -55,24 +56,27 @@ const EditCar = () => {
           },
         });
 
-        const car =
-          response.data && response.data.data
-            ? response.data.data
-            : response.data;
-        let photosArray = [];
-        if (Array.isArray(car.photos)) {
-          photosArray = car.photos;
-        } else if (typeof car.photos === "string") {
-          try {
-            const parsed = JSON.parse(car.photos);
-            photosArray = Array.isArray(parsed) ? parsed : [car.photos];
-          } catch (e) {
-            photosArray = [car.photos];
-          }
-        } else if (car.photos) {
-          photosArray = [car.photos];
-        } else {
-          photosArray = [];
+        const car = response.data.data || response.data;
+
+        let cover = null;
+        let interior = [];
+        let exterior = [];
+
+        if (
+          car.photos &&
+          typeof car.photos === "object" &&
+          !Array.isArray(car.photos)
+        ) {
+          cover = car.photos.cover || null;
+          interior = Array.isArray(car.photos.interior)
+            ? car.photos.interior
+            : [];
+          exterior = Array.isArray(car.photos.exterior)
+            ? car.photos.exterior
+            : [];
+        } else if (Array.isArray(car.photos)) {
+          cover = car.photos[0] || null;
+          exterior = car.photos.slice(1);
         }
 
         setCarData({
@@ -91,17 +95,19 @@ const EditCar = () => {
           buyingPrice: car.buyingPrice || "",
           quotingPrice: car.quotingPrice || "",
           sellingPrice: car.sellingPrice || "",
-          photos: photosArray,
+          cover,
+          interior,
+          exterior,
           status: car.status || "Available",
           sold: car.sold || {},
+          rcSubmittedDate: car.rcSubmittedDate || "",
+          rcReceivedDate: car.rcReceivedDate || "",
         });
 
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching car data:", error);
-        alert(
-          "Failed to load car data. Please check your connection and try again.",
-        );
+        alert("Failed to load car data.");
         navigate("/car/list");
       }
     };
@@ -117,85 +123,58 @@ const EditCar = () => {
     }));
   };
 
-  const handleFileUpload = async (files) => {
+  const handleFileUpload = async (files, category) => {
     if (files.length === 0) return;
-    if (files.length > 12) {
-      alert("Please select maximum 12 images at once.");
-      return;
-    }
-    const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
-    const invalidFiles = files.filter(
-      (file) => !validTypes.includes(file.type),
-    );
-    if (invalidFiles.length > 0) {
-      alert("Please select only image files (JPEG, JPG, PNG, WEBP).");
+
+    if (category === "cover" && files.length > 1) {
+      alert("Only 1 cover photo allowed.");
       return;
     }
 
     try {
-      // Show loading placeholders
-      const uploadingPhotos = files.map((_, index) => `uploading-${index}`);
-      setCarData((prev) => ({ ...prev, photos: uploadingPhotos }));
-
+      setIsSaving(true);
       const formData = new FormData();
-      // Add replace flag depending on user's choice (default: append)
-      formData.append("replacePhotos", replacePhotos ? "true" : "false");
-
       for (let file of files) {
-        formData.append("photos", file);
+        formData.append(category, file);
       }
 
-      await axios.put(`${API_BASE}/api/cars/${id}/photos`, formData, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "multipart/form-data",
+      const response = await axios.put(
+        `${API_BASE}/api/cars/${id}/photos`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data",
+          },
         },
-      });
+      );
 
-      // Refresh car data after upload
-      const updatedResponse = await axios.get(`${API_BASE}/api/cars/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
-      const car =
-        updatedResponse.data && updatedResponse.data.data
-          ? updatedResponse.data.data
-          : updatedResponse.data;
-
-      // Ensure photos is always an array when updating state
-      let updatedPhotos = [];
-      if (Array.isArray(car.photos)) {
-        updatedPhotos = car.photos;
-      } else if (typeof car.photos === "string") {
-        try {
-          const parsed = JSON.parse(car.photos);
-          updatedPhotos = Array.isArray(parsed) ? parsed : [car.photos];
-        } catch (e) {
-          updatedPhotos = [car.photos];
-        }
-      } else if (car.photos) {
-        updatedPhotos = [car.photos];
-      } else {
-        updatedPhotos = [];
+      const car = response.data.data;
+      if (
+        car.photos &&
+        typeof car.photos === "object" &&
+        !Array.isArray(car.photos)
+      ) {
+        setCarData((prev) => ({
+          ...prev,
+          cover: car.photos.cover,
+          interior: car.photos.interior,
+          exterior: car.photos.exterior,
+        }));
       }
-      setCarData((prev) => ({ ...prev, photos: updatedPhotos }));
 
-      alert(`${files.length} photos uploaded successfully!`);
+      alert(`Photos uploaded to ${category} successfully!`);
     } catch (error) {
       console.error("Error uploading photos:", error);
-      setCarData((prev) => ({ ...prev, photos: [] })); // Reset on error
-      alert("Failed to upload photos. Please try again.");
+      alert("Failed to upload photos.");
+    } finally {
+      setIsSaving(false);
     }
   };
 
-  const handleDeletePhoto = async (photoToDelete) => {
+  const handleDeletePhoto = async (photoToDelete, category) => {
     try {
-      // Extract just the filename from the path
-      const filename = photoToDelete
-        .replace("carimages/", "")
-        .replace(`${API_BASE}/carimages/`, "");
+      const filename = photoToDelete.split("/").pop();
 
       await axios.delete(`${API_BASE}/api/cars/${id}/photo`, {
         headers: {
@@ -204,26 +183,25 @@ const EditCar = () => {
         data: { filename: filename },
       });
 
-      // Remove from local state (guard against non-array prev.photos)
-      setCarData((prev) => ({
-        ...prev,
-        photos: Array.isArray(prev.photos)
-          ? prev.photos.filter((photo) => photo !== photoToDelete)
-          : [],
-      }));
+      setCarData((prev) => {
+        if (category === "cover") return { ...prev, cover: null };
+        return {
+          ...prev,
+          [category]: prev[category].filter((photo) => photo !== photoToDelete),
+        };
+      });
 
       alert("Photo deleted successfully!");
     } catch (error) {
       console.error("Error deleting photo:", error);
-      alert("Failed to delete photo. Please try again.");
+      alert("Failed to delete photo.");
     }
   };
 
   const buildImageUrl = (file) => {
     if (!file) return "/assets/placeholder.png";
-    if (file.startsWith("http") || file.startsWith("/")) return file;
-    const filename = file.replace("carimages/", "");
-    return `${API_BASE}/carimages/${filename}`;
+    if (file.startsWith("http")) return file;
+    return `${API_BASE}/carimages/${file.replace("carimages/", "")}`;
   };
 
   const handleSubmit = async (e) => {
@@ -232,28 +210,26 @@ const EditCar = () => {
 
     try {
       const updateData = {
-        make: carData.make,
-        model: carData.model,
-        variant: carData.variant,
-        fuelType: carData.fuelType,
-        modelYear: Number(carData.modelYear) || null,
-        registrationYear: Number(carData.registrationYear) || null,
-        color: carData.color,
-        chassisNo: carData.chassisNo,
-        engineNo: carData.engineNo,
-        kmDriven: Number(carData.kmDriven) || 0,
-        ownership: carData.ownership,
-        daysOld: Number(carData.daysOld) || 0,
-        buyingPrice: Number(carData.buyingPrice) || 0,
-        quotingPrice: Number(carData.quotingPrice) || 0,
-        sellingPrice: Number(carData.sellingPrice) || 0,
-        status: carData.status,
+        ...carData,
+        modelYear: Number(carData.modelYear),
+        registrationYear: Number(carData.registrationYear),
+        kmDriven: Number(carData.kmDriven),
+        daysOld: Number(carData.daysOld),
+        buyingPrice: Number(carData.buyingPrice),
+        quotingPrice: Number(carData.quotingPrice),
+        sellingPrice: Number(carData.sellingPrice),
+        photos: {
+          cover: carData.cover,
+          interior: carData.interior,
+          exterior: carData.exterior,
+        },
+        rcSubmittedDate: carData.rcSubmittedDate || null,
+        rcReceivedDate: carData.rcReceivedDate || null,
       };
 
       await axios.put(`${API_BASE}/api/cars/${id}`, updateData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
         },
       });
 
@@ -261,791 +237,379 @@ const EditCar = () => {
       navigate("/car/list");
     } catch (error) {
       console.error("Error updating car:", error);
-      alert("Failed to update car. Please try again.");
+      alert("Failed to update car.");
     } finally {
       setIsSaving(false);
     }
   };
 
-  if (isLoading) {
+  const renderPhotoCategory = (photos, category, title) => {
+    const photoArray = Array.isArray(photos) ? photos : photos ? [photos] : [];
     return (
-      <div style={styles.loadingContainer}>
-        <div style={styles.loadingSpinner}></div>
-        <p style={styles.loadingText}>Loading car data...</p>
+      <div style={styles.categoryContainer}>
+        <div style={styles.categoryHeader}>
+          <h3 style={styles.categoryTitle}>{title}</h3>
+          <label style={styles.uploadBtnSmall}>
+            <Upload size={14} />
+            Upload
+            <input
+              type="file"
+              accept="image/*"
+              multiple={category !== "cover"}
+              style={{ display: "none" }}
+              onChange={(e) =>
+                handleFileUpload(Array.from(e.target.files), category)
+              }
+            />
+          </label>
+        </div>
+        <div style={styles.photoGrid}>
+          {photoArray.map((photo, index) => (
+            <div key={index} style={styles.photoCard}>
+              <img
+                src={buildImageUrl(photo)}
+                style={styles.photoImage}
+                alt=""
+              />
+              <button
+                type="button"
+                onClick={() => handleDeletePhoto(photo, category)}
+                style={styles.deleteBtn}
+              >
+                <X size={12} />
+              </button>
+            </div>
+          ))}
+          {photoArray.length === 0 && (
+            <div style={styles.emptyPhoto}>No photos uploaded</div>
+          )}
+        </div>
       </div>
     );
-  }
+  };
+
+  if (isLoading)
+    return <div style={styles.loading}>Loading Vehicle Data...</div>;
 
   return (
     <div style={styles.container}>
       <Sidebar />
+      <div style={styles.main}>
+        <div style={styles.header}>
+          <h1>Edit Vehicle Details</h1>
+          <p>Update information and manage categorized photos</p>
+        </div>
 
-      {/* Main Content */}
-      <div style={styles.mainContent}>
-        <div style={styles.contentWrapper}>
-          <div style={styles.pageHeader}>
-            <h1 style={styles.pageTitle}>Edit Car Details</h1>
-            <p style={styles.pageSubtitle}>
-              Update vehicle information and manage photos
-            </p>
+        <form onSubmit={handleSubmit} style={styles.form}>
+          <div style={styles.section}>
+            <div style={styles.sectionHeader}>
+              <Car size={20} />
+              <h2>Vehicle Information</h2>
+            </div>
+            <div style={styles.grid}>
+              <div style={styles.field}>
+                <label>Make *</label>
+                <input
+                  name="make"
+                  value={carData.make}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div style={styles.field}>
+                <label>Model *</label>
+                <input
+                  name="model"
+                  value={carData.model}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div style={styles.field}>
+                <label>Variant</label>
+                <input
+                  name="variant"
+                  value={carData.variant}
+                  onChange={handleChange}
+                />
+              </div>
+              <div style={styles.field}>
+                <label>Fuel Type</label>
+                <select
+                  name="fuelType"
+                  value={carData.fuelType}
+                  onChange={handleChange}
+                >
+                  <option value="Petrol">Petrol</option>
+                  <option value="Diesel">Diesel</option>
+                  <option value="EV">Electric</option>
+                  <option value="CNG">CNG</option>
+                  <option value="Hybrid">Hybrid</option>
+                </select>
+              </div>
+              <div style={styles.field}>
+                <label>Model Year</label>
+                <input
+                  type="number"
+                  name="modelYear"
+                  value={carData.modelYear}
+                  onChange={handleChange}
+                />
+              </div>
+              <div style={styles.field}>
+                <label>Registration Year</label>
+                <input
+                  type="number"
+                  name="registrationYear"
+                  value={carData.registrationYear}
+                  onChange={handleChange}
+                />
+              </div>
+              <div style={styles.field}>
+                <label>Color</label>
+                <input
+                  name="color"
+                  value={carData.color}
+                  onChange={handleChange}
+                />
+              </div>
+              <div style={styles.field}>
+                <label>Ownership</label>
+                <select
+                  name="ownership"
+                  value={carData.ownership}
+                  onChange={handleChange}
+                >
+                  <option value="1st Own">1st Own</option>
+                  <option value="2nd Own">2nd Own</option>
+                  <option value="3rd Own">3rd Own</option>
+                  <option value="4th Own">4th Own</option>
+                </select>
+              </div>
+              <div style={styles.field}>
+                <label>KM Driven</label>
+                <input
+                  type="number"
+                  name="kmDriven"
+                  value={carData.kmDriven}
+                  onChange={handleChange}
+                />
+              </div>
+              <div style={styles.field}>
+                <label>Status</label>
+                <select
+                  name="status"
+                  value={carData.status}
+                  onChange={handleChange}
+                >
+                  <option value="Available">Available</option>
+                  <option value="Sold Out">Sold Out</option>
+                  <option value="Coming Soon">Coming Soon</option>
+                </select>
+              </div>
+              <div style={styles.field}>
+                <label>RC Submitted Date</label>
+                <input
+                  type="date"
+                  name="rcSubmittedDate"
+                  value={
+                    carData.rcSubmittedDate
+                      ? carData.rcSubmittedDate.split("T")[0]
+                      : ""
+                  }
+                  onChange={handleChange}
+                />
+              </div>
+              <div style={styles.field}>
+                <label>RC Received Date</label>
+                <input
+                  type="date"
+                  name="rcReceivedDate"
+                  value={
+                    carData.rcReceivedDate
+                      ? carData.rcReceivedDate.split("T")[0]
+                      : ""
+                  }
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
           </div>
 
-          <form onSubmit={handleSubmit} style={styles.form}>
-            {/* Basic Information Section */}
-            <div style={styles.section}>
-              <div style={styles.sectionHeader}>
-                <Car size={24} style={styles.sectionIcon} />
-                <h2 style={styles.sectionTitle}>Basic Information</h2>
+          <div style={styles.section}>
+            <div style={styles.sectionHeader}>
+              <TrendingUp size={20} />
+              <h2>Pricing (₹)</h2>
+            </div>
+            <div style={styles.grid}>
+              <div style={styles.field}>
+                <label>Buying Price</label>
+                <input
+                  type="number"
+                  name="buyingPrice"
+                  value={carData.buyingPrice}
+                  onChange={handleChange}
+                />
               </div>
-
-              <div style={styles.inputGrid}>
-                <div style={styles.inputGroup}>
-                  <label style={styles.label}>Make *</label>
-                  <input
-                    type="text"
-                    name="make"
-                    value={carData.make}
-                    onChange={handleChange}
-                    style={styles.input}
-                    placeholder="Enter car make"
-                    required
-                  />
-                </div>
-
-                <div style={styles.inputGroup}>
-                  <label style={styles.label}>Model *</label>
-                  <input
-                    type="text"
-                    name="model"
-                    value={carData.model}
-                    onChange={handleChange}
-                    style={styles.input}
-                    placeholder="Enter car model"
-                    required
-                  />
-                </div>
-
-                <div style={styles.inputGroup}>
-                  <label style={styles.label}>Variant</label>
-                  <input
-                    type="text"
-                    name="variant"
-                    value={carData.variant}
-                    onChange={handleChange}
-                    style={styles.input}
-                    placeholder="Enter variant"
-                  />
-                </div>
-
-                <div style={styles.inputGroup}>
-                  <label style={styles.label}>Fuel Type *</label>
-                  <select
-                    name="fuelType"
-                    value={carData.fuelType}
-                    onChange={handleChange}
-                    style={styles.select}
-                    required
-                  >
-                    <option value="Petrol">Petrol</option>
-                    <option value="Diesel">Diesel</option>
-                    <option value="EV">Electric</option>
-                    <option value="CNG">CNG</option>
-                    <option value="Hybrid">Hybrid</option>
-                  </select>
-                </div>
-
-                <div style={styles.inputGroup}>
-                  <label style={styles.label}>Model Year *</label>
-                  <input
-                    type="number"
-                    name="modelYear"
-                    value={carData.modelYear}
-                    onChange={handleChange}
-                    style={styles.input}
-                    placeholder="2020"
-                    min="1900"
-                    max={new Date().getFullYear() + 1}
-                    required
-                  />
-                </div>
-
-                <div style={styles.inputGroup}>
-                  <label style={styles.label}>Registration Year *</label>
-                  <input
-                    type="number"
-                    name="registrationYear"
-                    value={carData.registrationYear}
-                    onChange={handleChange}
-                    style={styles.input}
-                    placeholder="2020"
-                    min="1900"
-                    max={new Date().getFullYear() + 1}
-                    required
-                  />
-                </div>
-
-                <div style={styles.inputGroup}>
-                  <label style={styles.label}>Color</label>
-                  <input
-                    type="text"
-                    name="color"
-                    value={carData.color}
-                    onChange={handleChange}
-                    style={styles.input}
-                    placeholder="Enter color"
-                  />
-                </div>
-
-                <div style={styles.inputGroup}>
-                  <label style={styles.label}>Ownership *</label>
-                  <select
-                    name="ownership"
-                    value={carData.ownership}
-                    onChange={handleChange}
-                    style={styles.select}
-                    required
-                  >
-                    <option value="1st Own">1st Own</option>
-                    <option value="2nd Own">2nd Own</option>
-                    <option value="3rd Own">3rd Own</option>
-                    <option value="4th Own">4th Own</option>
-                  </select>
-                </div>
-
-                <div style={styles.inputGroup}>
-                  <label style={styles.label}>KM Driven</label>
-                  <input
-                    type="number"
-                    name="kmDriven"
-                    value={carData.kmDriven}
-                    onChange={handleChange}
-                    style={styles.input}
-                    placeholder="50000"
-                    min="0"
-                  />
-                </div>
+              <div style={styles.field}>
+                <label>Quoting Price</label>
+                <input
+                  type="number"
+                  name="quotingPrice"
+                  value={carData.quotingPrice}
+                  onChange={handleChange}
+                />
+              </div>
+              <div style={styles.field}>
+                <label>Selling Price</label>
+                <input
+                  type="number"
+                  name="sellingPrice"
+                  value={carData.sellingPrice}
+                  onChange={handleChange}
+                />
               </div>
             </div>
+          </div>
 
-            {/* Vehicle Details Section */}
-            <div style={styles.section}>
-              <div style={styles.sectionHeader}>
-                <CarFront size={24} style={styles.sectionIcon} />
-                <h2 style={styles.sectionTitle}>Vehicle Details</h2>
-              </div>
-
-              <div style={styles.inputGrid}>
-                <div style={styles.inputGroup}>
-                  <label style={styles.label}>Chassis Number</label>
-                  <input
-                    type="text"
-                    name="chassisNo"
-                    value={carData.chassisNo}
-                    onChange={handleChange}
-                    style={styles.input}
-                    placeholder="Enter chassis number"
-                  />
-                </div>
-
-                <div style={styles.inputGroup}>
-                  <label style={styles.label}>Engine Number</label>
-                  <input
-                    type="text"
-                    name="engineNo"
-                    value={carData.engineNo}
-                    onChange={handleChange}
-                    style={styles.input}
-                    placeholder="Enter engine number"
-                  />
-                </div>
-
-                <div style={styles.inputGroup}>
-                  <label style={styles.label}>Days Old</label>
-                  <input
-                    type="number"
-                    name="daysOld"
-                    value={carData.daysOld}
-                    onChange={handleChange}
-                    style={styles.input}
-                    placeholder="365"
-                    min="0"
-                  />
-                </div>
-
-                <div style={styles.inputGroup}>
-                  <label style={styles.label}>Status</label>
-                  <select
-                    name="status"
-                    value={carData.status}
-                    onChange={handleChange}
-                    style={styles.select}
-                  >
-                    <option value="Available">Available</option>
-                    <option value="Sold Out">Sold Out</option>
-                    <option value="Coming Soon">Coming Soon</option>
-                  </select>
-                </div>
-              </div>
+          <div style={styles.section}>
+            <div style={styles.sectionHeader}>
+              <Camera size={20} />
+              <h2>Vehicle Photos</h2>
             </div>
+            {renderPhotoCategory(
+              carData.cover,
+              "cover",
+              "Cover Photo (Inventory Card)",
+            )}
+            {renderPhotoCategory(
+              carData.interior,
+              "interior",
+              "Interior Photos (4-5 recommended)",
+            )}
+            {renderPhotoCategory(
+              carData.exterior,
+              "exterior",
+              "Exterior Photos (3-4 recommended)",
+            )}
+          </div>
 
-            {/* Pricing Section */}
-            <div style={styles.section}>
-              <div style={styles.sectionHeader}>
-                <TrendingUp size={24} style={styles.sectionIcon} />
-                <h2 style={styles.sectionTitle}>Pricing Information</h2>
-              </div>
-
-              <div style={styles.inputGrid}>
-                <div style={styles.inputGroup}>
-                  <label style={styles.label}>Buying Price (₹)</label>
-                  <input
-                    type="number"
-                    name="buyingPrice"
-                    value={carData.buyingPrice}
-                    onChange={handleChange}
-                    style={styles.input}
-                    placeholder="500000"
-                    min="0"
-                  />
-                </div>
-
-                <div style={styles.inputGroup}>
-                  <label style={styles.label}>Quoting Price (₹)</label>
-                  <input
-                    type="number"
-                    name="quotingPrice"
-                    value={carData.quotingPrice}
-                    onChange={handleChange}
-                    style={styles.input}
-                    placeholder="550000"
-                    min="0"
-                  />
-                </div>
-
-                <div style={styles.inputGroup}>
-                  <label style={styles.label}>Selling Price (₹)</label>
-                  <input
-                    type="number"
-                    name="sellingPrice"
-                    value={carData.sellingPrice}
-                    onChange={handleChange}
-                    style={styles.input}
-                    placeholder="525000"
-                    min="0"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Photos Section */}
-            <div style={styles.section}>
-              <div style={styles.sectionHeader}>
-                <Camera size={24} style={styles.sectionIcon} />
-                <h2 style={styles.sectionTitle}>Vehicle Photos</h2>
-              </div>
-
-              <div style={styles.photoSection}>
-                <div style={styles.uploadArea}>
-                  <Upload size={48} style={styles.uploadIcon} />
-                  <h3 style={styles.uploadTitle}>Upload Vehicle Photos</h3>
-                  <p style={styles.uploadSubtitle}>
-                    Select up to 12 high-quality images (JPEG, PNG, WEBP)
-                  </p>
-                  <p style={styles.uploadNote}>
-                    ⚠️ By default new photos are appended to existing ones.
-                    Check "Replace existing photos" to replace them instead.
-                  </p>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                      marginTop: 8,
-                    }}
-                  >
-                    <input
-                      id="replace-photos"
-                      type="checkbox"
-                      checked={replacePhotos}
-                      onChange={(e) => setReplacePhotos(e.target.checked)}
-                    />
-                    <label
-                      htmlFor="replace-photos"
-                      style={{ fontSize: 12, color: "#374151" }}
-                    >
-                      Replace existing photos
-                    </label>
-                  </div>
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/jpg,image/png,image/webp"
-                    multiple
-                    onChange={(e) => {
-                      if (e.target.files.length > 0) {
-                        handleFileUpload(Array.from(e.target.files));
-                        e.target.value = ""; // Reset input
-                      }
-                    }}
-                    style={styles.fileInput}
-                    id="photo-upload"
-                  />
-                  <label htmlFor="photo-upload" style={styles.uploadButton}>
-                    Choose Photos
-                  </label>
-                </div>
-
-                {Array.isArray(carData.photos) && carData.photos.length > 0 && (
-                  <div style={styles.photoGrid}>
-                    {(Array.isArray(carData.photos) ? carData.photos : []).map(
-                      (photo, index) => {
-                        // Show loading placeholder for uploading photos
-                        if (
-                          typeof photo === "string" &&
-                          photo.startsWith("uploading-")
-                        ) {
-                          return (
-                            <div key={index} style={styles.photoCard}>
-                              <div style={styles.uploadingPlaceholder}>
-                                <div style={styles.uploadingSpinner}></div>
-                                <span style={styles.uploadingText}>
-                                  Uploading...
-                                </span>
-                              </div>
-                            </div>
-                          );
-                        }
-
-                        return (
-                          <div key={index} style={styles.photoCard}>
-                            <img
-                              src={buildImageUrl(photo)}
-                              alt={`Vehicle ${index + 1}`}
-                              style={styles.photoImage}
-                              onError={(e) => {
-                                e.currentTarget.src = "/assets/placeholder.png";
-                              }}
-                            />
-                            <button
-                              type="button"
-                              style={styles.deletePhotoButton}
-                              onClick={() => {
-                                if (
-                                  window.confirm(
-                                    "Delete this photo from server? This cannot be undone.",
-                                  )
-                                ) {
-                                  handleDeletePhoto(photo);
-                                }
-                              }}
-                            >
-                              <X size={16} />
-                            </button>
-                          </div>
-                        );
-                      },
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Submit Button */}
-            <div style={styles.submitSection}>
-              <button
-                type="submit"
-                style={{
-                  ...styles.submitButton,
-                  ...(isSaving ? styles.submitButtonDisabled : {}),
-                }}
-                disabled={isSaving}
-              >
-                <Save size={20} style={styles.submitButtonIcon} />
-                {isSaving ? "Updating Car..." : "Update Car Details"}
-              </button>
-            </div>
-          </form>
-        </div>
+          <div style={styles.actions}>
+            <button type="submit" disabled={isSaving} style={styles.saveBtn}>
+              {isSaving ? "Saving Changes..." : "Update Vehicle"}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
 };
 
-// Add CSS animation for spinners
-const styleSheet = document.styleSheets[0];
-if (styleSheet && !document.querySelector("#spinner-keyframes")) {
-  const keyframes = `
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-  `;
-  styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
-  const style = document.createElement("style");
-  style.id = "spinner-keyframes";
-  document.head.appendChild(style);
-}
-
 const styles = {
   container: {
     display: "flex",
     minHeight: "100vh",
-    backgroundColor: "#FFFFFF",
-    fontFamily: "'Inter', sans-serif",
+    backgroundColor: "#f9fafb",
   },
-
-  // Loading Styles
-  loadingContainer: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    height: "100vh",
-    backgroundColor: "#FFFFFF",
-  },
-  loadingSpinner: {
-    border: "4px solid #D4D4D4",
-    borderLeftColor: "#2B2B2B",
-    borderRadius: "50%",
-    width: "48px",
-    height: "48px",
-    animation: "spin 1s linear infinite",
-    marginBottom: "20px",
-  },
-  loadingText: {
-    fontSize: "1rem",
-    color: "#B3B3B3",
-    fontWeight: "500",
-  },
-
-  // Sidebar Styles
-  sidebar: {
-    width: "280px",
-    backgroundColor: "#2B2B2B",
-    color: "#FFFFFF",
-    boxShadow: "0 10px 25px -3px rgba(0, 0, 0, 0.08)",
-    position: "sticky",
-    top: 0,
-    height: "100vh",
-    /* flat dark background to match palette */
-    zIndex: 10,
-  },
-  sidebarHeader: {
-    padding: "24px",
-    borderBottom: "1px solid #B3B3B3",
-  },
-  logoImage: {
-    width: "12.5rem",
-    height: "7.5rem",
-    color: "#D4D4D4",
-  },
-  sidebarSubtitle: {
-    fontSize: "0.875rem",
-    color: "#D4D4D4",
-    margin: "8px 0 0 0",
-  },
-  nav: {
-    padding: "16px 0",
-  },
-  menuItem: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: "12px 24px",
-    cursor: "pointer",
-    color: "#D4D4D4",
-    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-    ":hover": {
-      backgroundColor: "#B3B3B3",
-    },
-  },
-  menuItemActive: {
-    backgroundColor: "#B3B3B3",
-    borderRight: "3px solid #D4D4D4",
-    color: "#2B2B2B",
-  },
-  menuItemContent: {
-    display: "flex",
-    alignItems: "center",
-  },
-  menuIcon: {
-    marginRight: "12px",
-    color: "#D4D4D4",
-  },
-  menuText: {
-    fontSize: "0.9375rem",
-    fontWeight: "500",
-  },
-  submenu: {
-    backgroundColor: "#2B2B2B",
-  },
-  submenuItem: {
-    padding: "10px 24px 10px 64px",
-    cursor: "pointer",
-    color: "#D4D4D4",
-    fontSize: "0.875rem",
-    transition: "all 0.2s ease",
-    ":hover": {
-      backgroundColor: "#B3B3B3",
-    },
-  },
-  submenuItemActive: {
-    backgroundColor: "#D4D4D4",
-    color: "#2B2B2B",
-  },
-  logoutButton: {
-    display: "flex",
-    alignItems: "center",
-    padding: "12px 24px",
-    cursor: "pointer",
-    color: "#f87171",
-    marginTop: "16px",
-    borderTop: "1px solid #B3B3B3",
-    transition: "all 0.2s ease",
-    ":hover": {
-      backgroundColor: "#7f1d1d20",
-    },
-  },
-
-  // Main Content Styles
-  mainContent: {
-    flex: 1,
-    backgroundColor: "#FFFFFF",
-    overflow: "auto",
-  },
-  contentWrapper: {
-    maxWidth: "1200px",
-    margin: "0 auto",
-    padding: "32px",
-  },
-  pageHeader: {
-    marginBottom: "32px",
-    textAlign: "center",
-  },
-  pageTitle: {
-    fontSize: "2.5rem",
-    fontWeight: "700",
-    color: "#2B2B2B",
-    margin: "0 0 8px 0",
-    letterSpacing: "-0.025em",
-  },
-  pageSubtitle: {
-    fontSize: "1.125rem",
-    color: "#B3B3B3",
-    margin: 0,
-  },
-
-  // Form Styles
+  main: { flex: 1, padding: "40px" },
+  header: { marginBottom: "32px" },
   form: {
     display: "flex",
     flexDirection: "column",
-    gap: "32px",
+    gap: "24px",
+    maxWidth: "1000px",
   },
   section: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: "16px",
-    padding: "32px",
-    boxShadow:
-      "0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04)",
-    border: "1px solid #D4D4D4",
+    backgroundColor: "#fff",
+    padding: "24px",
+    borderRadius: "12px",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
   },
   sectionHeader: {
     display: "flex",
     alignItems: "center",
-    gap: "12px",
-    marginBottom: "24px",
-    paddingBottom: "16px",
-    borderBottom: "2px solid #D4D4D4",
+    gap: "10px",
+    marginBottom: "20px",
+    borderBottom: "1px solid #eee",
+    paddingBottom: "10px",
   },
-  sectionIcon: {
-    color: "#D4D4D4",
-    flexShrink: 0,
-  },
-  sectionTitle: {
-    fontSize: "1.5rem",
-    fontWeight: "600",
-    color: "#2B2B2B",
-    margin: 0,
-  },
-
-  // Input Styles
-  inputGrid: {
+  grid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-    gap: "24px",
+    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+    gap: "20px",
   },
-  inputGroup: {
+  field: { display: "flex", flexDirection: "column", gap: "6px" },
+  categoryContainer: {
+    marginBottom: "24px",
+    padding: "16px",
+    backgroundColor: "#f3f4f6",
+    borderRadius: "8px",
+  },
+  categoryHeader: {
     display: "flex",
-    flexDirection: "column",
-    gap: "8px",
-  },
-  label: {
-    fontSize: "0.875rem",
-    fontWeight: "600",
-    color: "#2B2B2B",
-    letterSpacing: "0.025em",
-  },
-  input: {
-    padding: "12px 16px",
-    border: "2px solid #D4D4D4",
-    borderRadius: "12px",
-    fontSize: "0.875rem",
-    transition: "all 0.2s ease",
-    backgroundColor: "#FFFFFF",
-    fontFamily: "inherit",
-  },
-  select: {
-    padding: "12px 16px",
-    border: "2px solid #D4D4D4",
-    borderRadius: "12px",
-    fontSize: "0.875rem",
-    backgroundColor: "#FFFFFF",
-    cursor: "pointer",
-    transition: "all 0.2s ease",
-    fontFamily: "inherit",
-  },
-
-  // Photo Section Styles
-  photoSection: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "24px",
-  },
-  uploadArea: {
-    display: "flex",
-    flexDirection: "column",
+    justifyContent: "space-between",
     alignItems: "center",
-    justifyContent: "center",
-    padding: "48px 24px",
-    border: "2px dashed #D4D4D4",
-    borderRadius: "16px",
-    backgroundColor: "#FFFFFF",
-    textAlign: "center",
-    transition: "all 0.2s ease",
+    marginBottom: "12px",
   },
-  uploadIcon: {
-    color: "#B3B3B3",
-    marginBottom: "16px",
-  },
-  uploadTitle: {
-    fontSize: "1.125rem",
-    fontWeight: "600",
-    color: "#2B2B2B",
-    margin: "0 0 8px 0",
-  },
-  uploadSubtitle: {
-    fontSize: "0.875rem",
-    color: "#B3B3B3",
-    margin: "0 0 8px 0",
-  },
-  uploadNote: {
-    fontSize: "0.75rem",
-    color: "#f59e0b",
-    margin: "0 0 24px 0",
-    fontWeight: "600",
-  },
-  fileInput: {
-    display: "none",
-  },
-  uploadButton: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "8px",
-    padding: "12px 24px",
-    backgroundColor: "#2B2B2B",
-    color: "#FFFFFF",
-    border: "none",
-    borderRadius: "12px",
-    fontSize: "0.875rem",
-    fontWeight: "600",
-    cursor: "pointer",
-    transition: "all 0.2s ease",
-    textDecoration: "none",
-  },
+  categoryTitle: { fontSize: "14px", fontWeight: "600", color: "#374151" },
   photoGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
-    gap: "16px",
+    gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
+    gap: "12px",
   },
   photoCard: {
     position: "relative",
-    borderRadius: "12px",
-    overflow: "hidden",
-    backgroundColor: "#D4D4D4",
     aspectRatio: "1",
+    borderRadius: "6px",
+    overflow: "hidden",
+    border: "1px solid #ddd",
   },
-  photoImage: {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-  },
-  deletePhotoButton: {
+  photoImage: { width: "100%", height: "100%", objectFit: "cover" },
+  deleteBtn: {
     position: "absolute",
-    top: "8px",
-    right: "8px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: "28px",
-    height: "28px",
+    top: "4px",
+    right: "4px",
     backgroundColor: "rgba(239, 68, 68, 0.9)",
-    color: "#ffffff",
+    color: "#fff",
     border: "none",
     borderRadius: "50%",
+    padding: "4px",
     cursor: "pointer",
-    transition: "all 0.2s ease",
   },
-  uploadingPlaceholder: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100%",
-    height: "100%",
-    backgroundColor: "#D4D4D4",
-    color: "#B3B3B3",
-  },
-  uploadingSpinner: {
-    width: "24px",
-    height: "24px",
-    border: "3px solid #D4D4D4",
-    borderTop: "3px solid #2B2B2B",
-    borderRadius: "50%",
-    animation: "spin 1s linear infinite",
-    marginBottom: "8px",
-  },
-  uploadingText: {
-    fontSize: "0.75rem",
-    fontWeight: "500",
-  },
-
-  // Submit Section Styles
-  submitSection: {
-    display: "flex",
-    justifyContent: "center",
-    paddingTop: "16px",
-  },
-  submitButton: {
+  uploadBtnSmall: {
     display: "flex",
     alignItems: "center",
-    gap: "12px",
-    padding: "16px 32px",
+    gap: "6px",
+    fontSize: "12px",
+    backgroundColor: "#2563eb",
+    color: "#fff",
+    padding: "6px 12px",
+    borderRadius: "6px",
+    cursor: "pointer",
+  },
+  emptyPhoto: {
+    fontSize: "12px",
+    color: "#9ca3af",
+    gridColumn: "1/-1",
+    textAlign: "center",
+    padding: "20px",
+  },
+  saveBtn: {
     backgroundColor: "#10b981",
-    color: "#ffffff",
+    color: "#fff",
+    padding: "16px 32px",
+    borderRadius: "8px",
     border: "none",
-    borderRadius: "12px",
-    fontSize: "1rem",
     fontWeight: "600",
     cursor: "pointer",
-    transition: "all 0.2s ease",
-    minWidth: "200px",
+    alignSelf: "flex-end",
+  },
+  loading: {
+    display: "flex",
+    height: "100vh",
+    alignItems: "center",
     justifyContent: "center",
-  },
-  submitButtonDisabled: {
-    backgroundColor: "#B3B3B3",
-    cursor: "not-allowed",
-  },
-  submitButtonIcon: {
-    flexShrink: 0,
+    fontSize: "18px",
   },
 };
 

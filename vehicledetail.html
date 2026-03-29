@@ -660,9 +660,28 @@
 
         function normalizePhotos(photosField) {
           if (!photosField) return [];
+
+          // Handle new categorized object structure
+          if (typeof photosField === "object" && !Array.isArray(photosField)) {
+            const arr = [];
+            if (photosField.cover) arr.push(photosField.cover);
+            if (Array.isArray(photosField.interior))
+              arr.push(...photosField.interior);
+            if (Array.isArray(photosField.exterior))
+              arr.push(...photosField.exterior);
+            return arr.filter(Boolean);
+          }
+
           if (Array.isArray(photosField)) return photosField;
+
           if (typeof photosField === "string") {
             const raw = photosField.trim();
+            if (raw.startsWith("{")) {
+              try {
+                const parsed = JSON.parse(raw);
+                return normalizePhotos(parsed);
+              } catch (e) {}
+            }
             if (raw.startsWith("[")) {
               try {
                 const parsed = JSON.parse(raw);

@@ -26,8 +26,12 @@ const AddCarForm = () => {
     buyingPrice: "",
     quotingPrice: "",
     sellingPrice: "",
-    photos: [],
+    cover: null,
+    interior: [],
+    exterior: [],
     status: "Available",
+    rcSubmittedDate: "",
+    rcReceivedDate: "",
   });
   const [activeMenu, setActiveMenu] = useState("Add Car Data");
 
@@ -40,25 +44,39 @@ const AddCarForm = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = (e, category) => {
     const files = Array.from(e.target.files || []);
-    if (files.length > 12) {
-      setError(
-        "You can upload a maximum of 12 photos. Extra files were ignored.",
-      );
+
+    // Limits
+    if (category === "cover" && files.length > 1) {
+      setError("Only 1 cover photo allowed.");
+      return;
     }
-    const limitedFiles = files.slice(0, 12);
+    if (category === "interior" && files.length > 6) {
+      setError("Maximum 6 interior photos allowed.");
+    }
+    if (category === "exterior" && files.length > 6) {
+      setError("Maximum 6 exterior photos allowed.");
+    }
+
+    const limitedFiles =
+      category === "cover" ? files.slice(0, 1) : files.slice(0, 6);
 
     const compressAll = async (fileList) => {
       try {
         const compressed = await Promise.all(
           fileList.map((f) => compressImageFile(f, 1200, 0.8)),
         );
-        setFormData((prev) => ({ ...prev, photos: compressed }));
+        setFormData((prev) => ({
+          ...prev,
+          [category]: category === "cover" ? compressed[0] : compressed,
+        }));
       } catch (err) {
         console.error("Image compression failed:", err);
-        // Fallback: use original files
-        setFormData((prev) => ({ ...prev, photos: limitedFiles }));
+        setFormData((prev) => ({
+          ...prev,
+          [category]: category === "cover" ? limitedFiles[0] : limitedFiles,
+        }));
       }
     };
     compressAll(limitedFiles);
@@ -78,7 +96,6 @@ const AddCarForm = () => {
         canvas.toBlob(
           (blob) => {
             if (!blob) return resolve(file);
-            // Preserve original filename when possible
             const newFile = new File([blob], file.name, { type: blob.type });
             resolve(newFile);
           },
@@ -87,7 +104,6 @@ const AddCarForm = () => {
         );
       };
       img.onerror = () => resolve(file);
-      // Support blob URL or file object
       const reader = new FileReader();
       reader.onload = (ev) => {
         img.src = ev.target.result;
@@ -110,8 +126,12 @@ const AddCarForm = () => {
     try {
       const formPayload = new FormData();
       Object.entries(formData).forEach(([key, value]) => {
-        if (key === "photos") {
-          value.forEach((file) => formPayload.append("photos", file));
+        if (key === "cover") {
+          if (value) formPayload.append("cover", value);
+        } else if (key === "interior" || key === "exterior") {
+          if (Array.isArray(value)) {
+            value.forEach((file) => formPayload.append(key, file));
+          }
         } else {
           formPayload.append(key, value);
         }
@@ -139,6 +159,35 @@ const AddCarForm = () => {
   };
 
   const handleCancel = () => navigate("/admin");
+
+  const renderPhotoPreview = (files) => {
+    if (!files) return null;
+    const fileArray = Array.isArray(files) ? files : [files];
+    return (
+      <div
+        style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 10 }}
+      >
+        {fileArray.map((file, idx) => (
+          <div
+            key={idx}
+            style={{
+              width: 100,
+              height: 100,
+              overflow: "hidden",
+              border: "1px solid #ddd",
+              borderRadius: 4,
+            }}
+          >
+            <img
+              src={typeof file === "string" ? file : URL.createObjectURL(file)}
+              alt={`Preview ${idx + 1}`}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div style={styles.container}>
@@ -412,48 +461,68 @@ const AddCarForm = () => {
                     </select>
                   </div>
 
-                  <div className="form-group">
+                  <div className="form-group col-2">
+                    <label className="form-label">RC Submitted Date</label>
+                    <input
+                      type="date"
+                      name="rcSubmittedDate"
+                      className="form-control"
+                      value={formData.rcSubmittedDate}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  <div className="form-group col-2">
+                    <label className="form-label">RC Received Date</label>
+                    <input
+                      type="date"
+                      name="rcReceivedDate"
+                      className="form-control"
+                      value={formData.rcReceivedDate}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  {/* Categorized Photo Uploads */}
+                  <div className="form-group col-3">
                     <label className="form-label required">
-                      Photos (10-12)
+                      Cover Photo (1 Max)
                     </label>
                     <input
                       type="file"
-                      name="photos"
                       accept="image/*"
-                      multiple
-                      onChange={handleFileChange}
+                      onChange={(e) => handleFileChange(e, "cover")}
                       required
                     />
-                    {formData.photos && formData.photos.length > 0 && (
-                      <div
-                        style={{ display: "flex", flexWrap: "wrap", gap: 10 }}
-                      >
-                        {Array.from(formData.photos).map((file, idx) => (
-                          <div
-                            key={idx}
-                            style={{
-                              width: 100,
-                              height: 100,
-                              overflow: "hidden",
-                            }}
-                          >
-                            <img
-                              src={
-                                typeof file === "string"
-                                  ? file
-                                  : URL.createObjectURL(file)
-                              }
-                              alt={`Preview ${idx + 1}`}
-                              style={{
-                                width: "100%",
-                                height: "100%",
-                                objectFit: "cover",
-                              }}
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                    {renderPhotoPreview(formData.cover)}
+                  </div>
+
+                  <div className="form-group col-3">
+                    <label className="form-label required">
+                      Interior Photos (4-5)
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={(e) => handleFileChange(e, "interior")}
+                      required
+                    />
+                    {renderPhotoPreview(formData.interior)}
+                  </div>
+
+                  <div className="form-group col-3">
+                    <label className="form-label required">
+                      Exterior Photos (3-4)
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={(e) => handleFileChange(e, "exterior")}
+                      required
+                    />
+                    {renderPhotoPreview(formData.exterior)}
                   </div>
                 </div>
 
@@ -462,6 +531,7 @@ const AddCarForm = () => {
                     display: "flex",
                     justifyContent: "flex-start",
                     gap: "10px",
+                    marginTop: "20px",
                   }}
                 >
                   <button

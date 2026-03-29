@@ -26,6 +26,9 @@ const Rc = sequelize.define(
     rtoFeesPaid: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
     returnedToDealer: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
     details: { type: DataTypes.JSON, allowNull: true },
+    submittedDate: { type: DataTypes.DATEONLY, allowNull: true },
+    receivedDate: { type: DataTypes.DATEONLY, allowNull: true },
+    updatedDate: { type: DataTypes.DATE, allowNull: true },
     createdAt: {
       type: DataTypes.DATE,
       defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),

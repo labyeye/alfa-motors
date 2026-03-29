@@ -28,6 +28,8 @@ const RcEntryPage = () => {
       rcTransferred: false,
       rtoFeesPaid: false,
     },
+    submittedDate: "",
+    receivedDate: "",
   });
   const { user } = useContext(AuthContext);
   const [activeMenu, setActiveMenu] = useState("RC Entry");
@@ -90,6 +92,8 @@ const RcEntryPage = () => {
             rcTransferred: false,
             rtoFeesPaid: false,
           },
+          submittedDate: raw.submittedDate || "",
+          receivedDate: raw.receivedDate || "",
           pdfUrl: details.pdfUrl || raw.pdfUrl || null,
         },
         raw,
@@ -154,6 +158,8 @@ const RcEntryPage = () => {
             rtoFeesPaid: false,
           },
         },
+        submittedDate: formData.submittedDate || null,
+        receivedDate: formData.receivedDate || null,
         createdBy: user && user.id ? user.id : null,
       };
 
@@ -444,6 +450,39 @@ const RcEntryPage = () => {
                   value={formData.remarks}
                   onChange={handleChange}
                   style={{ ...styles.input, minHeight: "80px" }}
+                />
+              </div>
+            </div>
+
+            {/* Dates */}
+            <div style={styles.formSection}>
+              <h3 style={styles.sectionTitle}>Important Dates</h3>
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>Submitted Date</label>
+                <input
+                  type="date"
+                  name="submittedDate"
+                  value={
+                    formData.submittedDate
+                      ? formData.submittedDate.split("T")[0]
+                      : ""
+                  }
+                  onChange={handleChange}
+                  style={styles.input}
+                />
+              </div>
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>Received Date</label>
+                <input
+                  type="date"
+                  name="receivedDate"
+                  value={
+                    formData.receivedDate
+                      ? formData.receivedDate.split("T")[0]
+                      : ""
+                  }
+                  onChange={handleChange}
+                  style={styles.input}
                 />
               </div>
             </div>
