@@ -15,11 +15,7 @@ import { formatIndian } from "../utils/formatIndian";
 import AuthContext from "../context/AuthContext";
 import Sidebar from "./Sidebar";
 
-const API_BASE =
-  window.API_BASE ||
-  (window.location.hostname === "localhost"
-    ? "https://alfa-motors-9bk6.vercel.app"
-    : "https://alfa-motors-9bk6.vercel.app");
+const API_BASE = "https://alfa-motors-9bk6.vercel.app";
 
 const SellRequests = () => {
   const { user } = useContext(AuthContext);
@@ -117,6 +113,7 @@ const SellRequests = () => {
   const buildImageUrl = (imagePath) => {
     if (!imagePath) return "/assets/placeholder.png";
     if (imagePath.startsWith("http")) return imagePath;
+    if (imagePath.startsWith("data:")) return imagePath;
     return `${API_BASE}/uploads/${imagePath}`;
   };
 

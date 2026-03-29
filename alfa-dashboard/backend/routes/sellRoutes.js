@@ -15,19 +15,35 @@ const { formatObjectPrices } = require('../utils/formatIndian');
 // Helper to map SQL record to Mongo-style object for frontend compatibility
 function mapToFrontend(request) {
   const plain = request.get ? request.get({ plain: true }) : request;
-  const details = plain.vehicleDetails || {};
+  let details = plain.vehicleDetails || {};
   
+  if (typeof details === 'string') {
+    try {
+      details = JSON.parse(details);
+    } catch (e) {
+      console.error('[SellRequest] Failed to parse vehicleDetails JSON:', e.message);
+      details = {};
+    }
+  }
+
+  // Fallbacks for direct properties if nested details are missing
+  const brand = details.brand || '';
+  const model = details.model || '';
+  const year = details.year || '';
+  const expectedPrice = details.expectedPrice || details.price || 0;
+  const images = details.images || [];
+
   return formatObjectPrices({
     _id: plain.id,
-    brand: details.brand || '',
-    model: details.model || '',
-    year: details.year || '',
-    expectedPrice: details.expectedPrice || 0,
-    images: details.images || [],
+    brand,
+    model: model,
+    year: year,
+    expectedPrice,
+    images: Array.isArray(images) ? images : [],
     sellerName: plain.customerName || '',
-    sellerPhone: details.sellerPhone || '',
+    sellerPhone: details.sellerPhone || plain.contact || '',
     sellerEmail: details.sellerEmail || '',
-    status: plain.status || 'Pending',
+    status: (plain.status || 'Pending').charAt(0).toUpperCase() + (plain.status || 'Pending').slice(1).toLowerCase(),
     createdAt: plain.createdAt
   });
 }

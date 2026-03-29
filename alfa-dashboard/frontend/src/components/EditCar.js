@@ -1,13 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import {
-  Car,
-  TrendingUp,
-  Upload,
-  X,
-  Camera,
-} from "lucide-react";
+import { Car, TrendingUp, Upload, X, Camera } from "lucide-react";
 import Sidebar from "./Sidebar";
 
 const API_BASE = (function () {
