@@ -32,11 +32,6 @@ const ListCar = () => {
     const fetchCars = async () => {
       try {
         const token = localStorage.getItem("token");
-        const API_BASE =
-          window.API_BASE ||
-          (window.location.hostname === "localhost"
-            ? "https://alfa-motors-9bk6.vercel.app"
-            : "https://alfa-motors-9bk6.vercel.app");
         const response = await axios.get(`${API_BASE}/api/cars`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -227,20 +222,26 @@ const ListCar = () => {
                     <tr key={getId(car) || Math.random()} style={styles.tr}>
                       <td style={styles.td}>
                         {(() => {
-                          let photoList = [];
+                          let photoList = car.photos || [];
                           try {
-                            photoList =
-                              typeof car.photos === "string"
-                                ? JSON.parse(car.photos)
-                                : car.photos || [];
+                            if (typeof photoList === "string") {
+                              photoList = JSON.parse(photoList);
+                            }
                           } catch (e) {
+                            console.error("Error parsing photos JSON:", e);
                             photoList = [];
                           }
 
-                          const firstPhoto =
-                            Array.isArray(photoList) && photoList.length > 0
-                              ? photoList[0]
-                              : null;
+                          let firstPhoto = null;
+                          if (
+                            photoList &&
+                            typeof photoList === "object" &&
+                            !Array.isArray(photoList)
+                          ) {
+                            firstPhoto = photoList.cover || null;
+                          } else if (Array.isArray(photoList)) {
+                            firstPhoto = photoList[0] || null;
+                          }
 
                           return firstPhoto ? (
                             <img

@@ -240,18 +240,27 @@ router.put(
       const car = await Car.findByPk(req.params.id);
       if (!car) return res.status(404).json({ message: "Car not found" });
 
-      // Initialize current photos
+      // Initialize current photos with existing data
       let photoData = {
         cover: null,
         interior: [],
         exterior: [],
       };
 
-      if (car.photos && typeof car.photos === "object" && !Array.isArray(car.photos)) {
-        photoData = Object.assign(photoData, car.photos);
-      } else if (Array.isArray(car.photos)) {
-        photoData.cover = car.photos[0] || null;
-        photoData.exterior = car.photos.slice(1);
+      let existing = car.photos;
+      if (typeof existing === "string") {
+        try {
+          existing = JSON.parse(existing);
+        } catch (e) {
+          existing = null;
+        }
+      }
+
+      if (existing && typeof existing === "object" && !Array.isArray(existing)) {
+        photoData = Object.assign(photoData, existing);
+      } else if (Array.isArray(existing)) {
+        photoData.cover = existing[0] || null;
+        photoData.exterior = existing.slice(1);
       }
 
       if (req.files) {
@@ -299,6 +308,13 @@ router.delete("/:id/photo", protect, async (req, res) => {
     if (!car) return res.status(404).json({ message: "Car not found" });
 
     let currentPhotos = car.photos;
+    if (typeof currentPhotos === "string") {
+      try {
+        currentPhotos = JSON.parse(currentPhotos);
+      } catch (e) {
+        // stay as is
+      }
+    }
     let updated = false;
 
     if (currentPhotos && typeof currentPhotos === "object" && !Array.isArray(currentPhotos)) {

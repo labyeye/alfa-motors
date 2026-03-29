@@ -50,25 +50,35 @@ const EditCar = () => {
 
         const car = response.data.data || response.data;
 
+        let rawPhotos = car.photos || [];
+        if (typeof rawPhotos === "string") {
+          try {
+            rawPhotos = JSON.parse(rawPhotos);
+          } catch (e) {
+            console.error("Error parsing photos JSON:", e);
+            rawPhotos = [];
+          }
+        }
+
         let cover = null;
         let interior = [];
         let exterior = [];
 
         if (
-          car.photos &&
-          typeof car.photos === "object" &&
-          !Array.isArray(car.photos)
+          rawPhotos &&
+          typeof rawPhotos === "object" &&
+          !Array.isArray(rawPhotos)
         ) {
-          cover = car.photos.cover || null;
-          interior = Array.isArray(car.photos.interior)
-            ? car.photos.interior
+          cover = rawPhotos.cover || null;
+          interior = Array.isArray(rawPhotos.interior)
+            ? rawPhotos.interior
             : [];
-          exterior = Array.isArray(car.photos.exterior)
-            ? car.photos.exterior
+          exterior = Array.isArray(rawPhotos.exterior)
+            ? rawPhotos.exterior
             : [];
-        } else if (Array.isArray(car.photos)) {
-          cover = car.photos[0] || null;
-          exterior = car.photos.slice(1);
+        } else if (Array.isArray(rawPhotos)) {
+          cover = rawPhotos[0] || null;
+          exterior = rawPhotos.slice(1);
         }
 
         setCarData({
