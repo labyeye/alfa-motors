@@ -70,8 +70,6 @@ const GalleryManagement = () => {
     }
   };
 
-
-
   // Edit handlers
   const startEdit = (item) => {
     setEditingId(getId(item));

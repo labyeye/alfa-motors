@@ -10,7 +10,7 @@ import {
   PenTool,
   CarFront,
 } from "lucide-react";
-import { 
+import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
@@ -127,8 +127,6 @@ const AdminPage = () => {
       fetchDashboardData();
     }
   }, [activeMenu, fetchDashboardData]);
-
-
 
   const DashboardCards = () => (
     <div style={styles.cardsGrid} className="dashboard-cards-grid">
