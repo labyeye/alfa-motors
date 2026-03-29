@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Camera, Edit, Plus, ExternalLink } from "lucide-react";
+import { Camera, ExternalLink } from "lucide-react";
 import Sidebar from "../components/Sidebar";
 
 const API_BASE =
@@ -11,10 +10,7 @@ const API_BASE =
     : "https://alfa-motors-9bk6.vercel.app");
 
 const GalleryManagement = () => {
-  const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = useState("Gallery Management");
-  const [soldCars, setSoldCars] = useState([]);
-  const [uploadingIds, setUploadingIds] = useState([]);
   const [, setAllCars] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -67,7 +63,6 @@ const GalleryManagement = () => {
       console.error("Error fetching data:", error);
       console.error("Error details:", error.response?.data);
       // Set empty arrays on error to prevent undefined state
-      setSoldCars([]);
       setGalleryItems([]);
       setAllCars([]);
     } finally {
@@ -75,100 +70,7 @@ const GalleryManagement = () => {
     }
   };
 
-  const handleAddSoldPhotos = async (carId, files) => {
-    if (!files || files.length === 0) return;
 
-    setUploadingIds((prev) => [...prev, carId]);
-    const fileArray = Array.from(files);
-    const totalFiles = fileArray.length;
-    let successCount = 0;
-    let failCount = 0;
-
-    // Show initial progress
-    alert(`Starting upload of ${totalFiles} photo(s) for this car...`);
-
-    // Upload files one by one
-    for (let i = 0; i < fileArray.length; i++) {
-      const file = fileArray[i];
-      const fd = new FormData();
-      fd.append("photo", file);
-      fd.append("carId", carId);
-
-      try {
-        // Try the new gallery endpoint first
-        const res = await axios.post(`${API_BASE}/api/gallery`, fd, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "multipart/form-data",
-          },
-        });
-
-        const galleryItem = res.data?.data;
-        // Also update soldCars state by adding the filename to sold.customerPhotos for immediate UI reflection
-        if (galleryItem && galleryItem.filename) {
-          setSoldCars((prev) =>
-            prev.map((c) =>
-              getId(c) === carId
-                ? {
-                    ...c,
-                    sold: {
-                      ...(c.sold || {}),
-                      customerPhotos: [
-                        ...((c.sold && c.sold.customerPhotos) || []),
-                        galleryItem.filename,
-                      ],
-                    },
-                  }
-                : c,
-            ),
-          );
-          setGalleryItems((prev) => [galleryItem, ...prev]);
-        }
-        successCount++;
-      } catch (err) {
-        console.warn(
-          "Gallery upload failed, trying fallback:",
-          err?.response?.status,
-        );
-        try {
-          // Fallback to existing endpoint for backward compatibility
-          const res2 = await axios.post(
-            `${API_BASE}/api/cars/${carId}/sold-photo`,
-            fd,
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "multipart/form-data",
-              },
-            },
-          );
-          const updatedSold = res2.data?.data?.sold;
-          setSoldCars((prev) =>
-            prev.map((c) =>
-              getId(c) === carId ? { ...c, sold: updatedSold } : c,
-            ),
-          );
-          successCount++;
-        } catch (err2) {
-          console.error(`Upload failed for file ${i + 1}:`, err2);
-          failCount++;
-        }
-      }
-    }
-
-    // Show final result
-    if (successCount === totalFiles) {
-      alert(`All ${totalFiles} photo(s) uploaded successfully for this car!`);
-    } else if (successCount > 0) {
-      alert(
-        `${successCount} of ${totalFiles} photo(s) uploaded successfully. ${failCount} failed.`,
-      );
-    } else {
-      alert(`Failed to upload all ${totalFiles} photo(s). Please try again.`);
-    }
-
-    setUploadingIds((prev) => prev.filter((id) => id !== carId));
-  };
 
   // Edit handlers
   const startEdit = (item) => {
@@ -195,17 +97,6 @@ const GalleryManagement = () => {
       const updated = res.data.data;
       setGalleryItems((prev) =>
         prev.map((it) => (getId(it) === id ? updated : it)),
-      );
-      // Also update soldCars testimonial if present
-      setSoldCars((prev) =>
-        prev.map((c) =>
-          getId(c) === updated.car
-            ? {
-                ...c,
-                sold: { ...(c.sold || {}), testimonial: updated.testimonial },
-              }
-            : c,
-        ),
       );
       cancelEdit();
       alert("Gallery item updated");

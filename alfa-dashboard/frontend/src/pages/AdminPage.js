@@ -10,8 +10,7 @@ import {
   PenTool,
   CarFront,
 } from "lucide-react";
-import { Bar, Pie } from "react-chartjs-2";
-import {
+import { 
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
@@ -129,77 +128,7 @@ const AdminPage = () => {
     }
   }, [activeMenu, fetchDashboardData]);
 
-  // Chart data configuration
-  const monthlyChartData = {
-    labels: dashboardData.monthlyData?.map((item) => item.month) || [],
-    datasets: [
-      {
-        label: "Buy Letters",
-        data: dashboardData.monthlyData?.map((item) => item.buy) || [],
-        backgroundColor: "#B3B3B3",
-      },
-      {
-        label: "Sell Letters",
-        data: dashboardData.monthlyData?.map((item) => item.sell) || [],
-        backgroundColor: "#D4D4D4",
-      },
-    ],
-  };
 
-  const profitChartData = {
-    labels: dashboardData.monthlyData?.map((item) => item.month) || [],
-    datasets: [
-      {
-        label: "Profit",
-        data: dashboardData.monthlyData?.map((item) => item.profit) || [],
-        backgroundColor:
-          dashboardData.monthlyData?.map((item) =>
-            item.profit >= 0 ? "#B3B3B3" : "#2B2B2B",
-          ) || [],
-      },
-    ],
-  };
-
-  const transactionTypeData = {
-    labels: ["Buy", "Sell", "Service"],
-    datasets: [
-      {
-        data: [
-          dashboardData.totalBuyLetters || 0,
-          dashboardData.totalSellLetters || 0,
-          dashboardData.recentTransactions?.service?.length || 0,
-        ],
-        backgroundColor: ["#B3B3B3", "#D4D4D4", "#FFFFFF"],
-        borderColor: ["#2B2B2B", "#2B2B2B", "#2B2B2B"],
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const chartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top",
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-      },
-    },
-    maintainAspectRatio: false,
-  };
-
-  const pieOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "right",
-      },
-    },
-    maintainAspectRatio: false,
-  };
 
   const DashboardCards = () => (
     <div style={styles.cardsGrid} className="dashboard-cards-grid">
