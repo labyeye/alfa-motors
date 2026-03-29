@@ -3,22 +3,23 @@
   width: 100%;
   height: auto;
   overflow: hidden;
+  background: white;
 }
 
 :root {
-  --primary-color: #a32919;
-  --secondary-color: #100f0f;
+  --primary-color: #0d1b2a;
+  --secondary-color: #c0c0c0;
   --text-color: #ffffff;
   --light-gray: #a9a9a9;
   --dark-gray: #464646;
 }
 
 .quote-form-container {
-  width: 700px;
+  width: 550px;
   position: relative;
   z-index: 1;
   margin: auto;
-  background: rgba(255, 255, 255, 0.05);
+  background: white;
   backdrop-filter: blur(10px);
   border-radius: 15px;
   padding: 30px;
@@ -33,7 +34,7 @@
 }
 
 .quote-form h3 {
-  color: white;
+  color: var(--primary-color);
   margin: 0 0 20px 0;
   font-size: 1.5rem;
   position: relative;
@@ -41,13 +42,13 @@
 }
 
 .quote-form h3::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
   width: 50px;
   height: 3px;
-  background: linear-gradient(90deg, var(--primary-color), #ff6b4a);
+  background: var(--primary-color);
 }
 
 .form-group {
@@ -57,7 +58,7 @@
 }
 
 .form-group label {
-  color: white;
+  color: var(--primary-color);
   font-size: 0.95rem;
 }
 
@@ -65,16 +66,15 @@
   color: var(--primary-color);
 }
 
-
 .form-group input,
 .form-group select,
 .form-group textarea {
   width: 90%;
   padding: 12px 15px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
-  color: white;
+  color: var(--primary-color);
   font-size: 1rem;
   transition: all 0.3s;
 }
@@ -94,7 +94,7 @@
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(0, 0, 0, 0.6);
 }
 
 .form-group select option {
@@ -117,7 +117,7 @@
 }
 
 .submit-btn {
-  background: linear-gradient(90deg, var(--primary-color), #ff6b4a);
+  background: var(--primary-color);
   color: white;
   border: none;
   border-radius: 30px;
@@ -143,7 +143,7 @@
 
 .quote-section {
   padding: 80px 20px;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  background: white;
   min-height: auto;
   display: flex;
   flex-direction: row;
@@ -158,18 +158,16 @@
   max-width: 600px;
   text-align: center;
   color: white;
-  background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   border-radius: 15px;
   padding: 40px;
-  margin-bottom: 320px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .quote-content h2 {
-  font-size: 2.5rem;
+  font-size: 2rem;
   margin-bottom: 20px;
-  background: linear-gradient(90deg, var(--primary-color), #ff6b4a);
+  background: var(--primary-color);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -179,12 +177,13 @@
   font-size: 1.2rem;
   line-height: 1.6;
   margin-bottom: 40px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--primary-color);
 }
 
 .quote-steps {
   display: flex;
   justify-content: space-between;
+  flex-direction: column;
   gap: 30px;
   margin: 40px 0;
 }
@@ -199,7 +198,7 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: linear-gradient(90deg, var(--primary-color), #ff6b4a);
+  background: var(--primary-color);
   color: white;
   display: flex;
   align-items: center;
@@ -210,13 +209,13 @@
 }
 
 .step-content h4 {
-  color: white;
+  color: var(--primary-color);
   margin-bottom: 10px;
   font-size: 1.2rem;
 }
 
 .step-content p {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--primary-color);
   font-size: 0.95rem;
   line-height: 1.5;
 }
@@ -226,7 +225,7 @@
 }
 
 .cta-button {
-  background: linear-gradient(90deg, var(--primary-color), #ff6b4a);
+  background: var(--primary-color);
   color: white;
   border: none;
   border-radius: 30px;
@@ -253,7 +252,7 @@
   color: white;
   font-size: 2.5rem;
   margin-bottom: 50px;
-  background: linear-gradient(90deg, var(--primary-color), #ff6b4a);
+  background: var(--primary-color);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -441,5 +440,146 @@
   .user-avatar {
     width: 50px;
     height: 50px;
+  }
+}
+
+/* New SEO, FAQ, and Feature Sections */
+.seo-features-section {
+  padding: 80px 5%;
+  background: #f8f9fa;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+}
+
+.feature-card {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+}
+
+.feature-card i {
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  margin-bottom: 20px;
+}
+
+.feature-card h3 {
+  margin-bottom: 15px;
+  color: var(--primary-color);
+}
+
+.feature-card p {
+  color: #666;
+  line-height: 1.6;
+}
+
+/* FAQ Section */
+.faq-section {
+  padding: 100px 5%;
+  background: white;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.faq-section h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 50px;
+  color: var(--primary-color);
+}
+
+.faq-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.faq-item {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.faq-question {
+  width: 100%;
+  padding: 20px 25px;
+  background: #fdfdfd;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  text-align: left;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--primary-color);
+  transition: background 0.2s;
+}
+
+.faq-question:hover {
+  background: #f8f9fa;
+}
+
+.faq-question i {
+  transition: transform 0.3s ease;
+}
+
+.faq-item.active .faq-question i {
+  transform: rotate(180deg);
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition:
+    max-height 0.3s ease-out,
+    padding 0.3s ease;
+  background: white;
+  color: #666;
+  line-height: 1.7;
+}
+
+.faq-item.active .faq-answer {
+  max-height: 500px;
+  padding: 0 25px 25px;
+}
+
+/* SEO Content Block */
+.seo-content-block {
+  padding: 80px 5%;
+  background: #fbfbfb;
+  color: #444;
+  line-height: 1.8;
+}
+
+.seo-content-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.seo-content-block h2 {
+  color: var(--primary-color);
+  margin-bottom: 30px;
+  font-size: 2rem;
+}
+
+.seo-content-block p {
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .quote-form-container {
+    width: 95%;
+  }
+  .faq-section h2 {
+    font-size: 2rem;
   }
 }

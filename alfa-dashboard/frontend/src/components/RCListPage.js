@@ -267,25 +267,36 @@ const RcListPage = () => {
         // records with fields: `id`, `carId`, `holderName`, `registrationNumber`, `details` (JSON).
         // The legacy frontend expects top-level fields like vehicleRegNo, vehicleName, ownerName, etc.
         const normalized = (data.data || []).map((e) => {
-          const details = e.details || {};
+          let details = e.details || {};
+          if (typeof details === "string") {
+            try {
+              details = JSON.parse(details);
+            } catch (err) {
+              details = {};
+            }
+          }
           return Object.assign({}, e, {
             // preserve both id and _id (server adds _id when sending)
             vehicleRegNo:
-              e.registrationNumber || details.registrationNumber || "",
-            vehicleName: details.vehicleName || "",
-            ownerName: e.holderName || details.ownerName || "",
-            applicantName: details.applicantName || "",
-            ownerPhone: details.ownerPhone || "",
-            applicantPhone: details.applicantPhone || "",
-            work: details.work || "",
-            dealerName: details.dealerName || "",
-            rtoAgentName: details.rtoAgentName || "",
-            remarks: details.remarks || "",
-            status: details.status || {
-              rcTransferred: false,
-              rtoFeesPaid: false,
-              returnedToDealer: false,
-            },
+              e.registrationNumber ||
+              details.registrationNumber ||
+              e.vehicleRegNo ||
+              "",
+            vehicleName: e.vehicleName || details.vehicleName || "",
+            ownerName: e.holderName || details.ownerName || e.ownerName || "",
+            applicantName: e.applicantName || details.applicantName || "",
+            ownerPhone: e.ownerPhone || details.ownerPhone || "",
+            applicantPhone: e.applicantPhone || details.applicantPhone || "",
+            work: e.work || details.work || "",
+            dealerName: e.dealerName || details.dealerName || "",
+            rtoAgentName: e.rtoAgentName || details.rtoAgentName || "",
+            remarks: e.remarks || details.remarks || "",
+            status: e.status ||
+              details.status || {
+                rcTransferred: false,
+                rtoFeesPaid: false,
+                returnedToDealer: false,
+              },
           });
         });
         setRcEntries(normalized);

@@ -185,7 +185,7 @@ const BikeHistory = () => {
       <div style={styles.mainContent}>
         <div style={styles.contentPadding}>
           <div style={styles.header}>
-            <h1 style={styles.pageTitle}>Bike History</h1>
+            <h1 style={styles.pageTitle}>Car History</h1>
             <p style={styles.pageSubtitle}>
               Track all activities for a specific bike
             </p>

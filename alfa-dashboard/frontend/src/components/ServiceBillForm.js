@@ -599,7 +599,7 @@ const ServiceBillForm = () => {
                 <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <User style={styles.formIcon} />
-                    Customer Name || ग्राहक का नाम
+                    Customer Name
                   </label>
                   <input
                     type="text"
@@ -616,7 +616,7 @@ const ServiceBillForm = () => {
                 <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <User style={styles.formIcon} />
-                    Customer Phone || ग्राहक का फोन नंबर
+                    Customer Phone
                   </label>
                   <input
                     type="text"
@@ -633,7 +633,7 @@ const ServiceBillForm = () => {
                 <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <User style={styles.formIcon} />
-                    Customer Address || ग्राहक का पता
+                    Customer Address
                   </label>
                   <input
                     type="text"
@@ -650,7 +650,7 @@ const ServiceBillForm = () => {
                 <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <User style={styles.formIcon} />
-                    Customer Email || ग्राहक का ईमेल
+                    Customer Email
                   </label>
                   <input
                     type="email"
@@ -677,7 +677,7 @@ const ServiceBillForm = () => {
                 <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <Search style={styles.formIcon} />
-                    Select Vehicle from Inventory || इन्वेंटरी से वाहन चुनें
+                    Select Vehicle from Inventory
                   </label>
                   <select
                     value={selectedCarId}
@@ -699,7 +699,7 @@ const ServiceBillForm = () => {
                   </select>
                 </div>
                 <div style={styles.orDivider}>
-                  <span>OR Enter Manually || या मैन्युअल रूप से दर्ज करें</span>
+                  <span>OR Enter Manually</span>
                 </div>
               </div>
 
@@ -707,7 +707,7 @@ const ServiceBillForm = () => {
                 <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <Car style={styles.formIcon} />
-                    Vehicle Brand || वाहन का ब्रांड
+                    Vehicle Brand
                   </label>
                   <input
                     type="text"
@@ -724,7 +724,7 @@ const ServiceBillForm = () => {
                 <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <Car style={styles.formIcon} />
-                    Vehicle Model || वाहन का मॉडल
+                    Vehicle Model
                   </label>
                   <input
                     type="text"
@@ -740,7 +740,7 @@ const ServiceBillForm = () => {
                 <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <Car style={styles.formIcon} />
-                    Chassis Number || चासिस नंबर
+                    Chassis Number
                   </label>
                   <input
                     type="text"
@@ -756,7 +756,7 @@ const ServiceBillForm = () => {
                 <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <Car style={styles.formIcon} />
-                    Engine Number || इंजन नंबर
+                    Engine Number
                   </label>
                   <input
                     type="text"
@@ -770,7 +770,7 @@ const ServiceBillForm = () => {
                 <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <Car style={styles.formIcon} />
-                    KM Reading || किलोमीटर पढ़ाई
+                    KM Reading
                   </label>
                   <input
                     type="text"
@@ -805,7 +805,7 @@ const ServiceBillForm = () => {
                 <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <Calendar style={styles.formIcon} />
-                    Service Date || सेवा की तिथि
+                    Service Date
                   </label>
                   <input
                     type="date"
@@ -819,7 +819,7 @@ const ServiceBillForm = () => {
                 <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <Calendar style={styles.formIcon} />
-                    Delivery Date || डिलीवरी की तिथि
+                    Delivery Date
                   </label>
                   <input
                     type="date"
@@ -835,7 +835,7 @@ const ServiceBillForm = () => {
                 <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <Wrench style={styles.formIcon} />
-                    Service Type || सेवा का प्रकार
+                    Service Type
                   </label>
                   <select
                     name="serviceType"
@@ -862,9 +862,7 @@ const ServiceBillForm = () => {
                 {formData.serviceItems.map((item, index) => (
                   <div key={index} style={styles.serviceItemRow}>
                     <div style={styles.serviceItemField}>
-                      <label style={styles.formLabel}>
-                        Description || विवरण
-                      </label>
+                      <label style={styles.formLabel}>Description</label>
                       <input
                         type="text"
                         name="description"
@@ -878,7 +876,7 @@ const ServiceBillForm = () => {
                       />
                     </div>
                     <div style={styles.serviceItemField}>
-                      <label style={styles.formLabel}>Qty || मात्रा</label>
+                      <label style={styles.formLabel}>Qty</label>
                       <input
                         type="number"
                         name="quantity"
@@ -892,7 +890,7 @@ const ServiceBillForm = () => {
                       />
                     </div>
                     <div style={styles.serviceItemField}>
-                      <label style={styles.formLabel}>Rate (₹) || दर (₹)</label>
+                      <label style={styles.formLabel}>Rate (₹)</label>
                       <input
                         type="number"
                         name="rate"
@@ -907,9 +905,7 @@ const ServiceBillForm = () => {
                       />
                     </div>
                     <div style={styles.serviceItemField}>
-                      <label style={styles.formLabel}>
-                        Amount (₹) || राशि (₹)
-                      </label>
+                      <label style={styles.formLabel}>Amount (₹)</label>
                       <input
                         type="text"
                         value={item.amount.toFixed(2)}
@@ -947,7 +943,7 @@ const ServiceBillForm = () => {
                 <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <IndianRupee style={styles.formIcon} />
-                    Enable Tax || कर सक्षम करें
+                    Enable Tax
                   </label>
                   <div style={styles.toggleContainer}>
                     <label style={styles.toggleSwitch}>
@@ -974,9 +970,7 @@ const ServiceBillForm = () => {
                 {formData.taxEnabled && (
                   <>
                     <div className="form-group col-2">
-                      <label style={styles.formLabel}>
-                        Business Name || व्यापार का नाम
-                      </label>
+                      <label style={styles.formLabel}>Business Name</label>
                       <input
                         type="text"
                         name="businessName"
@@ -989,9 +983,7 @@ const ServiceBillForm = () => {
                       />
                     </div>
                     <div className="form-group col-2">
-                      <label style={styles.formLabel}>
-                        Business GSTIN || व्यापार का GSTIN
-                      </label>
+                      <label style={styles.formLabel}>Business GSTIN</label>
                       <input
                         type="text"
                         name="businessGSTIN"
@@ -1004,9 +996,7 @@ const ServiceBillForm = () => {
                       />
                     </div>
                     <div className="form-group col-2">
-                      <label style={styles.formLabel}>
-                        Business Address || व्यापार का पता
-                      </label>
+                      <label style={styles.formLabel}>Business Address</label>
                       <textarea
                         name="businessAddress"
                         value={formData.businessAddress}

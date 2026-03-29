@@ -1406,8 +1406,7 @@ const SellLetterForm = () => {
                   />
                   <label style={styles.formCheckboxLabel}>
                     <CheckCircle style={styles.formIcon} />
-                    All documents verified and satisfactory || सभी दस्तावेज
-                    सत्यापित और संतोषजनक
+                    All documents verified and satisfactory
                   </label>
                 </div>
                 <div className="form-group col-2">

@@ -126,7 +126,7 @@ exports.getDashboardStats = async (req, res) => {
       (async () => {
         try {
           const totalCars = await Car.count().catch(() => 0);
-          const soldCars = await Car.count({ where: { status: 'Sold' } }).catch(() => 0);
+          const soldCars = await Car.count({ where: { status: 'Sold Out' } }).catch(() => 0);
           const availableCars = await Car.count({ where: { status: 'Available' } }).catch(() => 0);
           return [{ totalCars, soldCars, availableCars }];
         } catch (e) {

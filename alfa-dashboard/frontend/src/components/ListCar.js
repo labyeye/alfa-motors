@@ -210,6 +210,7 @@ const ListCar = () => {
               <table style={styles.table}>
                 <thead>
                   <tr>
+                    <th style={styles.th}>Image</th>
                     <th style={styles.th}>Brand</th>
                     <th style={styles.th}>Model</th>
                     <th style={styles.th}>Year</th>
@@ -224,6 +225,36 @@ const ListCar = () => {
                 <tbody>
                   {(Array.isArray(cars) ? cars : []).map((car) => (
                     <tr key={getId(car) || Math.random()} style={styles.tr}>
+                      <td style={styles.td}>
+                        {(() => {
+                          let photoList = [];
+                          try {
+                            photoList =
+                              typeof car.photos === "string"
+                                ? JSON.parse(car.photos)
+                                : car.photos || [];
+                          } catch (e) {
+                            photoList = [];
+                          }
+
+                          const firstPhoto =
+                            Array.isArray(photoList) && photoList.length > 0
+                              ? photoList[0]
+                              : null;
+
+                          return firstPhoto ? (
+                            <img
+                              src={firstPhoto}
+                              alt={`${car.make} ${car.model}`}
+                              style={styles.carThumbnail}
+                            />
+                          ) : (
+                            <div style={styles.noImagePlaceholder}>
+                              <Car size={16} color="#9ca3af" />
+                            </div>
+                          );
+                        })()}
+                      </td>
                       <td style={styles.td}>{car.make}</td>
                       <td style={styles.td}>{car.model}</td>
                       <td style={styles.td}>{car.modelYear}</td>
@@ -434,6 +465,24 @@ const styles = {
   td: {
     padding: "12px 16px",
     color: "#2B2B2B",
+    verticalAlign: "middle",
+  },
+  carThumbnail: {
+    width: "48px",
+    height: "36px",
+    borderRadius: "4px",
+    objectFit: "cover",
+    backgroundColor: "#f3f4f6",
+    display: "block",
+  },
+  noImagePlaceholder: {
+    width: "48px",
+    height: "36px",
+    borderRadius: "4px",
+    backgroundColor: "#f3f4f6",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   statusBadge: {
     display: "inline-block",

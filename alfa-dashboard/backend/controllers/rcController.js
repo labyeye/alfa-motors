@@ -48,7 +48,9 @@ exports.createRcEntry = async (req, res, next) => {
 exports.getAllRcEntries = async (req, res, next) => {
   try {
     const where = {};
-    if (req.user.role !== 'admin') where['details'] = { createdBy: req.user.id };
+    if (req.user.role !== 'admin') {
+      where['details.createdBy'] = req.user.id;
+    }
     const rcEntries = await Rc.findAll({ where, order: [['createdAt', 'DESC']] });
     const normalized = (rcEntries || []).map((r) => normalizeRc(r.get ? r.get({ plain: true }) : r));
     res.status(200).json({ success: true, count: normalized.length, data: normalized });
@@ -208,7 +210,16 @@ exports.uploadRcPdf = async (req, res, next) => {
 // Helper to normalize a DB row into the legacy frontend shape
 function normalizeRc(row) {
   if (!row) return row;
-  const details = row.details || {};
+  let details = row.details || {};
+  if (typeof details === 'string') {
+    try {
+      details = JSON.parse(details);
+    } catch (e) {
+      console.error('Failed to parse details JSON:', e);
+      details = {};
+    }
+  }
+
   const statusFromDetails = details.status || {};
   return Object.assign({}, row, {
     vehicleRegNo: row.registrationNumber || details.registrationNumber || '',
@@ -221,11 +232,15 @@ function normalizeRc(row) {
     dealerName: row.dealerName || details.dealerName || '',
     rtoAgentName: row.rtoAgentName || details.rtoAgentName || '',
     remarks: row.remarks || details.remarks || '',
-    status: Object.assign({}, {
-      rcTransferred: !!row.rcTransferred,
-      rtoFeesPaid: !!row.rtoFeesPaid,
-      returnedToDealer: !!row.returnedToDealer,
-    }, statusFromDetails),
+    status: Object.assign(
+      {},
+      {
+        rcTransferred: !!row.rcTransferred,
+        rtoFeesPaid: !!row.rtoFeesPaid,
+        returnedToDealer: !!row.returnedToDealer,
+      },
+      statusFromDetails,
+    ),
     pdfUrl: row.pdfUrl || details.pdfUrl || null,
     pdfPublicId: row.pdfPublicId || details.pdfPublicId || null,
   });
