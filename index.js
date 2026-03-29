@@ -182,12 +182,12 @@ function initializeMobileMenu() {
       </li>
       <li>
         <a href="https://www.alfamotorworld.com/inventory.html">
-          <span data-translate="Vehicles for Sale">Vehicles for Sale</span>
+          <span data-translate="Buy used cars">Buy used cars</span>
         </a>
       </li>
       <li>
         <a href="https://www.alfamotorworld.com/sell.html">
-          <span data-translate="Sell Your Vehicle">Sell Your Vehicle</span>
+          <span data-translate="Sell car">Sell car</span>
         </a>
       </li>
        <li>
@@ -205,11 +205,7 @@ function initializeMobileMenu() {
           <span data-translate="About Us">About Us</span>
         </a>
       </li>
-      <li>
-        <a href="https://www.alfamotorworld.com/contact.html">
-          <span data-translate="Contact">Contact</span>
-        </a>
-      </li>
+      
     </ul>
     <div class="login-btn">
       <a href="https://www.alfamotorworld.com/getquote.html">
@@ -752,8 +748,8 @@ const translations = {
     "Alfa Motors World | Premium Pre-Owned Motorcycles in India":
       "Alfa Motors World | Premium Pre-Owned Motorcycles in India",
     Home: "Home",
-    "Vehicles for Sale": "Vehicles for Sale",
-    "Sell Your Vehicle": "Sell Your Vehicle",
+    "Buy used cars": "Buy used cars",
+    "Sell car": "Sell car",
     "About Us": "About Us",
     Financing: "Financing",
     "Happy Customers": "Happy Customers",
@@ -886,8 +882,8 @@ const translations = {
     "Alfa Motors World | Premium Pre-Owned Motorcycles in India":
       "ಅಲ್ಫಾ ಮೊಟರ್ಸ್ ವರ್ಲ್ಡ್ | ಭಾರತದಲ್ಲಿ ಪ್ರೀಮಿಯಂ ಸೆಕೆಂಡ್‌ಹ್ಯಾಂಡ್ ಕಾರುಗಳು",
     Home: "ಮನೆ",
-    "Vehicles for Sale": "ವಾಹನಗಳು ಮಾರಾಟಕ್ಕೆ",
-    "Sell Your Vehicle": "ನಿಮ್ಮ ವಾಹನ ಮಾರಾಟ ಮಾಡಿ",
+    "Buy used cars": "ವಾಹನಗಳು ಮಾರಾಟಕ್ಕೆ",
+    "Sell car": "ನಿಮ್ಮ ವಾಹನ ಮಾರಾಟ ಮಾಡಿ",
     "About Us": "ನಮ್ಮ ಬಗ್ಗೆ",
     Financing: "ಫೈನಾನ್ಸಿಂಗ್",
     "Happy Customers": "ಸಂತೋಷದ ಗ್ರಾಹಕರು",
@@ -907,7 +903,7 @@ const translations = {
     "Get Your": "ನಿಮ್ಮ",
     "Dream Car Today": "ಕನಸಿನ ಕಾರ್ ಇಂದು",
     Car: "ಕಾರ್",
-    "Buy Cars": "ಕಾರ್‌ಗಳನ್ನು ಖರೀದಿಸಿ",
+    "Buy used cars": "ಕಾರ್‌ಗಳನ್ನು ಖರೀದಿಸಿ",
     "Sell Your Car": "ನಿಮ್ಮ ಕಾರ್ ಮಾರಾಟ ಮಾಡಿ",
     "Best Cars": "ಉತ್ತಮ ಕಾರ್‌ಗಳು",
     "Sell Car": "ಕಾರ್ ಮಾರಾಟ ಮಾಡಿ",
@@ -1159,8 +1155,8 @@ function initializeTranslation() {
     if (mobileMenu) {
       const links = mobileMenu.querySelectorAll("a");
       links[0].setAttribute("data-translate", "Home");
-      links[1].setAttribute("data-translate", "Vehicles for Sale");
-      links[2].setAttribute("data-translate", "Sell Your Vehicle");
+      links[1].setAttribute("data-translate", "Buy used cars");
+      links[2].setAttribute("data-translate", "Sell car");
       links[3].setAttribute("data-translate", "About Us");
       links[5].setAttribute("data-translate", "Contact");
 

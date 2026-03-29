@@ -801,7 +801,7 @@ body {
   color: #464646;
   text-decoration: none;
   font-family: "Inter", sans-serif;
-  font-size: 19px;
+  font-size: 14px;
   font-weight: 500;
   transition: color 0.3s;
   padding: 10px 12px;
@@ -1646,6 +1646,19 @@ h2 {
 }
 
 @media (max-width: 480px) {
+  .nav-links a {
+    position: relative;
+    color: #464646;
+    text-decoration: none;
+    font-family: "Inter", sans-serif;
+    font-size: 19px;
+    font-weight: 500;
+    transition: color 0.3s;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
   .brands-grid {
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     gap: 10px;
