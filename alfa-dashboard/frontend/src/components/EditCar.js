@@ -3,9 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
   Car,
-  CarFront,
   TrendingUp,
-  Save,
   Upload,
   X,
   Camera,
