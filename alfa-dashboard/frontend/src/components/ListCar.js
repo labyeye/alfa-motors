@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { formatIndian } from "../utils/formatIndian";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Edit, Trash2, Car, Fuel, Gauge, Calendar, Tag } from "lucide-react";
+import { Edit, Trash2, Car, Fuel, Gauge, Tag } from "lucide-react";
 import Sidebar from "./Sidebar";
 
 const ListCar = () => {
