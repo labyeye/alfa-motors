@@ -3,6 +3,7 @@ import axios from "axios";
 import { FileText, Search, Download, Edit, Trash2, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
+import logo from "../images/company.png";
 import logo1 from "../images/okmotorback.png";
 
 import AuthContext from "../context/AuthContext";
@@ -384,350 +385,321 @@ const SellLetterHistory = () => {
     }
   };
   const drawVehicleInvoice = async (page, pdfDoc, letter) => {
-    // Embed fonts first
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
     const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-    const logoUrl = logo1; // Use your imported logo
-    const logoImageBytes = await fetch(logoUrl).then((res) =>
-      res.arrayBuffer(),
-    );
-    const logoImage = await pdfDoc.embedPng(logoImageBytes); // or embedJpg if using JPEG
+    const logoImageBytes = await fetch(logo).then((res) => res.arrayBuffer());
+    const logoImage = await pdfDoc.embedPng(logoImageBytes);
 
-    // Header background
-    page.drawRectangle({
-      x: 0,
-      y: 780,
-      width: 595,
-      height: 80,
-      color: rgb(0.047, 0.098, 0.196), // Dark blue
-    });
+    const { width, height } = page.getSize();
 
-    // Draw dealership header
+    // Header
+    const headerY = height - 40;
     page.drawImage(logoImage, {
-      x: 50,
-      y: 800, // Adjust position as needed
-      width: 100, // Adjust width as needed
-      height: 50, // Adjust height as needed
+      x: 40,
+      y: headerY - 25,
+      width: 80,
+      height: 50,
     });
 
-    // Draw tagline
-    page.drawText("UDAYAM-BR-26-0028550", {
-      x: 50,
-      y: 790,
-      size: 10,
-      color: rgb(1, 1, 1),
+    page.drawText("ALFA MOTOR WORLD", {
+      x: width / 2 - 120,
+      y: headerY - 6,
+      size: 22,
+      font: boldFont,
+      color: rgb(0.6, 0.06, 0.06),
+    });
+    page.drawText("SALE INVOICE", {
+      x: width / 2 - 40,
+      y: headerY - 28,
+      size: 12,
       font: font,
+      color: rgb(0.06, 0.06, 0.06),
     });
 
-    // Draw address and contact info
+    const invoiceX = width - 160;
+    page.drawText(`No. ${letter.invoiceNumber || ""}`, {
+      x: invoiceX,
+      y: headerY,
+      size: 10,
+      font: boldFont,
+      color: rgb(0.8, 0.06, 0.06),
+    });
+    page.drawText(`Date : ${formatDate(letter.saleDate)}`, {
+      x: invoiceX,
+      y: headerY - 16,
+      size: 10,
+      font: font,
+      color: rgb(0.06, 0.06, 0.06),
+    });
+    page.drawText(`Time : ${formatTime(letter.saleTime)}`, {
+      x: invoiceX,
+      y: headerY - 32,
+      size: 10,
+      font: font,
+      color: rgb(0.06, 0.06, 0.06),
+    });
+
+    const addrY = headerY - 54;
     page.drawText(
-      "123 Main Street, Patna, Bihar - 800001 | Phone: 9876543210 | GSTIN: 22ABCDE1234F1Z5",
+      "# 97/2, Gottigere, Bannerghatta Main Road, Opp. D Mart, Bangalore - 560 083.",
       {
-        x: 50,
-        y: 770,
-        size: 8,
-        color: rgb(0.8, 0.8, 0.8),
-        font: font,
-      },
-    );
-
-    // Invoice header with accent color
-    page.drawRectangle({
-      x: 0,
-      y: 750,
-      width: 595,
-      height: 30,
-      color: rgb(0.9, 0.9, 0.9),
-    });
-
-    page.drawText("VEHICLE SALE INVOICE", {
-      x: 200,
-      y: 758,
-      size: 18,
-      color: rgb(0.047, 0.098, 0.196), // Dark blue
-      font: boldFont,
-    });
-
-    // Invoice details section
-    const invoiceNumber = `INV-${new Date().getFullYear()}-${Math.floor(
-      Math.random() * 10000,
-    )
-      .toString()
-      .padStart(4, "0")}`;
-
-    page.drawText(`Invoice Number: ${invoiceNumber}`, {
-      x: 50,
-      y: 720,
-      size: 10,
-      color: rgb(0.2, 0.2, 0.2),
-      font: font,
-    });
-
-    page.drawText(`Date: ${new Date().toLocaleDateString("en-IN")}`, {
-      x: 400,
-      y: 720,
-      size: 10,
-      color: rgb(0.2, 0.2, 0.2),
-      font: font,
-    });
-
-    // Divider line
-    page.drawLine({
-      start: { x: 50, y: 710 },
-      end: { x: 545, y: 710 },
-      thickness: 1,
-      color: rgb(0.8, 0.8, 0.8),
-    });
-
-    // Customer Information section
-    page.drawText("CUSTOMER DETAILS", {
-      x: 50,
-      y: 690,
-      size: 12,
-      color: rgb(0.047, 0.098, 0.196),
-      font: boldFont,
-    });
-
-    page.drawText(`Name: ${letter.buyerName || "N/A"}`, {
-      x: 60,
-      y: 665,
-      size: 10,
-      color: rgb(0.2, 0.2, 0.2),
-      font: font,
-    });
-
-    page.drawText(`Address: ${letter.buyerAddress || "N/A"}`, {
-      x: 60,
-      y: 650,
-      size: 10,
-      color: rgb(0.2, 0.2, 0.2),
-      font: font,
-    });
-
-    page.drawText(`Phone: ${letter.buyerPhone || "N/A"}`, {
-      x: 350,
-      y: 665,
-      size: 10,
-      color: rgb(0.2, 0.2, 0.2),
-      font: font,
-    });
-
-    page.drawText(`Aadhar: ${letter.buyerAadhar || "N/A"}`, {
-      x: 350,
-      y: 650,
-      size: 10,
-      color: rgb(0.2, 0.2, 0.2),
-      font: font,
-    });
-
-    // Vehicle Information section
-    page.drawText("VEHICLE DETAILS", {
-      x: 50,
-      y: 620,
-      size: 12,
-      color: rgb(0.047, 0.098, 0.196),
-      font: boldFont,
-    });
-
-    // Vehicle details table header
-    page.drawRectangle({
-      x: 50,
-      y: 590,
-      width: 495,
-      height: 20,
-      color: rgb(0.9, 0.9, 0.9),
-    });
-
-    const vehicleHeaders = [
-      "Make",
-      "Model",
-      "Color",
-      "Reg No",
-      "Chassis",
-      "Engine",
-      "KM",
-    ];
-    const vehicleHeaderPositions = [60, 120, 180, 240, 300, 380, 460];
-
-    vehicleHeaders.forEach((header, index) => {
-      page.drawText(header, {
-        x: vehicleHeaderPositions[index],
-        y: 596,
+        x: 40,
+        y: addrY,
         size: 9,
-        color: rgb(0.2, 0.2, 0.2),
-        font: boldFont,
-      });
-    });
-
-    // Vehicle details row
-    const vehicleValues = [
-      letter.vehicleName || "N/A",
-      letter.vehicleModel || "N/A",
-      letter.vehicleColor || "N/A",
-      letter.registrationNumber || "N/A",
-      letter.chassisNumber || "N/A",
-      letter.engineNumber || "N/A",
-      letter.vehiclekm ? `${letter.vehiclekm} km` : "N/A",
-    ];
-
-    vehicleValues.forEach((value, index) => {
-      const truncatedValue =
-        value.length > 12 ? value.substring(0, 12) + "..." : value;
-      page.drawText(truncatedValue, {
-        x: vehicleHeaderPositions[index],
-        y: 575,
-        size: 8,
-        color: rgb(0.2, 0.2, 0.2),
         font: font,
-      });
-    });
+        color: rgb(0.06, 0.06, 0.06),
+      },
+    );
 
-    // Sale Information section
-    page.drawText("SALE INFORMATION", {
-      x: 50,
-      y: 550,
-      size: 12,
-      color: rgb(0.047, 0.098, 0.196),
-      font: boldFont,
-    });
-
-    page.drawText(`Sale Date: ${formatDate(letter.saleDate)}`, {
-      x: 60,
-      y: 530,
-      size: 10,
-      color: rgb(0.2, 0.2, 0.2),
-      font: font,
-    });
-
-    page.drawText(`Sale Amount: Rs. ${letter.saleAmount || "0"}`, {
-      x: 200,
-      y: 530,
-      size: 10,
-      color: rgb(0.2, 0.2, 0.2),
-      font: font,
-    });
-
-    page.drawText(`Payment: CASH`, {
-      x: 350,
-      y: 530,
-      size: 10,
-      color: rgb(0.2, 0.2, 0.2),
-      font: font,
-    });
-
-    page.drawText(
-      `Condition: ${
-        letter.vehicleCondition === "running" ? "RUNNING" : "NOT RUNNING"
-      }`,
-      {
-        x: 60,
-        y: 510,
+    let y = addrY - 28;
+    const drawLinedField = (label, value) => {
+      page.drawText(`${label}`, {
+        x: 40,
+        y,
         size: 10,
-        color: rgb(0.2, 0.2, 0.2),
         font: font,
-      },
-    );
+        color: rgb(0.06, 0.06, 0.06),
+      });
+      page.drawLine({
+        start: { x: 120, y: y - 2 },
+        end: { x: width - 40, y: y - 2 },
+        thickness: 0.4,
+        color: rgb(0.7, 0.7, 0.7),
+      });
+      page.drawText(String(value || ""), {
+        x: 122,
+        y,
+        size: 10,
+        font: font,
+        color: rgb(0.06, 0.06, 0.06),
+      });
+      y -= 18;
+    };
 
-    // Terms and Conditions section
-    page.drawText("TERMS & CONDITIONS", {
-      x: 50,
-      y: 470,
-      size: 12,
-      color: rgb(0.047, 0.098, 0.196),
-      font: boldFont,
-    });
+    drawLinedField("Name : ", letter.buyerName);
+    drawLinedField("Address :", letter.buyerAddress);
+    drawLinedField("Id Number:", letter.idNumber);
+    drawLinedField("Contact No:", letter.contactNo || letter.buyerPhone);
 
-    const terms = [
-      "1. No refunds after invoice billing, except for transfer issues reported within 15 days.",
-      "2. A 3-month guarantee is provided on the entire engine",
-      "3. Engine warranty extends from 6 months to 1 year for performance defects",
-      "4. Clutch plate is not covered under any guarantee or warranty",
-      "5. Monthly servicing during the 3-month guarantee is mandatory",
-      "6. First 3 services are free, with minimal charges for oil and parts (excluding engine)",
-      "7. Buyer must submit photocopies of the sell letter and transfer challan",
-      "8. Defects must be reported within 24 hours of purchase to avoid repair charges",
-      "9. Delay in transfer beyond 15 days incurs Rs. 7.5/day penalty",
-      "10. Customer signature confirms acceptance of all terms",
+    const tableY = y - 6;
+    const tableX = 40;
+    const tableW = width - 80;
+    const colWidths = [
+      tableW * 0.18,
+      tableW * 0.35,
+      tableW * 0.12,
+      tableW * 0.12,
+      tableW * 0.23,
     ];
 
-    terms.forEach((term, index) => {
-      page.drawText(term, {
-        x: 60,
-        y: 450 - index * 15,
-        size: 8,
-        color: rgb(0.3, 0.3, 0.3),
+    let cx = tableX;
+    page.drawRectangle({
+      x: tableX,
+      y: tableY - 28,
+      width: tableW,
+      height: 28,
+      color: rgb(0.95, 0.95, 0.95),
+    });
+    const headers = ["Reg. No.", "Make & Model", "Fuel", "Year", "Colour"];
+    for (let i = 0; i < headers.length; i++) {
+      page.drawText(headers[i], {
+        x: cx + 4,
+        y: tableY - 10,
+        size: 9,
+        font: font,
+        color: rgb(0.06, 0.06, 0.06),
+      });
+      cx += colWidths[i];
+      page.drawLine({
+        start: { x: cx, y: tableY - 28 },
+        end: { x: cx, y: tableY },
+        thickness: 0.4,
+        color: rgb(0.8, 0.8, 0.8),
+      });
+    }
+
+    let vx = tableX;
+    const valueY = tableY - 46;
+    page.drawRectangle({
+      x: tableX,
+      y: valueY - 2,
+      width: tableW,
+      height: 28,
+      color: rgb(1, 1, 1),
+    });
+    const values = [
+      letter.registrationNumber,
+      `${letter.vehicleName || ""} ${letter.vehicleModel || ""}`,
+      letter.fuelType,
+      letter.year,
+      letter.vehicleColor,
+    ];
+    for (let i = 0; i < values.length; i++) {
+      page.drawText(String(values[i] || ""), {
+        x: vx + 4,
+        y: valueY + 8,
+        size: 9,
+        font: font,
+        color: rgb(0.06, 0.06, 0.06),
+      });
+      vx += colWidths[i];
+      page.drawLine({
+        start: { x: vx, y: valueY - 2 },
+        end: { x: vx, y: valueY + 26 },
+        thickness: 0.4,
+        color: rgb(0.9, 0.9, 0.9),
+      });
+    }
+
+    let ceY = valueY - 26;
+    page.drawText(`Chassis No : ${letter.chassisNumber || ""}`, {
+      x: 40,
+      y: ceY,
+      size: 9,
+      font: font,
+      color: rgb(0.06, 0.06, 0.06),
+    });
+    page.drawText(`Engine No : ${letter.engineNumber || ""}`, {
+      x: width / 2 + 20,
+      y: ceY,
+      size: 9,
+      font: font,
+      color: rgb(0.06, 0.06, 0.06),
+    });
+
+    const pX = 40;
+    let pY = ceY - 28;
+    const pW = width - 80;
+
+    page.drawRectangle({
+      x: pX,
+      y: pY - 22,
+      width: pW,
+      height: 22,
+      color: rgb(0.95, 0.95, 0.95),
+    });
+    page.drawText("Sl.No.", { x: pX + 6, y: pY - 6, size: 9, font: font });
+    page.drawText("Particulars", { x: pX + 60, y: pY - 6, size: 9, font: font });
+    page.drawText("Amount (Rs.)", {
+      x: pX + pW - 90,
+      y: pY - 6,
+      size: 9,
+      font: font,
+    });
+
+    const formatRupee = (amount) => {
+      return new Intl.NumberFormat("en-IN", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(amount);
+    };
+
+    const totalAmount =
+      (Number(letter.saleValue) || Number(letter.saleAmount) || 0) +
+      (Number(letter.commission) || 0) +
+      (Number(letter.rtoCharges) || 0) +
+      (Number(letter.otherCharges) || 0);
+    const balanceAmount = totalAmount - (Number(letter.advanceAmount) || 0);
+
+    const rows = [
+      [
+        "1",
+        "Sale value",
+        `Rs. ${formatRupee(letter.saleValue || letter.saleAmount || 0)}`,
+      ],
+      ["2", "Commission", `Rs. ${formatRupee(letter.commission || 0)}`],
+      ["3", "RTO Charges", `Rs. ${formatRupee(letter.rtoCharges || 0)}`],
+      ["4", "Others", `Rs. ${formatRupee(letter.otherCharges || 0)}`],
+      ["", "Total", `Rs. ${formatRupee(totalAmount)}`],
+      ["", "Advance", `Rs. ${formatRupee(letter.advanceAmount || 0)}`],
+      ["", "Balance", `Rs. ${formatRupee(balanceAmount)}`],
+    ];
+
+    pY -= 26;
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      page.drawRectangle({
+        x: pX,
+        y: pY - 20,
+        width: pW,
+        height: 20,
+        color: rgb(1, 1, 1),
+      });
+      page.drawText(row[0], { x: pX + 8, y: pY - 6, size: 9, font: font });
+      page.drawText(row[1], { x: pX + 60, y: pY - 6, size: 9, font: font });
+      page.drawText(row[2], {
+        x: pX + pW - 90,
+        y: pY - 6,
+        size: 9,
         font: font,
       });
-    });
+      pY -= 22;
+    }
 
-    // Signatures section
-    page.drawLine({
-      start: { x: 50, y: 295 },
-      end: { x: 545, y: 295 },
-      thickness: 0.5,
-      color: rgb(0.8, 0.8, 0.8),
+    const declY = pY - 8;
+    page.drawRectangle({
+      x: 40,
+      y: declY - 100,
+      width: width - 80,
+      height: 100,
+      color: rgb(0.98, 0.98, 0.98),
     });
-
-    // Seller Signature
-    page.drawText("Seller Signature", {
-      x: 100,
-      y: 275,
-      size: 10,
-      color: rgb(0.4, 0.4, 0.4),
-      font: font,
-    });
-
-    page.drawLine({
-      start: { x: 100, y: 270 },
-      end: { x: 250, y: 270 },
-      thickness: 1,
-      color: rgb(0.6, 0.6, 0.6),
-    });
-
-    // Buyer Signature (Alfa Motor World)
-    page.drawText("Authorized Signatory", {
-      x: 350,
-      y: 275,
-      size: 10,
-      color: rgb(0.4, 0.4, 0.4),
-      font: font,
-    });
-
-    page.drawLine({
-      start: { x: 350, y: 270 },
-      end: { x: 500, y: 270 },
-      thickness: 1,
-      color: rgb(0.6, 0.6, 0.6),
-    });
-
-    // Footer
-    page.drawLine({
-      start: { x: 50, y: 100 },
-      end: { x: 545, y: 100 },
-      thickness: 0.5,
-      color: rgb(0.8, 0.8, 0.8),
-    });
-
-    page.drawText("Thank you for your business!", {
-      x: 220,
-      y: 80,
-      size: 12,
-      color: rgb(0.047, 0.098, 0.196),
+    page.drawText("Declaration:", {
+      x: 45,
+      y: declY - 12,
+      size: 9,
       font: boldFont,
     });
+    const declText =
+      letter.declaration ||
+      "I/We hereby agreed to take the delivery of the above mentioned vehicle by paying the balance amount on/before................................and also agreed that if I/We cancel the deal or fail to take the delivery of the vehicle for any reason before due date the advance amount will be completely forfeited. (and same will not be claimed by me/us)";
+    page.drawText(declText, {
+      x: 45,
+      y: declY - 28,
+      size: 8,
+      font: font,
+      lineHeight: 12,
+      maxWidth: width - 90,
+    });
 
-    page.drawText(
-      "Alfa Motor World | 123 Main Street, Patna, Bihar - 800001 | Phone: 9876543210",
-      {
-        x: 180,
-        y: 60,
+    const notesText = [
+      "Kindly bring ID & Address Proof at the time of delivery",
+      "Note : Minimum 45days period for documentation (RTO work)",
+      "Vehicle is sold in as is where condition no odometer Guarantee",
+      "Car once sold will not be taken back or exchanged.",
+    ];
+
+    let noteY = declY - 65;
+    for (const note of notesText) {
+      page.drawText(note, {
+        x: 45,
+        y: noteY,
         size: 8,
-        color: rgb(0.5, 0.5, 0.5),
         font: font,
-      },
-    );
+      });
+      noteY -= 10;
+    }
+
+    let signY = declY - 130;
+    page.drawText("*Authorised Signature", {
+      x: 50,
+      y: signY,
+      size: 9,
+      font: font,
+    });
+    page.drawText("*Buyer's Signature", {
+      x: width / 2 - 50,
+      y: signY,
+      size: 9,
+      font: font,
+    });
+    page.drawText("*Witness", { x: width - 100, y: signY, size: 9, font: font });
   };
 
+  const formatTime = (timeString) => {
+    if (!timeString) return "";
+    return timeString.slice(0, 5);
+  };
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this sell letter?")) {
       try {
@@ -746,11 +718,7 @@ const SellLetterHistory = () => {
     }
   };
 
-  const handleEdit = (letter) => {
-    setEditingLetter(letter);
-  };
-
-  const handleSaveEdit = async (updatedLetter) => {
+  const handleSave = async (updatedLetter) => {
     try {
       const response = await axios.put(
         `https://alfa-motors-9bk6.vercel.app/api/sell-letters/${updatedLetter._id}`,
@@ -773,90 +741,67 @@ const SellLetterHistory = () => {
   };
 
   return (
-    <div style={styles.container}>
+    <div className="flex h-screen bg-gray-100">
       <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
-
-      <div style={styles.mainContent}>
-        <div style={styles.contentPadding}>
-          <div style={styles.header}>
-            <h1 style={styles.pageTitle}>Sell Letter History</h1>
-            <p style={styles.pageSubtitle}>
-              View and manage all your generated sell letters
-            </p>
-          </div>
-
-          <div style={styles.searchContainer}>
-            <div style={styles.searchInputContainer}>
-              <Search size={18} style={styles.searchIcon} />
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <header className="bg-white shadow-md p-4 flex justify-between items-center">
+          <h1 className="text-2xl font-semibold text-gray-800">
+            Sell Letter History
+          </h1>
+          <div className="flex items-center">
+            <div className="relative">
               <input
                 type="text"
-                placeholder="Search sell letters..."
+                placeholder="Search..."
+                className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                style={styles.searchInput}
+              />
+              <Search
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                size={20}
               />
             </div>
-            <button
-              style={styles.newLetterButton}
-              onClick={() => navigate("/sell/create")}
-            >
-              <FileText size={16} style={styles.buttonIcon} />
-              New Sell Letter
-            </button>
           </div>
-
+        </header>
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200 p-6">
           {loading ? (
-            <div style={styles.loadingContainer}>
-              <p>Loading sell letters...</p>
-            </div>
-          ) : filteredLetters.length === 0 ? (
-            <div style={styles.emptyState}>
-              <FileText size={48} style={styles.emptyIcon} />
-              <p style={styles.emptyText}>
-                {searchTerm
-                  ? "No matching sell letters found"
-                  : "No sell letters created yet"}
-              </p>
-              <button
-                style={styles.newLetterButton}
-                onClick={() => navigate("/sell/create")}
-              >
-                Create Your First Sell Letter
-              </button>
+            <div className="flex justify-center items-center h-full">
+              <div className="loader"></div>
             </div>
           ) : (
-            <>
-              <div style={styles.tableContainer}>
-                <table style={styles.table}>
-                  <thead>
-                    <tr>
-                      <th style={styles.tableHeader}>Vehicle</th>
-                      <th style={styles.tableHeader}>Reg No.</th>
-                      <th style={styles.tableHeader}>Buyer</th>
-                      <th style={styles.tableHeader}>Amount</th>
-                      <th style={styles.tableHeader}>Date</th>
-                      <th style={styles.tableHeader}>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredLetters.map((letter) => (
-                      <tr key={letter._id} style={styles.tableRow}>
-                        <td style={styles.tableCell}>
-                          {letter.vehicleName} ({letter.vehicleModel})
-                        </td>
-                        <td style={styles.tableCell}>
-                          {letter.registrationNumber}
-                        </td>
-                        <td style={styles.tableCell}>{letter.buyerName}</td>
-                        <td style={styles.tableCell}>₹{letter.saleAmount}</td>
-                        <td style={styles.tableCell}>
-                          {new Date(letter.createdAt).toLocaleDateString()}
-                        </td>
-
-                        <td style={styles.tableCell}>
+            <div className="bg-white shadow-lg rounded-lg p-6">
+              <table className="w-full table-auto">
+                <thead>
+                  <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                    <th className="py-3 px-6 text-left">Vehicle Name</th>
+                    <th className="py-3 px-6 text-left">Reg. Number</th>
+                    <th className="py-3 px-6 text-left">Buyer Name</th>
+                    <th className="py-3 px-6 text-center">Sale Date</th>
+                    <th className="py-3 px-6 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="text-gray-600 text-sm font-light">
+                  {filteredLetters.map((letter) => (
+                    <tr
+                      key={letter._id}
+                      className="border-b border-gray-200 hover:bg-gray-100"
+                    >
+                      <td className="py-3 px-6 text-left whitespace-nowrap">
+                        {letter.vehicleName}
+                      </td>
+                      <td className="py-3 px-6 text-left">
+                        {letter.registrationNumber}
+                      </td>
+                      <td className="py-3 px-6 text-left">{letter.buyerName}</td>
+                      <td className="py-3 px-6 text-center">
+                        {formatDate(letter.saleDate)}
+                      </td>
+                      <td className="py-3 px-6 text-center">
+                        <div className="flex item-center justify-center">
                           <button
                             onClick={() => handleDownload(letter)}
-                            style={styles.iconButton}
+                            className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600 transition-colors duration-200 mr-2"
                             title="Download"
                           >
                             <Download size={16} />
@@ -865,100 +810,76 @@ const SellLetterHistory = () => {
                             <>
                               <button
                                 onClick={() => handleEdit(letter)}
-                                style={styles.iconButton}
+                                className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center hover:bg-green-600 transition-colors duration-200 mr-2"
                                 title="Edit"
                               >
                                 <Edit size={16} />
                               </button>
                               <button
                                 onClick={() => handleDelete(letter._id)}
-                                style={styles.iconButton}
+                                className="w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 transition-colors duration-200"
                                 title="Delete"
                               >
                                 <Trash2 size={16} />
                               </button>
                             </>
                           )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              <div style={styles.pagination}>
-                <button
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.max(prev - 1, 1))
-                  }
-                  disabled={currentPage === 1}
-                  style={styles.paginationButton}
-                >
-                  Previous
-                </button>
-                <span style={styles.pageInfo}>
-                  Page {currentPage} of {totalPages}
-                </span>
-                <button
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                  }
-                  disabled={currentPage === totalPages}
-                  style={styles.paginationButton}
-                >
-                  Next
-                </button>
-              </div>
-            </>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
-        </div>
-        {showLanguageModal && selectedLetter && (
-          <div style={styles.modalOverlay}>
-            <div style={styles.modalContent}>
-              <h3 style={styles.modalTitle}>Select PDF Language</h3>
-              <p style={styles.modalText}>
-                Choose the language for your sell letter:
-              </p>
-              <div style={styles.modalButtons}>
-                <button
-                  style={styles.englishButton}
-                  onClick={() => {
-                    fillAndDownloadEnglishPdf(selectedLetter);
-                    setShowLanguageModal(false);
-                  }}
-                >
-                  English PDF
-                </button>
-                <button
-                  style={styles.hindiButton}
-                  onClick={() => {
-                    fillAndDownloadHindiPdf(selectedLetter);
-                    setShowLanguageModal(false);
-                  }}
-                >
-                  Hindi PDF
-                </button>
-              </div>
+        </main>
+      </div>
+      {showLanguageModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md">
+            <h2 className="text-2xl font-bold mb-6 text-gray-800">
+              Select PDF Language
+            </h2>
+            <div className="flex justify-around">
               <button
-                style={styles.modalCloseButton}
-                onClick={() => setShowLanguageModal(false)}
+                onClick={() => {
+                  fillAndDownloadHindiPdf(selectedLetter);
+                  setShowLanguageModal(false);
+                }}
+                className="bg-orange-500 text-white px-6 py-3 rounded-md hover:bg-orange-600 transition-colors duration-300 text-lg"
               >
-                Close
+                Hindi PDF
+              </button>
+              <button
+                onClick={() => {
+                  fillAndDownloadEnglishPdf(selectedLetter);
+                  setShowLanguageModal(false);
+                }}
+                className="bg-blue-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 transition-colors duration-300 text-lg"
+              >
+                English PDF
               </button>
             </div>
+            <button
+              onClick={() => setShowLanguageModal(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
+            >
+              <X size={24} />
+            </button>
           </div>
-        )}
-        {editingLetter && (
-          <EditSellLetterModal
-            letter={editingLetter}
-            onClose={() => setEditingLetter(null)}
-            onSave={handleSaveEdit}
-          />
-        )}
-      </div>
+        </div>
+      )}
+      {editingLetter && (
+        <EditSellLetterModal
+          letter={editingLetter}
+          onClose={() => setEditingLetter(null)}
+          onSave={handleSave}
+        />
+      )}
     </div>
   );
 };
+
 const modalStyles = {
   overlay: {
     position: "fixed",
@@ -973,10 +894,10 @@ const modalStyles = {
     zIndex: 1000,
   },
   modal: {
-    backgroundColor: "#ffffff",
+    backgroundColor: "white",
     borderRadius: "8px",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-    width: "80%",
+    padding: "24px",
+    width: "90%",
     maxWidth: "800px",
     maxHeight: "90vh",
     overflowY: "auto",
@@ -985,474 +906,78 @@ const modalStyles = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: "16px 24px",
-    borderBottom: "1px solid #e2e8f0",
+    borderBottom: "1px solid #e5e7eb",
+    paddingBottom: "16px",
+    marginBottom: "16px",
   },
   title: {
-    fontSize: "1.25rem",
+    fontSize: "1.5rem",
     fontWeight: "600",
-    margin: 0,
-    color: "#1e293b",
+    color: "#1f2937",
   },
   closeButton: {
     background: "none",
     border: "none",
     cursor: "pointer",
-    color: "#64748b",
-    ":hover": {
-      color: "#334155",
-    },
+    color: "#6b7280",
   },
   form: {
-    padding: "24px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "24px",
   },
   formSection: {
-    marginBottom: "24px",
-    paddingBottom: "16px",
-    borderBottom: "1px solid #e2e8f0",
+    border: "1px solid #d1d5db",
+    borderRadius: "8px",
+    padding: "16px",
   },
   sectionTitle: {
-    fontSize: "1rem",
+    fontSize: "1.25rem",
     fontWeight: "600",
-    color: "#1e293b",
+    color: "#374151",
     marginBottom: "16px",
   },
   formGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
     gap: "16px",
   },
   formField: {
-    marginBottom: "16px",
+    display: "flex",
+    flexDirection: "column",
   },
   formLabel: {
-    display: "block",
+    marginBottom: "8px",
     fontSize: "0.875rem",
     fontWeight: "500",
-    color: "#334155",
-    marginBottom: "8px",
+    color: "#4b5563",
   },
   formInput: {
-    width: "100%",
-    padding: "8px 12px",
-    border: "1px solid #cbd5e1",
+    padding: "10px",
+    border: "1px solid #d1d5db",
     borderRadius: "4px",
-    fontSize: "0.875rem",
-    transition: "all 0.2s ease",
-    backgroundColor: "#f8fafc",
-    ":focus": {
-      outline: "none",
-      borderColor: "#2D2D2D",
-      boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.1)",
-      backgroundColor: "#ffffff",
-    },
+    fontSize: "1rem",
   },
   formActions: {
     display: "flex",
     justifyContent: "flex-end",
     gap: "16px",
-    marginTop: "24px",
-    paddingTop: "16px",
-    borderTop: "1px solid #e2e8f0",
-  },
-  saveButton: {
-    padding: "8px 16px",
-    backgroundColor: "#2D2D2D",
-    color: "white",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-    fontSize: "0.875rem",
-    fontWeight: "500",
-    ":hover": {
-      backgroundColor: "#2563eb",
-    },
+    marginTop: "16px",
   },
   cancelButton: {
-    padding: "8px 16px",
-    backgroundColor: "#e2e8f0",
-    color: "#334155",
-    border: "none",
+    padding: "10px 20px",
+    border: "1px solid #d1d5db",
     borderRadius: "4px",
-    cursor: "pointer",
-    fontSize: "0.875rem",
-    fontWeight: "500",
-    ":hover": {
-      backgroundColor: "#cbd5e1",
-    },
-  },
-};
-const styles = {
-  container: {
-    display: "flex",
-    minHeight: "100vh",
-    backgroundColor: "#f1f5f9",
-    fontFamily: "'Inter', sans-serif",
-  },
-  sidebar: {
-    width: "280px",
-    backgroundColor: "#1e293b",
-    color: "#f8fafc",
-    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-    position: "sticky",
-    top: 0,
-    height: "100vh",
-    backgroundImage: "linear-gradient(to bottom, #1e293b, #0f172a)",
-  },
-  sidebarHeader: {
-    padding: "24px",
-    borderBottom: "1px solid #334155",
-  },
-  sidebarTitle: {
-    fontSize: "1.25rem",
-    fontWeight: "600",
-    color: "#ffffff",
-    margin: 0,
-  },
-  sidebarSubtitle: {
-    fontSize: "0.875rem",
-    color: "#94a3b8",
-    margin: "4px 0 0 0",
-  },
-  nav: {
-    padding: "16px 0",
-  },
-  menuItem: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: "12px 24px",
-    cursor: "pointer",
-    color: "#e2e8f0",
-    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-    ":hover": {
-      backgroundColor: "#334155",
-    },
-  },
-  menuItemActive: {
-    backgroundColor: "#334155",
-    borderRight: "3px solid #2D2D2D",
-    color: "#ffffff",
-  },
-  menuItemContent: {
-    display: "flex",
-    alignItems: "center",
-  },
-  menuIcon: {
-    marginRight: "12px",
-    color: "#94a3b8",
-  },
-  menuText: {
-    fontSize: "0.9375rem",
-    fontWeight: "500",
-  },
-  submenu: {
-    backgroundColor: "#1a2536",
-  },
-  submenuItem: {
-    padding: "10px 24px 10px 64px",
-    cursor: "pointer",
-    color: "#cbd5e1",
-    fontSize: "0.875rem",
-    transition: "all 0.2s ease",
-    ":hover": {
-      backgroundColor: "#2d3748",
-    },
-  },
-  submenuItemActive: {
-    backgroundColor: "#2d3748",
-    color: "#ffffff",
-  },
-  logoutButton: {
-    display: "flex",
-    alignItems: "center",
-    padding: "12px 24px",
-    cursor: "pointer",
-    color: "#f87171",
-    marginTop: "16px",
-    borderTop: "1px solid #334155",
-    transition: "all 0.2s ease",
-    ":hover": {
-      backgroundColor: "#7f1d1d20",
-    },
-  },
-  mainContent: {
-    flex: 1,
-    overflow: "auto",
-    backgroundColor: "#ffffff",
-  },
-  contentPadding: {
-    padding: "32px",
-  },
-  header: {
-    marginBottom: "32px",
-  },
-  pageTitle: {
-    fontSize: "1.875rem",
-    fontWeight: "700",
-    color: "#1e293b",
-    margin: 0,
-    textAlign: "center",
-  },
-  pageSubtitle: {
-    fontSize: "1rem",
-    color: "#64748b",
-    margin: "8px 0 0 0",
-    textAlign: "center",
-  },
-  searchContainer: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "24px",
-  },
-  searchInputContainer: {
-    position: "relative",
-    width: "300px",
-  },
-  newLetterButton: {
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-    padding: "10px 16px",
-    backgroundColor: "#2D2D2D",
-    color: "white",
-    border: "none",
-    borderRadius: "8px",
-    fontSize: "0.875rem",
-    fontWeight: "500",
-    cursor: "pointer",
-    transition: "all 0.2s ease",
-    ":hover": {
-      backgroundColor: "#2563eb",
-    },
-  },
-  tableContainer: {
-    overflowX: "auto",
-    borderRadius: "8px",
-    border: "1px solid #e2e8f0",
     backgroundColor: "white",
-    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-  },
-  tableHeader: {
-    padding: "12px 16px",
-    textAlign: "left",
-    backgroundColor: "#f1f5f9",
-    color: "#334155",
-    fontSize: "0.875rem",
-    fontWeight: "600",
-    borderBottom: "1px solid #e2e8f0",
-  },
-  tableCell: {
-    padding: "12px 16px",
-    fontSize: "0.875rem",
-    color: "#334155",
-  },
-  iconButton: {
-    background: "none",
-    border: "none",
-    color: "#64748b",
     cursor: "pointer",
-    padding: "8px",
-    margin: "0 4px",
-    borderRadius: "4px",
-    ":hover": {
-      backgroundColor: "#f1f5f9",
-      color: "#2D2D2D",
-    },
   },
-  pagination: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: "16px",
-    marginTop: "24px",
-  },
-  paginationButton: {
-    padding: "8px 16px",
-    backgroundColor: "#e2e8f0",
-    color: "#334155",
+  saveButton: {
+    padding: "10px 20px",
     border: "none",
     borderRadius: "4px",
-    cursor: "pointer",
-    ":hover": {
-      backgroundColor: "#cbd5e1",
-    },
-    ":disabled": {
-      opacity: "0.5",
-      cursor: "not-allowed",
-    },
-  },
-  buttonIcon: {
-    width: "16px",
-    height: "16px",
-  },
-  loadingContainer: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "200px",
-    color: "#64748b",
-  },
-  emptyState: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: "40px",
-    border: "1px dashed #cbd5e1",
-    borderRadius: "8px",
-    backgroundColor: "#f8fafc",
-  },
-  emptyIcon: {
-    color: "#cbd5e1",
-    marginBottom: "16px",
-  },
-  emptyText: {
-    color: "#64748b",
-    fontSize: "1rem",
-    margin: 0,
-  },
-
-  table: {
-    width: "100%",
-    borderCollapse: "collapse",
-    fontSize: "0.875rem",
-  },
-
-  tableRow: {
-    borderBottom: "1px solid #e2e8f0",
-    ":hover": {
-      backgroundColor: "#f8fafc",
-    },
-  },
-  vehicleInfo: {
-    display: "flex",
-    flexDirection: "column",
-    "> strong": {
-      marginBottom: "4px",
-    },
-    "> span": {
-      fontSize: "0.75rem",
-      color: "#64748b",
-    },
-  },
-  buyerInfo: {
-    display: "flex",
-    flexDirection: "column",
-    "> strong": {
-      marginBottom: "4px",
-    },
-    "> span": {
-      fontSize: "0.75rem",
-      color: "#64748b",
-    },
-  },
-  verifiedBadge: {
-    display: "inline-block",
-    padding: "4px 8px",
-    backgroundColor: "#dcfce7",
-    color: "#166534",
-    borderRadius: "12px",
-    fontSize: "0.75rem",
-    fontWeight: "500",
-  },
-  unverifiedBadge: {
-    display: "inline-block",
-    padding: "4px 8px",
-    backgroundColor: "#fee2e2",
-    color: "#991b1b",
-    borderRadius: "12px",
-    fontSize: "0.75rem",
-    fontWeight: "500",
-  },
-  viewButton: {
-    padding: "6px 12px",
-    backgroundColor: "#2D2D2D",
+    backgroundColor: "#3b82f6",
     color: "white",
-    border: "none",
-    borderRadius: "4px",
-    fontSize: "0.75rem",
-    fontWeight: "500",
     cursor: "pointer",
-    transition: "all 0.2s ease",
-    ":hover": {
-      backgroundColor: "#2563eb",
-    },
-  },
-
-  modalOverlay: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 1000,
-  },
-  modalContent: {
-    backgroundColor: "#ffffff",
-    padding: "24px",
-    borderRadius: "8px",
-    width: "400px",
-    maxWidth: "90%",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-  },
-  modalTitle: {
-    fontSize: "1.25rem",
-    fontWeight: "600",
-    marginBottom: "16px",
-    color: "#1e293b",
-  },
-  modalText: {
-    marginBottom: "24px",
-    color: "#64748b",
-  },
-  modalButtons: {
-    display: "flex",
-    gap: "16px",
-    marginBottom: "24px",
-  },
-  englishButton: {
-    flex: 1,
-    padding: "12px",
-    backgroundColor: "#2D2D2D",
-    color: "white",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer",
-    fontWeight: "500",
-    ":hover": {
-      backgroundColor: "#2563eb",
-    },
-  },
-  hindiButton: {
-    flex: 1,
-    padding: "12px",
-    backgroundColor: "#10b981",
-    color: "white",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer",
-    fontWeight: "500",
-    ":hover": {
-      backgroundColor: "#059669",
-    },
-  },
-  modalCloseButton: {
-    width: "100%",
-    padding: "8px",
-    backgroundColor: "#f1f5f9",
-    color: "#64748b",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer",
-    ":hover": {
-      backgroundColor: "#e2e8f0",
-    },
   },
 };
 

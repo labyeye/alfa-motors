@@ -147,6 +147,7 @@ const SellLetterForm = () => {
       vehicleName: selected.make || selected.brand || prev.vehicleName,
       vehicleModel: selected.model || selected.variant || prev.vehicleModel,
       vehicleColor: selected.color || prev.vehicleColor,
+      year: selected.year || prev.year,
       registrationNumber: reg || prev.registrationNumber,
       chassisNumber: chassis || prev.chassisNumber,
       engineNumber: engine || prev.engineNumber,
@@ -492,1510 +493,755 @@ const SellLetterForm = () => {
       const declY = pY - 8;
       page.drawRectangle({
         x: 40,
-        y: declY - 70,
+        y: declY - 100,
         width: width - 80,
-        height: 70,
+        height: 100,
         color: rgb(0.98, 0.98, 0.98),
       });
       page.drawText("Declaration:", {
-        x: 46,
+        x: 45,
         y: declY - 12,
         size: 9,
         font: font,
-        color: rgb(0.06, 0.06, 0.06),
       });
-      const declText = formData.declaration || "";
-      page.drawText(String(declText), {
-        x: 46,
+      const declText =
+        "I/We hereby agreed to take the delivery of the above mentioned vehicle by paying the balance amount on/before................................and also agreed that if I/We cancel the deal or fail to take the delivery of the vehicle for any reason before due date the advance amount will be completely forfeited. (and same will not be claimed by me/us)";
+      page.drawText(declText, {
+        x: 45,
         y: declY - 28,
-        size: 8.5,
+        size: 8,
         font: fontNormal,
-        color: rgb(0.06, 0.06, 0.06),
+        lineHeight: 12,
+        maxWidth: width - 90,
       });
 
-      // Footer notes area
-      const notesY = declY - 90;
-      page.drawRectangle({
-        x: 40,
-        y: notesY - 36,
-        width: width - 80,
-        height: 36,
-        color: rgb(0.94, 0.94, 0.94),
-      });
-      page.drawText(
-        "Kindly bring ID & Address Proof at the time of delivery. Note: Minimum 45 days period for documentation (RTO work). Vehicle is sold as is where condition no odometer guarantee. Car once sold will not be taken back or exchanged.",
-        {
-          x: 46,
-          y: notesY - 20,
+      const notesText = [
+        "Kindly bring ID & Address Proof at the time of delivery",
+        "Note : Minimum 45days period for documentation (RTO work)",
+        "Vehicle is sold in as is where condition no odometer Guarantee",
+        "Car once sold will not be taken back or exchanged.",
+      ];
+
+      let noteY = declY - 65;
+      for (const note of notesText) {
+        page.drawText(note, {
+          x: 45,
+          y: noteY,
           size: 8,
           font: fontNormal,
-          color: rgb(0.06, 0.06, 0.06),
-        },
-      );
+        });
+        noteY -= 10;
+      }
 
-      // Signature lines
-      const sigY = 60;
-      page.drawLine({
-        start: { x: 60, y: sigY + 20 },
-        end: { x: 200, y: sigY + 20 },
-        thickness: 0.6,
-        color: rgb(0.1, 0.1, 0.1),
-      });
+      let signY = declY - 130;
       page.drawText("*Authorised Signature", {
-        x: 60,
-        y: sigY + 6,
+        x: 50,
+        y: signY,
         size: 9,
         font: fontNormal,
-      });
-
-      page.drawLine({
-        start: { x: width / 2 - 60, y: sigY + 20 },
-        end: { x: width / 2 + 80, y: sigY + 20 },
-        thickness: 0.6,
-        color: rgb(0.1, 0.1, 0.1),
       });
       page.drawText("*Buyer's Signature", {
-        x: width / 2 - 60,
-        y: sigY + 6,
+        x: width / 2 - 50,
+        y: signY,
         size: 9,
         font: fontNormal,
-      });
-
-      page.drawLine({
-        start: { x: width - 220, y: sigY + 20 },
-        end: { x: width - 60, y: sigY + 20 },
-        thickness: 0.6,
-        color: rgb(0.1, 0.1, 0.1),
       });
       page.drawText("*Witness", {
-        x: width - 200,
-        y: sigY + 6,
+        x: width - 100,
+        y: signY,
         size: 9,
         font: fontNormal,
       });
 
+      // Finalize the PDF and get the bytes
       const pdfBytes = await pdfDoc.save();
       return pdfBytes;
     } catch (err) {
-      console.error("PDF generation failed:", err);
-      throw err;
+      console.error("Error generating PDF bytes:", err);
+      // return an empty pdf
+      const emptyPdf = await PDFDocument.create();
+      const page = emptyPdf.addPage();
+      page.drawText("Error generating PDF.", { x: 50, y: 500 });
+      return await emptyPdf.save();
     }
   };
 
-  const handlePreview = async (language = "hindi") => {
+  const handlePreview = async (lang) => {
+    setPreviewLanguage(lang);
+    const pdfBytes = await generatePdfBytes(lang);
+    const blob = new Blob([pdfBytes], { type: "application/pdf" });
+    const url = URL.createObjectURL(blob);
+    setPreviewPdf(url);
+    setShowPreviewModal(true);
+  };
+
+  const handleDownload = async (language) => {
+    const pdfBytes = await generatePdfBytes(language);
+    const blob = new Blob([pdfBytes], { type: "application/pdf" });
+    saveAs(blob, `Sale-Invoice-${formData.registrationNumber}.pdf`);
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
     try {
-      setIsSaving(true);
-      const bytes = await generatePdfBytes(language);
-      const blob = new Blob([bytes], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      setPreviewPdf(url);
-      setPreviewLanguage(language);
-      setShowPreviewModal(true);
-    } catch (err) {
-      console.error("Preview error:", err);
-      alert("Failed to generate preview PDF");
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const handlePreviewAndDownload = async (language) => {
-    try {
-      setShowPreviewModal(false);
-      const bytes = await generatePdfBytes(language);
-      const blob = new Blob([bytes], { type: "application/pdf" });
-      const filename = `sellletter_${language}_${
-        formData.registrationNumber || "document"
-      }.pdf`;
-      saveAs(blob, filename);
-    } catch (err) {
-      console.error("Download error:", err);
-      alert("Failed to download PDF");
-    }
-  };
-
-  const formatRupee = (val) => {
-    const num = parseFloat(val.toString().replace(/,/g, ""));
-    return isNaN(num)
-      ? "0.00"
-      : `${new Intl.NumberFormat("en-IN", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        }).format(num / 100)}`;
-  };
-  const formatTime = (timeString) => {
-    if (!timeString) return "";
-    const [hour, minute] = timeString.split(":").map(Number);
-    const date = new Date();
-    date.setHours(hour);
-    date.setMinutes(minute);
-    return date.toLocaleTimeString("en-IN", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-  };
-
-  const saveToDatabase = async () => {
-    try {
-      setIsSaving(true);
-      const requiredFields = [
-        "vehicleName",
-        "vehicleModel",
-        "vehicleColor",
-        "registrationNumber",
-        "chassisNumber",
-        "engineNumber",
-        "vehiclekm",
-        "buyerName",
-        "buyerFatherName",
-        "buyerAddress",
-        "buyerPhone",
-        "buyerPhone2",
-        "buyerAadhar",
-        "saleAmount",
-        "selleraadhar",
-        "sellerphone",
-      ];
-
-      const missingFields = requiredFields.filter((field) => !formData[field]);
-
-      if (missingFields.length > 0) {
-        alert(
-          `Please fill in all required fields: ${missingFields.join(", ")}`,
-        );
-        setIsSaving(false);
-        return false;
-      }
-
+      const token = localStorage.getItem("token");
       const response = await axios.post(
         `${API_BASE}/api/sell-letters`,
         formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        },
+        { headers: { Authorization: `Bearer ${token}` } },
       );
-
-      if (response.data) {
-        const saved = response.data;
-        alert("Sell letter saved successfully!");
-
-        // If an advance amount was entered, create an AdvancePayment record
-        try {
-          const adv = Number(formData.advanceAmount || 0);
-          if (adv && adv > 0) {
-            await axios.post(
-              `${API_BASE}/api/advance-payments`,
-              {
-                sellLetter: saved._id,
-                amount: adv,
-                paymentMethod: formData.paymentMethod || "cash",
-                note: "Advance recorded from Sell Letter",
-              },
-              {
-                headers: {
-                  Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-              },
-            );
-          }
-        } catch (err) {
-          console.warn(
-            "Advance payment creation failed:",
-            err?.response?.data || err.message || err,
-          );
-        }
-
-        return saved;
-      }
+      setSavedLetterData(response.data);
+      setShowLanguageModal(true);
     } catch (error) {
       console.error("Error saving sell letter:", error);
-      if (error.response) {
-        // Handle server validation errors
-        if (error.response.data.errors) {
-          const errorMessages = Object.values(error.response.data.errors)
-            .map((err) => err.message)
-            .join("\n");
-          alert(`Validation errors:\n${errorMessages}`);
-        } else {
-          alert(error.response.data.message || "Failed to save sell letter.");
-        }
-      } else {
-        alert("Failed to save sell letter. Please try again.");
-      }
-      return false;
+      alert("Failed to save sell letter. Please try again.");
     } finally {
       setIsSaving(false);
     }
   };
-  const handleSaveAndDownload = async () => {
-    try {
-      setIsSaving(true);
 
-      const existingLetter = await axios.get(
-        `https://alfa-motors-9bk6.vercel.app/api/sell-letters/by-registration?registrationNumber=${formData.registrationNumber}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        },
-      );
-
-      if (existingLetter.data && existingLetter.data.length > 0) {
-        const found = existingLetter.data[0];
-        // If user entered an advance, create a payment linked to existing sell letter
-        if (Number(formData.advanceAmount || 0) > 0) {
-          try {
-            await axios.post(
-              `${API_BASE}/api/advance-payments`,
-              {
-                sellLetter: found._id,
-                amount: Number(formData.advanceAmount),
-                paymentMethod: formData.paymentMethod || "cash",
-                note: "Advance recorded from Sell Letter (existing)",
-              },
-              {
-                headers: {
-                  Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-              },
-            );
-          } catch (err) {
-            console.warn(
-              "Advance payment creation failed for existing letter:",
-              err?.response?.data || err.message || err,
-            );
-          }
-        }
-        setSavedLetterData(found);
-        setShowLanguageModal(true);
-      } else {
-        const savedLetter = await saveToDatabase();
-        if (savedLetter) {
-          setSavedLetterData(savedLetter);
-          setShowLanguageModal(true);
-        }
-      }
-    } catch (error) {
-      console.error("Error checking/saving sell letter:", error);
-      let errorMessage = "Failed to process sell letter. Please try again.";
-
-      if (error.response) {
-        errorMessage = error.response.data.message || errorMessage;
-        if (error.response.data.error) {
-          errorMessage += ` (${error.response.data.error})`;
-        }
-      } else if (error.request) {
-        errorMessage = "No response from server. Please check your connection.";
-      }
-      alert(errorMessage);
-    } finally {
-      setIsSaving(false);
-    }
+  const formatRupee = (amount) => {
+    return new Intl.NumberFormat("en-IN", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount || 0);
   };
-  // NOTE: PDF drawing/positioning logic removed on purpose per new template decision.
-  const handleInput = (e) => {
-    const { value } = e.target;
-    e.target.value = value.toUpperCase();
-    handleChange(e);
-  };
+
   const formatDate = (dateString) => {
     if (!dateString) return "";
     const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
+    return `${String(date.getDate()).padStart(2, "0")}/${String(
+      date.getMonth() + 1,
+    ).padStart(2, "0")}/${date.getFullYear()}`;
   };
+
+  const formatTime = (timeString) => {
+    if (!timeString) return "";
+    return timeString.slice(0, 5);
+  };
+
+  // Calculate totals for display in the form
+  const saleValue = parseFloat(formData.saleValue) || 0;
+  const commission = parseFloat(formData.commission) || 0;
+  const rtoCharges = parseFloat(formData.rtoCharges) || 0;
+  const otherCharges = parseFloat(formData.otherCharges) || 0;
+  const totalAmount = saleValue + commission + rtoCharges + otherCharges;
+  const advanceAmount = parseFloat(formData.advanceAmount) || 0;
+  const balanceAmount = totalAmount - advanceAmount;
 
   return (
     <div style={styles.container}>
-      {/* Sidebar component */}
       <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
-
-      {/* Main Content */}
       <div style={styles.mainContent}>
-        <div style={styles.contentPadding}>
-          <div style={styles.header}>
-            <h1 style={styles.pageTitle}>Create Sell Letter</h1>
-            <p style={styles.pageSubtitle}>
-              Fill in the details to generate a vehicle purchase agreement
-            </p>
-          </div>
+        <div style={styles.formContainer}>
+          <h1 style={styles.title}>Create Sale Invoice</h1>
+          <p style={styles.subtitle}>
+            Fill in the details to generate a new sale invoice.
+          </p>
 
-          <form className="form" style={styles.form}>
-            <div style={styles.formSection}>
-              <h2 style={styles.sectionTitle}>
-                <Car style={styles.sectionIcon} /> Vehicle Information
-              </h2>
-              <div className="form-grid">
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>
-                    <Car style={styles.formIcon} />
-                    Select from Inventory
-                  </label>
-                  <select
-                    className="form-control select"
-                    style={styles.formSelect}
-                    onChange={handleSelectCar}
-                    defaultValue=""
-                  >
-                    <option value="">-- Choose a car --</option>
-                    {cars.map((c) => (
-                      <option key={c._id} value={c._id}>
-                        {`${c.make || c.brand || ""} ${
-                          c.model || c.variant || ""
-                        } ${c.registrationNumber || c.registrationNo || ""}`}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>
-                    <Car style={styles.formIcon} />
-                    Vehicle Brand
-                  </label>
-                  <input
-                    type="text"
-                    name="vehicleName"
-                    value={formData.vehicleName}
-                    onChange={handleChange}
-                    onInput={handleInput}
-                    className="form-control"
-                    style={styles.formInput}
-                    required
-                    maxLength={30}
-                  />
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>
-                    <Car style={styles.formIcon} />
-                    Vehicle Model
-                  </label>
-                  <input
-                    type="text"
-                    name="vehicleModel"
-                    value={formData.vehicleModel}
-                    onChange={handleChange}
-                    onInput={handleInput}
-                    className="form-control"
-                    style={styles.formInput}
-                    required
-                    maxLength={30}
-                  />
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>
-                    <Car style={styles.formIcon} />
-                    Vehicle Color
-                  </label>
-                  <input
-                    type="text"
-                    name="vehicleColor"
-                    value={formData.vehicleColor}
-                    onChange={handleChange}
-                    onInput={handleInput}
-                    className="form-control"
-                    style={styles.formInput}
-                    required
-                    maxLength={30}
-                  />
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>
-                    <Car style={styles.formIcon} />
-                    Registration Number
-                  </label>
-                  <input
-                    type="text"
-                    name="registrationNumber"
-                    value={formData.registrationNumber}
-                    onChange={handleChange}
-                    onInput={handleInput}
-                    className="form-control"
-                    style={styles.formInput}
-                    required
-                    maxLength={11}
-                  />
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>
-                    <Car style={styles.formIcon} />
-                    Chassis Number
-                  </label>
-                  <input
-                    type="text"
-                    name="chassisNumber"
-                    value={formData.chassisNumber}
-                    onChange={handleChange}
-                    onInput={handleInput}
-                    style={styles.formInput}
-                    required
-                    maxLength={18}
-                  />
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>
-                    <Car style={styles.formIcon} />
-                    Engine Number
-                  </label>
-                  <input
-                    type="text"
-                    name="engineNumber"
-                    value={formData.engineNumber}
-                    onChange={handleChange}
-                    style={styles.formInput}
-                    required
-                    maxLength={15}
-                  />
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>
-                    <Car style={styles.formIcon} />
-                    Vehicle KM
-                  </label>
-                  <input
-                    type="text"
-                    name="vehiclekm"
-                    value={
-                      formData.vehiclekm === ""
-                        ? ""
-                        : new Intl.NumberFormat("en-IN", {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          }).format(Number(formData.vehiclekm) / 100)
-                    }
-                    onChange={(e) => {
-                      const rawValue = e.target.value.replace(/[^0-9]/g, "");
-                      setFormData((prev) => ({
-                        ...prev,
-                        vehiclekm: rawValue,
-                      }));
-                    }}
-                    style={styles.formInput}
-                    placeholder="e.g. 36,000.00"
-                  />
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>
-                    <Car style={styles.formIcon} />
-                    Vehicle Condition
-                  </label>
-                  <select
-                    name="vehicleCondition"
-                    value={formData.vehicleCondition}
-                    onChange={handleChange}
-                    style={styles.formSelect}
-                    required
-                  >
-                    <option value="running">Running</option>
-                    <option value="notRunning">Not Running</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            {/* Seller Information Section - Updated */}
-            <div style={styles.formSection}>
-              <h2 style={styles.sectionTitle}>
-                <User style={styles.sectionIcon} /> Buyer Information
-              </h2>
-              <div className="form-grid">
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>
-                    <User style={styles.formIcon} />
-                    Buyer Name
-                  </label>
-                  <input
-                    type="text"
-                    name="buyerName"
-                    value={formData.buyerName}
-                    onChange={handleChange}
-                    onInput={handleInput}
-                    style={styles.formInput}
-                    required
-                    maxLength={30}
-                  />
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>
-                    <User style={styles.formIcon} />
-                    Buyer Father's Name
-                  </label>
-                  <input
-                    type="text"
-                    name="buyerFatherName"
-                    value={formData.buyerFatherName}
-                    onChange={handleChange}
-                    onInput={handleInput}
-                    style={styles.formInput}
-                    required
-                    maxLength={16}
-                  />
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>
-                    <User style={styles.formIcon} />
-                    Buyer Address
-                  </label>
-                  <input
-                    type="text"
-                    name="buyerAddress"
-                    value={formData.buyerAddress}
-                    onChange={handleChange}
-                    onInput={handleInput}
-                    style={styles.formInput}
-                    required
-                    maxLength={100}
-                  />
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>
-                    <User style={styles.formIcon} />
-                    Buyer Phone
-                  </label>
-                  <input
-                    type="text"
-                    name="buyerPhone"
-                    value={formData.buyerPhone}
-                    onChange={(e) => {
-                      const rawValue = e.target.value
-                        .replace(/[^0-9]/g, "")
-                        .slice(0, 10);
-                      setFormData((prev) => ({
-                        ...prev,
-                        buyerPhone: rawValue,
-                      }));
-                    }}
-                    style={styles.formInput}
-                    maxLength={10}
-                  />
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>
-                    <User style={styles.formIcon} />
-                    Buyer Alternate Phone
-                  </label>
-                  <input
-                    type="text"
-                    name="buyerPhone2"
-                    value={formData.buyerPhone2}
-                    onChange={(e) => {
-                      const rawValue = e.target.value
-                        .replace(/[^0-9]/g, "")
-                        .slice(0, 10);
-                      setFormData((prev) => ({
-                        ...prev,
-                        buyerPhone2: rawValue,
-                      }));
-                    }}
-                    className="form-control"
-                    style={styles.formInput}
-                    maxLength={10}
-                  />
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>
-                    <User style={styles.formIcon} />
-                    Buyer Aadhar
-                  </label>
-                  <input
-                    type="text"
-                    name="buyerAadhar"
-                    value={formData.buyerAadhar}
-                    onChange={(e) => {
-                      let value = e.target.value
-                        .replace(/\D/g, "")
-                        .slice(0, 12);
-                      let formatted = value.match(/.{1,4}/g)?.join("-") || "";
-                      setFormData((prev) => ({
-                        ...prev,
-                        buyerAadhar: formatted,
-                      }));
-                    }}
-                    className="form-control"
-                    style={styles.formInput}
-                    placeholder="1234-5678-9012"
-                  />
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>
-                    <User style={styles.formIcon} />
-                    Witness Name
-                  </label>
-                  <input
-                    type="text"
-                    name="witnessName"
-                    value={formData.witnessName}
-                    onChange={handleChange}
-                    className="form-control"
-                    style={styles.formInput}
-                    required
-                    maxLength={30}
-                  />
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>
-                    <User style={styles.formIcon} />
-                    Witness Phone
-                  </label>
-                  <input
-                    type="text"
-                    name="witnessPhone"
-                    value={formData.witnessPhone}
-                    onChange={(e) => {
-                      const rawValue = e.target.value
-                        .replace(/[^0-9]/g, "")
-                        .slice(0, 10);
-                      setFormData((prev) => ({
-                        ...prev,
-                        witnessPhone: rawValue,
-                      }));
-                    }}
-                    className="form-control"
-                    style={styles.formInput}
-                    maxLength={10}
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div style={styles.formSection}>
-              <h2 style={styles.sectionTitle}>
-                <IndianRupee style={styles.sectionIcon} /> Sale Details
-              </h2>
-              <div className="form-grid">
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>
-                    <Calendar style={styles.formIcon} />
-                    Sale Date
-                  </label>
-                  <input
-                    type="date"
-                    name="saleDate"
-                    value={formData.saleDate}
-                    onChange={handleChange}
-                    onInput={handleInput}
-                    className="form-control"
-                    style={styles.formInput}
-                  />
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>
-                    <Clock style={styles.formIcon} />
-                    Sale Time
-                  </label>
-                  <input
-                    type="time"
-                    name="saleTime"
-                    value={formData.saleTime}
-                    onChange={handleChange}
-                    onInput={handleInput}
-                    className="form-control"
-                    style={styles.formInput}
-                  />
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>
-                    <IndianRupee style={styles.formIcon} />
-                    Sale Amount (₹)
-                  </label>
-                  <input
-                    type="text"
-                    name="saleAmount"
-                    value={
-                      formData.saleAmount === ""
-                        ? ""
-                        : new Intl.NumberFormat("en-IN", {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          }).format(Number(formData.saleAmount) / 100)
-                    }
-                    onChange={(e) => {
-                      const rawValue = e.target.value.replace(/[^0-9]/g, "");
-                      setFormData((prev) => ({
-                        ...prev,
-                        saleAmount: rawValue,
-                      }));
-                    }}
-                    className="form-control"
-                    style={styles.formInput}
-                  />
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>
-                    <IndianRupee style={styles.formIcon} />
-                    Payment Method
-                  </label>
-                  <select
-                    name="paymentMethod"
-                    value={formData.paymentMethod}
-                    onChange={handleChange}
-                    onInput={handleInput}
-                    className="form-control select"
-                    style={styles.formSelect}
-                  >
-                    <option value="cash">Cash</option>
-                    <option value="check">Upi</option>
-                    <option value="bankTransfer">Bank Transfer</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>
-                    <Calendar style={styles.formIcon} />
-                    Today's Date
-                  </label>
-                  <input
-                    type="date"
-                    name="todayDate"
-                    value={formData.todayDate}
-                    onChange={handleChange}
-                    className="form-control"
-                    style={styles.formInput}
-                  />
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>
-                    <Clock style={styles.formIcon} />
-                    Today's Time
-                  </label>
-                  <input
-                    type="time"
-                    name="todayTime"
-                    value={formData.todayTime}
-                    onChange={handleChange}
-                    className="form-control"
-                    style={styles.formInput}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Invoice / Particulars Section */}
-            <div style={styles.formSection}>
-              <h2 style={styles.sectionTitle}>
-                <FileText style={styles.sectionIcon} /> Invoice / Particulars
-              </h2>
-              <div className="form-grid">
-                {" "}
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>Invoice No.</label>
-                  <input
-                    type="text"
-                    name="invoiceNumber"
-                    value={formData.invoiceNumber}
-                    onChange={handleChange}
-                    className="form-control"
-                    style={styles.formInput}
-                  />
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>Sale Value (₹)</label>
-                  <input
-                    type="text"
-                    name="saleValue"
-                    value={formData.saleValue}
-                    onChange={(e) => {
-                      const raw = e.target.value.replace(/[^0-9]/g, "");
-                      setFormData((prev) => ({ ...prev, saleValue: raw }));
-                    }}
-                    className="form-control"
-                    style={styles.formInput}
-                  />
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>Commission (₹)</label>
-                  <input
-                    type="text"
-                    name="commission"
-                    value={formData.commission}
-                    onChange={(e) => {
-                      const raw = e.target.value.replace(/[^0-9]/g, "");
-                      setFormData((prev) => ({ ...prev, commission: raw }));
-                    }}
-                    className="form-control"
-                    style={styles.formInput}
-                  />
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>RTO Charges (₹)</label>
-                  <input
-                    type="text"
-                    name="rtoCharges"
-                    value={formData.rtoCharges}
-                    onChange={(e) => {
-                      const raw = e.target.value.replace(/[^0-9]/g, "");
-                      setFormData((prev) => ({ ...prev, rtoCharges: raw }));
-                    }}
-                    className="form-control"
-                    style={styles.formInput}
-                  />
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>Other Charges (₹)</label>
-                  <input
-                    type="text"
-                    name="otherCharges"
-                    value={formData.otherCharges}
-                    onChange={(e) => {
-                      const raw = e.target.value.replace(/[^0-9]/g, "");
-                      setFormData((prev) => ({ ...prev, otherCharges: raw }));
-                    }}
-                    className="form-control"
-                    style={styles.formInput}
-                  />
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>Advance (₹)</label>
-                  <input
-                    type="text"
-                    name="advanceAmount"
-                    value={formData.advanceAmount}
-                    onChange={(e) => {
-                      const raw = e.target.value.replace(/[^0-9]/g, "");
-                      setFormData((prev) => ({ ...prev, advanceAmount: raw }));
-                    }}
-                    className="form-control"
-                    style={styles.formInput}
-                  />
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>Balance (₹)</label>
-                  <input
-                    type="text"
-                    name="balanceAmount"
-                    value={formData.balanceAmount}
-                    onChange={(e) => {
-                      const raw = e.target.value.replace(/[^0-9]/g, "");
-                      setFormData((prev) => ({ ...prev, balanceAmount: raw }));
-                    }}
-                    className="form-control"
-                    style={styles.formInput}
-                  />
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>Declaration</label>
-                  <textarea
-                    name="declaration"
-                    value={formData.declaration}
-                    onChange={handleChange}
-                    className="form-control"
-                    style={{ ...styles.formInput, height: "120px" }}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Legal Terms Section - Updated */}
-            <div style={styles.formSection}>
-              <h2 style={styles.sectionTitle}>
-                <FileSignature style={styles.sectionIcon} /> Legal Terms
-              </h2>
-              <div className="form-grid">
-                <div style={styles.formCheckboxField}>
-                  <input
-                    type="checkbox"
-                    name="documentsVerified"
-                    checked={formData.documentsVerified}
-                    onChange={handleChange}
-                    style={styles.formCheckbox}
-                  />
-                  <label style={styles.formCheckboxLabel}>
-                    <CheckCircle style={styles.formIcon} />
-                    All documents verified and satisfactory
-                  </label>
-                </div>
-                <div className="form-group col-2">
-                  <label style={styles.formLabel}>
-                    <AlertCircle style={styles.formIcon} />
-                    Note
-                  </label>
-                  <textarea
-                    name="note"
-                    value={formData.note}
-                    onChange={handleChange}
-                    onFocus={() => setFocusedInput("note")}
-                    onBlur={() => setFocusedInput(null)}
-                    className="form-control"
-                    style={{
-                      ...styles.formInput,
-                      ...(focusedInput === "note" ? styles.inputFocused : {}),
-                    }}
-                    rows={3}
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div style={styles.formActions}>
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "10px" }}
-              >
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>
+              <Car size={20} style={styles.icon} /> Vehicle Details
+            </h2>
+            <div style={styles.grid}>
+              <div style={styles.field}>
+                <label style={styles.label}>Select from Inventory</label>
                 <select
-                  value={previewLanguage}
-                  onChange={(e) => setPreviewLanguage(e.target.value)}
-                  style={styles.formSelect}
+                  onChange={handleSelectCar}
+                  style={styles.input}
+                  defaultValue=""
                 >
-                  <option value="hindi">Hindi Preview</option>
-                  <option value="english">English Preview</option>
+                  <option value="" disabled>
+                    -- Select a Car --
+                  </option>
+                  {cars.map((car) => (
+                    <option key={car._id} value={car._id}>
+                      {car.make} {car.model} ({car.registrationNumber})
+                    </option>
+                  ))}
                 </select>
-                <button
-                  type="button"
-                  onClick={() => handlePreview(previewLanguage)}
-                  style={styles.previewButton}
-                  disabled={isSaving}
-                >
-                  <FileText style={styles.buttonIcon} /> Preview
-                </button>
               </div>
+              <div style={styles.field}>
+                <label style={styles.label}>Vehicle Name</label>
+                <input
+                  type="text"
+                  name="vehicleName"
+                  value={formData.vehicleName}
+                  onChange={handleChange}
+                  style={styles.input}
+                  onFocus={() => setFocusedInput("vehicleName")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+              <div style={styles.field}>
+                <label style={styles.label}>Vehicle Model</label>
+                <input
+                  type="text"
+                  name="vehicleModel"
+                  value={formData.vehicleModel}
+                  onChange={handleChange}
+                  style={styles.input}
+                  onFocus={() => setFocusedInput("vehicleModel")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+              <div style={styles.field}>
+                <label style={styles.label}>Vehicle Color</label>
+                <input
+                  type="text"
+                  name="vehicleColor"
+                  value={formData.vehicleColor}
+                  onChange={handleChange}
+                  style={styles.input}
+                  onFocus={() => setFocusedInput("vehicleColor")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+              <div style={styles.field}>
+                <label style={styles.label}>Fuel Type</label>
+                <input
+                  type="text"
+                  name="fuelType"
+                  value={formData.fuelType}
+                  onChange={handleChange}
+                  style={styles.input}
+                  onFocus={() => setFocusedInput("fuelType")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+              <div style={styles.field}>
+                <label style={styles.label}>Year</label>
+                <input
+                  type="text"
+                  name="year"
+                  value={formData.year}
+                  onChange={handleChange}
+                  style={styles.input}
+                  onFocus={() => setFocusedInput("year")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+              <div style={styles.field}>
+                <label style={styles.label}>Registration Number</label>
+                <input
+                  type="text"
+                  name="registrationNumber"
+                  value={formData.registrationNumber}
+                  onChange={handleChange}
+                  style={styles.input}
+                  onFocus={() => setFocusedInput("registrationNumber")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+              <div style={styles.field}>
+                <label style={styles.label}>Chassis Number</label>
+                <input
+                  type="text"
+                  name="chassisNumber"
+                  value={formData.chassisNumber}
+                  onChange={handleChange}
+                  style={styles.input}
+                  onFocus={() => setFocusedInput("chassisNumber")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+              <div style={styles.field}>
+                <label style={styles.label}>Engine Number</label>
+                <input
+                  type="text"
+                  name="engineNumber"
+                  value={formData.engineNumber}
+                  onChange={handleChange}
+                  style={styles.input}
+                  onFocus={() => setFocusedInput("engineNumber")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>
+              <User size={20} style={styles.icon} /> Buyer Details
+            </h2>
+            <div style={styles.grid}>
+              <div style={styles.field}>
+                <label style={styles.label}>Buyer Name</label>
+                <input
+                  type="text"
+                  name="buyerName"
+                  value={formData.buyerName}
+                  onChange={handleChange}
+                  style={styles.input}
+                  onFocus={() => setFocusedInput("buyerName")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+              <div style={styles.field}>
+                <label style={styles.label}>Buyer Address</label>
+                <input
+                  type="text"
+                  name="buyerAddress"
+                  value={formData.buyerAddress}
+                  onChange={handleChange}
+                  style={styles.input}
+                  onFocus={() => setFocusedInput("buyerAddress")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+              <div style={styles.field}>
+                <label style={styles.label}>ID Number</label>
+                <input
+                  type="text"
+                  name="idNumber"
+                  value={formData.idNumber}
+                  onChange={handleChange}
+                  style={styles.input}
+                  onFocus={() => setFocusedInput("idNumber")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+              <div style={styles.field}>
+                <label style={styles.label}>Contact Number</label>
+                <input
+                  type="text"
+                  name="contactNo"
+                  value={formData.contactNo}
+                  onChange={handleChange}
+                  style={styles.input}
+                  onFocus={() => setFocusedInput("contactNo")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>
+              <IndianRupee size={20} style={styles.icon} /> Financials
+            </h2>
+            <div style={styles.grid}>
+              <div style={styles.field}>
+                <label style={styles.label}>Sale Value</label>
+                <input
+                  type="number"
+                  name="saleValue"
+                  value={formData.saleValue}
+                  onChange={handleChange}
+                  style={styles.input}
+                  onFocus={() => setFocusedInput("saleValue")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+              <div style={styles.field}>
+                <label style={styles.label}>Commission</label>
+                <input
+                  type="number"
+                  name="commission"
+                  value={formData.commission}
+                  onChange={handleChange}
+                  style={styles.input}
+                  onFocus={() => setFocusedInput("commission")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+              <div style={styles.field}>
+                <label style={styles.label}>RTO Charges</label>
+                <input
+                  type="number"
+                  name="rtoCharges"
+                  value={formData.rtoCharges}
+                  onChange={handleChange}
+                  style={styles.input}
+                  onFocus={() => setFocusedInput("rtoCharges")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+              <div style={styles.field}>
+                <label style={styles.label}>Other Charges</label>
+                <input
+                  type="number"
+                  name="otherCharges"
+                  value={formData.otherCharges}
+                  onChange={handleChange}
+                  style={styles.input}
+                  onFocus={() => setFocusedInput("otherCharges")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+              <div style={styles.field}>
+                <label style={styles.label}>Advance Amount</label>
+                <input
+                  type="number"
+                  name="advanceAmount"
+                  value={formData.advanceAmount}
+                  onChange={handleChange}
+                  style={styles.input}
+                  onFocus={() => setFocusedInput("advanceAmount")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+            </div>
+            <div style={styles.summaryBox}>
+              <div style={styles.summaryItem}>
+                <span style={styles.summaryLabel}>Total Amount:</span>
+                <span style={styles.summaryValue}>
+                  {formatRupee(totalAmount)}
+                </span>
+              </div>
+              <div style={styles.summaryItem}>
+                <span style={styles.summaryLabel}>Balance Amount:</span>
+                <span style={styles.summaryValue}>
+                  {formatRupee(balanceAmount)}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>
+              <FileText size={20} style={styles.icon} /> Dates & Notes
+            </h2>
+            <div style={styles.grid}>
+              <div style={styles.field}>
+                <label style={styles.label}>Sale Date</label>
+                <input
+                  type="date"
+                  name="saleDate"
+                  value={formData.saleDate}
+                  onChange={handleChange}
+                  style={styles.input}
+                />
+              </div>
+              <div style={styles.field}>
+                <label style={styles.label}>Sale Time</label>
+                <input
+                  type="time"
+                  name="saleTime"
+                  value={formData.saleTime}
+                  onChange={handleChange}
+                  style={styles.input}
+                />
+              </div>
+              <div style={styles.field}>
+                <label style={styles.label}>Invoice Number</label>
+                <input
+                  type="text"
+                  name="invoiceNumber"
+                  value={formData.invoiceNumber}
+                  onChange={handleChange}
+                  style={styles.input}
+                  placeholder="e.g., INV-2024-001"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div style={styles.actions}>
+            <button
+              onClick={handleSave}
+              style={styles.saveButton}
+              disabled={isSaving}
+            >
+              {isSaving ? "Saving..." : "Save & Continue"}
+            </button>
+            <button
+              onClick={() => handlePreview("english")}
+              style={styles.previewButton}
+            >
+              Preview PDF
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {showLanguageModal && (
+        <div style={modalStyles.overlay}>
+          <div style={modalStyles.modal}>
+            <div style={modalStyles.header}>
+              <h2 style={modalStyles.title}>
+                <CheckCircle
+                  size={24}
+                  style={{ color: "#22c55e", marginRight: "12px" }}
+                />
+                Invoice Saved
+              </h2>
               <button
-                type="button"
-                onClick={handleSaveAndDownload}
-                style={styles.downloadButton}
-                disabled={isSaving}
+                onClick={() => setShowLanguageModal(false)}
+                style={modalStyles.closeButton}
               >
-                <Download style={styles.buttonIcon} /> Save & Download
+                &times;
               </button>
             </div>
-          </form>
-        </div>
-        {showLanguageModal && (
-          <div style={styles.modalOverlay}>
-            <div style={styles.modalContent}>
-              <h3 style={styles.modalTitle}>Select PDF Language</h3>
-              <p style={styles.modalText}>
-                Choose the language for your sell letter:
-              </p>
-              <div style={styles.modalButtons}>
-                <button
-                  style={styles.englishButton}
-                  onClick={() => {
-                    handlePreviewAndDownload("english");
-                    setShowLanguageModal(false);
-                  }}
-                >
-                  Download Preview (English)
-                </button>
-                <button
-                  style={styles.hindiButton}
-                  onClick={() => {
-                    handlePreviewAndDownload("hindi");
-                    setShowLanguageModal(false);
-                  }}
-                >
-                  Download Preview (Hindi)
-                </button>
-              </div>
+            <p style={modalStyles.modalText}>
+              Your sale invoice has been saved successfully. Please choose a
+              language to download the PDF.
+            </p>
+            <div style={modalStyles.modalActions}>
               <button
-                style={styles.modalCloseButton}
-                onClick={() => setShowLanguageModal(false)}
+                onClick={() => handleDownload("english")}
+                style={modalStyles.downloadButton}
               >
-                Close
+                <Download size={16} style={{ marginRight: "8px" }} />
+                Download English PDF
+              </button>
+              <button
+                onClick={() => handleDownload("hindi")}
+                style={modalStyles.downloadButton}
+              >
+                <Download size={16} style={{ marginRight: "8px" }} />
+                Download Hindi PDF
               </button>
             </div>
           </div>
-        )}
-        {showPreviewModal && (
-          <div style={styles.modalOverlay}>
-            <div
-              style={{
-                ...styles.modalContent,
-                maxWidth: "90%",
-                width: "800px",
-              }}
-            >
-              <h3 style={styles.modalTitle}>
-                Document Preview -{" "}
-                {previewLanguage === "hindi" ? "Hindi" : "English"}
-              </h3>
-              <div
-                style={{ height: "70vh", width: "100%", marginBottom: "20px" }}
-              >
-                {previewPdf ? (
-                  <iframe
-                    src={previewPdf}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      border: "1px solid #e2e8f0",
-                    }}
-                    title="PDF Preview"
-                  />
-                ) : (
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      height: "100%",
-                      color: "#64748b",
-                    }}
-                  >
-                    Loading preview...
-                  </div>
-                )}
-              </div>
-              <div style={styles.modalButtons}>
-                <button
-                  style={styles.englishButton}
-                  onClick={() => handlePreviewAndDownload("english")}
-                >
-                  Download English PDF
-                </button>
-                <button
-                  style={styles.hindiButton}
-                  onClick={() => handlePreviewAndDownload("hindi")}
-                >
-                  Download Hindi PDF
-                </button>
-              </div>
+        </div>
+      )}
+
+      {showPreviewModal && (
+        <div style={modalStyles.overlay}>
+          <div style={{ ...modalStyles.modal, width: "90%", height: "90%" }}>
+            <div style={modalStyles.header}>
+              <h2 style={modalStyles.title}>Invoice Preview</h2>
               <button
-                style={styles.modalCloseButton}
-                onClick={() => setShowPreviewModal(false)}
+                onClick={() => {
+                  setShowPreviewModal(false);
+                  if (previewPdf) URL.revokeObjectURL(previewPdf);
+                }}
+                style={modalStyles.closeButton}
+              >
+                &times;
+              </button>
+            </div>
+            <iframe
+              src={previewPdf}
+              style={{ width: "100%", height: "calc(100% - 100px)" }}
+              title="PDF Preview"
+            ></iframe>
+            <div style={modalStyles.modalActions}>
+              <button
+                onClick={() => handleDownload(previewLanguage)}
+                style={modalStyles.downloadButton}
+              >
+                Download {previewLanguage === "english" ? "English" : "Hindi"}{" "}
+                PDF
+              </button>
+              <button
+                onClick={() => {
+                  setShowPreviewModal(false);
+                  if (previewPdf) URL.revokeObjectURL(previewPdf);
+                }}
+                style={modalStyles.cancelButton}
               >
                 Close Preview
               </button>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
+
 const styles = {
   container: {
     display: "flex",
     minHeight: "100vh",
-    backgroundColor: "#f1f5f9",
-    fontFamily: "'Inter', sans-serif",
+    backgroundColor: "#f8f9fa",
   },
-
-  // Sidebar Styles
-  sidebar: {
-    width: "280px",
-    backgroundColor: "#1e293b",
-    color: "#f8fafc",
-    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-    position: "sticky",
-    top: 0,
-    height: "100vh",
-    backgroundImage: "linear-gradient(to bottom, #1e293b, #0f172a)",
-  },
-  sidebarHeader: {
-    padding: "24px",
-    borderBottom: "1px solid #334155",
-  },
-  sidebarTitle: {
-    fontSize: "1.25rem",
-    fontWeight: "600",
-    color: "#ffffff",
-    margin: 0,
-  },
-  sidebarSubtitle: {
-    fontSize: "0.875rem",
-    color: "#94a3b8",
-    margin: "4px 0 0 0",
-  },
-  nav: {
-    padding: "16px 0",
-  },
-  menuItem: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: "12px 24px",
-    cursor: "pointer",
-    color: "#e2e8f0",
-    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-    ":hover": {
-      backgroundColor: "#334155",
-    },
-  },
-  menuItemActive: {
-    backgroundColor: "#334155",
-    borderRight: "3px solid #2D2D2D",
-    color: "#ffffff",
-  },
-  menuItemContent: {
-    display: "flex",
-    alignItems: "center",
-  },
-  menuIcon: {
-    marginRight: "12px",
-    color: "#94a3b8",
-  },
-  menuText: {
-    fontSize: "0.9375rem",
-    fontWeight: "500",
-  },
-  submenu: {
-    backgroundColor: "#1a2536",
-  },
-  submenuItem: {
-    padding: "10px 24px 10px 64px",
-    cursor: "pointer",
-    color: "#cbd5e1",
-    fontSize: "0.875rem",
-    transition: "all 0.2s ease",
-    ":hover": {
-      backgroundColor: "#2d3748",
-    },
-  },
-  submenuItemActive: {
-    backgroundColor: "#2d3748",
-    color: "#ffffff",
-  },
-  logoutButton: {
-    display: "flex",
-    alignItems: "center",
-    padding: "12px 24px",
-    cursor: "pointer",
-    color: "#f87171",
-    marginTop: "16px",
-    borderTop: "1px solid #334155",
-    transition: "all 0.2s ease",
-    ":hover": {
-      backgroundColor: "#7f1d1d20",
-    },
-  },
-
-  // Main Content Styles
   mainContent: {
     flex: 1,
-    overflow: "auto",
+    padding: "40px",
+  },
+  formContainer: {
     backgroundColor: "#ffffff",
-  },
-  contentPadding: {
-    padding: "32px",
-  },
-  header: {
-    marginBottom: "32px",
-  },
-  pageTitle: {
-    fontSize: "1.875rem",
-    fontWeight: "700",
-    color: "#1e293b",
-    margin: 0,
-    textAlign: "center",
-  },
-  pageSubtitle: {
-    fontSize: "1rem",
-    color: "#64748b",
-    margin: "8px 0 0 0",
-    textAlign: "center",
-  },
-  modalOverlay: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 1000,
-  },
-  modalContent: {
-    backgroundColor: "#ffffff",
-    padding: "24px",
-    borderRadius: "8px",
-    width: "400px",
-    maxWidth: "90%",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-  },
-  modalTitle: {
-    fontSize: "1.25rem",
-    fontWeight: "600",
-    marginBottom: "16px",
-    color: "#1e293b",
-  },
-  modalText: {
-    marginBottom: "24px",
-    color: "#64748b",
-  },
-  modalButtons: {
-    display: "flex",
-    gap: "16px",
-    marginBottom: "24px",
-  },
-  englishButton: {
-    flex: 1,
-    padding: "12px",
-    backgroundColor: "#2D2D2D",
-    color: "white",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer",
-    fontWeight: "500",
-    ":hover": {
-      backgroundColor: "#2563eb",
-    },
-  },
-  hindiButton: {
-    flex: 1,
-    padding: "12px",
-    backgroundColor: "#10b981",
-    color: "white",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer",
-    fontWeight: "500",
-    ":hover": {
-      backgroundColor: "#059669",
-    },
-  },
-  modalCloseButton: {
-    width: "100%",
-    padding: "8px",
-    backgroundColor: "#f1f5f9",
-    color: "#64748b",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer",
-    ":hover": {
-      backgroundColor: "#e2e8f0",
-    },
-  },
-  form: {
-    backgroundColor: "#ffffff",
+    padding: "40px",
     borderRadius: "12px",
-    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-    padding: "32px",
-    border: "1px solid #e2e8f0",
+    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.05)",
   },
-  formSection: {
-    marginBottom: "40px",
-    paddingBottom: "24px",
-    borderBottom: "1px solid #e2e8f0",
-    ":last-child": {
-      borderBottom: "none",
-      marginBottom: "0",
-    },
-  },
-  sectionTitle: {
-    fontSize: "1.25rem",
-    fontWeight: "600",
-    color: "#1e293b",
-    marginBottom: "24px",
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-    paddingBottom: "8px",
-    borderBottom: "1px solid #e2e8f0",
-  },
-  sectionIcon: {
-    color: "#64748b",
-  },
-  formGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-    gap: "20px",
-  },
-  formField: {
-    marginBottom: "16px",
-  },
-  formLabel: {
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-    fontSize: "0.875rem",
-    fontWeight: "500",
-    color: "#334155",
+  title: {
+    fontSize: "28px",
+    fontWeight: "bold",
+    color: "#343a40",
     marginBottom: "8px",
   },
-  formIcon: {
-    width: "18px",
-    height: "18px",
-    color: "#64748b",
+  subtitle: {
+    fontSize: "16px",
+    color: "#6c757d",
+    marginBottom: "32px",
   },
-  formInput: {
-    width: "83%",
-    padding: "10px 12px",
-    border: "1px solid #cbd5e1",
-    borderRadius: "8px",
-    fontSize: "0.875rem",
-    transition: "all 0.2s ease",
-    backgroundColor: "#f8fafc",
-    ":focus": {
-      outline: "none",
-      borderColor: "#2D2D2D",
-      boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.1)",
-      backgroundColor: "#ffffff",
-    },
+  section: {
+    marginBottom: "32px",
   },
-
-  saveButton: {
+  sectionTitle: {
+    fontSize: "20px",
+    fontWeight: "600",
+    color: "#495057",
+    borderBottom: "2px solid #e9ecef",
+    paddingBottom: "12px",
+    marginBottom: "24px",
     display: "flex",
     alignItems: "center",
-    gap: "8px",
-    padding: "10px 20px",
-    backgroundColor: "#10b981",
-    color: "white",
-    border: "none",
-    borderRadius: "8px",
-    fontSize: "0.875rem",
+  },
+  icon: {
+    marginRight: "12px",
+    color: "#007bff",
+  },
+  grid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+    gap: "24px",
+  },
+  field: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  label: {
+    fontSize: "14px",
     fontWeight: "500",
-    cursor: "pointer",
-    transition: "all 0.2s ease",
-    ":hover": {
-      backgroundColor: "#059669",
-    },
-    ":disabled": {
-      backgroundColor: "#6ee7b7",
-      cursor: "not-allowed",
-    },
+    color: "#495057",
+    marginBottom: "8px",
   },
-  formSelect: {
-    width: "90%",
-    padding: "10px 12px",
-    border: "1px solid #cbd5e1",
+  input: {
+    padding: "12px",
+    fontSize: "14px",
+    border: "1px solid #ced4da",
+    borderRadius: "6px",
+    transition: "border-color 0.2s, box-shadow 0.2s",
+    outline: "none",
+  },
+  summaryBox: {
+    marginTop: "24px",
+    padding: "20px",
+    backgroundColor: "#f8f9fa",
     borderRadius: "8px",
-    fontSize: "0.875rem",
-    backgroundColor: "#f8fafc",
-    transition: "all 0.2s ease",
-    appearance: "none",
-    backgroundImage:
-      "url(\"data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e\")",
-    backgroundRepeat: "no-repeat",
-    backgroundPosition: "right 0.5rem center",
-    backgroundSize: "1em",
-    ":focus": {
-      outline: "none",
-      borderColor: "#2D2D2D",
-      boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.1)",
-      backgroundColor: "#ffffff",
-    },
+    border: "1px solid #e9ecef",
   },
-  formTextarea: {
-    width: "90%",
-    padding: "10px 12px",
-    border: "1px solid #cbd5e1",
-    borderRadius: "8px",
-    fontSize: "0.875rem",
-    minHeight: "80px",
-    resize: "vertical",
-    transition: "all 0.2s ease",
-    backgroundColor: "#f8fafc",
-    ":focus": {
-      outline: "none",
-      borderColor: "#2D2D2D",
-      boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.1)",
-      backgroundColor: "#ffffff",
-    },
-  },
-  formCheckboxField: {
+  summaryItem: {
     display: "flex",
+    justifyContent: "space-between",
     alignItems: "center",
-    gap: "8px",
-    marginBottom: "16px",
+    padding: "8px 0",
   },
-  formCheckbox: {
-    width: "16px",
-    height: "16px",
-    accentColor: "#2D2D2D",
-  },
-  formCheckboxLabel: {
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-    fontSize: "0.875rem",
+  summaryLabel: {
+    fontSize: "16px",
     fontWeight: "500",
-    color: "#334155",
-    cursor: "pointer",
+    color: "#495057",
   },
-
-  // Action Buttons
-  formActions: {
+  summaryValue: {
+    fontSize: "18px",
+    fontWeight: "bold",
+    color: "#212529",
+  },
+  actions: {
     display: "flex",
     justifyContent: "flex-end",
     gap: "16px",
     marginTop: "32px",
   },
+  saveButton: {
+    padding: "12px 24px",
+    fontSize: "16px",
+    fontWeight: "600",
+    color: "#ffffff",
+    backgroundColor: "#28a745",
+    border: "none",
+    borderRadius: "6px",
+    cursor: "pointer",
+    transition: "background-color 0.2s",
+  },
   previewButton: {
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-    padding: "10px 20px",
-    backgroundColor: "#ffffff",
-    color: "#334155",
-    border: "1px solid #cbd5e1",
-    borderRadius: "8px",
-    fontSize: "0.875rem",
-    fontWeight: "500",
-    cursor: "pointer",
-    transition: "all 0.2s ease",
-    ":hover": {
-      backgroundColor: "#f1f5f9",
-      borderColor: "#94a3b8",
-    },
-  },
-  downloadButton: {
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-    padding: "10px 20px",
-    backgroundColor: "#2D2D2D",
-    color: "white",
-    border: "none",
-    borderRadius: "8px",
-    fontSize: "0.875rem",
-    fontWeight: "500",
-    cursor: "pointer",
-    transition: "all 0.2s ease",
-    ":hover": {
-      backgroundColor: "#2563eb",
-    },
-  },
-  buttonIcon: {
-    width: "16px",
-    height: "16px",
-  },
-
-  // Preview Mode Styles
-  formPreviewContainer: {
-    backgroundColor: "#ffffff",
-    borderRadius: "12px",
-    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-    padding: "32px",
-  },
-  formPreviewHeader: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "24px",
-  },
-  backButton: {
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-    padding: "8px 16px",
-    backgroundColor: "#f3f4f6",
-    color: "#111827",
+    padding: "12px 24px",
+    fontSize: "16px",
+    fontWeight: "600",
+    color: "#ffffff",
+    backgroundColor: "#007bff",
     border: "none",
     borderRadius: "6px",
-    fontSize: "0.875rem",
-    fontWeight: "500",
     cursor: "pointer",
-  },
-  previewActions: {
-    display: "flex",
-    gap: "16px",
-  },
-  pdfPreview: {
-    minHeight: "500px",
-    border: "1px dashed #d1d5db",
-    borderRadius: "6px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#f9fafb",
-    color: "#6b7280",
+    transition: "background-color 0.2s",
   },
 };
 
-export default SellLetterForm;
+const modalStyles = {
+  overlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000,
+  },
+  modal: {
+    backgroundColor: "#ffffff",
+    padding: "30px",
+    borderRadius: "12px",
+    boxShadow: "0 5px 25px rgba(0, 0, 0, 0.15)",
+    width: "500px",
+    maxWidth: "90%",
+  },
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "20px",
+    borderBottom: "1px solid #e9ecef",
+    paddingBottom: "15px",
+  },
+  title: {
+    fontSize: "22px",
+    fontWeight: "bold",
+    color: "#343a40",
+    margin: 0,
+    display: "flex",
+    alignItems: "center",
+  },
+  closeButton: {
+    background: "none",
+    border: "none",
+    fontSize: "28px",
+    color: "#6c757d",
+    cursor: "pointer",
+  },
+  modalText: {
+    fontSize: "16px",
+    color: "#495057",
+    marginBottom: "25px",
+    lineHeight: 1.6,
+  },
+  modalActions: {
+    display: "flex",
+    justifyContent: "flex-end",
+    gap: "12px",
+    marginTop: "20px",
+  },
+  downloadButton: {
+    padding: "10px 20px",
+    fontSize: "15px",
+    fontWeight: "600",
+    color: "#ffffff",
+    backgroundColor: "#007bff",
+    border: "none",
+    borderRadius: "6px",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    transition: "background-color 0.2s",
+  },
+  cancelButton: {
+    padding: "10px 20px",
+    fontSize: "15px",
+    fontWeight: "600",
+    color: "#495057",
+    backgroundColor: "#e9ecef",
+    border: "none",
+    borderRadius: "6px",
+    cursor: "pointer",
+    transition: "background-color 0.2s",
+  },
+};
+
+
