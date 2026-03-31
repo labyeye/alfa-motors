@@ -887,17 +887,6 @@ const RcListPage = () => {
     </div>
   );
 };
-
-function handleViewPdf(record) {
-  if (!record || !record.pdfUrl) return;
-  const url = record.pdfUrl;
-  if (
-    typeof url === "string" &&
-    (url.startsWith("http://") || url.startsWith("https://"))
-  ) {
-    window.open(url, "_blank");
-    return;
-  }
   const API_BASE =
     process.env.REACT_APP_API_BASE_URL || "https://alfa-motors-9bk6.vercel.app";
   window.open(`${API_BASE}${url}`, "_blank");
