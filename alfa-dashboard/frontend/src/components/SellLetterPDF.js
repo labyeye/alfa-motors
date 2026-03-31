@@ -1042,6 +1042,8 @@ const SellLetterForm = () => {
   );
 };
 
+export default SellLetterForm;
+
 const styles = {
   container: {
     display: "flex",
