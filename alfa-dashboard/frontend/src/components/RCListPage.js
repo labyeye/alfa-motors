@@ -677,22 +677,12 @@ const RcListPage = () => {
           >
             <Edit size={18} />
           </button>
-          {record.pdfUrl && (
-            <button
-              onClick={() => handleViewPdf(record)}
-              style={styles.actionButton}
-              title="View PDF"
-            >
-              <Download size={18} />
-            </button>
-          )}
           <button
             onClick={() => handleDelete(record._id)}
             style={{ ...styles.actionButton, color: "#ef4444" }}
             title="Delete"
-            disabled={loading}
           >
-            {loading ? <Spin size="small" /> : <Trash2 size={18} />}
+            <Trash2 size={18} />
           </button>
         </div>
       ),
