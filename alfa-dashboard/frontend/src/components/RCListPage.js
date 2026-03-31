@@ -887,8 +887,5 @@ const RcListPage = () => {
     </div>
   );
 };
-  const API_BASE =
-    process.env.REACT_APP_API_BASE_URL || "https://alfa-motors-9bk6.vercel.app";
-  window.open(`${API_BASE}${url}`, "_blank");
-}
+
 export default RcListPage;
