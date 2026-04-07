@@ -4,20 +4,15 @@ import { saveAs } from "file-saver";
 import axios from "axios";
 import {
   User,
-  FileSignature,
   Download,
-  Calendar,
-  Clock,
   IndianRupee,
   CheckCircle,
-  AlertCircle,
   Car,
   FileText,
 } from "lucide-react";
 import logo from "../images/company.png";
 import logo1 from "../images/okmotorback.png";
 import Sidebar from "./Sidebar";
-// AuthContext not required in this component
 const API_BASE =
   window.API_BASE ||
   (window.location.hostname === "localhost"
@@ -31,7 +26,7 @@ const SellLetterForm = () => {
   const [previewPdf, setPreviewPdf] = useState(null);
   const [previewLanguage, setPreviewLanguage] = useState("hindi");
   const [showPreviewModal, setShowPreviewModal] = useState(false);
-  const [focusedInput, setFocusedInput] = useState(null);
+  const [, setFocusedInput] = useState(null);
   const [cars, setCars] = useState([]);
   // navigation not used in this component
 
@@ -1245,5 +1240,3 @@ const modalStyles = {
     transition: "background-color 0.2s",
   },
 };
-
-

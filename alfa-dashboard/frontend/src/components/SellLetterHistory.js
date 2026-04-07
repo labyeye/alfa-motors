@@ -1,10 +1,8 @@
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import { FileText, Search, Download, Edit, Trash2, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Search, Download, Edit, Trash2, X } from "lucide-react";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import logo from "../images/company.png";
-import logo1 from "../images/okmotorback.png";
 
 import AuthContext from "../context/AuthContext";
 import Sidebar from "./Sidebar";
@@ -152,10 +150,9 @@ const SellLetterHistory = () => {
   const [sellLetters, setSellLetters] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, ] = useState(1);
+  const [, setTotalPages] = useState(1);
   const [editingLetter, setEditingLetter] = useState(null);
-  const navigate = useNavigate();
   const hindiFieldPositions = {
     vehicleName: { x: 303, y: 696, size: 11 },
     vehicleModel: { x: 39, y: 674, size: 11 },
