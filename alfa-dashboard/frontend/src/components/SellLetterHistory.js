@@ -740,6 +740,10 @@ const SellLetterHistory = () => {
     }
   };
 
+  const handleEdit = (letter) => {
+    setEditingLetter(letter);
+  };
+
   return (
     <div className="flex h-screen bg-gray-100">
       <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
