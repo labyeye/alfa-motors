@@ -4,7 +4,7 @@ const { Car } = require("../models_sql/CarSQL");
 const { connectDB } = require("../db");
 const { protect } = require("../middleware/auth");
 const { upload } = require("../utils/multerMemory");
-const { uploadBufferToXOZZ } = require('../utils/xozzUpload');
+const { uploadBufferToXOZZ } = require("../utils/xozzUpload");
 
 const path = require("path");
 const fs = require("fs");
@@ -28,7 +28,7 @@ function normalizePhotos(value) {
         if (Array.isArray(parsed.interior)) all.push(...parsed.interior);
         if (Array.isArray(parsed.exterior)) all.push(...parsed.exterior);
         if (all.length > 0) return all;
-        
+
         // legacy object format handling
         if (Array.isArray(parsed.photos)) return parsed.photos;
         return Object.values(parsed).filter((v) => typeof v === "string");
@@ -60,11 +60,11 @@ function normalizePhotos(value) {
 }
 
 function parseNumber(value) {
-  if (value === undefined || value === null || value === '') return undefined;
-  if (typeof value === 'number') return value;
-  if (typeof value === 'string') {
+  if (value === undefined || value === null || value === "") return undefined;
+  if (typeof value === "number") return value;
+  if (typeof value === "string") {
     // remove currency symbols, commas and spaces
-    const cleaned = value.replace(/[₹,\s]/g, '').replace(/[^0-9.\-]/g, '');
+    const cleaned = value.replace(/[₹,\s]/g, "").replace(/[^0-9.\-]/g, "");
     const n = Number(cleaned);
     return Number.isFinite(n) ? n : undefined;
   }
@@ -72,17 +72,17 @@ function parseNumber(value) {
 }
 
 function sanitizeNumericFields(obj) {
-  if (!obj || typeof obj !== 'object') return obj;
+  if (!obj || typeof obj !== "object") return obj;
   const out = Object.assign({}, obj);
   const fields = [
-    'buyingPrice',
-    'quotingPrice',
-    'sellingPrice',
-    'kmDriven',
-    'modelYear',
-    'registrationYear',
-    'downPayment',
-    'daysOld',
+    "buyingPrice",
+    "quotingPrice",
+    "sellingPrice",
+    "kmDriven",
+    "modelYear",
+    "registrationYear",
+    "downPayment",
+    "daysOld",
   ];
   for (const f of fields) {
     if (f in out) {
@@ -118,82 +118,111 @@ router.get("/:id", async (req, res) => {
     if (!car) return res.status(404).json({ message: "Car not found" });
     res.json(formatCarInstance(car));
   } catch (err) {
-    console.error("[carSqlRoutes] GET /api/cars/:id error:", err.message || err);
-    res.status(500).json({ message: "Server error", error: err.message || String(err) });
+    console.error(
+      "[carSqlRoutes] GET /api/cars/:id error:",
+      err.message || err,
+    );
+    res
+      .status(500)
+      .json({ message: "Server error", error: err.message || String(err) });
   }
 });
 
 // POST /api/cars -> create new car
 // Create new car (supports categorized multipart file upload)
-router.post("/", protect, upload.fields([
-  { name: 'cover', maxCount: 1 },
-  { name: 'interior', maxCount: 6 },
-  { name: 'exterior', maxCount: 6 }
-]), async (req, res) => {
-  try {
-    await connectDB();
-    
-    let photoData = {
-      cover: null,
-      interior: [],
-      exterior: []
-    };
+router.post(
+  "/",
+  protect,
+  upload.fields([
+    { name: "cover", maxCount: 1 },
+    { name: "interior", maxCount: 6 },
+    { name: "exterior", maxCount: 6 },
+  ]),
+  async (req, res) => {
+    try {
+      await connectDB();
 
-    if (req.files) {
-      // Process cover
-      if (req.files.cover && req.files.cover[0]) {
-        const f = req.files.cover[0];
-        const r = await uploadBufferToXOZZ(f.buffer, f.originalname, f.mimetype);
-        if (r && r.url) photoData.cover = r.url;
-      }
-      
-      // Process interior
-      if (req.files.interior) {
-        for (const f of req.files.interior) {
-          const r = await uploadBufferToXOZZ(f.buffer, f.originalname, f.mimetype);
-          if (r && r.url) photoData.interior.push(r.url);
+      let photoData = {
+        cover: null,
+        interior: [],
+        exterior: [],
+      };
+
+      if (req.files) {
+        // Process cover
+        if (req.files.cover && req.files.cover[0]) {
+          const f = req.files.cover[0];
+          const r = await uploadBufferToXOZZ(
+            f.buffer,
+            f.originalname,
+            f.mimetype,
+          );
+          if (r && r.url) photoData.cover = r.url;
+        }
+
+        // Process interior
+        if (req.files.interior) {
+          for (const f of req.files.interior) {
+            const r = await uploadBufferToXOZZ(
+              f.buffer,
+              f.originalname,
+              f.mimetype,
+            );
+            if (r && r.url) photoData.interior.push(r.url);
+          }
+        }
+
+        // Process exterior
+        if (req.files.exterior) {
+          for (const f of req.files.exterior) {
+            const r = await uploadBufferToXOZZ(
+              f.buffer,
+              f.originalname,
+              f.mimetype,
+            );
+            if (r && r.url) photoData.exterior.push(r.url);
+          }
         }
       }
 
-      // Process exterior
-      if (req.files.exterior) {
-        for (const f of req.files.exterior) {
-          const r = await uploadBufferToXOZZ(f.buffer, f.originalname, f.mimetype);
-          if (r && r.url) photoData.exterior.push(r.url);
-        }
+      // Fallback or override if photo links are passed directly in body (e.g. JSON from frontend)
+      if (req.body.photos && typeof req.body.photos === "string") {
+        try {
+          const bodyPhotos = JSON.parse(req.body.photos);
+          if (
+            bodyPhotos &&
+            typeof bodyPhotos === "object" &&
+            !Array.isArray(bodyPhotos)
+          ) {
+            photoData = Object.assign(photoData, bodyPhotos);
+          } else if (Array.isArray(bodyPhotos)) {
+            // If legacy array is sent, treat first as cover
+            photoData.cover = bodyPhotos[0] || null;
+            photoData.exterior = bodyPhotos.slice(1);
+          }
+        } catch (e) {}
       }
+
+      let payload = Object.assign({}, req.body, {
+        photos: photoData,
+        addedBy: req.user && req.user.id ? req.user.id : req.body.addedBy,
+      });
+
+      // sanitize numeric fields (strip commas/currency symbols)
+      payload = sanitizeNumericFields(payload);
+
+      // Remove empty date strings so Sequelize DATEONLY doesn't reject them
+      if (!payload.rcSubmittedDate) delete payload.rcSubmittedDate;
+      if (!payload.rcReceivedDate) delete payload.rcReceivedDate;
+
+      const created = await Car.create(payload);
+      res.status(201).json({ success: true, data: formatCarInstance(created) });
+    } catch (err) {
+      console.error(err);
+      res.status(400).json({ message: "Bad request", error: err.message });
     }
-
-    // Fallback or override if photo links are passed directly in body (e.g. JSON from frontend)
-    if (req.body.photos && typeof req.body.photos === 'string') {
-      try {
-        const bodyPhotos = JSON.parse(req.body.photos);
-        if (bodyPhotos && typeof bodyPhotos === 'object' && !Array.isArray(bodyPhotos)) {
-          photoData = Object.assign(photoData, bodyPhotos);
-        } else if (Array.isArray(bodyPhotos)) {
-          // If legacy array is sent, treat first as cover
-          photoData.cover = bodyPhotos[0] || null;
-          photoData.exterior = bodyPhotos.slice(1);
-        }
-      } catch (e) {}
-    }
-
-    let payload = Object.assign({}, req.body, {
-      photos: photoData,
-      addedBy: req.user && req.user.id ? req.user.id : req.body.addedBy,
-    });
-
-    // sanitize numeric fields (strip commas/currency symbols)
-    payload = sanitizeNumericFields(payload);
-
-    const created = await Car.create(payload);
-    res.status(201).json({ success: true, data: formatCarInstance(created) });
-  } catch (err) {
-    console.error(err);
-    res.status(400).json({ message: "Bad request", error: err.message });
-  }
-});
-
+  },
+);
 
 // PUT /api/cars/:id -> update car
 router.put("/:id", protect, async (req, res) => {
@@ -201,9 +230,9 @@ router.put("/:id", protect, async (req, res) => {
     await connectDB();
     const car = await Car.findByPk(req.params.id);
     if (!car) return res.status(404).json({ message: "Car not found" });
-  // sanitize numeric fields in incoming update payload
-  const sanitized = sanitizeNumericFields(req.body);
-  await car.update(sanitized);
+    // sanitize numeric fields in incoming update payload
+    const sanitized = sanitizeNumericFields(req.body);
+    await car.update(sanitized);
     res.json({ success: true, data: formatCarInstance(car) });
   } catch (err) {
     console.error(err);
@@ -256,7 +285,11 @@ router.put(
         }
       }
 
-      if (existing && typeof existing === "object" && !Array.isArray(existing)) {
+      if (
+        existing &&
+        typeof existing === "object" &&
+        !Array.isArray(existing)
+      ) {
         photoData = Object.assign(photoData, existing);
       } else if (Array.isArray(existing)) {
         photoData.cover = existing[0] || null;
@@ -267,14 +300,22 @@ router.put(
         // Process cover
         if (req.files.cover && req.files.cover[0]) {
           const f = req.files.cover[0];
-          const r = await uploadBufferToXOZZ(f.buffer, f.originalname, f.mimetype);
+          const r = await uploadBufferToXOZZ(
+            f.buffer,
+            f.originalname,
+            f.mimetype,
+          );
           if (r && r.url) photoData.cover = r.url;
         }
 
         // Process interior
         if (req.files.interior) {
           for (const f of req.files.interior) {
-            const r = await uploadBufferToXOZZ(f.buffer, f.originalname, f.mimetype);
+            const r = await uploadBufferToXOZZ(
+              f.buffer,
+              f.originalname,
+              f.mimetype,
+            );
             if (r && r.url) photoData.interior.push(r.url);
           }
         }
@@ -282,7 +323,11 @@ router.put(
         // Process exterior
         if (req.files.exterior) {
           for (const f of req.files.exterior) {
-            const r = await uploadBufferToXOZZ(f.buffer, f.originalname, f.mimetype);
+            const r = await uploadBufferToXOZZ(
+              f.buffer,
+              f.originalname,
+              f.mimetype,
+            );
             if (r && r.url) photoData.exterior.push(r.url);
           }
         }
@@ -294,14 +339,15 @@ router.put(
       console.error(err);
       res.status(500).json({ message: "Server error", error: err.message });
     }
-  }
+  },
 );
 
 // Delete single photo
 router.delete("/:id/photo", protect, async (req, res) => {
   try {
     const { filename } = req.body;
-    if (!filename) return res.status(400).json({ message: "Filename required" });
+    if (!filename)
+      return res.status(400).json({ message: "Filename required" });
 
     await connectDB();
     const car = await Car.findByPk(req.params.id);
@@ -317,7 +363,11 @@ router.delete("/:id/photo", protect, async (req, res) => {
     }
     let updated = false;
 
-    if (currentPhotos && typeof currentPhotos === "object" && !Array.isArray(currentPhotos)) {
+    if (
+      currentPhotos &&
+      typeof currentPhotos === "object" &&
+      !Array.isArray(currentPhotos)
+    ) {
       // Check cover
       if (currentPhotos.cover && currentPhotos.cover.includes(filename)) {
         currentPhotos.cover = null;
@@ -326,13 +376,17 @@ router.delete("/:id/photo", protect, async (req, res) => {
       // Check interior
       if (Array.isArray(currentPhotos.interior)) {
         const initialLen = currentPhotos.interior.length;
-        currentPhotos.interior = currentPhotos.interior.filter((p) => !p.includes(filename));
+        currentPhotos.interior = currentPhotos.interior.filter(
+          (p) => !p.includes(filename),
+        );
         if (currentPhotos.interior.length !== initialLen) updated = true;
       }
       // Check exterior
       if (Array.isArray(currentPhotos.exterior)) {
         const initialLen = currentPhotos.exterior.length;
-        currentPhotos.exterior = currentPhotos.exterior.filter((p) => !p.includes(filename));
+        currentPhotos.exterior = currentPhotos.exterior.filter(
+          (p) => !p.includes(filename),
+        );
         if (currentPhotos.exterior.length !== initialLen) updated = true;
       }
     } else if (Array.isArray(currentPhotos)) {
@@ -361,14 +415,21 @@ router.post("/:id/photo", protect, upload.single("photo"), async (req, res) => {
     let photo = null;
     if (req.file && req.file.buffer) {
       try {
-        const r = await uploadBufferToXOZZ(req.file.buffer, req.file.originalname, req.file.mimetype);
+        const r = await uploadBufferToXOZZ(
+          req.file.buffer,
+          req.file.originalname,
+          req.file.mimetype,
+        );
         if (r && r.url) photo = r.url;
       } catch (e) {
-        console.error('carSqlRoutes: XOZZ upload failed for single photo', e.message || e);
+        console.error(
+          "carSqlRoutes: XOZZ upload failed for single photo",
+          e.message || e,
+        );
       }
     }
     if (!photo) photo = req.body.photo || req.body.photoUrl;
-    if (!photo) return res.status(400).json({ message: 'No photo provided' });
+    if (!photo) return res.status(400).json({ message: "No photo provided" });
     car.photos = [...normalizePhotos(car.photos), photo];
     await car.save();
     res.json({ success: true, data: formatCarInstance(car) });
@@ -388,16 +449,20 @@ router.delete("/:id/photo", protect, async (req, res) => {
       return res.status(400).json({ message: "Photo filename required" });
     const photos = normalizePhotos(car.photos);
     const updated = photos.filter(
-      (p) => p !== filename && !(typeof p === "string" && p.includes(filename))
+      (p) => p !== filename && !(typeof p === "string" && p.includes(filename)),
     );
     car.photos = updated;
     await car.save();
     // Note: XOZZ currently doesn't provide a delete API here. We remove the reference
     // from the DB row only. If you have a delete endpoint for XOZZ, implement it here.
     try {
-      if (filename && filename.startsWith('http') && filename.includes('/uploads/')) {
+      if (
+        filename &&
+        filename.startsWith("http") &&
+        filename.includes("/uploads/")
+      ) {
         // remote XOZZ file - skipping deletion (no API implemented)
-        console.log('Skipping remote XOZZ file deletion for', filename);
+        console.log("Skipping remote XOZZ file deletion for", filename);
       } else {
         // Local file: remove from configured dir
         const CAR_IMAGES_DIR =
@@ -406,7 +471,7 @@ router.delete("/:id/photo", protect, async (req, res) => {
         const filenameOnly = filename.split("/").pop();
         const filePath = path.join(
           CAR_IMAGES_DIR,
-          filenameOnly.replace("carimages/", "")
+          filenameOnly.replace("carimages/", ""),
         );
         fs.unlink(filePath, () => {});
       }
@@ -431,11 +496,11 @@ router.delete("/:id/photos", protect, async (req, res) => {
     // clear the references in the DB and skip deleting remote files.
     for (const p of photos) {
       try {
-        if (p && p.startsWith('http') && p.includes('/uploads/')) {
-          console.log('Skipping XOZZ deletion for', p);
+        if (p && p.startsWith("http") && p.includes("/uploads/")) {
+          console.log("Skipping XOZZ deletion for", p);
         }
       } catch (e) {
-        console.warn('Failed during photo cleanup check', e);
+        console.warn("Failed during photo cleanup check", e);
       }
     }
     car.photos = [];

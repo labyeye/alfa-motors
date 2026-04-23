@@ -5,11 +5,18 @@ const { sequelize, Sequelize } = require("../db");
 const Car = sequelize.define(
   "Car",
   {
-    id: { type: DataTypes.INTEGER.UNSIGNED, autoIncrement: true, primaryKey: true },
+    id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     make: { type: DataTypes.STRING, allowNull: false },
     model: { type: DataTypes.STRING, allowNull: false },
     variant: { type: DataTypes.STRING, allowNull: false },
-    fuelType: { type: DataTypes.ENUM("Petrol", "EV", "Diesel"), allowNull: false },
+    fuelType: {
+      type: DataTypes.ENUM("Petrol", "EV", "Diesel", "CNG", "Hybrid"),
+      allowNull: false,
+    },
     modelYear: { type: DataTypes.INTEGER, allowNull: false },
     registrationYear: { type: DataTypes.INTEGER, allowNull: false },
     color: { type: DataTypes.STRING, allowNull: false },
@@ -21,24 +28,47 @@ const Car = sequelize.define(
       allowNull: false,
     },
     daysOld: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
-    buyingPrice: { type: DataTypes.DECIMAL(12, 2), allowNull: false, defaultValue: 0 },
-    quotingPrice: { type: DataTypes.DECIMAL(12, 2), allowNull: false, defaultValue: 0 },
-    sellingPrice: { type: DataTypes.DECIMAL(12, 2), allowNull: false, defaultValue: 0 },
+    buyingPrice: {
+      type: DataTypes.DECIMAL(12, 2),
+      allowNull: false,
+      defaultValue: 0,
+    },
+    quotingPrice: {
+      type: DataTypes.DECIMAL(12, 2),
+      allowNull: false,
+      defaultValue: 0,
+    },
+    sellingPrice: {
+      type: DataTypes.DECIMAL(12, 2),
+      allowNull: false,
+      defaultValue: 0,
+    },
     photos: { type: DataTypes.JSON, allowNull: true },
     soldAt: { type: DataTypes.DATE, allowNull: true },
     soldCustomerName: { type: DataTypes.STRING, allowNull: true },
     soldTestimonial: { type: DataTypes.TEXT, allowNull: true },
-    soldCustomerPhotos: { type: DataTypes.JSON, allowNull: true, defaultValue: [] },
-    status: { type: DataTypes.ENUM("Available", "Coming Soon", "Sold Out"), allowNull: false, defaultValue: "Available" },
+    soldCustomerPhotos: {
+      type: DataTypes.JSON,
+      allowNull: true,
+      defaultValue: [],
+    },
+    status: {
+      type: DataTypes.ENUM("Available", "Coming Soon", "Sold Out"),
+      allowNull: false,
+      defaultValue: "Available",
+    },
     addedBy: { type: DataTypes.INTEGER.UNSIGNED, allowNull: false },
     rcSubmittedDate: { type: DataTypes.DATEONLY, allowNull: true },
     rcReceivedDate: { type: DataTypes.DATEONLY, allowNull: true },
-    createdAt: { type: DataTypes.DATE, defaultValue: Sequelize.literal("CURRENT_TIMESTAMP") },
+    createdAt: {
+      type: DataTypes.DATE,
+      defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+    },
   },
   {
     tableName: "cars",
     timestamps: false,
-  }
+  },
 );
 
 module.exports = { Car };
