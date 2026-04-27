@@ -222,6 +222,7 @@ function normalizeRc(row) {
 
   const statusFromDetails = details.status || {};
   return Object.assign({}, row, {
+    _id: row.id,
     vehicleRegNo: row.registrationNumber || details.registrationNumber || '',
     vehicleName: row.vehicleName || details.vehicleName || '',
     ownerName: row.holderName || details.ownerName || '',
