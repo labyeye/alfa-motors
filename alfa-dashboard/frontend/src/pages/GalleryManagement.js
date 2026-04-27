@@ -14,20 +14,20 @@ const GalleryManagement = () => {
   const [, setAllCars] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Gallery items and edit UI state
+  
   const [galleryItems, setGalleryItems] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editCaption, setEditCaption] = useState("");
   const [editTestimonial, setEditTestimonial] = useState("");
 
-  // Helper to read id from objects that may have either `id` (SQL) or `_id` (Mongo)
+  
   const getId = (obj) => (obj && (obj.id || obj._id)) || null;
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  // Debug effect to monitor galleryItems state changes
+  
   useEffect(() => {
     console.log(
       "Gallery items state changed:",
@@ -49,7 +49,7 @@ const GalleryManagement = () => {
       );
       setGalleryItems(galleryItemsData);
 
-      // Fetch all cars to manage which ones appear in gallery
+      
       console.log("Fetching all cars...");
       const allResponse = await axios.get(`${API_BASE}/api/cars`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -62,7 +62,7 @@ const GalleryManagement = () => {
     } catch (error) {
       console.error("Error fetching data:", error);
       console.error("Error details:", error.response?.data);
-      // Set empty arrays on error to prevent undefined state
+      
       setGalleryItems([]);
       setAllCars([]);
     } finally {
@@ -70,7 +70,7 @@ const GalleryManagement = () => {
     }
   };
 
-  // Edit handlers
+  
   const startEdit = (item) => {
     setEditingId(getId(item));
     setEditCaption(item.caption || "");
@@ -116,7 +116,7 @@ const GalleryManagement = () => {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setGalleryItems((prev) => prev.filter((it) => getId(it) !== id));
-      // Also refresh soldCars to reflect possible removal
+      
       fetchData();
       alert("Gallery item deleted");
     } catch (err) {
@@ -133,10 +133,10 @@ const GalleryManagement = () => {
     let successCount = 0;
     let failCount = 0;
 
-    // Show initial progress
+    
     alert(`Starting upload of ${totalFiles} photo(s)...`);
 
-    // Upload files one by one
+    
     for (let i = 0; i < fileArray.length; i++) {
       const file = fileArray[i];
       const fd = new FormData();
@@ -160,7 +160,7 @@ const GalleryManagement = () => {
       }
     }
 
-    // Show final result
+    
     if (successCount === totalFiles) {
       alert(`All ${totalFiles} photo(s) uploaded successfully!`);
     } else if (successCount > 0) {
@@ -192,7 +192,7 @@ const GalleryManagement = () => {
     <div style={styles.container}>
       <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
 
-      {/* Main Content */}
+      {}
       <div style={styles.mainContent} className="dashboard-main-content">
         <div style={styles.contentPadding}>
           <div style={styles.header}>
@@ -236,7 +236,7 @@ const GalleryManagement = () => {
                     });
                     if (resp.data && resp.data.success) {
                       setGalleryItems([]);
-                      // Refresh soldCars to remove references
+                      
                       fetchData();
                       alert(
                         `Deleted ${resp.data.deletedCount || 0} gallery files`,
@@ -259,7 +259,7 @@ const GalleryManagement = () => {
             </div>
           </div>
 
-          {/* Upload Section */}
+          {}
           <div style={{ marginBottom: 24 }}>
             <h2 style={{ margin: "0 0 12px 0" }}>Upload New Photo</h2>
             <div
@@ -311,7 +311,7 @@ const GalleryManagement = () => {
             </div>
           </div>
 
-          {/* Management table */}
+          {}
           <div style={{ marginBottom: 24 }}>
             <h2 style={{ margin: "0 0 12px 0" }}>Uploaded Gallery Items</h2>
             {galleryItems.length === 0 ? (

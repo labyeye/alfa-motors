@@ -1,4 +1,4 @@
-/* vehicledetail.js - translation helper for vehicledetail.html */
+
 (function () {
   document.addEventListener("DOMContentLoaded", function () {
     try {
@@ -20,7 +20,7 @@
           el.setAttribute("data-translate", k.key);
       });
 
-      // translate dynamic thumbnails/statuses if present
+      
       if (window.i18n && typeof window.i18n.applyPreferred === "function") {
         window.i18n.applyPreferred();
       } else {

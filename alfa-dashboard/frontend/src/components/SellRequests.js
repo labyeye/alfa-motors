@@ -386,7 +386,7 @@ const SellRequests = () => {
         </div>
       </div>
 
-      {/* Modal for viewing request details */}
+      {}
       {showModal && selectedRequest && (
         <div style={styles.modalOverlay} onClick={() => setShowModal(false)}>
           <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
@@ -404,7 +404,7 @@ const SellRequests = () => {
             </div>
 
             <div style={styles.modalContent}>
-              {/* Images */}
+              {}
               {selectedRequest.images && selectedRequest.images.length > 0 && (
                 <div style={styles.modalImagesContainer}>
                   <h3 style={styles.modalSectionTitle}>Vehicle Images</h3>
@@ -424,7 +424,7 @@ const SellRequests = () => {
                 </div>
               )}
 
-              {/* Details */}
+              {}
               <div style={styles.modalDetailsGrid}>
                 <div>
                   <h3 style={styles.modalSectionTitle}>Vehicle Details</h3>
@@ -974,7 +974,7 @@ const styles = {
     cursor: "pointer",
     fontWeight: "500",
   },
-  /* Table styles */
+  
   table: {
     width: "100%",
     borderCollapse: "collapse",

@@ -23,7 +23,7 @@ const CreateStaff = () => {
   const [success, setSuccess] = useState(false);
 
   const [activeMenu, setActiveMenu] = useState("Create Staff ID");
-  // expandedMenus not used here
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -57,7 +57,7 @@ const CreateStaff = () => {
   return (
     <div style={styles.container}>
       <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
-      {/* Main Content */}
+      {}
       <div style={styles.mainContent}>
         <div style={styles.contentPadding}>
           <div style={styles.header}>

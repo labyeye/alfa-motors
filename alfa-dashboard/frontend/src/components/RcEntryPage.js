@@ -35,7 +35,7 @@ const RcEntryPage = () => {
   const [activeMenu, setActiveMenu] = useState("RC Entry");
 
   useEffect(() => {
-    // Check if we're editing an existing RC entry
+    
     const pathParts = window.location.pathname.split("/");
     if (pathParts.includes("edit") && pathParts.length > 2) {
       const id = pathParts[pathParts.length - 1];
@@ -65,14 +65,14 @@ const RcEntryPage = () => {
           const errorData = await response.json();
           errorMessage = errorData.message || errorMessage;
         } catch (parseError) {
-          // If response is not JSON, use status text
+          
           errorMessage = `Server error: ${response.status} ${response.statusText}`;
         }
         throw new Error(errorMessage);
       }
 
       const data = await response.json();
-      // Normalize SQL-backed RC entry into the form shape expected by this component
+      
       const raw = data.data || data;
       const details = raw.details || {};
       const normalized = Object.assign(
@@ -271,7 +271,7 @@ const RcEntryPage = () => {
       }
 
       const data = await response.json();
-      // backend may store pdfUrl inside details.json; normalize both shapes
+      
       const returned = data.data || data;
       const pdfUrl =
         (returned.details && returned.details.pdfUrl) ||
@@ -292,7 +292,7 @@ const RcEntryPage = () => {
   const downloadPdf = () => {
     if (!formData.pdfUrl) return;
     const url = formData.pdfUrl;
-    // if the stored URL is absolute (cloudinary secure url), open it directly
+    
     if (
       typeof url === "string" &&
       (url.startsWith("http://") || url.startsWith("https://"))
@@ -300,7 +300,7 @@ const RcEntryPage = () => {
       window.open(url, "_blank");
       return;
     }
-    // otherwise assume it's a path on our server
+    
     const API_BASE =
       process.env.REACT_APP_API_BASE_URL ||
       "https://alfa-motors-9bk6.vercel.app";
@@ -327,7 +327,7 @@ const RcEntryPage = () => {
 
         <form onSubmit={handleSubmit} style={styles.form}>
           <div style={styles.formGrid}>
-            {/* Vehicle Details */}
+            {}
             <div style={styles.formSection}>
               <h3 style={styles.sectionTitle}>Vehicle Details</h3>
               <div style={styles.inputGroup}>
@@ -355,7 +355,7 @@ const RcEntryPage = () => {
               </div>
             </div>
 
-            {/* Owner Details */}
+            {}
             <div style={styles.formSection}>
               <h3 style={styles.sectionTitle}>Owner Details</h3>
               <div style={styles.inputGroup}>
@@ -382,7 +382,7 @@ const RcEntryPage = () => {
               </div>
             </div>
 
-            {/* Applicant Details */}
+            {}
             <div style={styles.formSection}>
               <h3 style={styles.sectionTitle}>Applicant Details</h3>
               <div style={styles.inputGroup}>
@@ -409,7 +409,7 @@ const RcEntryPage = () => {
               </div>
             </div>
 
-            {/* Work Details */}
+            {}
             <div style={styles.formSection}>
               <h3 style={styles.sectionTitle}>Work Details</h3>
               <div style={styles.inputGroup}>
@@ -454,7 +454,7 @@ const RcEntryPage = () => {
               </div>
             </div>
 
-            {/* Dates */}
+            {}
             <div style={styles.formSection}>
               <h3 style={styles.sectionTitle}>Important Dates</h3>
               <div style={styles.inputGroup}>
@@ -487,7 +487,7 @@ const RcEntryPage = () => {
               </div>
             </div>
 
-            {/* Status */}
+            {}
             <div style={styles.formSection}>
               <h3 style={styles.sectionTitle}>Status</h3>
               <div style={styles.checkboxGroup}>
@@ -609,7 +609,7 @@ const styles = {
     fontFamily: "'Inter', sans-serif",
   },
 
-  // Sidebar Styles (keep as is)
+  
   sidebar: {
     width: "280px",
     backgroundColor: "#1e293b",
@@ -698,7 +698,7 @@ const styles = {
     backgroundColor: "rgba(127, 29, 29, 0.2)",
   },
 
-  // Main Content Styles
+  
   mainContent: {
     flex: 1,
     overflow: "auto",
@@ -766,7 +766,7 @@ const styles = {
     border: "1px solid #a7f3d0",
   },
 
-  // Enhanced Form Styles
+  
   form: {
     backgroundColor: "white",
     borderRadius: "12px",
@@ -925,7 +925,7 @@ const styles = {
     flexShrink: 0,
   },
 
-  // Enhanced PDF/File Upload Styles
+  
   pdfContainer: {
     display: "flex",
     flexDirection: "column",
@@ -1024,7 +1024,7 @@ const styles = {
     backgroundColor: "#047857",
   },
 
-  // Enhanced Form Actions
+  
   formActions: {
     display: "flex",
     justifyContent: "flex-end",
@@ -1080,7 +1080,7 @@ const styles = {
     cursor: "not-allowed",
   },
 
-  // Responsive Design
+  
   "@media (max-width: 768px)": {
     contentPadding: {
       padding: "16px",

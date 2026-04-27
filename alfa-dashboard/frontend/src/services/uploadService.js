@@ -1,5 +1,5 @@
-// uploadService.js
-// Sends file to backend /upload route. Uses env var REACT_APP_API_BASE or defaults to ''
+
+
 const API_BASE = process.env.REACT_APP_API_BASE || process.env.NEXT_PUBLIC_API_BASE || '';
 
 export async function uploadFile(file, extraFields = {}, onProgress) {
@@ -8,7 +8,7 @@ export async function uploadFile(file, extraFields = {}, onProgress) {
   form.append('file', file, file.name);
   Object.keys(extraFields || {}).forEach(k => form.append(k, extraFields[k]));
 
-  // Use fetch with progress: not directly available; use XMLHttpRequest for progress
+  
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', url);

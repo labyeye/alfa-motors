@@ -25,8 +25,8 @@ exports.getSellLettersByRegistration = async (req, res) => {
   try {
     const { registrationNumber } = req.query;
     if (!registrationNumber) return res.status(400).json({ message: 'Registration number is required' });
-    // SellLetterSQL does not store registrationNumber directly; return empty result
-    // or implement search across related car records if needed.
+    
+    
     return res.json([]);
   } catch (error) {
     console.error(error);
@@ -50,7 +50,7 @@ exports.getSellLetterById = async (req, res) => {
   try {
     const sellLetter = await SellLetter.findByPk(req.params.id);
     if (!sellLetter) return res.status(404).json({ message: 'Sell letter not found' });
-    // authorization: if not admin, ensure owner
+    
     if (req.user.role !== 'admin' && String(sellLetter.createdBy) !== String(req.user.id)) {
       return res.status(403).json({ message: 'Not authorized' });
     }

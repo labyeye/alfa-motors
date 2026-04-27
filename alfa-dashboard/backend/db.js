@@ -8,9 +8,9 @@ const DB_USER = process.env.DB_USER ;
 const DB_PASS = process.env.DB_PASS ;
 const DB_PORT = process.env.DB_PORT ? Number(process.env.DB_PORT) : 3306;
 
-// ─── Pool event logging ────────────────────────────────────────────────────────
-// Attach pool-level hooks once so we can see exactly when connections are
-// opened, reused, and released in Vercel logs.
+
+
+
 function attachPoolHooks(pool) {
   if (!pool || pool.__hooksAttached) return;
   pool.__hooksAttached = true;
@@ -32,9 +32,9 @@ function attachPoolHooks(pool) {
   });
 }
 
-// ─── Singleton ─────────────────────────────────────────────────────────────────
-// Cache on global so Vercel warm containers reuse the same pool instead of
-// creating a new one on every invocation.
+
+
+
 if (!global.__sequelize) {
   console.log(`[db] Initialising Sequelize pool  → ${DB_USER}@${DB_HOST}:${DB_PORT}/${DB_NAME}`);
 
@@ -43,21 +43,21 @@ if (!global.__sequelize) {
     port: DB_PORT,
     dialect: "mysql",
     dialectModule: mysql2,
-    logging: false,  // set to console.log temporarily if you need query-level logs
+    logging: false,  
 
     pool: {
-      max: 2,         // safe for shared-hosting connection limits
-      min: 0,         // release all connections when idle
-      acquire: 10000, // ms before throwing acquire error
-      idle: 3000,     // ms before releasing an idle connection
-      evict: 5000,    // ms interval to evict stale connections
+      max: 2,         
+      min: 0,         
+      acquire: 10000, 
+      idle: 3000,     
+      evict: 5000,    
     },
 
     dialectOptions: {
-      connectTimeout: 10000, // TCP-level connect timeout (ms)
-      // enableKeepAlive: true,
-      // keepAliveInitialDelay: 3000,
-      // ssl: { rejectUnauthorized: false },
+      connectTimeout: 10000, 
+      
+      
+      
     },
 
     retry: {
@@ -65,7 +65,7 @@ if (!global.__sequelize) {
     },
   });
 
-  // Attach pool hooks after instance is created
+  
   try {
     attachPoolHooks(global.__sequelize.connectionManager.pool);
   } catch (e) {
@@ -77,9 +77,9 @@ if (!global.__sequelize) {
 
 const sequelize = global.__sequelize;
 
-// ─── connectDB ────────────────────────────────────────────────────────────────
-// Call this at the start of every route handler that needs the DB.
-// On a warm container with a healthy pool it resolves instantly.
+
+
+
 async function connectDB() {
   const tag = `[db] connectDB  ${DB_USER}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
   try {

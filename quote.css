@@ -241,7 +241,7 @@
   box-shadow: 0 8px 20px rgba(163, 41, 25, 0.4);
 }
 
-/* Testimonials Section */
+
 .testimonials-section {
   padding: 80px 20px;
   background: #1a1a1a;
@@ -362,7 +362,7 @@
   background: var(--primary-color);
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 768px) {
   .quote-section {
     padding: 60px 20px;
@@ -443,7 +443,7 @@
   }
 }
 
-/* New SEO, FAQ, and Feature Sections */
+
 .seo-features-section {
   padding: 80px 5%;
   background: #f8f9fa;
@@ -481,7 +481,7 @@
   line-height: 1.6;
 }
 
-/* FAQ Section */
+
 .faq-section {
   padding: 100px 5%;
   background: white;
@@ -552,7 +552,7 @@
   padding: 0 25px 25px;
 }
 
-/* SEO Content Block */
+
 .seo-content-block {
   padding: 80px 5%;
   background: #fbfbfb;

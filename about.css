@@ -5,10 +5,10 @@
   overflow: hidden;
 }
 
-/* about page hero adjustments */
+
 .about-hero {
   background: linear-gradient(180deg, #ffffff 0%, #ffffff 100%);
-  padding-top: 72px; /* account for fixed navbar */
+  padding-top: 72px; 
   padding-bottom: 60px;
   min-height: 60vh;
   display: flex;
@@ -245,7 +245,7 @@
   font-size: 0.9rem;
 }
 
-/* Milestones Section */
+
 .milestones-section {
   padding: 80px 5%;
   background: #100f0f;
@@ -452,7 +452,7 @@
   transition: color 0.24s;
 }
 
-/* Section Styling */
+
 .section-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -496,7 +496,7 @@
   margin: 0 auto;
 }
 
-/* CTA Buttons */
+
 .cta-buttons {
   display: flex;
   gap: 16px;
@@ -537,7 +537,7 @@
   color: white;
 }
 
-/* Responsive Styles */
+
 @media (max-width: 992px) {
   .owner-content h2 {
     font-size: 2rem;

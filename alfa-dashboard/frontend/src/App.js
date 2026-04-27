@@ -132,7 +132,7 @@ function App() {
             path="/admin/sell-requests/:id"
             element={
               <PrivateRoute roles={["admin", "staff"]}>
-                {/* Ideally a detail page component would be used; reusing SellRequests page for now */}
+                {}
                 <SellRequests />
               </PrivateRoute>
             }

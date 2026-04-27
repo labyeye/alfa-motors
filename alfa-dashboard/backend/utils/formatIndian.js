@@ -1,13 +1,13 @@
-// Helper to format numbers into Indian numbering system when sending API responses
+
 function formatIndianNumber(x) {
   if (x === undefined || x === null) return x;
   const s = x.toString();
-  // handle decimals if any
+  
   const parts = s.split(".");
   let intPart = parts[0];
   const decPart = parts.length > 1 ? parts.slice(1).join('.') : null;
 
-  // If number is negative, keep sign and work on absolute
+  
   let sign = "";
   if (intPart.startsWith("-")) {
     sign = "-";
@@ -20,7 +20,7 @@ function formatIndianNumber(x) {
 
   const lastThree = intPart.slice(-3);
   let rest = intPart.slice(0, -3);
-  // place commas every 2 digits in the remaining part
+  
   rest = rest.replace(/\B(?=(\d{2})+(?!\d))/g, ",");
   const formatted = `${sign}${rest},${lastThree}`;
   return decPart != null ? `${formatted}.${decPart}` : formatted;

@@ -99,9 +99,9 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
     };
   }, []);
 
-  // Single source of truth for vertical gap between top-level menu items
-  // compact spacing requested by user
-  const ITEM_GAP = 6; // pixels
+  
+  
+  const ITEM_GAP = 6; 
 
   const toggleMenu = (name) =>
     setExpandedMenus((s) => ({ ...s, [name]: !s[name] }));
@@ -130,7 +130,7 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
 
   return (
     <>
-      {/* ── Mobile top header bar ── */}
+      {}
       {isMobile && (
         <header style={styles.mobileHeader}>
           <button
@@ -149,7 +149,7 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
             </div>
           </div>
 
-          {/* right spacer keeps the logo centred */}
+          {}
           <div style={{ width: 44 }} />
         </header>
       )}
@@ -319,7 +319,7 @@ const styles = {
     listStyle: "none",
     margin: 0,
     padding: "4px 0 4px 12px",
-    /* no background on the wrapper so each item can be its own box */
+    
     backgroundColor: "transparent",
   },
   submenuItem: { marginBottom: 6, paddingLeft: 8 },
@@ -367,11 +367,11 @@ const styles = {
     width: "240px",
     transform: "translateX(0)",
     transition: "transform 0.28s ease",
-    paddingTop: 68, // clears the fixed mobile header bar
+    paddingTop: 68, 
   },
   sidebarHidden: { transform: "translateX(-100%)" },
 
-  // ── Mobile top header bar ──────────────────────────────────────────────
+  
   mobileHeader: {
     position: "fixed",
     top: 0,

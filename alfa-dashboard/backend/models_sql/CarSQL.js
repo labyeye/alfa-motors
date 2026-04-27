@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const { sequelize, Sequelize } = require("../db");
 
-// Sequelize model mapping for `Car` converted from Mongoose schema
+
 const Car = sequelize.define(
   "Car",
   {

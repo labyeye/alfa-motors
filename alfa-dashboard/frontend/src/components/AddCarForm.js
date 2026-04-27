@@ -4,6 +4,13 @@ import axios from "axios";
 import AuthContext from "../context/AuthContext";
 import Sidebar from "./Sidebar";
 import "../css/AddcarForm.css";
+import {
+  categories,
+  brandsByCategory,
+  getModels,
+  fuelTypes,
+  toLabel,
+} from "../data/vehicleData";
 
 const AddCarForm = () => {
   const { user } = useContext(AuthContext);
@@ -11,6 +18,7 @@ const AddCarForm = () => {
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
+    category: "",
     make: "",
     model: "",
     variant: "",
@@ -33,6 +41,9 @@ const AddCarForm = () => {
     rcSubmittedDate: "",
     rcReceivedDate: "",
   });
+  
+  const [makeSelection, setMakeSelection] = useState("");
+  const [modelSelection, setModelSelection] = useState("");
   const [activeMenu, setActiveMenu] = useState("Add Car Data");
 
   const getId = (obj) => (obj && (obj.id || obj._id)) || null;
@@ -44,10 +55,37 @@ const AddCarForm = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleCategoryChange = (e) => {
+    const cat = e.target.value;
+    setFormData((prev) => ({ ...prev, category: cat, make: "", model: "" }));
+    setMakeSelection("");
+    setModelSelection("");
+  };
+
+  const handleMakeChange = (e) => {
+    const val = e.target.value;
+    setMakeSelection(val);
+    setModelSelection("");
+    setFormData((prev) => ({
+      ...prev,
+      make: val === "Other_Brand" ? "" : val,
+      model: "",
+    }));
+  };
+
+  const handleModelChange = (e) => {
+    const val = e.target.value;
+    setModelSelection(val);
+    setFormData((prev) => ({
+      ...prev,
+      model: val === "Other_Model" ? "" : val,
+    }));
+  };
+
   const handleFileChange = (e, category) => {
     const files = Array.from(e.target.files || []);
 
-    // Limits
+    
     if (category === "cover" && files.length > 1) {
       setError("Only 1 cover photo allowed.");
       return;
@@ -232,45 +270,103 @@ const AddCarForm = () => {
                 encType="multipart/form-data"
               >
                 <div className="form-grid">
+                  {}
+                  <div className="form-group col-3">
+                    <label className="form-label required">Category</label>
+                    <select
+                      name="category"
+                      className="form-control select"
+                      required
+                      value={formData.category}
+                      onChange={handleCategoryChange}
+                    >
+                      <option value="">Select Category</option>
+                      {categories.map((cat) => (
+                        <option key={cat} value={cat}>{toLabel(cat)}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {}
                   <div className="form-group col-3">
                     <label className="form-label required">Make</label>
-                    <input
-                      type="text"
-                      name="make"
-                      className="form-control"
+                    <select
+                      name="_makeSelect"
+                      className="form-control select"
                       required
-                      value={formData.make}
-                      onChange={handleChange}
-                      placeholder="Enter car make (e.g., Toyota, Honda)"
-                    />
+                      value={makeSelection}
+                      onChange={handleMakeChange}
+                      disabled={!formData.category}
+                    >
+                      <option value="">
+                        {formData.category ? "Select Make" : "Select a category first"}
+                      </option>
+                      {(brandsByCategory[formData.category] || []).map((b) => (
+                        <option key={b} value={b}>{toLabel(b)}</option>
+                      ))}
+                    </select>
+                    {makeSelection === "Other_Brand" && (
+                      <input
+                        type="text"
+                        name="make"
+                        className="form-control"
+                        required
+                        value={formData.make}
+                        onChange={handleChange}
+                        placeholder="Enter make name"
+                        style={{ marginTop: 6 }}
+                      />
+                    )}
                   </div>
 
+                  {}
                   <div className="form-group col-3">
                     <label className="form-label required">Model</label>
-                    <input
-                      type="text"
-                      name="model"
-                      className="form-control"
+                    <select
+                      name="_modelSelect"
+                      className="form-control select"
                       required
-                      value={formData.model}
-                      onChange={handleChange}
-                      placeholder="Enter car model (e.g., Camry, Civic)"
-                    />
+                      value={modelSelection}
+                      onChange={handleModelChange}
+                      disabled={!makeSelection || makeSelection === "Other_Brand"}
+                    >
+                      <option value="">
+                        {makeSelection && makeSelection !== "Other_Brand"
+                          ? "Select Model"
+                          : "Select a make first"}
+                      </option>
+                      {getModels(formData.category, makeSelection).map((m) => (
+                        <option key={m} value={m}>{toLabel(m)}</option>
+                      ))}
+                    </select>
+                    {modelSelection === "Other_Model" && (
+                      <input
+                        type="text"
+                        name="model"
+                        className="form-control"
+                        required
+                        value={formData.model}
+                        onChange={handleChange}
+                        placeholder="Enter model name"
+                        style={{ marginTop: 6 }}
+                      />
+                    )}
                   </div>
 
+                  {}
                   <div className="form-group col-2">
-                    <label className="form-label required">Variant</label>
+                    <label className="form-label">Variant</label>
                     <input
                       type="text"
                       name="variant"
                       className="form-control"
-                      required
                       value={formData.variant}
                       onChange={handleChange}
-                      placeholder="Enter car variant (e.g., GL, LXI, VXI)"
+                      placeholder="e.g., GL, LXI, VXI"
                     />
                   </div>
 
+                  {}
                   <div className="form-group col-2">
                     <label className="form-label required">Fuel Type</label>
                     <select
@@ -281,11 +377,9 @@ const AddCarForm = () => {
                       onChange={handleChange}
                     >
                       <option value="">Select Fuel Type</option>
-                      <option value="Petrol">Petrol</option>
-                      <option value="Diesel">Diesel</option>
-                      <option value="EV">Electric</option>
-                      <option value="CNG">CNG</option>
-                      <option value="Hybrid">Hybrid</option>
+                      {fuelTypes.map((f) => (
+                        <option key={f} value={f}>{toLabel(f)}</option>
+                      ))}
                     </select>
                   </div>
 
@@ -483,7 +577,7 @@ const AddCarForm = () => {
                     />
                   </div>
 
-                  {/* Categorized Photo Uploads */}
+                  {}
                   <div className="form-group col-3">
                     <label className="form-label required">
                       Cover Photo (1 Max)
@@ -573,7 +667,7 @@ const styles = {
     position: "sticky",
     top: 0,
     height: "100vh",
-    /* kept flat dark background to match the 4-color palette */
+    
   },
   sidebarHeader: {
     padding: "24px",

@@ -1,6 +1,6 @@
-// main.js
 
-// Sticky Navbar Functionality
+
+
 function initializeStickyNavbar() {
   const navbar = document.querySelector(".navbar");
 
@@ -13,7 +13,7 @@ function initializeStickyNavbar() {
   });
 }
 
-// Enhanced Search with Auto-complete
+
 function initializeSearchFeatures() {
   const searchInput = document.getElementById("searchInput");
   const suggestions = [
@@ -35,7 +35,7 @@ function initializeSearchFeatures() {
   ];
 
   if (searchInput) {
-    // Create suggestions dropdown
+    
     const suggestionsContainer = document.createElement("div");
     suggestionsContainer.className = "search-suggestions";
     searchInput.parentNode.appendChild(suggestionsContainer);
@@ -59,7 +59,7 @@ function initializeSearchFeatures() {
       }
     });
 
-    // Handle suggestion clicks
+    
     suggestionsContainer.addEventListener("click", (e) => {
       if (e.target.classList.contains("suggestion-item")) {
         searchInput.value = e.target.textContent;
@@ -67,7 +67,7 @@ function initializeSearchFeatures() {
       }
     });
 
-    // Hide suggestions when clicking outside
+    
     document.addEventListener("click", (e) => {
       if (
         !searchInput.contains(e.target) &&
@@ -79,7 +79,7 @@ function initializeSearchFeatures() {
   }
 }
 
-// Hero Slider Functionality
+
 function initializeHeroSlider() {
   const heroSlider = document.createElement("div");
   heroSlider.className = "hero-slider";
@@ -102,10 +102,10 @@ function initializeHeroSlider() {
   if (backgroundImageDiv && backgroundImageDiv.parentNode) {
     backgroundImageDiv.parentNode.replaceChild(heroSlider, backgroundImageDiv);
   } else if (heroSection) {
-    // Insert as the first child so it sits behind the hero content
+    
     heroSection.insertBefore(heroSlider, heroSection.firstChild);
   } else {
-    // As a last resort append to body
+    
     document.body.appendChild(heroSlider);
   }
 
@@ -158,7 +158,7 @@ function initializeHeroSlider() {
   });
 }
 
-// Mobile Menu Functionality
+
 function initializeMobileMenu() {
   const toggleBtn = document.createElement("button");
   toggleBtn.className = "mobile-menu-toggle";
@@ -216,29 +216,29 @@ function initializeMobileMenu() {
     </div>
   `;
 
-  // Insert mobileMenu adjacent to navbar for consistent DOM structure
+  
   const navbarEl = document.querySelector(".navbar") || document.body;
   if (navbarEl.parentNode)
     navbarEl.parentNode.insertBefore(mobileMenu, navbarEl.nextSibling);
 
-  // Keep aria attributes in sync
+  
   toggleBtn.setAttribute("aria-controls", "mobileMenu");
   toggleBtn.setAttribute("aria-expanded", "false");
   mobileMenu.id = "mobileMenu";
   mobileMenu.setAttribute("aria-hidden", "true");
 
-  // Toggle open/close with proper ARIA updates
+  
   toggleBtn.addEventListener("click", function () {
     const isOpen = mobileMenu.classList.toggle("active");
     mobileMenu.setAttribute("aria-hidden", (!isOpen).toString());
     toggleBtn.setAttribute("aria-expanded", isOpen.toString());
     document.body.style.overflow = isOpen ? "hidden" : "";
     if (isOpen) {
-      // focus first focusable element inside menu
+      
       const first = mobileMenu.querySelector("a, button");
       if (first) first.focus();
     } else {
-      // return focus to toggle
+      
       toggleBtn.focus();
     }
   });
@@ -252,7 +252,7 @@ function initializeMobileMenu() {
   });
 }
 
-// Lazy Loading Images
+
 function initializeLazyLoading() {
   if ("IntersectionObserver" in window) {
     const lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
@@ -290,7 +290,7 @@ function initializeLazyLoading() {
   });
 }
 
-// Statistics Animation
+
 function animateStats() {
   const counters = document.querySelectorAll(".stat-number");
 
@@ -327,17 +327,17 @@ function initializeStatsObserver() {
   observer.observe(document.querySelector(".stats-section"));
 }
 
-// Car Slider Functionality
+
 function initializeCarSlider() {
   const CarSlider = document.querySelector(".Car-slider");
   const prevBtn = document.querySelector(".slider-nav.prev");
   const nextBtn = document.querySelector(".slider-nav.next");
 
   fetchFeaturedCars();
-  // Adjust card widths after featured cars are rendered
+  
   function adjustVisibleCards() {
     if (!CarSlider) return;
-    const gap = 20; // should match CSS gap
+    const gap = 20; 
     const containerWidth = CarSlider.clientWidth;
 
     function getVisibleCount(width) {
@@ -356,20 +356,20 @@ function initializeCarSlider() {
 
     const cards = CarSlider.querySelectorAll(".Car-card");
     cards.forEach((card) => {
-      // set exact pixel width so the number of visible cards fits the container
+      
       card.style.flex = `0 0 ${cardWidth}px`;
       card.style.maxWidth = `${cardWidth}px`;
     });
   }
 
-  // Listen for the custom event dispatched after cars are rendered
+  
   if (CarSlider) {
     CarSlider.addEventListener("featuredCarsRendered", () => {
       adjustVisibleCards();
     });
   }
 
-  // Also adjust on resize with debounce
+  
   let resizeTimeout = null;
   window.addEventListener("resize", () => {
     clearTimeout(resizeTimeout);
@@ -394,11 +394,11 @@ function initializeCarSlider() {
   });
 }
 
-// Simple API/image base for development: always use localhost:2500 unless overridden
+
 const API_BASE_URL = "https://alfa-motors-9bk6.vercel.app";
 const IMAGE_BASE = `${API_BASE_URL}/carimages`;
 
-// Debug helpers (exposed to window for quick inspection in DevTools)
+
 try {
   console.debug(
     "[config] API_BASE_URL=",
@@ -410,12 +410,12 @@ try {
   window.__IMAGE_BASE = IMAGE_BASE;
 } catch (e) {}
 
-// Helper to normalize image paths (used by featured cars)
+
 function getImageUrl(imagePath) {
   if (Array.isArray(imagePath) && imagePath.length > 0)
     imagePath = imagePath[0];
 
-  // If it's a JSON-encoded array string, try to parse
+  
   if (typeof imagePath === "string") {
     const raw = imagePath.trim();
     if (raw.startsWith("[")) {
@@ -429,7 +429,7 @@ function getImageUrl(imagePath) {
   if (typeof imagePath !== "string") return "assets/placeholder.png";
   const p = imagePath.trim();
 
-  // Prefer absolute URLs (Cloudinary / CDN) or data URIs
+  
   if (
     p.startsWith("http://") ||
     p.startsWith("https://") ||
@@ -437,18 +437,18 @@ function getImageUrl(imagePath) {
   )
     return p;
 
-  // Remove any leading slashes
+  
   const cleaned = p.replace(/^\/+/, "");
 
-  // If it's an assets path, return as-is
+  
   if (cleaned.startsWith("assets/")) return cleaned;
 
-  // If already contains carimages/, strip it and construct URL
+  
   const filename = cleaned.startsWith("carimages/")
-    ? cleaned.replace(/^carimages\//, "")
+    ? cleaned.replace(/^carimages\
     : cleaned;
 
-  // Fallback to IMAGE_BASE for legacy/local filenames
+  
   return `${IMAGE_BASE}/${filename}`;
 }
 function normalizePhotos(photosField) {
@@ -477,7 +477,7 @@ function parsePriceString(p) {
     if (p === undefined || p === null) return 0;
     if (typeof p === "number") return p || 0;
     var s = String(p).trim();
-    // strip currency symbols, commas and whitespace
+    
     s = s.replace(/[^0-9.\-]/g, "");
     if (s === "" || s === "NaN") return 0;
     var n = parseFloat(s);
@@ -487,7 +487,7 @@ function parsePriceString(p) {
   }
 }
 
-// Abbreviate kilometers display for small cards (e.g., 68000 -> 68K, 150000 -> 1.5L)
+
 function abbreviateKm(km) {
   const n = Number(km) || 0;
   if (n === 0) return "0";
@@ -508,7 +508,7 @@ function formatAge(days) {
   return `${Math.round(d / 365)}y old`;
 }
 
-// More robust ownership formatter (matches inventory page)
+
 function formatOwnership(owner) {
   if (!owner) return "1st Own";
   const s = owner.toString().toLowerCase();
@@ -518,13 +518,13 @@ function formatOwnership(owner) {
   return owner;
 }
 
-// Create a featured car card similar to inventory page, adapted for index slider
+
 function createCarCard(car) {
   const carCard = document.createElement("div");
-  // add both class names so styles from inventory and index match
+  
   carCard.className = "Car-card car-card";
 
-  // Set data attributes for potential filtering
+  
   carCard.dataset.brand = car.make || "";
   carCard.dataset.sellingPrice = car.sellingPrice || 0;
   carCard.dataset.year = car.modelYear || new Date().getFullYear();
@@ -541,7 +541,7 @@ function createCarCard(car) {
           ? "status-coming-soon"
           : "status-available";
 
-  // Build image HTML
+  
   let imageHTML = "";
   if (Array.isArray(car.photos) && car.photos.length > 0) {
     if (car.photos.length > 1) {
@@ -635,7 +635,7 @@ function displayFeaturedCars(Cars) {
   const CarSlider = document.querySelector(".Car-slider");
   CarSlider.innerHTML = "";
 
-  // Normalize response: accept direct array or API response object
+  
   let items = [];
   if (Array.isArray(Cars)) {
     items = Cars;
@@ -656,13 +656,13 @@ function displayFeaturedCars(Cars) {
   }
 
   items.forEach((Car) => {
-    // Ensure photos normalized so createCarCard can render sliders
+    
     Car.photos = normalizePhotos(Car.photos || Car.photos || Car.images || []);
 
     const card = createCarCard(Car);
     CarSlider.appendChild(card);
 
-    // Wire up view details button to inventory page anchor
+    
     try {
       const viewBtn = card.querySelector(".view-details-btn");
       if (viewBtn && !viewBtn.disabled) {
@@ -672,14 +672,14 @@ function displayFeaturedCars(Cars) {
             const q = encodeURIComponent(JSON.stringify(Car));
             window.location.href = `vehicledetail.html?car=${q}`;
           } catch (err) {
-            // fallback to inventory anchor if encoding fails
+            
             window.location.href = `https://www.alfamotorworld.com/inventory.html#${Car._id || ""}`;
           }
         });
       }
-      // Make the whole card clickable (but preserve button and slider behavior)
+      
       try {
-        card.tabIndex = 0; // make focusable for keyboard users
+        card.tabIndex = 0; 
         card.setAttribute("role", "link");
 
         function goToDetailsFromCard(e) {
@@ -695,7 +695,7 @@ function displayFeaturedCars(Cars) {
 
         card.addEventListener("click", (e) => {
           const target = e.target;
-          // allow image clicks to navigate — but ignore clicks on explicit controls
+          
           if (
             !target ||
             target.closest(".contact-btn") ||
@@ -717,7 +717,7 @@ function displayFeaturedCars(Cars) {
       } catch (e) {}
     } catch (e) {}
   });
-  // Notify slider that cards have been rendered so it can compute widths
+  
   const event = new Event("featuredCarsRendered");
   CarSlider.dispatchEvent(event);
 }
@@ -742,7 +742,7 @@ function formatOwnership(owner) {
   return owner;
 }
 
-// Translation Functionality
+
 const translations = {
   en: {
     "Alfa Motors World | Premium Pre-Owned Motorcycles in India":
@@ -1121,7 +1121,7 @@ function translatePage(language) {
       node.nodeValue = node.nodeValue.replace(key, translations[language][key]);
     });
   } catch (e) {
-    // ignore any unexpected walker issues
+    
   }
 
   document.getElementById("languagePopup").style.display = "none";
@@ -1132,7 +1132,7 @@ function initializeTranslation() {
   const languageButtons = document.querySelectorAll(".language-btn");
   languageButtons.forEach((button) => {
     button.addEventListener("click", function (e) {
-      // prevent any parent handlers or overlays from swallowing clicks
+      
       e.stopPropagation();
       e.preventDefault();
       const lang = this.getAttribute("data-lang");
@@ -1140,7 +1140,7 @@ function initializeTranslation() {
     });
   });
 
-  // Close modal when clicking outside the popup content
+  
   const languagePopup = document.getElementById("languagePopup");
   if (languagePopup) {
     languagePopup.addEventListener("click", function (e) {
@@ -1169,7 +1169,7 @@ function initializeTranslation() {
   setTimeout(updateMobileMenu, 500);
 }
 
-// Google Analytics
+
 function initializeGoogleAnalytics() {
   window.dataLayer = window.dataLayer || [];
   function gtag() {
@@ -1179,7 +1179,7 @@ function initializeGoogleAnalytics() {
   gtag("config", "G-N2NFEWQNVB");
 }
 
-// Initialize all functionality when DOM is loaded
+
 document.addEventListener("DOMContentLoaded", function () {
   initializeStickyNavbar();
   initializeSearchFeatures();
@@ -1190,7 +1190,7 @@ document.addEventListener("DOMContentLoaded", function () {
   initializeCarSlider();
   initializeTranslation();
 
-  // Load Google Analytics script
+  
   const gaScript = document.createElement("script");
   gaScript.async = true;
   gaScript.src = "https://www.googletagmanager.com/gtag/js?id=G-N2NFEWQNVB";
@@ -1198,18 +1198,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
   initializeGoogleAnalytics();
 });
-// styles-carousel.js
+
 
 function initializeStylesCarousel() {
   const styleContainer = document.querySelector(".styles-container");
   const containerWrapper = document.querySelector(".styles-container-wrapper");
   if (!styleContainer) return;
 
-  // Prevent double initialization
+  
   if (styleContainer.dataset.carouselInitialized) return;
   styleContainer.dataset.carouselInitialized = "true";
 
-  // Helper to wait for images to load (resolve quickly if already loaded)
+  
   function waitForImages(root) {
     const imgs = Array.from(root.querySelectorAll("img"));
     const promises = imgs.map((img) => {
@@ -1221,10 +1221,10 @@ function initializeStylesCarousel() {
     return Promise.all(promises);
   }
 
-  // Clone content once for seamless loop
+  
   const originalChildren = Array.from(styleContainer.children);
   if (originalChildren.length === 0) return;
-  // Avoid duplicating multiple times
+  
   if (styleContainer.children.length === originalChildren.length) {
     originalChildren.forEach((node) => {
       const clone = node.cloneNode(true);
@@ -1241,16 +1241,16 @@ function initializeStylesCarousel() {
   }
 
   let animationName = "styles-scroll";
-  let animSpeed = 70; // px per second, tuneable
+  let animSpeed = 70; 
 
   function setupAnimation() {
-    // Ensure layout has settled and images loaded
+    
     waitForImages(styleContainer).then(() => {
-      // Small timeout to allow any late layout
+      
       setTimeout(() => {
         styleContainer.style.transition = "none";
 
-        // Calculate the width of the original set of children (not including clones)
+        
         const computedGap =
           parseFloat(getComputedStyle(styleContainer).gap) || 0;
         const origCount = originalChildren.length;
@@ -1265,13 +1265,13 @@ function initializeStylesCarousel() {
         const scrollDistance = Math.max(0, Math.round(originalWidth));
         if (scrollDistance <= 0) return;
 
-        // duration in seconds -> distance(px) / speed(px per second)
+        
         const duration = Math.max(6, Math.round(scrollDistance / animSpeed));
 
-        // Create keyframes with exact pixel translation for smoothness
+        
         keyframeStyleEl.textContent = `@keyframes ${animationName} { from { transform: translateX(0); } to { transform: translateX(-${scrollDistance}px); } }`;
 
-        // Apply animation
+        
         styleContainer.style.willChange = "transform";
         styleContainer.style.animation = `${animationName} ${duration}s linear infinite`;
         styleContainer.style.animationPlayState = "running";
@@ -1279,7 +1279,7 @@ function initializeStylesCarousel() {
     });
   }
 
-  // Pause on hover
+  
   styleContainer.addEventListener("mouseenter", () => {
     styleContainer.style.animationPlayState = "paused";
   });
@@ -1287,7 +1287,7 @@ function initializeStylesCarousel() {
     styleContainer.style.animationPlayState = "running";
   });
 
-  // Recalculate on resize (debounced)
+  
   let resizeTimer = null;
   window.addEventListener("resize", () => {
     clearTimeout(resizeTimer);
@@ -1296,9 +1296,9 @@ function initializeStylesCarousel() {
     }, 150);
   });
 
-  // Kick off
+  
   setupAnimation();
 }
 
-// Initialize when DOM is loaded
+
 document.addEventListener("DOMContentLoaded", initializeStylesCarousel);

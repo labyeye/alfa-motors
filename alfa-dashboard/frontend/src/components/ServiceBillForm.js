@@ -49,7 +49,7 @@ const ServiceBillForm = () => {
     engineNumber: "",
     kmReading: "",
     serviceDate: new Date().toISOString().split("T")[0],
-    deliveryDate: new Date(Date.now() + 86400000).toISOString().split("T")[0], // Tomorrow's date
+    deliveryDate: new Date(Date.now() + 86400000).toISOString().split("T")[0], 
     serviceType: "regular",
     serviceItems: [{ description: "", quantity: 1, rate: 0, amount: 0 }],
     discount: 0,
@@ -79,7 +79,7 @@ const ServiceBillForm = () => {
         });
         const bill = res.data.data || res.data;
         if (bill) {
-          // Map server fields into formData shape
+          
           setFormData((prev) => ({
             ...prev,
             customerName: bill.customerName || prev.customerName,
@@ -149,7 +149,7 @@ const ServiceBillForm = () => {
       const selectedCar = availableCars.find((car) => car._id === carId);
       if (selectedCar) {
         console.debug("Selected car for autofill:", selectedCar);
-        // Fallbacks for different possible field names
+        
         const chassis =
           selectedCar.chassisNo ||
           selectedCar.chassisNumber ||
@@ -182,7 +182,7 @@ const ServiceBillForm = () => {
         }));
       }
     } else {
-      // Clear fields if no vehicle selected
+      
       setFormData((prev) => ({
         ...prev,
         vehicleType: "car",
@@ -275,13 +275,13 @@ const ServiceBillForm = () => {
         throw new Error("No authentication token found. Please log in again.");
       }
 
-      // Include user ID in the form data
+      
       const formDataWithUser = {
         ...formData,
-        user: user._id, // Assuming your AuthContext provides the user object with _id
+        user: user._id, 
       };
 
-      // First save the bill (POST for create, PUT for edit)
+      
       let saveResponse;
       if (editId) {
         saveResponse = await axios.put(
@@ -307,7 +307,7 @@ const ServiceBillForm = () => {
         );
       }
 
-      // Rest of your download logic remains the same...
+      
       console.log("Save response:", saveResponse.data);
 
       if (
@@ -320,7 +320,7 @@ const ServiceBillForm = () => {
 
       const billId = saveResponse.data.data._id;
 
-      // Then download the PDF
+      
       const pdfResponse = await axios.get(
         `${API_BASE_URL}/service-bills/${billId}/download`,
         {
@@ -336,7 +336,7 @@ const ServiceBillForm = () => {
         throw new Error("No PDF data received from server");
       }
 
-      // Create download link
+      
       const pdfBlob = new Blob([pdfResponse.data], { type: "application/pdf" });
       const url = window.URL.createObjectURL(pdfBlob);
       const link = document.createElement("a");
@@ -345,7 +345,7 @@ const ServiceBillForm = () => {
       document.body.appendChild(link);
       link.click();
 
-      // Cleanup
+      
       setTimeout(() => {
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
@@ -528,8 +528,8 @@ const ServiceBillForm = () => {
           font,
         });
 
-        // Adjust the Y positions of subsequent elements to make space
-        // You'll need to adjust all Y positions below this section accordingly
+        
+        
       }
 
       const pdfBytes = await pdfDoc.save();
@@ -550,7 +550,7 @@ const ServiceBillForm = () => {
 
   return (
     <div style={styles.container}>
-      {/* Preview Modal Overlay */}
+      {}
       {previewMode && (
         <div style={styles.modalBackdrop} onClick={() => setPreviewMode(false)}>
           <div style={styles.modalContent} onClick={(e) => e.stopPropagation()}>
@@ -576,10 +576,10 @@ const ServiceBillForm = () => {
           </div>
         </div>
       )}
-      {/* Sidebar component */}
+      {}
       <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
 
-      {/* Main Content */}
+      {}
       <div style={styles.mainContent}>
         <div style={styles.contentPadding}>
           <div style={styles.header}>
@@ -590,7 +590,7 @@ const ServiceBillForm = () => {
           </div>
 
           <form style={styles.form}>
-            {/* Customer Information */}
+            {}
             <div style={styles.formSection}>
               <h2 style={styles.sectionTitle}>
                 <User style={styles.sectionIcon} /> Customer Information
@@ -666,13 +666,13 @@ const ServiceBillForm = () => {
               </div>
             </div>
 
-            {/* Vehicle Information */}
+            {}
             <div style={styles.formSection}>
               <h2 style={styles.sectionTitle}>
                 <Car style={styles.sectionIcon} /> Vehicle Information
               </h2>
 
-              {/* Vehicle Selection from Inventory */}
+              {}
               <div style={styles.vehicleSelectionContainer}>
                 <div className="form-group col-2">
                   <label style={styles.formLabel}>
@@ -796,7 +796,7 @@ const ServiceBillForm = () => {
               </div>
             </div>
 
-            {/* Service Details */}
+            {}
             <div style={styles.formSection}>
               <h2 style={styles.sectionTitle}>
                 <Wrench style={styles.sectionIcon} /> Service Details
@@ -853,7 +853,7 @@ const ServiceBillForm = () => {
               </div>
             </div>
 
-            {/* Service Items */}
+            {}
             <div style={styles.formSection}>
               <h2 style={styles.sectionTitle}>
                 <ShoppingCart style={styles.sectionIcon} /> Service Items
@@ -933,13 +933,13 @@ const ServiceBillForm = () => {
               </div>
             </div>
 
-            {/* Payment Information */}
+            {}
             <div style={styles.formSection}>
               <h2 style={styles.sectionTitle}>
                 <IndianRupee style={styles.sectionIcon} /> Payment Information
               </h2>
               <div className="form-grid">
-                {/* Add this toggle switch at the top of the payment section */}
+                {}
                 <div className="form-group col-2">
                   <label style={styles.formLabel}>
                     <IndianRupee style={styles.formIcon} />
@@ -954,7 +954,7 @@ const ServiceBillForm = () => {
                           const newData = {
                             ...formData,
                             taxEnabled: !formData.taxEnabled,
-                            // Reset tax rate to 18 when enabling
+                            
                             taxRate: !formData.taxEnabled ? 18 : 0,
                           };
                           setFormData({
@@ -1152,7 +1152,7 @@ const ServiceBillForm = () => {
               </div>
             </div>
 
-            {/* Additional Information */}
+            {}
             <div style={styles.formSection}>
               <h2 style={styles.sectionTitle}>
                 <AlertCircle style={styles.sectionIcon} /> Additional

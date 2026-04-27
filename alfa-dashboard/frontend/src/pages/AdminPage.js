@@ -28,7 +28,7 @@ const API_BASE =
     ? "https://alfa-motors-9bk6.vercel.app"
     : "https://alfa-motors-9bk6.vercel.app");
 
-// Register ChartJS components
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -95,7 +95,7 @@ const AdminPage = () => {
 
       const data = await response.json();
 
-      // Ensure carStats exists with all required fields
+      
       const completeData = {
         ...data.data,
         carStats: {
@@ -383,7 +383,7 @@ const AdminPage = () => {
     <div style={styles.container}>
       <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
 
-      {/* Main Content */}
+      {}
       <div style={styles.mainContent} className="dashboard-main-content">
         <div style={styles.contentPadding}>
           <div style={styles.header}>
@@ -413,7 +413,7 @@ const AdminPage = () => {
           {activeMenu === "Dashboard" && (
             <>
               <DashboardCards />
-              {/* <RevenueCard /> */}
+              {}
               <ChartsSection />
             </>
           )}
@@ -433,7 +433,7 @@ const AdminPage = () => {
   );
 };
 
-// Styles remain the same as in your original file
+
 const styles = {
   container: {
     display: "flex",
@@ -441,7 +441,7 @@ const styles = {
     backgroundColor: "#FFFFFF",
     fontFamily: "Arial, sans-serif",
   },
-  // Sidebar Styles
+  
   sidebar: {
     width: "280px",
     backgroundColor: "#2B2B2B",
@@ -629,7 +629,7 @@ const styles = {
     color: "#2B2B2B",
     margin: "4px 0 0 0",
   },
-  // Charts Styles
+  
   chartsContainer: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
@@ -653,7 +653,7 @@ const styles = {
     height: "300px",
     width: "100%",
   },
-  // Transactions Styles
+  
   transactionsContainer: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",

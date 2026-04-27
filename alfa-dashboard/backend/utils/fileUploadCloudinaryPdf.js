@@ -7,7 +7,7 @@ const storage = new CloudinaryStorage({
   params: {
     resource_type: 'raw',
     folder: 'alfa-motors/rcs',
-    // allow only pdfs; multer-storage-cloudinary will upload as raw
+    
     allowed_formats: ['pdf'],
     public_id: (req, file) => `rc-pdf-${Date.now()}-${Math.round(Math.random() * 1e9)}`,
   },

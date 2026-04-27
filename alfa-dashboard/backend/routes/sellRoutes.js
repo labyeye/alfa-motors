@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs');
 
 const { SellRequest } = require('../models_sql/SellRequestSQL');
-// Ensure the table exists in SQL
+
 SellRequest.sync({ alter: true }).catch(err => console.error('[SellRequest] Sync failed:', err));
 
 const { upload } = require('../utils/multerMemory');
@@ -12,7 +12,7 @@ const { uploadBufferToXOZZ } = require('../utils/xozzUpload');
 const { protect } = require('../middleware/auth');
 const { formatObjectPrices } = require('../utils/formatIndian');
 
-// Helper to map SQL record to Mongo-style object for frontend compatibility
+
 function mapToFrontend(request) {
   const plain = request.get ? request.get({ plain: true }) : request;
   let details = plain.vehicleDetails || {};
@@ -26,7 +26,7 @@ function mapToFrontend(request) {
     }
   }
 
-  // Fallbacks for direct properties if nested details are missing
+  
   const brand = details.brand || '';
   const model = details.model || '';
   const year = details.year || '';
@@ -48,8 +48,8 @@ function mapToFrontend(request) {
   });
 }
 
-// @route   POST /api/sell-requests
-// @desc    Submit a new sell request with images (uploaded to XOZZ)
+
+
 router.post('/', upload.array('images', 5), async (req, res) => {
   try {
     const { brand, model, year, price, name, email, phone } = req.body;
@@ -59,7 +59,7 @@ router.post('/', upload.array('images', 5), async (req, res) => {
       return res.status(400).json({ error: 'Please fill all required fields' });
     }
 
-    // Upload images to XOZZ
+    
     const imageUrls = [];
     if (req.files && req.files.length > 0) {
       const uploadPromises = req.files.map(file => 
@@ -71,10 +71,10 @@ router.post('/', upload.array('images', 5), async (req, res) => {
       });
     }
 
-    // Create SQL record
+    
     const sellRequest = await SellRequest.create({
       customerName: name,
-      contact: phone, // primary contact stored in contact column
+      contact: phone, 
       vehicleDetails: {
         brand,
         model,
@@ -97,8 +97,8 @@ router.post('/', upload.array('images', 5), async (req, res) => {
   }
 });
 
-// @route   GET /api/sell-requests
-// @desc    Get all sell requests (Admin only)
+
+
 router.get('/', protect, async (req, res) => {
   try {
     const requests = await SellRequest.findAll({ 
@@ -111,8 +111,8 @@ router.get('/', protect, async (req, res) => {
   }
 });
 
-// @route   PATCH /api/sell-requests/:id/status
-// @desc    Update sell request status
+
+
 router.patch('/:id/status', protect, async (req, res) => {
   try {
     const { status } = req.body;
@@ -136,8 +136,8 @@ router.patch('/:id/status', protect, async (req, res) => {
   }
 });
 
-// @route   GET /api/sell-requests/:id
-// @desc    Get single sell request
+
+
 router.get('/:id', protect, async (req, res) => {
   try {
     const request = await SellRequest.findByPk(req.params.id);
@@ -149,8 +149,8 @@ router.get('/:id', protect, async (req, res) => {
   }
 });
 
-// @route   DELETE /api/sell-requests/:id
-// @desc    Delete sell request
+
+
 router.delete('/:id', protect, async (req, res) => {
   try {
     const request = await SellRequest.findByPk(req.params.id);

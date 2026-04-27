@@ -3,6 +3,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Car, TrendingUp, Upload, X, Camera } from "lucide-react";
 import Sidebar from "./Sidebar";
+import {
+  categories,
+  brandsByCategory,
+  getModels,
+  fuelTypes,
+  toLabel,
+} from "../data/vehicleData";
 
 const API_BASE = (function () {
   const host = window.location.hostname;
@@ -16,6 +23,9 @@ const EditCar = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  
+  const [makeSelection, setMakeSelection] = useState("");
+  const [modelSelection, setModelSelection] = useState("");
   const [carData, setCarData] = useState({
     make: "",
     model: "",
@@ -81,9 +91,34 @@ const EditCar = () => {
           exterior = rawPhotos.slice(1);
         }
 
+        const loadedMake = car.make || "";
+        const loadedModel = car.model || "";
+        const loadedCategory = car.category || "";
+
+        
+        const knownBrands = loadedCategory
+          ? brandsByCategory[loadedCategory] || []
+          : Object.values(brandsByCategory).flat();
+        const makeInList = knownBrands.includes(loadedMake);
+        const initialMakeSelection = loadedMake
+          ? makeInList ? loadedMake : "Other_Brand"
+          : "";
+
+        const knownModels = loadedCategory
+          ? getModels(loadedCategory, initialMakeSelection !== "Other_Brand" ? loadedMake : "")
+          : [];
+        const modelInList = knownModels.includes(loadedModel);
+        const initialModelSelection = loadedModel
+          ? modelInList ? loadedModel : "Other_Model"
+          : "";
+
+        setMakeSelection(initialMakeSelection);
+        setModelSelection(initialModelSelection);
+
         setCarData({
-          make: car.make || "",
-          model: car.model || "",
+          category: loadedCategory,
+          make: loadedMake,
+          model: loadedModel,
           variant: car.variant || "",
           fuelType: car.fuelType || "Petrol",
           modelYear: car.modelYear || "",
@@ -119,9 +154,33 @@ const EditCar = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    setCarData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleCategoryChange = (e) => {
+    const cat = e.target.value;
+    setCarData((prev) => ({ ...prev, category: cat, make: "", model: "" }));
+    setMakeSelection("");
+    setModelSelection("");
+  };
+
+  const handleMakeChange = (e) => {
+    const val = e.target.value;
+    setMakeSelection(val);
+    setModelSelection("");
     setCarData((prev) => ({
       ...prev,
-      [name]: value,
+      make: val === "Other_Brand" ? "" : val,
+      model: "",
+    }));
+  };
+
+  const handleModelChange = (e) => {
+    const val = e.target.value;
+    setModelSelection(val);
+    setCarData((prev) => ({
+      ...prev,
+      model: val === "Other_Model" ? "" : val,
     }));
   };
 
@@ -309,44 +368,103 @@ const EditCar = () => {
               <h2>Vehicle Information</h2>
             </div>
             <div style={styles.grid}>
+              {}
+              <div style={styles.field}>
+                <label>Category</label>
+                <select
+                  name="category"
+                  value={carData.category}
+                  onChange={handleCategoryChange}
+                  style={styles.select}
+                >
+                  <option value="">Select Category</option>
+                  {categories.map((cat) => (
+                    <option key={cat} value={cat}>{toLabel(cat)}</option>
+                  ))}
+                </select>
+              </div>
+
+              {}
               <div style={styles.field}>
                 <label>Make *</label>
-                <input
-                  name="make"
-                  value={carData.make}
-                  onChange={handleChange}
+                <select
+                  value={makeSelection}
+                  onChange={handleMakeChange}
                   required
-                />
+                  style={styles.select}
+                >
+                  <option value="">
+                    {carData.category ? "Select Make" : "Select a category first"}
+                  </option>
+                  {(brandsByCategory[carData.category] || []).map((b) => (
+                    <option key={b} value={b}>{toLabel(b)}</option>
+                  ))}
+                </select>
+                {makeSelection === "Other_Brand" && (
+                  <input
+                    name="make"
+                    value={carData.make}
+                    onChange={handleChange}
+                    placeholder="Enter make name"
+                    style={{ marginTop: 6 }}
+                  />
+                )}
               </div>
+
+              {}
               <div style={styles.field}>
                 <label>Model *</label>
-                <input
-                  name="model"
-                  value={carData.model}
-                  onChange={handleChange}
+                <select
+                  value={modelSelection}
+                  onChange={handleModelChange}
                   required
-                />
+                  disabled={!makeSelection || makeSelection === "Other_Brand"}
+                  style={styles.select}
+                >
+                  <option value="">
+                    {makeSelection && makeSelection !== "Other_Brand"
+                      ? "Select Model"
+                      : "Select a make first"}
+                  </option>
+                  {getModels(carData.category, makeSelection).map((m) => (
+                    <option key={m} value={m}>{toLabel(m)}</option>
+                  ))}
+                </select>
+                {modelSelection === "Other_Model" && (
+                  <input
+                    name="model"
+                    value={carData.model}
+                    onChange={handleChange}
+                    placeholder="Enter model name"
+                    style={{ marginTop: 6 }}
+                  />
+                )}
               </div>
+
+              {}
               <div style={styles.field}>
                 <label>Variant</label>
                 <input
                   name="variant"
                   value={carData.variant}
                   onChange={handleChange}
+                  placeholder="e.g., GL, LXI, VXI"
                 />
               </div>
+
+              {}
               <div style={styles.field}>
                 <label>Fuel Type</label>
                 <select
                   name="fuelType"
                   value={carData.fuelType}
                   onChange={handleChange}
+                  style={styles.select}
                 >
-                  <option value="Petrol">Petrol</option>
-                  <option value="Diesel">Diesel</option>
-                  <option value="EV">Electric</option>
-                  <option value="CNG">CNG</option>
-                  <option value="Hybrid">Hybrid</option>
+                  <option value="">Select Fuel Type</option>
+                  {fuelTypes.map((f) => (
+                    <option key={f} value={f}>{toLabel(f)}</option>
+                  ))}
                 </select>
               </div>
               <div style={styles.field}>
@@ -541,6 +659,7 @@ const styles = {
     gap: "20px",
   },
   field: { display: "flex", flexDirection: "column", gap: "6px" },
+  select: { padding: "6px 8px", borderRadius: "4px", border: "1px solid #d1d5db", fontSize: "14px" },
   categoryContainer: {
     marginBottom: "24px",
     padding: "16px",

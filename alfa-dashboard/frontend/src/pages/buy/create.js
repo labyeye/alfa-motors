@@ -1,4 +1,4 @@
-// pages/buy/create.js
+
 import CreateBuyLetterForm from '../../components/CreateBuyLetterForm';
 
 export default function CreateBuyLetterPage() {

@@ -120,7 +120,7 @@ app.use("/api/reviews", reviewRoutes);
 app.use("/api/gallery", galleryRoutes);
 app.use("/api/refurbishments", refurbishmentRoutes);
 app.use("/api/advance-payments", advancePaymentRoutes);
-// XOZZ upload endpoint
+
 app.use("/upload", uploadRoutes);
 
 const carImagesPath = path.join(__dirname, "utils/carimages");

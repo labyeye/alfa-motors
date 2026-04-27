@@ -12,13 +12,13 @@ const API_BASE =
 
 const StaffList = () => {
   const navigate = useNavigate();
-  // user from AuthContext is not used in this component
+  
 
   const [staff, setStaff] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeMenu, setActiveMenu] = useState("Staff");
-  // expandedMenus is not used here; keep sidebar simple
+  
 
   useEffect(() => {
     const fetchStaff = async () => {

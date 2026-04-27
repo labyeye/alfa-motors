@@ -8,12 +8,12 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // If we were redirected here by PrivateRoute, the original location is in state.from
+  
   const from = location.state && location.state.from ? location.state.from.pathname : null;
 
   useEffect(() => {
     if (!loading && user) {
-      // If there is an original path to return to, go there; otherwise default to role dashboard
+      
       if (from) {
         navigate(from, { replace: true });
       } else {

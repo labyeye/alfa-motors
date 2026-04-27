@@ -2,14 +2,14 @@
   --primary-color: #0d1b2a;
   --secondary-color: #c0c0c0;
   --text-color: #000000;
-  /* darkened accent to improve contrast against white text (WCAG) */
+  
   --accent-red: #b71c1c;
   --light-gray: #a9a9a9;
   --dark-gray: #464646;
   --white: #ffffff;
 }
 
-/* Accessibility: visible skip link for keyboard users */
+
 .skip-link {
   position: absolute;
   left: -9999px;
@@ -33,21 +33,21 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* Make all images responsive and avoid layout shift */
+
 img {
   max-width: 100%;
   height: auto;
   display: block;
 }
 
-/* Logo sizing to avoid CLS and preserve layout */
+
 .logo-img {
   width: 190px;
   height: auto;
   display: block;
 }
 
-/* Responsive hero typography */
+
 .hero-content h1 {
   font-size: clamp(1.6rem, 4vw, 3rem);
   line-height: 1.05;
@@ -58,7 +58,7 @@ img {
   font-weight: 400;
 }
 
-/* Allow nav links to wrap on small screens rather than overflowing */
+
 .nav-links {
   display: flex;
   gap: 14px;
@@ -66,7 +66,7 @@ img {
   flex-wrap: wrap;
 }
 
-/* Make search input stretch on small screens */
+
 @media (max-width: 600px) {
   .search-container {
     width: 100%;
@@ -164,7 +164,7 @@ img {
   }
 }
 
-/* Featured Cars Section - White Background */
+
 .featured-Cars-section {
   width: 100%;
   padding: 80px 5%;
@@ -275,17 +275,17 @@ img {
   cursor: not-allowed;
 }
 
-/* Car Card Styles - Similar to inventory.css but with white background */
+
 .Car-slider .Car-card {
-  /* width is controlled via JS to fit a variable number of cards per view */
+  
   flex: 0 0 auto;
   min-width: unset;
   background: white;
   border-radius: 12px;
   overflow: hidden;
-  /* allow absolutely positioned button inside */
+  
   position: relative;
-  /* ensure there's space at the bottom for an anchored button inside the card */
+  
   padding-bottom: 84px;
   transition: all 0.3s ease;
   border: 1px solid #eee;
@@ -363,7 +363,7 @@ img {
   color: #666;
   margin: 5px 0;
 }
-/* View Details Button - anchored and aligned with card padding */
+
 .Car-slider .Car-card .view-details-btn {
   position: absolute;
   left: 20px;
@@ -418,7 +418,7 @@ img {
   color: #333;
 }
 
-/* View Details Button - Updated */
+
 .Car-slider .Car-card .view-details-btn {
   background: var(--primary-color);
   color: white;
@@ -448,17 +448,17 @@ img {
   box-shadow: none;
 }
 
-/* Image Container with Status Overlay */
+
 .Car-slider .Car-card .image-container {
   position: relative;
   overflow: hidden;
   height: 200px;
 }
 
-/* Responsive styles */
+
 @media (max-width: 1024px) {
   .Car-slider .Car-card {
-    /* JS will calculate width; keep CSS fallback */
+    
     flex: 0 0 calc(33.333% - 14px);
   }
 }
@@ -471,7 +471,7 @@ img {
   .Car-slider-container {
     padding: 0 30px;
   }
-  /* Slightly reduce button inset on small screens to maintain visual balance */
+  
   .Car-slider .Car-card .view-details-btn {
     left: 16px;
     right: 16px;
@@ -480,13 +480,13 @@ img {
 }
 
 @media (max-width: 480px) {
-  /* Make each card occupy the full viewport width on small screens
-     so sliding shows one complete card at a time instead of halves. */
+  
+
   .Car-slider {
     gap: 12px;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
-    /* smooth momentum scrolling on iOS */
+    
   }
 
   .Car-slider .Car-card {
@@ -497,13 +497,13 @@ img {
     box-sizing: border-box;
   }
 
-  /* Reduce outer padding so cards align with viewport edges */
+  
   .Car-slider-container {
     padding: 0 12px;
   }
 
-  /* Hide the circular nav buttons on very small screens to avoid
-     overlapping the card and to encourage swipe navigation. */
+  
+
   .slider-nav {
     display: none;
   }
@@ -580,7 +580,7 @@ img {
   height: 18px;
 }
 
-/* Search Suggestions */
+
 .search-suggestions {
   position: absolute;
   top: 100%;
@@ -608,7 +608,7 @@ img {
   color: var(--accent-red);
 }
 
-/* Hero Slider Container */
+
 .hero-slider {
   position: absolute;
   top: 0;
@@ -659,8 +659,8 @@ body {
   overflow-x: hidden;
 }
 
-/* Hero Slider Styles */
-/* Modern hero section centering and style */
+
+
 .hero-content {
   display: flex;
   flex-direction: column;
@@ -900,7 +900,7 @@ body {
   color: #1a426b;
 }
 
-/* Responsive Utilities */
+
 @media (max-width: 1024px) {
   .desktop-only {
     display: none !important;
@@ -913,7 +913,7 @@ body {
   }
 }
 
-/* Navbar Responsive Tweaks */
+
 @media (max-width: 1024px) {
   .navbar {
     padding: 0 16px;
@@ -925,7 +925,7 @@ body {
   }
 
   .nav-links {
-    display: none; /* Desktop nav links hidden on mobile */
+    display: none; 
   }
 
   .nav-account-dropdown .account-text {
@@ -954,14 +954,14 @@ body {
   background: none;
   border: none;
   font-size: 24px;
-  color: #1a1a1a !important; /* Force visible color on mobile */
+  color: #1a1a1a !important; 
   cursor: pointer;
   z-index: 1001;
 }
 
-/* Cars24 Style Mega Menu */
+
 .has-mega-menu {
-  position: static; /* Required for full-width or large dropdowns relative to container */
+  position: static; 
 }
 
 .mega-menu {
@@ -1110,7 +1110,7 @@ body {
   color: #ff5a00 !important;
 }
 
-/* Mega Menu Content Panes & Visual Cards */
+
 .mega-menu-content-pane {
   display: none;
   flex-direction: column;
@@ -1170,7 +1170,7 @@ body {
   gap: 12px;
 }
 
-/* Redundant brand-card rule removed in favor of modernized version below */
+
 
 .brand-card i {
   font-size: 24px;
@@ -1241,7 +1241,7 @@ body {
   background-color: var(--accent-red);
 }
 
-/* Hero CTA Buttons */
+
 .hero-cta {
   display: flex;
   gap: 20px;
@@ -1302,7 +1302,7 @@ body {
   transform: translateX(5px);
 }
 
-/* Consolidated Hero Styling */
+
 .hero-content {
   position: relative;
   z-index: 10;
@@ -1367,7 +1367,7 @@ body {
     pulse 3s ease-in-out 2s infinite;
 }
 
-/* Trust Markers */
+
 .hero-trust-markers {
   display: flex;
   justify-content: center;
@@ -1430,7 +1430,7 @@ body {
   animation: slideUpFade 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 1.1s forwards;
 }
 
-/* Animations */
+
 @keyframes slideUpFade {
   from {
     opacity: 0;
@@ -1454,7 +1454,7 @@ body {
   }
 }
 
-/* Responsive Overrides */
+
 @media (max-width: 1024px) {
   .hero-line:nth-child(2) {
     font-size: 6rem;
@@ -1535,7 +1535,7 @@ h2 {
   color: var(--text-color);
 }
 
-/* Brands Section */
+
 .brands-section {
   background: linear-gradient(135deg, var(--primary-color) 0%, #ffffff 100%);
   padding: 80px 5%;
@@ -1581,7 +1581,7 @@ h2 {
     255,
     255,
     0.08
-  ); /* slightly more visible glass backdrop */
+  ); 
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-radius: 12px;
@@ -1594,7 +1594,7 @@ h2 {
   align-items: center;
   justify-content: center;
   min-height: 140px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* very soft shadow */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); 
 }
 
 .brand-card:hover {
@@ -1606,7 +1606,7 @@ h2 {
 
 .brand-logo {
   width: 100%;
-  height: 60px; /* fixed height for logo container ensures alignment */
+  height: 60px; 
   margin: 0 auto 12px;
   display: flex;
   align-items: center;
@@ -1628,7 +1628,7 @@ h2 {
   letter-spacing: 0.5px;
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 768px) {
   .brands-grid {
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -1796,7 +1796,7 @@ h2 {
   margin: 0;
 }
 
-/* Sell cards design (rounded white cards with big faint number overlay) */
+
 .sell-cards {
   display: flex;
   gap: 30px;
@@ -1822,7 +1822,7 @@ h2 {
 }
 
 .sell-card .step-image {
-  /* Responsive: reduce card height on small screens to avoid excessive vertical space */
+  
   @media (max-width: 600px) {
     .service-card {
       min-height: 0;
@@ -1921,12 +1921,12 @@ h2 {
   border-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Inventory Section */
+
 .inventory-section {
   background-color: white;
 }
 
-/* Stats Section */
+
 .stats-section {
   background: #ffffff;
   padding: 80px 5%;
@@ -2063,7 +2063,7 @@ h2 {
   font-family: "Noto Sans Kannada", sans-serif;
 }
 
-/* Services Section */
+
 .services-section {
   background-color: white;
   padding: 80px 5%;
@@ -2106,9 +2106,9 @@ h2 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* keep CTA/buttons visually fixed at the bottom and make cards uniform height */
+  
   justify-content: space-between;
-  min-height: 360px; /* ensures even card heights */
+  min-height: 360px; 
 }
 
 .service-card:hover {
@@ -2215,7 +2215,7 @@ h2 {
 .styles-container {
   display: flex;
   gap: 15px;
-  /* animation will control transform for continuous scrolling */
+  
   width: max-content;
 }
 
@@ -2265,7 +2265,7 @@ h2 {
   font-weight: 600;
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 768px) {
   .style-card {
     flex: 0 0 140px;
@@ -2299,18 +2299,18 @@ h2 {
 }
 
 .styles-container-wrapper {
-  /* On desktop we may hide overflow for animation; on smaller screens
-     allow horizontal scrolling so users can swipe the style cards. */
+  
+
   overflow: hidden;
 }
 
-/* Make the styles section swipeable on touch devices */
+
 @media (max-width: 900px) {
   .styles-container-wrapper {
     overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
-    /* momentum on iOS */
+    
   }
 
   .styles-container {
@@ -2321,13 +2321,13 @@ h2 {
   .style-card {
     flex: 0 0 auto;
     min-width: 72%;
-    /* make cards large but allow peeking of next card */
+    
     max-width: 72%;
     scroll-snap-align: start;
     box-sizing: border-box;
   }
 
-  /* Hide scrollbars visually but keep scrolling functionality */
+  
   .styles-container-wrapper::-webkit-scrollbar {
     display: none;
   }
@@ -2394,7 +2394,7 @@ h2 {
   color: #ff6b4a;
 }
 
-/* Responsive Styles */
+
 @media (max-width: 768px) {
   .stat-card {
     min-width: 150px;
@@ -2557,7 +2557,7 @@ h2 {
   opacity: 1;
 }
 
-/* Testimonials Section */
+
 .testimonials-section {
   background: white;
   padding: 100px 5%;
@@ -2882,7 +2882,7 @@ input[type="range"]::-webkit-slider-thumb {
   margin-bottom: 0;
 }
 
-/* Mobile Filter Styles */
+
 @media (max-width: 768px) {
   .filters-container {
     position: relative;
@@ -3289,7 +3289,7 @@ input[type="range"]::-webkit-slider-thumb {
   width: 100%;
 }
 
-/* Mobile Responsive Adjustments for Hero Section */
+
 @media only screen and (max-width: 768px) {
   .hero-section {
     height: 0vh;
@@ -3301,11 +3301,11 @@ input[type="range"]::-webkit-slider-thumb {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* Push from top instead of centering large block */
+    justify-content: flex-start; 
     min-height: auto;
     text-align: center;
     margin: 0 auto;
-    padding: 100px 20px 40px; /* Leave room for 70px fixed navbar */
+    padding: 100px 20px 40px; 
   }
 
   .hero-content h1 {
@@ -3314,13 +3314,13 @@ input[type="range"]::-webkit-slider-thumb {
   }
 
   .hero-line {
-    font-size: 1.2rem; /* Even smaller to be safe */
+    font-size: 1.2rem; 
     letter-spacing: 1px;
     margin-bottom: 5px;
   }
 
   .hero-line.highlight {
-    font-size: 2.8rem; /* Scaled down further */
+    font-size: 2.8rem; 
     margin-top: 0;
     line-height: 1.1;
   }
@@ -3372,14 +3372,14 @@ input[type="range"]::-webkit-slider-thumb {
   }
 }
 
-/* For very small screens */
+
 @media only screen and (max-width: 480px) {
   .hero-content h1 {
     font-size: 2rem;
   }
 
   .hero-line.highlight {
-    font-size: 2.5rem; /* For very small screens */
+    font-size: 2.5rem; 
     margin-top: 5px;
   }
 
@@ -3400,7 +3400,7 @@ input[type="range"]::-webkit-slider-thumb {
   }
 }
 
-/* Responsive Styles */
+
 @media (max-width: 1200px) {
   .hero-content h1 {
     font-size: 3.5rem;

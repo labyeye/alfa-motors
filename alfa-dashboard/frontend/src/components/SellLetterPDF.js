@@ -28,7 +28,7 @@ const SellLetterForm = () => {
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [, setFocusedInput] = useState(null);
   const [cars, setCars] = useState([]);
-  // navigation not used in this component
+  
 
   const [formData, setFormData] = useState({
     vehicleName: "",
@@ -77,7 +77,7 @@ const SellLetterForm = () => {
     witnessPhone: "",
     documentsVerified: true,
     note: "",
-    // Invoice particulars
+    
     invoiceNumber: "",
     saleValue: "",
     commission: "",
@@ -117,7 +117,7 @@ const SellLetterForm = () => {
     const carId = e.target.value;
     if (!carId) return;
     const selected = cars.find((c) => c._id === carId) || {};
-    // Map available fields from car to formData; use fallbacks where names differ
+    
     const chassis =
       selected.chassisNo ||
       selected.chassisNumber ||
@@ -150,7 +150,7 @@ const SellLetterForm = () => {
     }));
   };
 
-  // Fetch cars for the inventory selector
+  
   React.useEffect(() => {
     const fetchCars = async () => {
       try {
@@ -158,7 +158,7 @@ const SellLetterForm = () => {
         const res = await axios.get(`${API_BASE}/api/cars?available=true`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        // API may return data or data.data depending on convention
+        
         setCars(res.data?.data || res.data || []);
       } catch (err) {
         console.error("Failed to fetch cars for selector", err);
@@ -170,11 +170,11 @@ const SellLetterForm = () => {
 
   const generatePdfBytes = async (language = "hindi") => {
     try {
-      // Create a PDF document
+      
       const pdfDoc = await PDFDocument.create();
-      const page = pdfDoc.addPage([595.28, 841.89]); // A4 in points
+      const page = pdfDoc.addPage([595.28, 841.89]); 
 
-      // Embed logos (png/jpg)
+      
       const logoBytes = await fetch(logo)
         .then((r) => r.arrayBuffer())
         .catch(() => null);
@@ -187,12 +187,12 @@ const SellLetterForm = () => {
 
       const { width, height } = page.getSize();
 
-      // ---- Invoice-style layout to match provided image ----
+      
       const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
       const fontNormal = await pdfDoc.embedFont(StandardFonts.Helvetica);
-      // small font removed (not used in template)
+      
 
-      // Header: logo left, company center, invoice title and number/date/time right
+      
       const headerY = height - 40;
       if (embeddedLogo) {
         const logoW = 80;
@@ -205,7 +205,7 @@ const SellLetterForm = () => {
         });
       }
 
-      // Company title centered
+      
       page.drawText("ALFA MOTOR WORLD", {
         x: width / 2 - 120,
         y: headerY - 6,
@@ -221,7 +221,7 @@ const SellLetterForm = () => {
         color: rgb(0.06, 0.06, 0.06),
       });
 
-      // Invoice meta on right
+      
       const invoiceX = width - 160;
       page.drawText(`No. ${formData.invoiceNumber || ""}`, {
         x: invoiceX,
@@ -251,7 +251,7 @@ const SellLetterForm = () => {
         },
       );
 
-      // Address line under header
+      
       const addrY = headerY - 54;
       page.drawText(
         "# 97/2, Gottigere, Bannerghatta Main Road, Opp. D Mart, Bangalore - 560 083.",
@@ -264,7 +264,7 @@ const SellLetterForm = () => {
         },
       );
 
-      // Customer lines: Name, Address, Id Number and Contact No
+      
       let y = addrY - 28;
       const drawLinedField = (label, value) => {
         page.drawText(`${label}`, {
@@ -295,7 +295,7 @@ const SellLetterForm = () => {
       drawLinedField("Id Number:", formData.idNumber);
       drawLinedField("Contact No:", formData.contactNo || formData.buyerPhone);
 
-      // Vehicle spec table (Reg. No, Make & Model, Fuel, Year, Colour)
+      
       const tableY = y - 6;
       const tableX = 40;
       const tableW = width - 80;
@@ -307,7 +307,7 @@ const SellLetterForm = () => {
         tableW * 0.23,
       ];
 
-      // Header row box
+      
       let cx = tableX;
       page.drawRectangle({
         x: tableX,
@@ -316,7 +316,7 @@ const SellLetterForm = () => {
         height: 28,
         color: rgb(0.95, 0.95, 0.95),
       });
-      // Draw column separators and labels
+      
       const headers = ["Reg. No.", "Make & Model", "Fuel", "Year", "Colour"];
       for (let i = 0; i < headers.length; i++) {
         page.drawText(headers[i], {
@@ -327,7 +327,7 @@ const SellLetterForm = () => {
           color: rgb(0.06, 0.06, 0.06),
         });
         cx += colWidths[i];
-        // vertical line
+        
         page.drawLine({
           start: { x: cx, y: tableY - 28 },
           end: { x: cx, y: tableY },
@@ -336,7 +336,7 @@ const SellLetterForm = () => {
         });
       }
 
-      // Value row
+      
       let vx = tableX;
       const valueY = tableY - 46;
       page.drawRectangle({
@@ -370,7 +370,7 @@ const SellLetterForm = () => {
         });
       }
 
-      // Chassis and Engine line
+      
       let ceY = valueY - 26;
       page.drawText(`Chassis No : ${formData.chassisNumber || ""}`, {
         x: 40,
@@ -387,13 +387,13 @@ const SellLetterForm = () => {
         color: rgb(0.06, 0.06, 0.06),
       });
 
-      // Particulars table (Sl.No, Particulars, Amount)
+      
       const pX = 40;
       let pY = ceY - 28;
       const pW = width - 80;
-      // pCols removed (not used)
+      
 
-      // Draw table header
+      
       page.drawRectangle({
         x: pX,
         y: pY - 22,
@@ -420,7 +420,7 @@ const SellLetterForm = () => {
         font: fontNormal,
       });
 
-      // Rows data
+      
       const rows = [
         [
           "1",
@@ -484,7 +484,7 @@ const SellLetterForm = () => {
         pY -= 22;
       }
 
-      // Declaration box
+      
       const declY = pY - 8;
       page.drawRectangle({
         x: 40,
@@ -548,12 +548,12 @@ const SellLetterForm = () => {
         font: fontNormal,
       });
 
-      // Finalize the PDF and get the bytes
+      
       const pdfBytes = await pdfDoc.save();
       return pdfBytes;
     } catch (err) {
       console.error("Error generating PDF bytes:", err);
-      // return an empty pdf
+      
       const emptyPdf = await PDFDocument.create();
       const page = emptyPdf.addPage();
       page.drawText("Error generating PDF.", { x: 50, y: 500 });
@@ -615,7 +615,7 @@ const SellLetterForm = () => {
     return timeString.slice(0, 5);
   };
 
-  // Calculate totals for display in the form
+  
   const saleValue = parseFloat(formData.saleValue) || 0;
   const commission = parseFloat(formData.commission) || 0;
   const rtoCharges = parseFloat(formData.rtoCharges) || 0;

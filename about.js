@@ -1,4 +1,4 @@
-/* about.js - page translation helpers for https://www.alfamotorworld.com/about.html */
+
 (function () {
   document.addEventListener("DOMContentLoaded", function () {
     try {

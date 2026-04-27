@@ -9,16 +9,16 @@ const path = require("path");
 const fs = require("fs");
 const { formatCarInstance } = require("../utils/formatIndian");
 
-// Helper to check if we're in production
+
 const isProduction =
   process.env.NODE_ENV === "production" || process.env.VERCEL;
 
-// API endpoint for adding a car (for React frontend)
+
 router.post("/", protect, upload.array("photos", 12), async (req, res) => {
   try {
-    // Get uploaded photo file paths or URLs
-    // Priority: multipart uploads via multer (req.files). If not present,
-    // accept an array of photo URLs in req.body.photos (useful for direct-to-Cloudinary uploads).
+    
+    
+    
     let photoPaths = [];
     if (req.files && req.files.length) {
       const uploaded = [];
@@ -33,7 +33,7 @@ router.post("/", protect, upload.array("photos", 12), async (req, res) => {
       photoPaths = uploaded;
     } else if (req.body && req.body.photos) {
       try {
-        // req.body.photos may be a JSON string or an array
+        
         if (typeof req.body.photos === 'string') {
           photoPaths = JSON.parse(req.body.photos);
         } else if (Array.isArray(req.body.photos)) {
@@ -74,7 +74,7 @@ router.post("/", protect, upload.array("photos", 12), async (req, res) => {
     });
   } catch (err) {
     console.error("Error adding car:", err);
-    // Handle validation errors
+    
     if (err.name === "ValidationError") {
       const messages = Object.values(err.errors).map((val) => val.message);
       return res.status(400).json({
@@ -90,10 +90,10 @@ router.post("/", protect, upload.array("photos", 12), async (req, res) => {
   }
 });
 
-// Get all cars
+
 router.get("/", async (req, res) => {
   try {
-    // Support optional filtering: ?available=true or ?status=Available
+    
     const filter = {};
     if (req.query.available === "true") {
       filter.status = "Available";
@@ -113,7 +113,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Get single car
+
 router.get("/:id", async (req, res) => {
   try {
     const car = await Car.findById(req.params.id).populate(
@@ -137,7 +137,7 @@ router.get("/:id", async (req, res) => {
     });
   }
 });
-// Delete a single car photo
+
 router.delete("/:id/photo", protect, async (req, res) => {
   try {
     const car = await Car.findById(req.params.id);
@@ -147,7 +147,7 @@ router.delete("/:id/photo", protect, async (req, res) => {
     if (car.addedBy.toString() !== req.user._id.toString()) {
       return res.status(401).json({ success: false, error: "Not authorized" });
     }
-    // Accept filename/URL from request body or query string
+    
     let photoIdentifier =
       req.body && req.body.filename
         ? req.body.filename
@@ -160,7 +160,7 @@ router.delete("/:id/photo", protect, async (req, res) => {
         .json({ success: false, error: "Photo identifier required" });
     }
 
-    // Remove from DB
+    
     car.photos = car.photos.filter((img) => {
       return (
         img !== photoIdentifier &&
@@ -170,8 +170,8 @@ router.delete("/:id/photo", protect, async (req, res) => {
     });
     await car.save();
 
-    // Delete file from storage
-    // For XOZZ-hosted remote files we do not have a delete API here; just remove DB reference.
+    
+    
     try {
       if (photoIdentifier && (photoIdentifier.startsWith('http://') || photoIdentifier.startsWith('https://'))) {
         if (photoIdentifier.includes('/uploads/')) {
@@ -180,7 +180,7 @@ router.delete("/:id/photo", protect, async (req, res) => {
           console.log('Remote URL found, not deleting:', photoIdentifier);
         }
       } else {
-        // local file
+        
         const CAR_IMAGES_DIR = process.env.CAR_IMAGES_DIR;
         const filename = photoIdentifier.split('/').pop();
         const filePath = path.join(CAR_IMAGES_DIR, filename.replace('carimages/', ''));
@@ -196,7 +196,7 @@ router.delete("/:id/photo", protect, async (req, res) => {
     res.status(500).json({ success: false, error: "Server error" });
   }
 });
-// Delete all photos for a car
+
 router.delete("/:id/photos", protect, async (req, res) => {
   try {
     const car = await Car.findById(req.params.id);
@@ -209,9 +209,9 @@ router.delete("/:id/photos", protect, async (req, res) => {
 
     const images = Array.isArray(car.photos) ? car.photos.slice() : [];
 
-    // Delete files from storage
+    
     if (isProduction) {
-      // In production many images are remote (XOZZ). We do not attempt remote deletion here.
+      
       for (const img of images) {
         try {
           if (img && img.startsWith('http') && img.includes('/uploads/')) {
@@ -222,7 +222,7 @@ router.delete("/:id/photos", protect, async (req, res) => {
         }
       }
     } else {
-      // Local file deletion
+      
       const fs = require("fs");
       images.forEach((img) => {
         try {
@@ -233,15 +233,15 @@ router.delete("/:id/photos", protect, async (req, res) => {
             filename.replace("carimages/", "")
           );
           fs.unlink(filePath, (err) => {
-            // ignore error
+            
           });
         } catch (e) {
-          // ignore
+          
         }
       });
     }
 
-    // Clear photos array in DB
+    
     await Car.findByIdAndUpdate(
       req.params.id,
       { $set: { photos: [] } },
@@ -266,10 +266,10 @@ router.get("/:id", async (req, res) => {
     res.status(500).json({ success: false, error: "Server error" });
   }
 });
-// Update car details (text fields only - no images)
+
 router.put("/:id", protect, async (req, res) => {
   try {
-    // Build update object only from provided fields to allow partial updates
+    
     const updatedCar = {};
     if (req.body.make !== undefined && req.body.make !== "")
       updatedCar.make = req.body.make;
@@ -334,7 +334,7 @@ router.put("/:id", protect, async (req, res) => {
   }
 });
 
-// Update car images (separate endpoint to handle large payloads)
+
 router.put(
   "/:id/photos",
   protect,
@@ -364,7 +364,7 @@ router.put(
         return res.status(404).json({ success: false, error: "Car not found" });
       }
 
-      // Replace existing photos or append new ones based on request
+      
       if (req.body.replacePhotos === "true") {
         car.photos = photoPaths;
       } else {
@@ -387,10 +387,10 @@ router.put(
   }
 );
 
-// Add single photo to existing car
+
 router.post("/:id/photo", protect, uploadCloud.single("photo"), async (req, res) => {
   try {
-    // Accept either a multipart file (req.file) or a photo URL in req.body.photo / req.body.photoUrl
+    
     if (!req.file && !(req.body && (req.body.photo || req.body.photoUrl))) {
       return res
         .status(400)
@@ -425,10 +425,10 @@ router.post("/:id/photo", protect, uploadCloud.single("photo"), async (req, res)
   }
 });
 
-// Get sold cars (public)
+
 router.get("/sold", async (req, res) => {
   try {
-    // Use lean() to return plain JS objects and avoid Mongoose document getters
+    
     const docs = await Car.find({ status: "Sold Out" })
       .select("make model variant modelYear photos sold")
       .lean();
@@ -450,7 +450,7 @@ router.get("/sold", async (req, res) => {
   }
 });
 
-// Mark a car as sold with optional details
+
 router.put("/:id/mark-sold", protect, async (req, res) => {
   try {
     const car = await Car.findById(req.params.id);
@@ -473,7 +473,7 @@ router.put("/:id/mark-sold", protect, async (req, res) => {
   }
 });
 
-// Add customer photo for sold car
+
 router.post(
   "/:id/sold-photo",
   protect,
@@ -498,8 +498,8 @@ router.post(
       car.sold.customerPhotos.push(photoPath);
       await car.save();
 
-      // Also create a Gallery document so uploads via this legacy endpoint
-      // appear in the /api/gallery listing used by the admin UI and public pages
+      
+      
       try {
         const galleryItem = new Gallery({
           car: car._id,
@@ -514,7 +514,7 @@ router.post(
           "Failed to create gallery document for sold-photo upload:",
           gErr
         );
-        // non-fatal: continue returning success for the car update
+        
       }
 
       res.json({ success: true, data: car, newPhoto: photoPath });
@@ -525,7 +525,7 @@ router.post(
   }
 );
 
-// Delete sold customer photo
+
 router.delete("/:id/sold-photo", protect, async (req, res) => {
   try {
     const { filename } = req.body;
@@ -545,7 +545,7 @@ router.delete("/:id/sold-photo", protect, async (req, res) => {
     );
     await car.save();
 
-    // remove file
+    
     const fs = require("fs");
     const filePath = path.join(
       __dirname,

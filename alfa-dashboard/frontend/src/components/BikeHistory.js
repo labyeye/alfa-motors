@@ -19,7 +19,7 @@ const API_BASE =
 const BikeHistory = () => {
   const { user } = useContext(AuthContext);
   const [activeMenu, setActiveMenu] = useState("Bike History");
-  // expandedMenus not used in this component
+  
   const [searchTerm, setSearchTerm] = useState("");
   const [bikeHistory, setBikeHistory] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -176,7 +176,7 @@ const BikeHistory = () => {
     return "";
   };
 
-  // Navigation helpers removed: not used in this component
+  
 
   return (
     <div style={styles.container}>

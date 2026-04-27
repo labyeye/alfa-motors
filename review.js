@@ -1,4 +1,4 @@
-// review.js - handles opening modal, collecting form data and submitting to backend
+
 (function () {
   const API_BASE = "https://alfa-motors-9bk6.vercel.app/api/reviews";
 
@@ -47,7 +47,7 @@
 
     document.body.appendChild(modal);
 
-    // style stars
+    
     modal.querySelectorAll(".star").forEach((btn) => {
       btn.style.fontSize = "22px";
       btn.style.background = "transparent";
@@ -56,7 +56,7 @@
       btn.style.color = "#d1d5db";
     });
 
-    // default rating
+    
     let currentRating = 5;
 
     function updateStars(rating) {
@@ -98,7 +98,7 @@
         status.style.color = "#111";
 
         try {
-          // build payload and include email only if provided
+          
           const payload = { name, message, rating: currentRating };
           if (email) payload.email = email;
 
@@ -113,7 +113,7 @@
             status.textContent = "Thank you for your review!";
             status.style.color = "#10b981";
             setTimeout(hideModal, 1200);
-            // clear
+            
             document.getElementById("review-name").value = "";
             document.getElementById("review-email").value = "";
             document.getElementById("review-message").value = "";
@@ -138,18 +138,18 @@
       document.body.style.overflow = "hidden";
     }
 
-    // expose for other scripts
+    
     window.ReviewModal = { show: showModal };
   }
 
-  // create modal at load
+  
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", createModal);
   } else {
     createModal();
   }
 
-  // install click handler for any element with .footer-stars class
+  
   function attachFooterButtons() {
     document.querySelectorAll(".footer-stars").forEach((el) => {
       el.style.cursor = "pointer";
@@ -167,21 +167,21 @@
     attachFooterButtons();
   }
 
-  // Fetch reviews and render into homepage testimonials container
+  
   async function fetchAndRenderReviews() {
     try {
       const container = document.querySelector(".testimonials-container");
-      if (!container) return; // not on homepage
+      if (!container) return; 
 
       const res = await fetch(API_BASE);
-      if (!res.ok) return; // keep existing static testimonials on error
+      if (!res.ok) return; 
       const payload = await res.json();
       if (!payload || !payload.data || !Array.isArray(payload.data)) return;
 
       const reviews = payload.data;
-      if (!reviews.length) return; // nothing to do
+      if (!reviews.length) return; 
 
-      // helper: create star icons according to rating (max 5)
+      
       function createStars(rating) {
         const div = document.createElement("div");
         div.className = "rating";
@@ -232,11 +232,11 @@
         return `${years} years ago`;
       }
 
-      // clear container and rebuild
+      
       container.innerHTML = "";
 
       reviews.forEach((r) => {
-        // normalize fields from different backends (SQL or legacy API)
+        
         const reviewerName =
           r.name || r.userName || r.user || r.user_name || "Anonymous";
         const messageText = r.message || r.comment || r.body || "";
@@ -271,7 +271,7 @@
         const h3 = document.createElement("h3");
         h3.className = "user-name";
 
-        // Structured data: author should be a Person object, not a plain string.
+        
         const authorScope = document.createElement("span");
         authorScope.setAttribute("itemprop", "author");
         authorScope.setAttribute("itemscope", "");
@@ -284,11 +284,11 @@
 
         const loc = document.createElement("p");
         loc.className = "user-location";
-        loc.textContent = r.location || ""; // optional
+        loc.textContent = r.location || ""; 
 
         info.appendChild(h3);
         info.appendChild(loc);
-        // rating
+        
         const ratingEl = createStars(ratingValue || 5);
         info.appendChild(ratingEl);
 
@@ -312,8 +312,8 @@
         footer.appendChild(dateSpan);
         footer.appendChild(proof);
 
-        // metadata
-        // itemReviewed must be an object (Thing) — represent as Organization with a name
+        
+        
         const reviewedDiv = document.createElement("div");
         reviewedDiv.setAttribute("itemprop", "itemReviewed");
         reviewedDiv.setAttribute("itemscope", "");
@@ -338,23 +338,23 @@
         container.appendChild(div);
       });
 
-      // update nav dots
+      
       const nav = document.querySelector(".testimonial-nav");
       if (nav) {
         nav.innerHTML = "";
         reviews.forEach((_, i) => {
-          // create a real button so it's keyboard accessible
+          
           const dot = document.createElement("button");
           dot.type = "button";
           dot.className = "testimonial-dot" + (i === 0 ? " active" : "");
           dot.setAttribute("aria-label", `Show testimonial ${i + 1}`);
-          // mark current state for assistive tech
+          
           dot.setAttribute("aria-current", i === 0 ? "true" : "false");
           nav.appendChild(dot);
         });
       }
     } catch (err) {
-      // ignore errors and keep static testimonials
+      
       console.error("Failed to load reviews", err);
     }
   }

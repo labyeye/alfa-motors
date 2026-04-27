@@ -16,7 +16,7 @@ const API_BASE =
 const ServiceHistory = () => {
   const { user } = useContext(AuthContext);
   const [activeMenu, setActiveMenu] = useState("Service History");
-  // expandedMenus not used here
+  
   const [serviceBills, setServiceBills] = useState([]);
   const [purchaseHistory] = useState([]);
   const [sellHistory, setSellHistory] = useState([]);
@@ -32,7 +32,7 @@ const ServiceHistory = () => {
       try {
         setLoading(true);
 
-        // Fetch service bills
+        
         const serviceResponse = await axios.get(
           `${API_BASE}/api/service-bills?page=${currentPage}`,
           {
@@ -44,9 +44,9 @@ const ServiceHistory = () => {
         setServiceBills(serviceResponse.data.data || serviceResponse.data);
         setTotalPages(serviceResponse.data.totalPages || 1);
 
-        // Fetch purchase history (if needed)
+        
 
-        // Fetch sell history (if needed)
+        
         const sellResponse = await axios.get(`${API_BASE}/api/sell-letters`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -67,7 +67,7 @@ const ServiceHistory = () => {
     const term = e.target.value;
     setSearchTerm(term);
 
-    // If the search term is a registration number and has at least 3 characters
+    
     if (term.length >= 3) {
       setShowVehicleHistory(true);
     } else {
@@ -187,7 +187,7 @@ const ServiceHistory = () => {
             </div>
           ) : showVehicleHistory ? (
             <>
-              {/* 1. Purchase History Table - Always shown with heading */}
+              {}
               <div style={{ marginBottom: "32px" }}>
                 <h3
                   style={{
@@ -236,7 +236,7 @@ const ServiceHistory = () => {
                 )}
               </div>
 
-              {/* 2. Sell History Table - Always shown with heading */}
+              {}
               <div style={{ marginBottom: "32px" }}>
                 <h3
                   style={{
@@ -285,7 +285,7 @@ const ServiceHistory = () => {
                 )}
               </div>
 
-              {/* 3. Service History Table - Always shown with heading */}
+              {}
               <div style={{ marginBottom: "32px" }}>
                 <h3
                   style={{
@@ -350,7 +350,7 @@ const ServiceHistory = () => {
                               >
                                 <Download size={16} />
                               </button>
-                              {/* Allow owners (creators) and admins to delete */}
+                              {}
                               {(user?.role === "admin" ||
                                 user?._id === bill.user) && (
                                 <button
@@ -361,7 +361,7 @@ const ServiceHistory = () => {
                                   <Trash2 size={16} />
                                 </button>
                               )}
-                              {/* Edit button - available to owners and admins */}
+                              {}
                               {(user?.role === "admin" ||
                                 user?._id === bill.user) && (
                                 <button

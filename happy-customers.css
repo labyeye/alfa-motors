@@ -8,7 +8,7 @@
   --white: #ffffff;
 }
 
-/* Gallery Hero Section */
+
 .gallery-hero {
   background: linear-gradient(135deg, var(--primary-color) 0%, #1a2937 100%);
   max-height: 60vh;
@@ -60,7 +60,7 @@
   margin-bottom: 30px;
 }
 
-/* Gallery Section */
+
 .gallery-section {
   padding: 80px 0;
   background-color: #f8f9fa;
@@ -90,7 +90,7 @@
   margin: 0;
 }
 
-/* Masonry Gallery Layout */
+
 .masonry-gallery {
   column-count: 4;
   column-gap: 20px;
@@ -210,7 +210,7 @@
   letter-spacing: 0.5px;
 }
 
-/* Loading State */
+
 .loading {
   text-align: center;
   padding: 60px 20px;
@@ -218,7 +218,7 @@
   color: var(--dark-gray);
 }
 
-/* Responsive Design */
+
 @media (max-width: 1200px) {
   .masonry-gallery {
     column-count: 3;

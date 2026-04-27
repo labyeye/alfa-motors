@@ -1,4 +1,4 @@
-// controllers/serviceBillController.js
+
 const { ServiceBill } = require('../models_sql/ServiceBillSQL');
 const { generateServiceBillPDF } = require('../utils/pdfGenerator');
 const fs = require('fs');
@@ -6,12 +6,12 @@ const path = require('path');
 const { Op } = require('sequelize');
 const { formatIndianNumber, formatObjectPrices } = require('../utils/formatIndian');
 
-// Create a new service bill
+
 exports.createServiceBill = async (req, res) => {
   try {
     const { serviceItems, ...otherData } = req.body;
 
-    // Normalize registration number from common field names
+    
     const registrationNumber =
       otherData.registrationNumber ||
       otherData.regNo ||
@@ -21,7 +21,7 @@ exports.createServiceBill = async (req, res) => {
       otherData.reg ||
       null;
 
-    // Basic server-side validation for required fields
+    
     const missing = [];
     const requiredFields = [
       "customerName",
@@ -39,7 +39,7 @@ exports.createServiceBill = async (req, res) => {
       if (!otherData[f] && f !== "kmReading") missing.push(f);
     });
 
-    // kmReading may be provided as km or kmReading
+    
     if (
       otherData.kmReading === undefined &&
       otherData.km === undefined &&
@@ -56,7 +56,7 @@ exports.createServiceBill = async (req, res) => {
       missing.push("serviceItems");
     }
 
-    // registrationNumber is optional now; do not force it as required
+    
 
     if (missing.length > 0) {
       return res.status(400).json({
@@ -66,7 +66,7 @@ exports.createServiceBill = async (req, res) => {
       });
     }
 
-    // Calculate amounts safely
+    
     const totalAmount = serviceItems.reduce(
       (sum, item) =>
         sum + (Number(item.quantity) || 0) * (Number(item.rate) || 0),
@@ -113,14 +113,14 @@ exports.createServiceBill = async (req, res) => {
       createdBy: req.user.id,
     };
     const serviceBill = await ServiceBill.create(serviceBillData);
-    // generate PDF and attach metadata if generator returns urls/paths
+    
     try {
       const { pdfUrl, filePath } = await generateServiceBillPDF(serviceBill);
       if (pdfUrl || filePath) {
         await serviceBill.update({ pdfUrl: pdfUrl || null, pdfPath: filePath || null });
       }
     } catch (pdfErr) {
-      // non-fatal: continue returning created record
+      
       console.warn('PDF generation failed:', pdfErr.message || pdfErr);
     }
     res.status(201).json({ success: true, data: formatObjectPrices(serviceBill.get ? serviceBill.get({ plain: true }) : serviceBill) });
@@ -132,7 +132,7 @@ exports.createServiceBill = async (req, res) => {
   }
 };
 
-// Get all service bills
+
 exports.getServiceBills = async (req, res) => {
   try {
     const where = {};
@@ -143,18 +143,18 @@ exports.getServiceBills = async (req, res) => {
     res.status(500).json({ success: false, message: 'Server Error' });
   }
 };
-// Add to serviceBillController.js
+
 exports.getServiceBillsByRegistration = async (req, res) => {
   try {
     const { registrationNumber } = req.query;
     if (!registrationNumber) return res.status(400).json({ message: 'Registration number is required' });
-    // registrationNumber isn't a first-class column in ServiceBillSQL; return empty
+    
     return res.status(200).json({ success: true, data: [] });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Server Error' });
   }
 };
-// Add this to your serviceBillController.js
+
 exports.downloadServiceBillPDF = async (req, res) => {
   try {
     const billId = req.params.id;
@@ -164,19 +164,19 @@ exports.downloadServiceBillPDF = async (req, res) => {
       `service-bill-${billId}.pdf`
     );
 
-    // Check if file exists
+    
     if (!fs.existsSync(filePath)) {
       return res.status(404).json({ message: "PDF file not found" });
     }
 
-    // Set headers and send file
+    
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
       `attachment; filename=service-bill-${billId}.pdf`
     );
 
-    // Create read stream and pipe to response
+    
     const fileStream = fs.createReadStream(filePath);
     fileStream.pipe(res);
   } catch (error) {
@@ -184,7 +184,7 @@ exports.downloadServiceBillPDF = async (req, res) => {
     res.status(500).json({ message: "Error downloading PDF" });
   }
 };
-// Get single service bill
+
 exports.getServiceBill = async (req, res) => {
   try {
     const serviceBill = await ServiceBill.findByPk(req.params.id);
@@ -197,17 +197,17 @@ exports.getServiceBill = async (req, res) => {
   }
 };
 
-// Update service bill
+
 exports.updateServiceBill = async (req, res) => {
   try {
     if (req.user.role !== 'admin') return res.status(403).json({ message: 'Not authorized to update service bills' });
     const serviceBill = await ServiceBill.findByPk(req.params.id);
     if (!serviceBill) return res.status(404).json({ success: false, message: 'Service bill not found' });
 
-    // Update fields
+    
     await serviceBill.update(req.body);
 
-    // Recalculate amounts if relevant fields are updated
+    
     if (req.body.serviceItems || req.body.discount || req.body.taxRate || req.body.advancePaid) {
       const serviceItems = req.body.serviceItems || serviceBill.serviceItems || [];
       const totalAmount = (serviceItems || []).reduce((sum, item) => sum + (Number(item.quantity) || 0) * (Number(item.rate) || 0), 0);
@@ -218,7 +218,7 @@ exports.updateServiceBill = async (req, res) => {
       await serviceBill.update({ totalAmount, taxAmount, grandTotal, balanceDue });
     }
 
-    // Regenerate PDF if needed
+    
     if (req.body.serviceItems || req.body.taxRate || req.body.discount || req.body.advancePaid) {
       try {
         const pdfUrl = await generateServiceBillPDF(serviceBill);
@@ -234,7 +234,7 @@ exports.updateServiceBill = async (req, res) => {
   }
 };
 
-// Delete service bill
+
 exports.deleteServiceBill = async (req, res) => {
   try {
     const serviceBill = await ServiceBill.findByPk(req.params.id);
@@ -242,7 +242,7 @@ exports.deleteServiceBill = async (req, res) => {
     const isOwner = serviceBill.createdBy && String(serviceBill.createdBy) === String(req.user.id);
     if (!(req.user.role === 'admin' || isOwner)) return res.status(403).json({ success: false, message: 'Not authorized to delete this service bill' });
     await serviceBill.destroy();
-    // Delete associated PDF file if it exists
+    
     if (serviceBill.pdfUrl) {
       const filePath = path.join(__dirname, '../', serviceBill.pdfUrl);
       if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
@@ -253,7 +253,7 @@ exports.deleteServiceBill = async (req, res) => {
   }
 };
 
-// Generate PDF for service bill
+
 exports.generateServiceBillPDF = async (req, res) => {
   try {
     const serviceBill = await ServiceBill.findByPk(req.params.id);

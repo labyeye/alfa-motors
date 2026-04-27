@@ -1,4 +1,4 @@
-/* sell.js - translation helpers for https://www.alfamotorworld.com/sell.html */
+
 (function () {
   document.addEventListener("DOMContentLoaded", function () {
     try {

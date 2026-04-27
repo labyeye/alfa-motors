@@ -42,7 +42,7 @@
       href="https://www.googletagmanager.com"
       crossorigin
     />
-    <!-- Performance: preconnect fonts and CDN for faster resource fetch -->
+    
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
@@ -50,7 +50,7 @@
     <link rel="icon" href="/favicon.ico" />
     <link rel="icon" type="image/svg+xml" href="/assets/okmotor.png" />
 
-    <!-- If inventory was prefetched on the previous page, inject its main content quickly -->
+    
     <script>
       (function () {
         try {
@@ -80,7 +80,7 @@
       })();
     </script>
 
-    <!-- Small helper to format numbers in Indian numbering system for this page -->
+    
     <script>
       (function () {
         function _formatIndianRaw(value) {
@@ -219,7 +219,7 @@
         ]
       }
     </script>
-    <!-- Accessibility & performance helper: ensure images have alt, lazy loading and async decoding -->
+    
     <script>
       (function () {
         function enhanceImages() {
@@ -372,7 +372,7 @@
                   </div>
                 </div>
                 <div class="mega-menu-main">
-                  <!-- Model Pane -->
+                  
                   <div id="pane-model" class="mega-menu-content-pane active">
                     <h4 class="category-title">Browse by Model</h4>
                     <div class="mega-menu-grid">
@@ -419,7 +419,7 @@
                     </div>
                   </div>
 
-                  <!-- Make Pane -->
+                  
                   <div id="pane-make" class="mega-menu-content-pane">
                     <h4 class="category-title">Browse by Make</h4>
                     <div class="visual-grid brand-grid">
@@ -456,7 +456,7 @@
                     </div>
                   </div>
 
-                  <!-- Price Pane -->
+                  
                   <div id="pane-price" class="mega-menu-content-pane">
                     <h4 class="category-title">Browse by Price</h4>
                     <div class="mega-menu-grid">
@@ -491,8 +491,8 @@
                     </div>
                   </div>
 
-                  <!-- Body Type Pane -->
-                  <!-- Body Type Pane -->
+                  
+                  
                   <div id="pane-body" class="mega-menu-content-pane">
                     <h4 class="category-title">Browse by Body Type</h4>
                     <div class="visual-grid">
@@ -515,7 +515,7 @@
                     </div>
                   </div>
 
-                  <!-- Fuel Type Pane -->
+                  
                   <div id="pane-fuel" class="mega-menu-content-pane">
                     <h4 class="category-title">Browse by Fuel Type</h4>
                     <div class="visual-grid">
@@ -538,7 +538,7 @@
                     </div>
                   </div>
 
-                  <!-- Transmission Pane -->
+                  
                   <div id="pane-transmission" class="mega-menu-content-pane">
                     <h4 class="category-title">Browse by Transmission</h4>
                     <div class="visual-grid">
@@ -588,7 +588,7 @@
       </nav>
       <section class="inventory-section full-inventory">
         <div class="inventory-content">
-          <!-- Left sidebar filters -->
+          
           <div class="sidebar-filters">
             <div class="filters-container">
               <h3 data-translate="Filters">Filters</h3>
@@ -899,7 +899,7 @@
           </div>
           <div class="car-grid-container">
             <div class="section-header">
-              <!-- Search bar -->
+              
               <div class="search-sort-row">
                 <div class="search-box">
                   <input
@@ -909,7 +909,7 @@
                   />
                   <button id="search-btn"><i class="fas fa-search"></i></button>
                 </div>
-                <!-- Desktop sort dropdown (hidden on mobile) -->
+                
                 <div class="sort-dropdown desktop-sort-only">
                   <button class="sort-btn" id="sort-btn-main">
                     <i class="fas fa-sort-amount-down"></i>
@@ -939,7 +939,7 @@
                 </div>
               </div>
 
-              <!-- Cars24-style horizontal filter pill strip (mobile only) -->
+              
               <div class="c24-pill-strip" id="c24-pill-strip">
                 <div class="c24-pills-scroll">
                   <button class="c24-pill c24-pill-icon" id="c24-filter-pill">
@@ -975,7 +975,7 @@
                     Ownership <i class="fas fa-chevron-down c24-chevron"></i>
                   </button>
                 </div>
-                <!-- Active filter chips (shown when filters are applied) -->
+                
                 <div class="c24-active-chips" id="c24-active-chips"></div>
               </div>
             </div>
@@ -1190,10 +1190,10 @@
                 </div>
               </div>
             </div>
-            <!-- Placeholder div requested: only 'NA' shown after brand logos -->
+            
             <div class="brand-na" aria-hidden="true">NA</div>
             <div class="car-grid"></div>
-            <!-- Static overlay element for loading state (matches vehicledetail spinner) -->
+            
             <div
               class="inventory-cars-overlay"
               style="display: none"
@@ -3662,7 +3662,7 @@
         }
       }
     </script>
-    <!-- Google tag (gtag.js) -->
+    
     <script
       async
       src="https://www.googletagmanager.com/gtag/js?id=G-N2NFEWQNVB"
@@ -3676,7 +3676,7 @@
 
       gtag("config", "G-N2NFEWQNVB");
     </script>
-    <!-- Review modal script -->
+    
     <script src="/review.js"></script>
     <script src="/i18n.js"></script>
     <script src="/inventory.js"></script>
@@ -3938,9 +3938,7 @@
       </a>
     </div>
 
-    <!-- =============================================
-         AMAZON-STYLE MOBILE SORT BOTTOM SHEET
-         ============================================= -->
+    
     <div class="mob-sort-sheet" id="mob-sort-sheet" aria-hidden="true">
       <div class="mob-sheet-backdrop" id="mob-sort-backdrop"></div>
       <div class="mob-sheet-panel">
@@ -3975,9 +3973,7 @@
       </div>
     </div>
 
-    <!-- =============================================
-         AMAZON-STYLE MOBILE FILTER BOTTOM SHEET
-         ============================================= -->
+    
     <div class="mob-filter-sheet" id="mob-filter-sheet" aria-hidden="true">
       <div class="mob-sheet-backdrop" id="mob-filter-backdrop"></div>
       <div class="mob-sheet-panel mob-filter-panel">
@@ -3993,7 +3989,7 @@
         </div>
 
         <div class="mob-filter-body">
-          <!-- Left: category list -->
+          
           <div class="mob-filter-cats" id="mob-filter-cats">
             <button class="mob-cat-btn active" data-cat="price">Price</button>
             <button class="mob-cat-btn" data-cat="brand">Brand</button>
@@ -4003,9 +3999,9 @@
             <button class="mob-cat-btn" data-cat="fuel">Fuel</button>
           </div>
 
-          <!-- Right: options for selected category -->
+          
           <div class="mob-filter-opts" id="mob-filter-opts">
-            <!-- Price panel -->
+            
             <div class="mob-filter-pane" id="mob-pane-price">
               <p class="mob-filter-section-label">Price Range</p>
               <div class="mob-price-row">
@@ -4054,7 +4050,7 @@
               </div>
             </div>
 
-            <!-- Brand panel -->
+            
             <div
               class="mob-filter-pane"
               id="mob-pane-brand"
@@ -4111,7 +4107,7 @@
               </div>
             </div>
 
-            <!-- Year panel -->
+            
             <div
               class="mob-filter-pane"
               id="mob-pane-year"
@@ -4144,7 +4140,7 @@
               </div>
             </div>
 
-            <!-- KM panel -->
+            
             <div class="mob-filter-pane" id="mob-pane-km" style="display: none">
               <p class="mob-filter-section-label">KM Driven</p>
               <div class="mob-range-wrap">
@@ -4176,7 +4172,7 @@
               </div>
             </div>
 
-            <!-- Ownership panel -->
+            
             <div
               class="mob-filter-pane"
               id="mob-pane-owner"
@@ -4190,7 +4186,7 @@
               </div>
             </div>
 
-            <!-- Fuel panel -->
+            
             <div
               class="mob-filter-pane"
               id="mob-pane-fuel"
@@ -4206,9 +4202,9 @@
               </div>
             </div>
           </div>
-          <!-- /.mob-filter-opts -->
+          
         </div>
-        <!-- /.mob-filter-body -->
+        
 
         <div class="mob-filter-footer">
           <button class="mob-filter-clear-btn" id="mob-filter-clear">
@@ -4219,13 +4215,11 @@
           </button>
         </div>
       </div>
-      <!-- /.mob-sheet-panel -->
+      
     </div>
-    <!-- /.mob-filter-sheet -->
+    
 
-    <!-- =============================================
-         STATIC BOTTOM BAR (Sort | Filters)
-         ============================================= -->
+    
     <div class="mob-bottom-bar" id="mob-bottom-bar">
       <button class="mob-bar-btn" id="mob-sort-btn">
         <i class="fas fa-sort-amount-down"></i> Sort

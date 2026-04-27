@@ -9,7 +9,7 @@ const {
   deleteRcEntry,
   uploadRcPdf,
 } = require("../controllers/rcController");
-// use multer memory upload for RC PDFs
+
 const { upload } = require("../utils/multerMemory");
 
 router.route("/").post(protect, createRcEntry).get(protect, getAllRcEntries);

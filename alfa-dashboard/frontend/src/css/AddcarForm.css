@@ -9,7 +9,7 @@
   --spacing: 1rem;
 }
 
-/* Base layout */
+
 .app-container {
   font-family: 'Segoe UI', sans-serif;
   background-color: var(--background);
@@ -18,7 +18,7 @@
   color: var(--text-color);
 }
 
-/* Topbar */
+
 .topbar {
   display: flex;
   justify-content: flex-end;
@@ -36,7 +36,7 @@
   align-items: center;
 }
 
-/* Content */
+
 .content-wrapper {
   max-width: 900px;
   margin: 0 auto;
@@ -46,7 +46,7 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Form layout */
+
 .form-container {
   display: flex;
   flex-direction: column;
@@ -79,13 +79,13 @@
 }
 
 .form-group {
-  /* By default each form-group takes full width (12 columns). Use the helper classes below
-     to change the width of individual inputs: e.g. `col-3`, `col-4`, `col-2` etc. */
+  
+
   grid-column: span 12;
   min-width: 0;
 }
 
-/* Column span helpers (12-column grid) */
+
 .col-1 {
   grid-column: span 1;
 }
@@ -160,7 +160,7 @@
   box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
 }
 
-/* Responsive: switch to 2-column layout on smaller screens */
+
 @media (max-width: 900px) {
   .form-grid {
     grid-template-columns: repeat(6, 1fr);
@@ -173,9 +173,9 @@
 
 @media (max-width: 520px) {
 
-  /* Two columns on mobile so inputs can appear side-by-side. Default
-     form-group should occupy one column (half width). Larger desktop
-     spans (>=6) will occupy both columns (full-width). */
+  
+
+
   .form-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -184,10 +184,10 @@
     grid-column: span 1;
   }
 
-  /* Map desktop column helpers into mobile-friendly spans:
-     - col-1..col-5 -> half-width (span 1)
-     - col-6..col-12 -> full-width (span 2)
-  */
+  
+
+
+
   .col-1,
   .col-2,
   .col-3,
@@ -212,7 +212,7 @@
   background: url('data:image/svg+xml;charset=UTF-8,<svg fill="gray" height="20" viewBox="0 0 24 24" width="20"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 10px center/1rem;
 }
 
-/* Alert */
+
 .alert {
   padding: 0.75rem 1rem;
   border-radius: var(--border-radius);
@@ -227,7 +227,7 @@
   border: 1px solid #f44336;
 }
 
-/* Footer buttons */
+
 .form-footer {
   display: flex;
   justify-content: flex-end;

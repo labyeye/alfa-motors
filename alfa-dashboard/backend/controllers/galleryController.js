@@ -4,7 +4,7 @@ const { uploadBufferToXOZZ } = require('../utils/xozzUpload');
 const path = require('path');
 const fs = require('fs');
 
-// Upload a gallery photo (optionally associate with a car)
+
 exports.uploadGalleryPhoto = async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ success: false, error: 'No photo provided' });
@@ -12,16 +12,16 @@ exports.uploadGalleryPhoto = async (req, res) => {
     const caption = req.body.caption || '';
     const testimonial = req.body.testimonial || '';
 
-    // Attempt to upload the received file to Cloudinary. If that fails,
-    // fall back to saving a local filename (existing behavior).
+    
+    
     let storedFilename = '';
     try {
-      // If memory storage: upload buffer to XOZZ
+      
       if (req.file && req.file.buffer) {
         const r = await uploadBufferToXOZZ(req.file.buffer, req.file.originalname || `gallery-${Date.now()}`, req.file.mimetype || 'image/jpeg');
         storedFilename = (r && r.url) ? r.url : '';
       } else if (req.file && (req.file.path || req.file.filename)) {
-        // fallback for diskStorage or other middlewares
+        
         storedFilename = req.file.path || req.file.filename || '';
       } else {
         storedFilename = req.file && (req.file.url || req.file.secure_url) || '';
@@ -39,7 +39,7 @@ exports.uploadGalleryPhoto = async (req, res) => {
       uploadedBy: req.user.id,
     });
 
-    // If associated with a car, also add to car.soldCustomerPhotos (SQL column soldCustomerPhotos)
+    
     if (carId) {
       const car = await Car.findByPk(carId);
       if (car) {
@@ -57,7 +57,7 @@ exports.uploadGalleryPhoto = async (req, res) => {
   }
 };
 
-// List public gallery items (optionally filter by car)
+
 exports.listGallery = async (req, res) => {
   try {
     const where = {};
@@ -70,7 +70,7 @@ exports.listGallery = async (req, res) => {
   }
 };
 
-// Update gallery item (caption/testimonial)
+
 exports.updateGallery = async (req, res) => {
   try {
     const id = req.params.id;
@@ -89,7 +89,7 @@ exports.updateGallery = async (req, res) => {
   }
 };
 
-// Delete gallery item and associated file (if present)
+
 exports.deleteGallery = async (req, res) => {
   try {
     const id = req.params.id;
@@ -110,7 +110,7 @@ exports.deleteGallery = async (req, res) => {
       }
     }
 
-    // Delete file from disk or skip remote deletion for XOZZ
+    
     try {
       if (filename && (filename.startsWith('http://') || filename.startsWith('https://'))) {
         if (filename.includes('/uploads/')) {
@@ -133,13 +133,13 @@ exports.deleteGallery = async (req, res) => {
   }
 };
 
-// Delete ALL gallery items and associated files (admin only)
+
 exports.deleteAllGallery = async (req, res) => {
   try {
     const items = await Gallery.findAll({ raw: true });
     const filenames = items.map((i) => i.filename).filter(Boolean);
 
-    // Remove filenames from any car.soldCustomerPhotos arrays
+    
     if (filenames.length > 0) {
       const cars = await Car.findAll();
       for (const car of cars) {
@@ -154,7 +154,7 @@ exports.deleteAllGallery = async (req, res) => {
 
     await Gallery.destroy({ where: {} });
 
-    // Files are stored on XOZZ (remote) or disk: we do not delete remote XOZZ files here.
+    
     try {
       for (const fname of filenames) {
         if (!fname) continue;

@@ -10,7 +10,7 @@ exports.createRefurbishment = async (req, res) => {
       return res.status(400).json({ success: false, message: 'At least one refurbishment item is required' });
     }
 
-    // confirm car exists
+    
     const foundCar = await Car.findByPk(car);
     if (!foundCar) return res.status(404).json({ success: false, message: 'Car not found' });
 
@@ -26,13 +26,13 @@ exports.createRefurbishment = async (req, res) => {
 exports.getRefurbishments = async (req, res) => {
   try {
     const where = {};
-    // admins see all
+    
     if (req.user.role !== 'admin') {
       where.createdBy = req.user.id;
     }
 
     const list = await Refurbishment.findAll({ where, order: [['createdAt', 'DESC']], raw: true });
-    // Attach car info (lightweight)
+    
     const withCar = await Promise.all(list.map(async (r) => {
       const car = await Car.findByPk(r.car);
       return Object.assign({}, r, { car: car || null });
@@ -49,7 +49,7 @@ exports.getRefurbishment = async (req, res) => {
     const refurbishment = await Refurbishment.findByPk(req.params.id, { raw: true });
     if (!refurbishment) return res.status(404).json({ success: false, message: 'Not found' });
 
-    // owner or admin
+    
     const isOwner = refurbishment.createdBy && refurbishment.createdBy.toString() === req.user.id.toString();
     if (!(req.user.role === 'admin' || isOwner)) return res.status(403).json({ success: false, message: 'Not authorized' });
 

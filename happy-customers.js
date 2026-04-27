@@ -1,4 +1,4 @@
-/* happy-customers.js - page translation helpers for https://www.alfamotorworld.com/happy-customers.html */
+
 (function () {
   document.addEventListener("DOMContentLoaded", function () {
     try {

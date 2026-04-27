@@ -7,12 +7,12 @@
   overflow: hidden;
 }
 
-/* Page-specific override: make sell hero compact (avoid full-viewport gap) */
+
 .hero-section.sell-hero {
   height: auto !important;
   min-height: 0 !important;
   display: block !important;
-  padding-top: 70px; /* space for fixed navbar */
+  padding-top: 70px; 
   padding-bottom: 20px;
   overflow: visible;
 }
@@ -132,7 +132,7 @@
   margin-top: 15px;
 }
 
-/* Thumbnail previews inside the image-preview container */
+
 .preview-img {
   width: 120px;
   height: 80px;
@@ -184,7 +184,7 @@
   box-shadow: 0 8px 20px rgba(163, 41, 25, 0.4);
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 768px) {
   .sell-section {
     flex-direction: column;

@@ -1,6 +1,6 @@
 const multer = require('multer');
 
-// Memory storage for serverless environments (Vercel)
+
 const storage = multer.memoryStorage();
 
 const ALLOWED_MIMES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'application/pdf'];
@@ -14,7 +14,7 @@ function fileFilter(req, file, cb) {
 
 const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  limits: { fileSize: 5 * 1024 * 1024 }, 
   fileFilter,
 });
 

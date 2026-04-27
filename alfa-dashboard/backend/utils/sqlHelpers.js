@@ -12,7 +12,7 @@ async function updateUrlById(table, idColumn, idValue, urlColumn, newUrl) {
 }
 
 async function insertUrlRow(table, dataObject) {
-  // dataObject should be a plain object with column: value pairs
+  
   const cols = Object.keys(dataObject).map(c => `\`${c}\``).join(', ');
   const placeholders = Object.keys(dataObject).map(() => '?').join(', ');
   const values = Object.keys(dataObject).map(k => dataObject[k]);

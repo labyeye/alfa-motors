@@ -61,15 +61,15 @@ const StaffPage = () => {
       setDashboardData(data.data);
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
-      // Fallback data if API fails
-      // setDashboardData({
-      //   totalBuyLetters: 145,
-      //   totalSellLetters: 128,
-      //   totalBuyValue: 2450000,
-      //   totalSellValue: 2890000,
-      //   profit: 440000,
-      //   ownerName: user.name,
-      // });
+      
+      
+      
+      
+      
+      
+      
+      
+      
     } finally {
       setLoading(false);
     }
@@ -104,7 +104,7 @@ const StaffPage = () => {
 
   const handleMenuClick = (menuName, path) => {
     setActiveMenu(menuName);
-    // Handle both string paths and function paths
+    
     const actualPath = typeof path === "function" ? path(user?.role) : path;
     navigate(actualPath);
   };
@@ -115,7 +115,7 @@ const StaffPage = () => {
     sessionStorage.clear();
     navigate("/login");
   };
-  // In the menuItems array (around line 250 in BuyLetterPDF.js)
+  
   const menuItems = [
     {
       name: "Dashboard",
@@ -145,7 +145,7 @@ const StaffPage = () => {
         { name: "Service History", path: "/service/history" },
       ],
     },
-    // Add the conditional check here
+    
     ...(user?.role !== "staff"
       ? [
           {
@@ -377,7 +377,7 @@ const StaffPage = () => {
 
   return (
     <div style={styles.container}>
-      {/* Sidebar */}
+      {}
       <div style={styles.sidebar}>
         <div style={styles.sidebarHeader}>
           <img
@@ -400,7 +400,7 @@ const StaffPage = () => {
                   if (item.submenu) {
                     toggleMenu(item.name);
                   } else {
-                    // Pass the path as-is (could be string or function)
+                    
                     handleMenuClick(item.name, item.path);
                   }
                 }}
@@ -442,7 +442,7 @@ const StaffPage = () => {
         </nav>
       </div>
 
-      {/* Main Content */}
+      {}
       <div style={styles.mainContent} className="dashboard-main-content">
         <div style={styles.contentPadding}>
           <div style={styles.header}>
@@ -516,7 +516,7 @@ const StaffPage = () => {
               <DashboardCards />
               <RevenueCard />
 
-              {/* Quick Actions */}
+              {}
               <div style={styles.quickActionsCard}>
                 <h3 style={styles.quickActionsTitle}>Quick Actions</h3>
                 <div style={styles.quickActionsGrid}>
@@ -609,7 +609,7 @@ const styles = {
     backgroundColor: "#FFFFFF",
     fontFamily: "Arial, sans-serif",
   },
-  // Sidebar Styles
+  
   sidebar: {
     width: "280px",
     backgroundColor: "#2B2B2B",
@@ -618,7 +618,7 @@ const styles = {
     position: "sticky",
     top: 0,
     height: "100vh",
-    /* flat dark sidebar to match palette */
+    
   },
   sidebarHeader: {
     padding: "24px",

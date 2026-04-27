@@ -213,7 +213,7 @@ body {
   color: #888;
 }
 
-/* Right Section */
+
 .vehicle-info-section {
   padding: 24px;
   background: #fff;
@@ -746,7 +746,7 @@ body {
   animation: spin 1s linear infinite;
 }
 
-/* --- FULLSCREEN MODAL --- */
+
 .gallery-modal {
   display: none;
   position: fixed;
@@ -775,7 +775,7 @@ body {
 
 .close-modal-btn {
   position: absolute;
-  top: 120px; /* Below the black tabs */
+  top: 120px; 
   right: 32px;
   background: #fff;
   border: 1px solid #e0e0e0;
@@ -874,7 +874,7 @@ body {
   font-size: 20px;
 }
 
-/* Desktop Slider View */
+
 .modal-desktop-view {
   flex: 1;
   display: flex;
@@ -965,7 +965,7 @@ body {
   opacity: 1;
 }
 
-/* Mobile List View */
+
 .modal-mobile-view {
   flex: 1;
   overflow-y: auto;
@@ -1005,7 +1005,7 @@ body {
   backdrop-filter: blur(4px);
 }
 
-/* Mobile Bottom Bar */
+
 .modal-mobile-bottom-bar {
   background: #fff;
   display: none;
@@ -1085,7 +1085,7 @@ body {
   }
 
   .gallery-modal {
-    top: 60px; /* Usually mobile navbars are a bit shorter */
+    top: 60px; 
     height: calc(100vh - 60px);
   }
 }

@@ -3,16 +3,16 @@ const path = require('path');
 const fs = require('fs');
 const { uploadBufferToXOZZ } = require('../utils/xozzUpload');
 
-// Note: RcSQL stores flexible data in `details` JSON; we store legacy fields
-// such as createdBy, pdfUrl, rtoFeesPaid, returnedToDealer inside details.
+
+
 
 exports.createRcEntry = async (req, res, next) => {
   try {
-    // merge provided details with createdBy marker
+    
     const incomingDetails = req.body.details || {};
     const details = Object.assign({}, incomingDetails, { createdBy: req.user.id });
 
-    // map well-known detail fields to top-level columns for easier queries
+    
     const rcData = {
       carId: req.body.carId || null,
       holderName: req.body.holderName || incomingDetails.ownerName || null,
@@ -25,18 +25,18 @@ exports.createRcEntry = async (req, res, next) => {
       dealerName: incomingDetails.dealerName || null,
       rtoAgentName: incomingDetails.rtoAgentName || null,
       remarks: incomingDetails.remarks || null,
-      // status flags
+      
       rtoFeesPaid: incomingDetails.status ? Boolean(incomingDetails.status.rtoFeesPaid) : Boolean(req.body.rtoFeesPaid) || false,
       rcTransferred: incomingDetails.status ? Boolean(incomingDetails.status.rcTransferred) : Boolean(req.body.rcTransferred) || false,
       returnedToDealer: incomingDetails.status ? Boolean(incomingDetails.status.returnedToDealer) : Boolean(req.body.returnedToDealer) || false,
-      // pdf fields (may not be present on create)
+      
       pdfUrl: incomingDetails.pdfUrl || req.body.pdfUrl || null,
       pdfPublicId: incomingDetails.pdfPublicId || req.body.pdfPublicId || null,
       details,
     };
 
     const rcEntry = await Rc.create(rcData);
-    // normalize result for frontend compatibility
+    
     const plain = rcEntry.get ? rcEntry.get({ plain: true }) : rcEntry;
     const normalized = normalizeRc(plain);
     res.status(201).json({ success: true, data: normalized });
@@ -83,12 +83,12 @@ exports.updateRcEntry = async (req, res, next) => {
     if (req.body.holderName !== undefined) updateData.holderName = req.body.holderName;
     if (req.body.registrationNumber !== undefined) updateData.registrationNumber = req.body.registrationNumber;
 
-    // preserve and merge details JSON
+    
     const newDetails = Object.assign({}, rcEntry.details || {}, req.body.details || {});
     if (req.body.rtoFeesPaid !== undefined) newDetails.rtoFeesPaid = Boolean(req.body.rtoFeesPaid);
     if (req.body.returnedToDealer !== undefined) newDetails.returnedToDealer = Boolean(req.body.returnedToDealer);
     if (req.body.rcTransferred !== undefined) newDetails.rcTransferred = Boolean(req.body.rcTransferred);
-    // map common fields into top-level columns as well when provided
+    
     if (req.body.details) {
       const d = req.body.details;
       if (d.vehicleName !== undefined) updateData.vehicleName = d.vehicleName;
@@ -111,7 +111,7 @@ exports.updateRcEntry = async (req, res, next) => {
     updateData.details = newDetails;
 
     await rcEntry.update(updateData);
-    // refetch fresh
+    
     const fresh = await Rc.findByPk(req.params.id);
     const plain = fresh.get ? fresh.get({ plain: true }) : fresh;
     res.status(200).json({ success: true, data: normalizeRc(plain) });
@@ -129,7 +129,7 @@ exports.deleteRcEntry = async (req, res, next) => {
     if (req.user.role !== 'admin' && createdBy !== String(req.user.id))
       return res.status(403).json({ success: false, message: 'Not authorized to delete this RC entry' });
 
-    // delete associated PDF if present in details
+    
     if (rcEntry.details && rcEntry.details.pdfUrl) {
       try {
         const filePath = path.join(__dirname, '../utils/uploads', String(rcEntry.details.pdfUrl).split('/uploads/')[1] || '');
@@ -157,7 +157,7 @@ exports.uploadRcPdf = async (req, res, next) => {
     if (req.user.role !== 'admin' && createdBy !== String(req.user.id))
       return res.status(403).json({ success: false, message: 'Not authorized to upload PDF for this RC entry' });
 
-    // delete old pdf if exists (local file)
+    
     try {
       if (rcEntry.details) {
         if (rcEntry.details.pdfUrl && String(rcEntry.details.pdfUrl).includes('/utils/uploads/')) {
@@ -176,7 +176,7 @@ exports.uploadRcPdf = async (req, res, next) => {
       console.error('Cleanup error before upload:', e);
     }
 
-    // If multer memory provided a buffer, upload directly to XOZZ
+    
     let newPdfUrl = null;
     let newPdfPublicId = null;
     if (req.file && req.file.buffer) {
@@ -191,13 +191,13 @@ exports.uploadRcPdf = async (req, res, next) => {
   const details = Object.assign({}, rcEntry.details || {}, { pdfUrl: newPdfUrl });
   if (newPdfPublicId) details.pdfPublicId = newPdfPublicId;
 
-  // update both details JSON and top-level pdf fields for convenience
+  
   const updateData = { details };
   if (newPdfUrl !== null) updateData.pdfUrl = newPdfUrl;
   if (newPdfPublicId) updateData.pdfPublicId = newPdfPublicId;
 
     await rcEntry.update(updateData);
-    // refetch updated entry
+    
     const updated = await Rc.findByPk(req.params.id);
     const plain = updated.get ? updated.get({ plain: true }) : updated;
     res.status(200).json({ success: true, data: normalizeRc(plain) });
@@ -207,7 +207,7 @@ exports.uploadRcPdf = async (req, res, next) => {
   }
 };
 
-// Helper to normalize a DB row into the legacy frontend shape
+
 function normalizeRc(row) {
   if (!row) return row;
   let details = row.details || {};

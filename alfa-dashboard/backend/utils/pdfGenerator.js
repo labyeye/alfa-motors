@@ -1,4 +1,4 @@
-// utils/pdfGenerator.js
+
 const { PDFDocument, rgb } = require("pdf-lib");
 const fs = require("fs");
 const path = require("path");
@@ -6,17 +6,17 @@ const path = require("path");
 exports.generateServiceBillPDF = async (serviceBill, returnBuffer = false) => {
   try {
     const pdfDoc = await PDFDocument.create();
-    const page = pdfDoc.addPage([595, 842]); // A4 size
+    const page = pdfDoc.addPage([595, 842]); 
 
     const font = await pdfDoc.embedFont("Helvetica");
     const fontBold = await pdfDoc.embedFont("Helvetica-Bold");
 
-    // Load logo
+    
     const logoPath = path.join(__dirname, "../../frontend/src/images/okmotorback.png");
     const logoBytes = fs.readFileSync(logoPath);
     const logoImage = await pdfDoc.embedPng(logoBytes);
 
-    // Header Section
+    
     page.drawRectangle({
       x: 0,
       y: 780,
@@ -32,7 +32,7 @@ exports.generateServiceBillPDF = async (serviceBill, returnBuffer = false) => {
       height: 60,
     });
 
-    // Watermark
+    
     page.drawImage(logoImage, {
       x: 150,
       y: 300,
@@ -41,7 +41,7 @@ exports.generateServiceBillPDF = async (serviceBill, returnBuffer = false) => {
       opacity: 0.1,
     });
 
-    // Title Section
+    
     page.drawRectangle({
       x: 0,
       y: 750,
@@ -58,7 +58,7 @@ exports.generateServiceBillPDF = async (serviceBill, returnBuffer = false) => {
       font: fontBold,
     });
 
-    // Invoice Info
+    
     const invoiceNumber = serviceBill.billNumber || `INV-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000).toString().padStart(4, "0")}`;
     
     page.drawText(`Invoice Number: ${invoiceNumber}`, {
@@ -77,7 +77,7 @@ exports.generateServiceBillPDF = async (serviceBill, returnBuffer = false) => {
       font: font,
     });
 
-    // Divider
+    
     page.drawLine({
       start: { x: 50, y: 710 },
       end: { x: 545, y: 710 },
@@ -85,7 +85,7 @@ exports.generateServiceBillPDF = async (serviceBill, returnBuffer = false) => {
       color: rgb(0.8, 0.8, 0.8),
     });
 
-    // Business Information (if enabled)
+    
     if (serviceBill.taxEnabled) {
       page.drawText("BUSINESS INFORMATION", {
         x: 50,
@@ -128,13 +128,13 @@ exports.generateServiceBillPDF = async (serviceBill, returnBuffer = false) => {
         });
       });
 
-      // Adjust Y positions for other sections
+      
       var customerY = 600;
     } else {
       var customerY = 690;
     }
 
-    // Customer Information
+    
     page.drawText("CUSTOMER DETAILS", {
       x: 50,
       y: customerY,
@@ -183,13 +183,13 @@ exports.generateServiceBillPDF = async (serviceBill, returnBuffer = false) => {
       font: font,
     });
 
-    // Create two columns for Vehicle and Service Information
+    
     const columnY = customerY - 80;
     const leftColumnX = 50;
     const rightColumnX = 300;
     const columnWidth = 240;
 
-    // Left Column - Vehicle Information
+    
     page.drawText("VEHICLE DETAILS", {
       x: leftColumnX,
       y: columnY,
@@ -198,7 +198,7 @@ exports.generateServiceBillPDF = async (serviceBill, returnBuffer = false) => {
       font: fontBold,
     });
 
-    // Vehicle condition
+    
     page.drawRectangle({
       x: leftColumnX,
       y: columnY - 30,
@@ -215,7 +215,7 @@ exports.generateServiceBillPDF = async (serviceBill, returnBuffer = false) => {
       font: font,
     });
 
-    // Vehicle details
+    
     const vehicleDetails = [
       { label: "Type:", value: serviceBill.vehicleType ? serviceBill.vehicleType.toUpperCase() : "N/A" },
       { label: "Brand:", value: serviceBill.vehicleBrand || "N/A" },
@@ -243,7 +243,7 @@ exports.generateServiceBillPDF = async (serviceBill, returnBuffer = false) => {
       });
     });
 
-    // Right Column - Service Information
+    
     page.drawText("SERVICE DETAILS", {
       x: rightColumnX,
       y: columnY,
@@ -276,7 +276,7 @@ exports.generateServiceBillPDF = async (serviceBill, returnBuffer = false) => {
       });
     });
 
-    // Service Items Table (full width)
+    
     const itemsStartY = columnY - 140;
     page.drawText("SERVICE ITEMS", {
       x: 50,
@@ -286,7 +286,7 @@ exports.generateServiceBillPDF = async (serviceBill, returnBuffer = false) => {
       font: fontBold,
     });
 
-    // Table headers
+    
     const serviceHeaders = ["#", "Description", "Qty", "Rate Rs.", "Amount Rs."];
     const serviceHeaderPositions = [60, 100, 300, 350, 450];
 
@@ -300,7 +300,7 @@ exports.generateServiceBillPDF = async (serviceBill, returnBuffer = false) => {
       });
     });
 
-    // Table rows
+    
     let yPos = itemsStartY - 40;
     serviceBill.serviceItems.forEach((item, index) => {
       page.drawText((index + 1).toString(), {
@@ -311,7 +311,7 @@ exports.generateServiceBillPDF = async (serviceBill, returnBuffer = false) => {
         font: font,
       });
 
-      // Handle description wrapping
+      
       const description = item.description || "N/A";
       const maxWidth = 180;
       const lines = [];
@@ -368,7 +368,7 @@ exports.generateServiceBillPDF = async (serviceBill, returnBuffer = false) => {
       yPos -= descHeight;
     });
 
-    // Totals Section
+    
     const totalsY = yPos - 30;
     page.drawText("Subtotal:", {
       x: 350,
@@ -462,7 +462,7 @@ exports.generateServiceBillPDF = async (serviceBill, returnBuffer = false) => {
       font: fontBold,
     });
 
-    // Payment Information
+    
     page.drawText("Payment Method:", {
       x: 50,
       y: totalsY,
@@ -493,7 +493,7 @@ exports.generateServiceBillPDF = async (serviceBill, returnBuffer = false) => {
       font: font,
     });
 
-    // Issues Reported
+    
     page.drawText("ISSUES REPORTED", {
       x: 50,
       y: totalsY - 40,
@@ -518,10 +518,10 @@ exports.generateServiceBillPDF = async (serviceBill, returnBuffer = false) => {
       });
     });
 
-    // Footer with Signatures (now with more space)
+    
     const footerY = 80;
     
-    // Customer Signature
+    
     page.drawText("Customer Signature", {
       x: 100,
       y: footerY,
@@ -537,7 +537,7 @@ exports.generateServiceBillPDF = async (serviceBill, returnBuffer = false) => {
       color: rgb(0.6, 0.6, 0.6),
     });
 
-    // Authorized Signatory
+    
     page.drawText("Authorized Signatory", {
       x: 350,
       y: footerY,
@@ -553,7 +553,7 @@ exports.generateServiceBillPDF = async (serviceBill, returnBuffer = false) => {
       color: rgb(0.6, 0.6, 0.6),
     });
 
-    // Thank you message
+    
     page.drawText("Thank you for your business!", {
       x: 220,
       y: footerY - 30,
@@ -562,7 +562,7 @@ exports.generateServiceBillPDF = async (serviceBill, returnBuffer = false) => {
       font: fontBold,
     });
 
-    // Company info
+    
     page.drawText(
       "Alfa Motor World | No 97, 2, Bannerghatta Rd, opposite to D-Mart, Bohra Layout, Gottigere, Bengaluru, Karnataka 560083",
       {

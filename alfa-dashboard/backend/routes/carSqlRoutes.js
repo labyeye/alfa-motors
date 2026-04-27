@@ -16,12 +16,12 @@ const isProduction =
 function normalizePhotos(value) {
   if (Array.isArray(value)) return value;
   if (!value) return [];
-  // If stored as JSON string, try to parse
+  
   if (typeof value === "string") {
     try {
       const parsed = JSON.parse(value);
       if (Array.isArray(parsed)) return parsed;
-      // if it's the new categorized object { cover, interior, exterior }
+      
       if (parsed && typeof parsed === "object") {
         const all = [];
         if (parsed.cover) all.push(parsed.cover);
@@ -29,11 +29,11 @@ function normalizePhotos(value) {
         if (Array.isArray(parsed.exterior)) all.push(...parsed.exterior);
         if (all.length > 0) return all;
 
-        // legacy object format handling
+        
         if (Array.isArray(parsed.photos)) return parsed.photos;
         return Object.values(parsed).filter((v) => typeof v === "string");
       }
-      // fallback: split comma-separated string
+      
       return value
         .split(",")
         .map((s) => s.trim())
@@ -45,7 +45,7 @@ function normalizePhotos(value) {
         .filter(Boolean);
     }
   }
-  // If object
+  
   if (typeof value === "object") {
     const all = [];
     if (value.cover) all.push(value.cover);
@@ -63,7 +63,7 @@ function parseNumber(value) {
   if (value === undefined || value === null || value === "") return undefined;
   if (typeof value === "number") return value;
   if (typeof value === "string") {
-    // remove currency symbols, commas and spaces
+    
     const cleaned = value.replace(/[₹,\s]/g, "").replace(/[^0-9.\-]/g, "");
     const n = Number(cleaned);
     return Number.isFinite(n) ? n : undefined;
@@ -94,7 +94,7 @@ function sanitizeNumericFields(obj) {
   return out;
 }
 
-// GET /api/cars  -> list all cars
+
 router.get("/", async (req, res) => {
   try {
     const where = {};
@@ -110,7 +110,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET /api/cars/:id -> get single car
+
 router.get("/:id", async (req, res) => {
   try {
     await connectDB();
@@ -128,8 +128,8 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// POST /api/cars -> create new car
-// Create new car (supports categorized multipart file upload)
+
+
 router.post(
   "/",
   protect,
@@ -149,7 +149,7 @@ router.post(
       };
 
       if (req.files) {
-        // Process cover
+        
         if (req.files.cover && req.files.cover[0]) {
           const f = req.files.cover[0];
           const r = await uploadBufferToXOZZ(
@@ -160,7 +160,7 @@ router.post(
           if (r && r.url) photoData.cover = r.url;
         }
 
-        // Process interior
+        
         if (req.files.interior) {
           for (const f of req.files.interior) {
             const r = await uploadBufferToXOZZ(
@@ -172,7 +172,7 @@ router.post(
           }
         }
 
-        // Process exterior
+        
         if (req.files.exterior) {
           for (const f of req.files.exterior) {
             const r = await uploadBufferToXOZZ(
@@ -185,7 +185,7 @@ router.post(
         }
       }
 
-      // Fallback or override if photo links are passed directly in body (e.g. JSON from frontend)
+      
       if (req.body.photos && typeof req.body.photos === "string") {
         try {
           const bodyPhotos = JSON.parse(req.body.photos);
@@ -196,7 +196,7 @@ router.post(
           ) {
             photoData = Object.assign(photoData, bodyPhotos);
           } else if (Array.isArray(bodyPhotos)) {
-            // If legacy array is sent, treat first as cover
+            
             photoData.cover = bodyPhotos[0] || null;
             photoData.exterior = bodyPhotos.slice(1);
           }
@@ -208,10 +208,10 @@ router.post(
         addedBy: req.user && req.user.id ? req.user.id : req.body.addedBy,
       });
 
-      // sanitize numeric fields (strip commas/currency symbols)
+      
       payload = sanitizeNumericFields(payload);
 
-      // Remove empty date strings so Sequelize DATEONLY doesn't reject them
+      
       if (!payload.rcSubmittedDate) delete payload.rcSubmittedDate;
       if (!payload.rcReceivedDate) delete payload.rcReceivedDate;
 
@@ -224,13 +224,13 @@ router.post(
   },
 );
 
-// PUT /api/cars/:id -> update car
+
 router.put("/:id", protect, async (req, res) => {
   try {
     await connectDB();
     const car = await Car.findByPk(req.params.id);
     if (!car) return res.status(404).json({ message: "Car not found" });
-    // sanitize numeric fields in incoming update payload
+    
     const sanitized = sanitizeNumericFields(req.body);
     await car.update(sanitized);
     res.json({ success: true, data: formatCarInstance(car) });
@@ -240,7 +240,7 @@ router.put("/:id", protect, async (req, res) => {
   }
 });
 
-// DELETE /api/cars/:id -> delete car
+
 router.delete("/:id", async (req, res) => {
   try {
     await connectDB();
@@ -254,7 +254,7 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-// Update car photos (categorized)
+
 router.put(
   "/:id/photos",
   protect,
@@ -269,7 +269,7 @@ router.put(
       const car = await Car.findByPk(req.params.id);
       if (!car) return res.status(404).json({ message: "Car not found" });
 
-      // Initialize current photos with existing data
+      
       let photoData = {
         cover: null,
         interior: [],
@@ -297,7 +297,7 @@ router.put(
       }
 
       if (req.files) {
-        // Process cover
+        
         if (req.files.cover && req.files.cover[0]) {
           const f = req.files.cover[0];
           const r = await uploadBufferToXOZZ(
@@ -308,7 +308,7 @@ router.put(
           if (r && r.url) photoData.cover = r.url;
         }
 
-        // Process interior
+        
         if (req.files.interior) {
           for (const f of req.files.interior) {
             const r = await uploadBufferToXOZZ(
@@ -320,7 +320,7 @@ router.put(
           }
         }
 
-        // Process exterior
+        
         if (req.files.exterior) {
           for (const f of req.files.exterior) {
             const r = await uploadBufferToXOZZ(
@@ -342,7 +342,7 @@ router.put(
   },
 );
 
-// Delete single photo
+
 router.delete("/:id/photo", protect, async (req, res) => {
   try {
     const { filename } = req.body;
@@ -358,7 +358,7 @@ router.delete("/:id/photo", protect, async (req, res) => {
       try {
         currentPhotos = JSON.parse(currentPhotos);
       } catch (e) {
-        // stay as is
+        
       }
     }
     let updated = false;
@@ -368,12 +368,12 @@ router.delete("/:id/photo", protect, async (req, res) => {
       typeof currentPhotos === "object" &&
       !Array.isArray(currentPhotos)
     ) {
-      // Check cover
+      
       if (currentPhotos.cover && currentPhotos.cover.includes(filename)) {
         currentPhotos.cover = null;
         updated = true;
       }
-      // Check interior
+      
       if (Array.isArray(currentPhotos.interior)) {
         const initialLen = currentPhotos.interior.length;
         currentPhotos.interior = currentPhotos.interior.filter(
@@ -381,7 +381,7 @@ router.delete("/:id/photo", protect, async (req, res) => {
         );
         if (currentPhotos.interior.length !== initialLen) updated = true;
       }
-      // Check exterior
+      
       if (Array.isArray(currentPhotos.exterior)) {
         const initialLen = currentPhotos.exterior.length;
         currentPhotos.exterior = currentPhotos.exterior.filter(
@@ -407,7 +407,7 @@ router.delete("/:id/photo", protect, async (req, res) => {
   }
 });
 
-// Add single photo
+
 router.post("/:id/photo", protect, upload.single("photo"), async (req, res) => {
   try {
     const car = await Car.findByPk(req.params.id);
@@ -439,7 +439,7 @@ router.post("/:id/photo", protect, upload.single("photo"), async (req, res) => {
   }
 });
 
-// Delete single photo
+
 router.delete("/:id/photo", protect, async (req, res) => {
   try {
     const car = await Car.findByPk(req.params.id);
@@ -453,18 +453,18 @@ router.delete("/:id/photo", protect, async (req, res) => {
     );
     car.photos = updated;
     await car.save();
-    // Note: XOZZ currently doesn't provide a delete API here. We remove the reference
-    // from the DB row only. If you have a delete endpoint for XOZZ, implement it here.
+    
+    
     try {
       if (
         filename &&
         filename.startsWith("http") &&
         filename.includes("/uploads/")
       ) {
-        // remote XOZZ file - skipping deletion (no API implemented)
+        
         console.log("Skipping remote XOZZ file deletion for", filename);
       } else {
-        // Local file: remove from configured dir
+        
         const CAR_IMAGES_DIR =
           process.env.CAR_IMAGES_DIR ||
           path.join(__dirname, "../utils/carimages/");
@@ -486,14 +486,14 @@ router.delete("/:id/photo", protect, async (req, res) => {
   }
 });
 
-// Delete all photos
+
 router.delete("/:id/photos", protect, async (req, res) => {
   try {
     const car = await Car.findByPk(req.params.id);
     if (!car) return res.status(404).json({ message: "Car not found" });
     const photos = normalizePhotos(car.photos);
-    // If XOZZ supports deletion, implement deletion logic here. Currently we only
-    // clear the references in the DB and skip deleting remote files.
+    
+    
     for (const p of photos) {
       try {
         if (p && p.startsWith("http") && p.includes("/uploads/")) {

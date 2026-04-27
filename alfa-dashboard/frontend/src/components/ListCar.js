@@ -37,8 +37,8 @@ const ListCar = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        // response.data.data may be undefined depending on API response shape;
-        // ensure we always store an array to avoid `.map` on undefined.
+        
+        
         setCars(response.data?.data || response.data || []);
         setLoading(false);
       } catch (err) {
@@ -63,7 +63,7 @@ const ListCar = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        // use functional update and guard against undefined/current not being an array
+        
         setCars((current) =>
           Array.isArray(current)
             ? current.filter((car) => getId(car) !== carId)
@@ -93,7 +93,7 @@ const ListCar = () => {
           ) : error ? (
             <div style={styles.error}>{error}</div>
           ) : isMobile ? (
-            /* ─── MOBILE: card list ─── */
+            
             <div style={styles.cardList}>
               {(Array.isArray(cars) ? cars : []).map((car) => {
                 const statusStyle =
@@ -107,7 +107,7 @@ const ListCar = () => {
                     key={getId(car) || Math.random()}
                     style={styles.mobileCard}
                   >
-                    {/* top row: name + status */}
+                    {}
                     <div style={styles.mobileCardHeader}>
                       <div style={styles.mobileCarName}>
                         <Car
@@ -123,7 +123,7 @@ const ListCar = () => {
                       </span>
                     </div>
 
-                    {/* stats row */}
+                    {}
                     <div style={styles.mobileCardStats}>
                       <div style={styles.mobileStat}>
                         <Gauge size={13} color="#9ca3af" />
@@ -150,7 +150,7 @@ const ListCar = () => {
                       </div>
                     </div>
 
-                    {/* prices */}
+                    {}
                     <div style={styles.mobilePrices}>
                       <div style={styles.mobilePrice}>
                         <span style={styles.mobilePriceLabel}>Buying</span>
@@ -180,7 +180,7 @@ const ListCar = () => {
                       </div>
                     </div>
 
-                    {/* actions */}
+                    {}
                     <div style={styles.mobileCardActions}>
                       <button
                         onClick={() => handleEdit(getId(car))}
@@ -200,7 +200,7 @@ const ListCar = () => {
               })}
             </div>
           ) : (
-            /* ─── DESKTOP: table ─── */
+            
             <div style={styles.tableContainer}>
               <table style={styles.table}>
                 <thead>
@@ -328,7 +328,7 @@ const styles = {
     position: "sticky",
     top: 0,
     height: "100vh",
-    /* flat dark sidebar to match palette */
+    
   },
   sidebarHeader: {
     padding: "24px",
@@ -520,7 +520,7 @@ const styles = {
     padding: "4px 8px",
   },
 
-  /* ─── Mobile card list ─── */
+  
   cardList: {
     display: "flex",
     flexDirection: "column",

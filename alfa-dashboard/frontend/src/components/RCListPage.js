@@ -54,7 +54,7 @@ const RcListPage = () => {
       position: isMobile ? "relative" : "sticky",
       top: 0,
       height: isMobile ? "auto" : "100vh",
-      /* flat dark sidebar to match palette */
+      
     },
     sidebarHeader: {
       padding: isMobile ? "12px 16px" : isTablet ? "16px 20px" : "24px",
@@ -94,7 +94,7 @@ const RcListPage = () => {
     },
     submenu: {
       backgroundColor: "#2B2B2B",
-      display: isMobile ? "none" : "block", // Hide submenus on mobile
+      display: isMobile ? "none" : "block", 
     },
     submenuItem: {
       padding: isMobile ? "8px 16px" : "10px 24px 10px 64px",
@@ -173,11 +173,11 @@ const RcListPage = () => {
       boxShadow: "0 1px 3px rgba(0, 0, 0, 0.06)",
       overflow: "hidden",
       fontSize: isMobile ? "0.8125rem" : isTablet ? "0.875rem" : "1rem",
-      minWidth: isMobile ? "800px" : "auto", // Set a minimum width for mobile
+      minWidth: isMobile ? "800px" : "auto", 
     },
     tableWrapper: {
       overflowX: "auto",
-      WebkitOverflowScrolling: "touch", // Smooth scrolling on iOS
+      WebkitOverflowScrolling: "touch", 
       width: "100%",
       maxWidth: "100vw",
       margin: 0,
@@ -263,9 +263,9 @@ const RcListPage = () => {
         }
 
         const data = await response.json();
-        // Normalize entries coming from SQL `rcs` table. Backend returns
-        // records with fields: `id`, `carId`, `holderName`, `registrationNumber`, `details` (JSON).
-        // The legacy frontend expects top-level fields like vehicleRegNo, vehicleName, ownerName, etc.
+        
+        
+        
         const normalized = (data.data || []).map((e) => {
           let details = e.details || {};
           if (typeof details === "string") {
@@ -276,7 +276,7 @@ const RcListPage = () => {
             }
           }
           return Object.assign({}, e, {
-            // preserve both id and _id (server adds _id when sending)
+            
             vehicleRegNo:
               e.registrationNumber ||
               details.registrationNumber ||
@@ -445,7 +445,7 @@ const RcListPage = () => {
       }
 
       const updatedData = await response.json();
-      // Normalize the updated entry as well (backend may return SQL shape)
+      
       const updatedEntryRaw = updatedData.data || updatedData;
       const updatedDetails = updatedEntryRaw.details || {};
       const normalizedUpdated = Object.assign({}, updatedEntryRaw, {
@@ -597,7 +597,7 @@ const RcListPage = () => {
       dataIndex: "dealerName",
       key: "dealerName",
       render: (text) => text || "-",
-      sorter: (a, b) => (a.dealerName || "").localeCompare(b.dealerName || ""), // Fixed this line
+      sorter: (a, b) => (a.dealerName || "").localeCompare(b.dealerName || ""), 
     },
     {
       title: "RTO Agent Name",

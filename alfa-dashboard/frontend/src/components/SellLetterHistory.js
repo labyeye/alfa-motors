@@ -33,7 +33,7 @@ const EditSellLetterModal = ({ letter, onClose, onSave }) => {
           </button>
         </div>
         <form onSubmit={handleSubmit} style={modalStyles.form}>
-          {/* Vehicle Information */}
+          {}
           <div style={modalStyles.formSection}>
             <h2 style={modalStyles.sectionTitle}>Vehicle Information</h2>
             <div style={modalStyles.formGrid}>
@@ -84,7 +84,7 @@ const EditSellLetterModal = ({ letter, onClose, onSave }) => {
             </div>
           </div>
 
-          {/* Buyer Information */}
+          {}
           <div style={modalStyles.formSection}>
             <h2 style={modalStyles.sectionTitle}>Buyer Information</h2>
             <div style={modalStyles.formGrid}>
@@ -181,7 +181,7 @@ const SellLetterHistory = () => {
     note: { x: 60, y: 33, size: 10 },
   };
 
-  // English template field positions - copied from SellLetterPDF
+  
   const englishFieldPositions = {
     vehicleName: { x: 284, y: 680, size: 11 },
     vehicleModel: { x: 93, y: 660, size: 11 },
@@ -265,7 +265,7 @@ const SellLetterHistory = () => {
       );
       const pdfDoc = await PDFDocument.load(existingPdfBytes);
 
-      // Create vehicle invoice page
+      
       const invoicePage = pdfDoc.addPage([595, 842]);
       await drawVehicleInvoice(invoicePage, pdfDoc, letter);
 
@@ -326,7 +326,7 @@ const SellLetterHistory = () => {
       );
       const pdfDoc = await PDFDocument.load(existingPdfBytes);
 
-      // Create vehicle invoice page
+      
       const invoicePage = pdfDoc.addPage([595, 842]);
       await drawVehicleInvoice(invoicePage, pdfDoc, letter);
 
@@ -353,7 +353,7 @@ const SellLetterHistory = () => {
         selleraadhar: letter.selleraadhar || "764465626571",
       };
 
-      // Fill sell letter fields
+      
       for (const [fieldName, position] of Object.entries(
         englishFieldPositions,
       )) {
@@ -389,7 +389,7 @@ const SellLetterHistory = () => {
 
     const { width, height } = page.getSize();
 
-    // Header
+    
     const headerY = height - 40;
     page.drawImage(logoImage, {
       x: 40,

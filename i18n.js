@@ -1,7 +1,7 @@
-/* i18n.js - small runtime helper to persist and apply preferred language across pages
-   Usage: include this script on any page (before page-specific translation helpers)
-   It will attempt to call window.translatePage(preferred) if that function exists.
-*/
+
+
+
+
 (function () {
   function getPreferred() {
     return localStorage.getItem("preferredLanguage");
@@ -20,23 +20,23 @@
       const pref = getPreferred();
       if (!pref) return;
 
-      // Prefer site-wide translatePage if available (index.js provides richer translations)
+      
       if (typeof window.translatePage === "function") {
         window.translatePage(pref);
         return;
       }
 
-      // Fallback: use small built-in translations map to translate [data-translate] elements
+      
       if (translations && translations[pref]) {
         applyLocalTranslations(pref);
       }
     } catch (e) {}
   }
 
-  // Small built-in translations for lightweight pages (only critical keys)
+  
   const translations = {
     ka: {
-      // Navigation / common
+      
       Home: "ಮುಖ್ಯ ಪುಟ",
       "Buy used cars": "ಮಾರಾಟಕ್ಕೆ ವಾಹನಗಳು",
       Categories: "ವರ್ಗಗಳು",
@@ -48,7 +48,7 @@
       Contact: "ಸಂಪರ್ಕಿಸಿ",
       Financing: "ಫೈನಾನ್ಸಿಂಗ್",
 
-      // Buttons / CTAs
+      
       "Get the Quote": "ಕೊಟ್ ಪಡೆಯಿರಿ",
       "Get Started Now": "ಈಗ ಪ್ರಾರಂಭಿಸಿ",
       "Explore Vehicles": "ವಾಹನಗಳನ್ನು ಅನ್ವೇಷಿಸಿ",
@@ -58,13 +58,13 @@
       "Book Service": "ಸೇವೆಗೆ ಬುಕ್ ಮಾಡಿ",
       "Calculate Now": "ಈಗ ಗಣನೆ ಮಾಡಿ",
 
-      // Hero / marketing
+      
       "Find Your": "ನಿಮ್ಮನ್ನು ಕಂಡುಹಿಡಿಯಿರಿ",
       "Dream Car Today": "ಇಂದು ನಿಮ್ಮ ಕನಸಿನ ಕಾರು",
       "Premium Pre-Owned Vehicles with Complete Transparency":
         "ಸಂಪೂರ್ಣ ಪಾರದರ್ಶಕತೆಯೊಂದಿಗೆ ಪ್ರೀಮಿಯಂ ಪೂರ್ವ-ಮಾಲೀಕ ವಾಹನಗಳು",
 
-      // Sections / cards
+      
       "Best Cars": "ಉತ್ತಮ ಕಾರುಗಳು",
       "Choose Your Style": "ನಿಮ್ಮ ಶೈಲಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ",
       Hatchback: "ಹ್ಯಾಚ್ಬ್ಯಾಕ್",
@@ -74,7 +74,7 @@
       Convertible: "ಕನ್ವರ್ಟಿಬಲ್",
       MUV: "ಎಂಯುವಿ",
       Luxury: "ಐಶ್ವರ್ಯ",
-      // style descriptions
+      
       "Compact, good for city driving": "ಸಣ್ಣದು, ನಗರ ಚಾಲನೆಗೆ ಉತ್ತಮ",
       "Comfortable for families, longer body":
         "ಕുടുംബಗಳಿಗೆ ಅನುಕೂಲಕರ, ದೀರ್ಘ ದೇಹ",
@@ -96,13 +96,13 @@
       "View MUV Cars": "ಎಂಯುವಿ ಕಾರುಗಳನ್ನು ವೀಕ್ಷಿಸಿ",
       "View Luxury": "ಐಶ್ವರ್ಯ ವೀಕ್ಷಿಸಿ",
 
-      // Services and features
+      
       "Our Services": "ನಮ್ಮ ಸೇವೆಗಳು",
       "Sell Car": "ಕಾರನ್ನು ಮಾರಾಟ ಮಾಡಿ",
       "Car Service": "ಕಾರ್ ಸೇವೆ",
       "Price Calculator": "ಬೆಲೆ ಗಣಕ",
       "How to Buy Your Dream Car": "ನಿಮ್ಮ ಕನಸಿನ ಕಾರನ್ನು ಹೇಗೆ ಖರೀದಿಸುವುದು",
-      // service descriptions
+      
       "Find your perfect pre-owned Car from our certified collection with warranty.":
         "ನಮ್ಮ ಪ್ರಮಾಣಿತ ಸಂಗ್ರಹದಿಂದ ವಾರಂಟಿಯೊಂದಿಗೆ ನಿಮ್ಮ ಪರಮ ಪೂರ್ವ-ಮಾಲೀಕ ಕಾರನ್ನು ಕಂಡುಹಿಡಿಯಿರಿ.",
       "Get the best price for your Car with our free valuation and quick payment.":
@@ -112,7 +112,7 @@
       "Estimate your Car's value instantly based on model, year and condition.":
         "ಮಾಡೆಲ್, ವರ್ಷ ಮತ್ತು ಸ್ಥಿತಿಯ ಆಧಾರದ ಮೇಲೆ ತಕ್ಷಣ ನಿಮ್ಮ ಕಾರಿನ ಮೌಲ್ಯವನ್ನು ಅಂದಾಜು ಮಾಡಿ.",
 
-      // Filters / inventory
+      
       Filters: "ಫಿಲ್ಟರ್",
       "All Cars": "ಎಲ್ಲಾ ಕಾರುಗಳು",
       Price: "ಬೆಲೆ",
@@ -128,7 +128,7 @@
       "Year: Newest First": "ವರ್ಷ: ಹೊಸದರಿಂದ ಮೊದಲು",
       "Year: Oldest First": "ವರ್ಷ: ಹಳೆಯದರಿಂದ ಮೊದಲು",
 
-      // Process / how-to text
+      
       "At Alfa Motors World, we make buying your perfect Car simple and transparent. Our certified pre-owned Cars come with a comprehensive inspection report and warranty for complete peace of mind.":
         "Alfa Motors World ನಲ್ಲಿ, ನಿಮ್ಮ ಪರಿಪೂರ್ಣ ಕಾರನ್ನು ಖರೀದಿಸುವುದನ್ನು ನಾವು ಸರಳ ಮತ್ತು ಪಾರದರ್ಶಕಗೊಳಿಸುತ್ತೇವೆ. ನಮ್ಮ ಪ್ರಮಾಣಿತ ಪೂರ್ವ-ಮಾಲೀಕ ಕಾರುಗಳಿಗೆ ಸಂಪೂರ್ಣ ಪರಿಶೀಲನಾ ವರದಿ ಮತ್ತು ವಾರಂಟಿಯು ಬರುತ್ತದೆ.",
       "Search our certified inventory and filter by brand, year, price and more to find the perfect Car.":
@@ -140,7 +140,7 @@
       "Complete paperwork, transfer ownership, and take delivery with peace of mind and warranty.":
         "ಪೇಪರ್‌ವರ್ಕ್ ಪೂರ್ಣಗೊಳಿಸಿ, ಮಾಲಿಕತ್ವವನ್ನು ವರ್ಗಾಯಿಸಿ ಮತ್ತು ವಾರ್‍ಂಟಿಯೊಂದಿಗೆ ಮನಸ್ಸಿನ ಶಾಂತಿಯಿಂದ ವಿತರಣೆಯನ್ನು ಸ್ವೀಕರಿಸಿ.",
 
-      // Sell-process long form
+      
       "At Alfa Motors World, we provide the quickest and most hassle-free Car selling service. Getting a great deal on your Car can be tricky, which is why we value your Car based on its condition and current market value.":
         "Alfa Motors World ನಲ್ಲಿ, ನಾವು ಅತ್ಯಂತ ವೇಗವಾದ ಮತ್ತು ತೊಂದರೆ ರಹಿತ ಕಾರ್ ಮಾರಾಟ ಸೇವೆಯನ್ನು ಒದಗಿಸುತ್ತೇವೆ. ನಿಮ್ಮ ಕಾರಿನ ಮೇಲೆ ಅತ್ಯುತ್ತಮ ಒಪ್ಪಂದವನ್ನು ಪಡೆದುವುದು ಕಠಿಣವಾಗಬಹುದು, ಆದ್ದರಿಂದ ನಾವು ನಿಮ್ಮ ಕಾರನ್ನು ಅದರ ಸ್ಥಿತಿ ಮತ್ತು ಪ್ರಸ್ತುತ ಮಾರುಕಟ್ಟೆ ಮೌಲ್ಯ ಆಧಾರದಲ್ಲಿ ಮೌಲ್ಯಮಾಪನ ಮಾಡುತ್ತೇವೆ.",
       "Schedule a professional evaluation to accurately assess your car's condition and market value.":
@@ -152,12 +152,12 @@
       "Be prepared to negotiate with potential buyers and answer their questions promptly.":
         "ಸಂಭಾವ್ಯ ಖರೀದಿದಾರರೊಂದಿಗೆ ಚರ್ಚೆ ನಡೆಸಲು ಸಜ್ಜಾಗಿರಿ ಮತ್ತು ಅವರ ಪ್ರಶ್ನೆಗಳಿಗೆ ತ್ವರಿತವಾಗಿ ಉತ್ತರ ನೀಡಿ.",
 
-      // Cards / actions
+      
       "View Details": "ವಿವರಗಳನ್ನು ನೋಡಿ",
       "Contact Seller": "ಮಾರಾಟಗಾರನನ್ನು ಸಂಪರ್ಕಿಸಿ",
       "Get Instant Valuation": "ತಕ್ಷಣ ಮೌಲ್ಯಮಾಪನ ಪಡೆಯಿರಿ",
 
-      // Sell page / form labels
+      
       "Sell Your Car in 3 Easy Steps":
         "ಮೂರು ಸುಲಭ ಹಂತಗಳಲ್ಲಿ ನಿಮ್ಮ ಕಾರನ್ನು ಮಾರಾಟ ಮಾಡಿ",
       "We make selling your Car simple, fast, and transparent. Get an instant quote and complete the process in just a few clicks.":
@@ -183,7 +183,7 @@
       "I agree to the terms and conditions and privacy policy*":
         "ನಾನು ನಿಯಮಗಳು ಮತ್ತು ಗೌಪ್ಯತಾ ನಿಯಮಾವಳಿಯನ್ನು ಒಪ್ಪುತ್ತೇನೆ*",
 
-      // Footer / misc
+      
       "The best second-hand car showroom in Bangalore for luxury and premium cars.":
         "ಬೆಂಗಳೂರುದಲ್ಲಿ ಐಷಾರಾಮಿ ಮತ್ತು ಪ್ರೀಮಿಯಂ ಕಾರುಗಳ ಉತ್ತಮ ಎರಡನೇ ಕೈ ಶೋರೂಮ್.",
       "All rights reserved.": "ಎಲ್ಲಾ ಹಕ್ಕುಗಳು ಸಂರಕ್ಷಿಸಲಾಗಿದೆ.",
@@ -191,7 +191,7 @@
       "BROWSE INVENTORY": "ಇನ್‌ವೆಂಟರಿ ಬ್ರೌಸ್ ಮಾಡಿ",
       "GET TO KNOW YOUR RIDE": "ನಿಮ್ಮ ಸವಾರಿ ಬಗ್ಗೆ ತಿಳಿಯಿರಿ",
 
-      // small helpers
+      
       Updates: "ಅಪ್‌ಡೇಟ್ಸ್",
       Close: "ಮುಚ್ಚಿ",
       "Popular Brands": "ಜನಪ್ರಿಯ ಬ್ರ್ಯಾಂಡ್‌ಗಳು",
@@ -200,7 +200,7 @@
       "Cars Sold": "ವಿಕ್ರಯವಾದ ಕಾರುಗಳು",
       "Cars Available": "ಲಭ್ಯವಿರುವ ಕಾರುಗಳು",
       "Years Experience": "ಅಭಿವೃದ್ಧಿಯ ವರ್ಷಗಳು",
-      // Contact page specific
+      
       "Our Contact Channels": "ನಮ್ಮ ಸಂಪರ್ಕ ಚಾನಲ್‌ಗಳು",
       "Choose your preferred way to connect with us":
         "ನಮ್ಮ ಜೊತೆಗೆ ಸಂಪರ್ಕಿಸುವ ನಿಮ್ಮ ಮೆಚ್ಚಿನ ಮಾರ್ಗವನ್ನು ಆರಿಸಿ",
@@ -223,7 +223,7 @@
       "Buy Car :- +91 9036818492": "ಕಾರು ಖರೀದಿಸಲು :- +91 9036818492",
       "No 97, 2, Bannerghatta Rd, opposite to D-Mart, Bohra Layout, Gottigere, Bengaluru, Karnataka 560083":
         "ನೋ 97, 2, ಬ್ಯಾನರ್‌ಘಟ್ಟ ರಸ್ತೆ, ಡಿ-ಮಾರ್ಟ್ ಎದುರಿಗೆ, ಬೋಹ್ರಾ ಲೇಔಟ್, ಗೊತ್ತಿಗೇರೆ, ಬೆಂಗಳೂರು, ಕರ್ನಾಟಕ 560083",
-      // About page
+      
       "About Alfa Motors World": "ಅಲ್ಫಾ ಮೋಟಾರ್ಸ್ ವರ್ಲ್ಡ್ ಬಗ್ಗೆ",
       "Your trusted partner in finding the perfect pre-owned vehicle. With over 12 years of experience and 1500+ satisfied customers.":
         "ಪರಿಪೂರ್ಣ ಪ್ರಯೋಜನ ಪೂರ್ವ-ಮಾಲೀಕ ವಾಹನವನ್ನು ಕಂಡುಹಿಡಿಯಲು ನಿಮ್ಮ ವಿಶ್ವಾಸಾರ್ಹ ಜೊತೆಗೆ. 12 ವರ್ಷಗಳ ಅನುಭವ ಮತ್ತು 1500+ ಸಂತುಷ್ಟ ಗ್ರಾಹಕರೊಂದಿಗೆ.",
@@ -258,7 +258,7 @@
         "ಮೊದಲ ಸಂಪರ್ಕದಿಂದ ನಂತರದ ಮಾರಾಟದವರೆಗೆ, ನಾವು ವಿಶಿಷ್ಟ ಸೇವೆ ಒದಗಿಸುತ್ತೇವೆ ಇದರಿಂದ ಗ್ರಾಹಕರು ಮತ್ತೆ ಬರುತ್ತಾರೆ.",
       "Happy Clients": "ಸಂತೋಷದ ಗ್ರಾಹಕರು",
 
-      // Contact page
+      
       "Our Contact Channels": "ನಮ್ಮ ಸಂಪರ್ಕ ಚಾನಲ್‌ಗಳು",
       "Choose your preferred way to connect with us":
         "ನಮ್ಮ ಜೊತೆಗೆ ಸಂಪರ್ಕಿಸುವ ನಿಮ್ಮ ಮೆಚ್ಚಿನ ಮಾರ್ಗವನ್ನು ಆರಿಸಿ",
@@ -276,7 +276,7 @@
       "Connect with us on social platforms":
         "ಸಾಮಾಜಿಕ ವೇದಿಕೆಗಳಲ್ಲಿ ನಮ್ಮೊಂದಿಗೆ ಸಂಪರ್ಕಿಸಿ",
 
-      // Get Quote / Quote page
+      
       "Get Your Perfect Car Quote": "ನಿಮ್ಮ ಪರಿಪೂರ್ಣ ಕಾರ್ ಕೊಟ್ ಪಡೆಯಿರಿ",
       "Tell us what you're looking for and we'll match you with the best options in your budget. Our experts will contact you with personalized recommendations.":
         "ನೀವು ಏನು ಹುಡುಕುತ್ತೀರಿ ಎಂಬುದನ್ನು ನಮಗೆ ತಿಳಿಸಿ; ನಾವು ನಿಮ್ಮ ಬಜೆಟ್‌ಗೆ ಅನುಗುಣವಾದ ಉತ್ತಮ ಆಯ್ಕೆಯನ್ನು ಹೊಂದಿಸುವೆವು. ನಮ್ಮ ತಜ್ಞರು ವೈಯಕ್ತಿಕ ಶಿಫಾರಸುಗಳೊಂದಿಗೆ ನಿಮಗೆ ಸಂಪರ್ಕಿಸುತ್ತಾರೆ.",
@@ -313,14 +313,14 @@
         if (!key) return;
         if (map[key]) el.textContent = map[key];
       });
-      // Add a class for fonts if required
+      
       if (lang !== "en") document.body.classList.add("hindi-font");
     } catch (e) {}
   }
 
-  // Page-specific translation helper. This is used by the runtime to translate
-  // pages that don't use data-translate attributes. It stores original text in
-  // data attributes so English can be restored when switching back.
+  
+  
+  
   try {
     window.translatePage = function (lang) {
       try {
@@ -329,9 +329,9 @@
           (location.pathname || "").split("/").pop() ||
           "https://www.alfamotorworld.com/";
 
-        // Finance page translations
+        
         if (page === "https://www.alfamotorworld.com/finance.html") {
-          // helper to set text and preserve original
+          
           function setText(sel, txt) {
             const el = document.querySelector(sel);
             if (!el) return;
@@ -361,7 +361,7 @@
             );
             setText(".process h2", "ಫೈನಾನ್ಸಿಂಗ್ ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ");
 
-            // Steps - use DOM traversal because description divs don't have a class
+            
             for (let i = 1; i <= 5; i++) {
               const stepSel = ".process .step:nth-of-type(" + i + ")";
               const stepEl = document.querySelector(stepSel);
@@ -438,7 +438,7 @@
               }
             }
 
-            // partners alt texts (generate per-index Kannada labels)
+            
             document
               .querySelectorAll(".partners .partner img")
               .forEach(function (img, idx) {
@@ -446,7 +446,7 @@
                 setAlt(img, alt);
               });
 
-            // small CTA / note
+            
             const note = document.querySelector(".process p");
             if (note) {
               if (!note.dataset.origText)
@@ -455,7 +455,7 @@
                 "ವೈಯಕ್ತಿಕ EMI ಯೋಜನೆಗಳಿಗಾಗಿ, ನಮ್ಮ ಶೋರೂಮ್‌ಗೆ preferred ವಾಹನ ID ಅನ್ನು ತಂದುಕೊಳ್ಳಿ ಅಥವಾ ನಮ್ಮ ಫೈನಾನ್ಸ್ ಪಾಲುದಾರರಿಂದ ಕರೆ ವಿನಂತಿ ಮಾಡಿ.";
             }
           } else {
-            // restore original English texts if stored (steps need traversal too)
+            
             try {
               const hdr = document.querySelector(".finance-hero h1");
               if (hdr && hdr.dataset && hdr.dataset.origText)
@@ -485,7 +485,7 @@
               } catch (e) {}
             }
 
-            // restore partner alts
+            
             document
               .querySelectorAll(".partners .partner img")
               .forEach(function (img) {
@@ -495,7 +495,7 @@
                 } catch (e) {}
               });
 
-            // restore note
+            
             const note = document.querySelector(".process p");
             if (note && note.dataset && note.dataset.origText)
               note.textContent = note.dataset.origText;
@@ -511,12 +511,12 @@
     applyPreferred: applyPreferred,
   };
 
-  // Auto-apply when i18n is loaded if translatePage already exists
+  
   try {
     applyPreferred();
   } catch (e) {}
 
-  // Re-apply translations after DOMContentLoaded to avoid timing/race issues
+  
   try {
     if (
       typeof window !== "undefined" &&
@@ -531,7 +531,7 @@
     }
   } catch (e) {}
 
-  // Observe DOM changes and re-apply translations (debounced) to catch dynamically inserted nav/menu
+  
   try {
     if (typeof MutationObserver !== "undefined") {
       let timer = null;

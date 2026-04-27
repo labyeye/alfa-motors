@@ -9,7 +9,7 @@ const API_BASE =
     : "https://alfa-motors-9bk6.vercel.app");
 
 export default function AdvancePaymentForm() {
-  // auth context not used here
+  
   const [sellLetters, setSellLetters] = useState([]);
   const [form, setForm] = useState({
     sellLetter: "",
@@ -53,7 +53,7 @@ export default function AdvancePaymentForm() {
       setSaving(false);
     }
   };
-  // removed unused formatRupee helper
+  
 
   return (
     <div style={styles.container}>

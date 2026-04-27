@@ -1,7 +1,7 @@
 export const formatIndian = (num) => {
   if (num === undefined || num === null || num === "") return "-";
   const s = num.toString();
-  // If already formatted and contains commas in correct positions, return as-is
+  
   if (typeof s === "string" && s.includes(",")) {
     return s;
   }

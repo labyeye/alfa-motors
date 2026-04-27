@@ -15,7 +15,7 @@ body {
     line-height: 1.6;
 }
 
-/* Typography */
+
 h1, h2, h3, h4, h5, h6 {
     font-family:  sans-serif;
     font-weight: 700;
@@ -30,10 +30,10 @@ p, span, div {
 .cta-text, button {
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
-    color: inherit; /* ensure CTA text inherits the button's color for proper contrast */
+    color: inherit; 
 }
 
-/* Layout improvements with proper spacing */
+
 .section-padding {
     padding: 80px 5%;
 }
@@ -44,7 +44,7 @@ p, span, div {
     padding: 0 20px;
 }
 
-/* Grid layouts */
+
 .grid-4 {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -63,7 +63,7 @@ p, span, div {
     gap: 30px;
 }
 
-/* Responsive grid */
+
 @media (max-width: 1024px) {
     .grid-4 {
         grid-template-columns: repeat(2, 1fr);
@@ -80,7 +80,7 @@ p, span, div {
     }
 }
 
-/* White space improvements */
+
 .spacing-40 {
     padding: 40px;
 }
@@ -89,7 +89,7 @@ p, span, div {
     margin-bottom: 40px;
 }
 
-/* a blue color as a generic focus style */
+
 button:focus-visible {
     outline: 2px solid #4a90e2 !important;
     outline: -webkit-focus-ring-color auto 5px !important;

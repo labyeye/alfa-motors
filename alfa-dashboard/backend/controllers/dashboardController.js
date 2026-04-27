@@ -1,4 +1,4 @@
-// New SQL-only dashboard controller implementation
+
 const { Sequelize } = require("sequelize");
 const { SellLetter } = require("../models_sql/SellLetterSQL");
 const { ServiceBill } = require("../models_sql/ServiceBillSQL");
@@ -12,8 +12,8 @@ const monthNames = [
 ];
 const { formatIndianNumber, formatObjectPrices } = require("../utils/formatIndian");
 
-// Helper: monthly aggregation using saleDate / createdAt
-// amountField: which numeric column to SUM (defaults to 'saleAmount')
+
+
 async function getMonthlyAggregation(model, dateField = 'createdAt', where = {}, amountField = 'saleAmount') {
   try {
     const rows = await model.findAll({
@@ -52,7 +52,7 @@ exports.getOwnerDashboardStats = async (req, res) => {
   try {
     const ownerId = req.user.id;
 
-    // SellLetters created by this owner (createdBy)
+    
     const [totalSellLetters, totalSellValue] = await Promise.all([
       SellLetter.count({ where: { createdBy: ownerId } }).catch(() => 0),
       SellLetter.sum('saleAmount', { where: { createdBy: ownerId } }).catch(() => 0),
@@ -62,7 +62,7 @@ exports.getOwnerDashboardStats = async (req, res) => {
     const recentSell = (await getRecent(SellLetter, { createdBy: ownerId }, 3)) || [];
     const recentService = (await getRecent(ServiceBill, { createdBy: ownerId }, 3)) || [];
 
-    // Format numeric amounts for API response
+    
     const monthlySellDataFormatted = monthlySellData.map((r) => ({
       ...r,
       totalAmount: formatIndianNumber(Number(r.totalAmount || 0)),
@@ -100,8 +100,8 @@ exports.getOwnerDashboardStats = async (req, res) => {
 
 exports.getDashboardStats = async (req, res) => {
   try {
-    // Make each DB call resilient — if a table is missing or query fails,
-    // return a sensible default instead of throwing so the dashboard can render.
+    
+    
     const [
       totalSellLetters,
       totalSaleValue,
@@ -115,10 +115,10 @@ exports.getDashboardStats = async (req, res) => {
     ] = await Promise.all([
       SellLetter.count().catch(() => 0),
       SellLetter.sum('saleAmount').catch(() => 0),
-      // ServiceBill stores total in `total` column
+      
       ServiceBill.sum('total').catch(() => 0),
   getMonthlyAggregation(SellLetter, 'saleDate', {}).catch(() => []),
-  // ServiceBill stores totals in `total` column
+  
   getMonthlyAggregation(ServiceBill, 'createdAt', {}, 'total').catch(() => []),
       Rc.count().catch(() => 0),
       getRecent(SellLetter, {}, 3).catch(() => []),
