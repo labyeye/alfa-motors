@@ -445,7 +445,7 @@ function getImageUrl(imagePath) {
 
   
   const filename = cleaned.startsWith("carimages/")
-    ? cleaned.replace(/^carimages\
+    ? cleaned.replace(/^carimages\//, "")
     : cleaned;
 
   
