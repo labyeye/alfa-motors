@@ -1124,7 +1124,7 @@ function translatePage(language) {
     
   }
 
-  document.getElementById("languagePopup").style.display = "none";
+  document.getElementById("languagePopup").classList.remove("active");
   localStorage.setItem("preferredLanguage", language);
 }
 
@@ -1145,8 +1145,17 @@ function initializeTranslation() {
   if (languagePopup) {
     languagePopup.addEventListener("click", function (e) {
       if (e.target === languagePopup) {
-        languagePopup.style.display = "none";
+        languagePopup.classList.remove("active");
       }
+    });
+  }
+
+  
+  const languageToggleBtn = document.getElementById("language-toggle-btn");
+  if (languageToggleBtn) {
+    languageToggleBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      languagePopup.classList.toggle("active");
     });
   }
 
