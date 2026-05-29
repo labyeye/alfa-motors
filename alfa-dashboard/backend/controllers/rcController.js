@@ -32,6 +32,8 @@ exports.createRcEntry = async (req, res, next) => {
       
       pdfUrl: incomingDetails.pdfUrl || req.body.pdfUrl || null,
       pdfPublicId: incomingDetails.pdfPublicId || req.body.pdfPublicId || null,
+      submittedDate: req.body.submittedDate || null,
+      receivedDate: req.body.receivedDate || null,
       details,
     };
 
@@ -82,6 +84,8 @@ exports.updateRcEntry = async (req, res, next) => {
     if (req.body.carId !== undefined) updateData.carId = req.body.carId;
     if (req.body.holderName !== undefined) updateData.holderName = req.body.holderName;
     if (req.body.registrationNumber !== undefined) updateData.registrationNumber = req.body.registrationNumber;
+    if (req.body.submittedDate !== undefined) updateData.submittedDate = req.body.submittedDate || null;
+    if (req.body.receivedDate !== undefined) updateData.receivedDate = req.body.receivedDate || null;
 
     
     const newDetails = Object.assign({}, rcEntry.details || {}, req.body.details || {});

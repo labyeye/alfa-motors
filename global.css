@@ -1,4 +1,13 @@
 @import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+@font-face {
+    font-family: "Driveform";
+    src: url("assets/fonts/driveform.otf") format("opentype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
 
 * {
     -webkit-font-smoothing: antialiased;
@@ -11,26 +20,26 @@ body {
     padding: 0px;
     width: 100%;
     height: 100%;
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     line-height: 1.6;
 }
 
 
 h1, h2, h3, h4, h5, h6 {
-    font-family:  sans-serif;
+    font-family: "Driveform", 'Poppins', sans-serif;
     font-weight: 700;
     line-height: 1.2;
 }
 
 p, span, div {
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     font-weight: 400;
 }
 
 .cta-text, button {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Poppins', sans-serif;
     font-weight: 600;
-    color: inherit; 
+    color: inherit;
 }
 
 

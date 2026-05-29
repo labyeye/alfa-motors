@@ -453,9 +453,26 @@ function getImageUrl(imagePath) {
 }
 function normalizePhotos(photosField) {
   if (!photosField) return [];
+
+  // Handle categorized object {cover, interior, exterior}
+  if (typeof photosField === "object" && !Array.isArray(photosField)) {
+    const arr = [];
+    if (photosField.cover) arr.push(photosField.cover);
+    if (Array.isArray(photosField.interior)) arr.push(...photosField.interior);
+    if (Array.isArray(photosField.exterior)) arr.push(...photosField.exterior);
+    return arr.filter(Boolean);
+  }
+
   if (Array.isArray(photosField)) return photosField;
+
   if (typeof photosField === "string") {
     const raw = photosField.trim();
+    if (raw.startsWith("{")) {
+      try {
+        const parsed = JSON.parse(raw);
+        return normalizePhotos(parsed);
+      } catch (e) {}
+    }
     if (raw.startsWith("[")) {
       try {
         const parsed = JSON.parse(raw);
@@ -1193,6 +1210,7 @@ document.addEventListener("DOMContentLoaded", function () {
   initializeStickyNavbar();
   initializeSearchFeatures();
   initializeHeroSlider();
+  initializeHeroSearch();
   initializeMobileMenu();
   initializeLazyLoading();
   initializeStatsObserver();
@@ -1208,6 +1226,19 @@ document.addEventListener("DOMContentLoaded", function () {
   initializeGoogleAnalytics();
 });
 
+
+function initializeHeroSearch() {
+  const input = document.getElementById("heroSearchInput");
+  if (!input) return;
+  input.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      const q = input.value.trim();
+      window.location.href =
+        "https://www.alfamotorworld.com/inventory.html" +
+        (q ? "?search=" + encodeURIComponent(q) : "");
+    }
+  });
+}
 
 function initializeStylesCarousel() {
   const styleContainer = document.querySelector(".styles-container");
