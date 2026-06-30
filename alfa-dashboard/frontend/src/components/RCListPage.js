@@ -411,21 +411,26 @@ const RcListPage = () => {
       setLoading(true);
 
       const updateData = {
-        vehicleRegNo: values.vehicleRegNo,
-        vehicleName: values.vehicleName,
-        ownerName: values.ownerName,
-        applicantName: values.applicantName,
-        work: values.work,
-        dealerName: values.dealerName,
-        rtoAgentName: values.rtoAgentName,
-        remarks: values.remarks,
-        status: {
-          rcTransferred: Boolean(values.rcTransferred),
-          rtoFeesPaid: Boolean(values.rtoFeesPaid),
-          returnedToDealer: Boolean(values.returnedToDealer),
-        },
+        registrationNumber: values.vehicleRegNo,
+        holderName: values.ownerName,
         submittedDate: values.submittedDate || null,
         receivedDate: values.receivedDate || null,
+        details: {
+          vehicleName: values.vehicleName,
+          ownerName: values.ownerName,
+          applicantName: values.applicantName,
+          ownerPhone: values.ownerPhone,
+          applicantPhone: values.applicantPhone,
+          work: values.work,
+          dealerName: values.dealerName,
+          rtoAgentName: values.rtoAgentName,
+          remarks: values.remarks,
+          status: {
+            rcTransferred: Boolean(values.rcTransferred),
+            rtoFeesPaid: Boolean(values.rtoFeesPaid),
+            returnedToDealer: Boolean(values.returnedToDealer),
+          },
+        },
       };
 
       const response = await fetch(
